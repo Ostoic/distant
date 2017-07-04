@@ -48,9 +48,14 @@ namespace distant {
 		using flag_type   = access_rights;
 		using handle_type = HANDLE;
 
-	public:
-		// Static process members
-		static process get_current() { return static_cast<process>(GetCurrentProcess()); }
+	public: // Static process members
+
+		// Get current process
+		static process get_current() 
+		{ 
+			process current(GetCurrentProcess(), access_rights::all_access);
+			return current;
+		}
 
 	public:
 		// Null initialize process
@@ -76,6 +81,12 @@ namespace distant {
 		process(handle_type handle) :
 			m_id(GetProcessId(handle)),
 			m_flags(access_rights::query_information), // We can't assume strong access rights
+			m_handle(handle)
+		{}
+
+		process(handle_type handle, flag_type flags) :
+			m_id(GetProcessId(handle)),
+			m_flags(flags), // We can't assume strong access rights
 			m_handle(handle)
 		{}
 
