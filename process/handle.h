@@ -44,4 +44,6 @@ namespace distant {
 		return !operator ==(invalid_handle, handle);
 	}
 
+	invalid_handle_t invalid_handle;
+
 } // end namespace distant
