@@ -1,6 +1,7 @@
 # distant
 A set of windows C++ process and remote memory tools 
 
+```c++
 int main()
 {
 	using namespace distant;
@@ -20,3 +21,4 @@ int main()
 
 	return 0;
 }
+```
