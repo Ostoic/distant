@@ -23,7 +23,7 @@ namespace memory  {
 		template <typename T>
 		T read(address_type addr)
 		{
-			T result = this->read(addr, sizeof(addr));
+			T result = this->read(addr, sizeof(T));
 			return result;
 		}
 
@@ -45,14 +45,14 @@ namespace memory  {
 		template <typename T>
 		size_type write(address_type addr, const T& value)
 		{
-			size_type bytes_written = this->write(addr, value, sizeof(value));
+			size_type bytes_written = this->write(addr, value, sizeof(T));
 			return bytes_written;
 		}
 
 		template <typename T>
 		size_type write(address_type addr, T&& value)
 		{
-			size_type bytes_written = this->write(addr, std::forward(value), sizeof(value));
+			size_type bytes_written = this->write(addr, std::forward(value), sizeof(T));
 			return bytes_written;
 		}
 
