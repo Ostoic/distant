@@ -4,7 +4,6 @@
 
 namespace distant {
 
-	// An invalid handle type used for validating windows handles
 	class invalid_handle_t
 	{
 	public:
@@ -13,7 +12,6 @@ namespace distant {
 		operator handle_type () const
 		{ return m_handle; }
 
-		// Initialize m_handle to the windows implementation value of INVALID_HANDLE_VALUE 
 		invalid_handle_t() : m_handle(INVALID_HANDLE_VALUE) {}
 
 	private:

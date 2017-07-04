@@ -63,8 +63,10 @@ namespace distant {
 			m_handle(invalid_handle)
 		{ m_handle = this->open(); }
 
+		// 
 		process(handle_type handle) :
 			m_id(GetProcessId(handle)),
+			m_flags(access_rights::all_access),
 			m_handle(handle)
 		{}
 
@@ -132,6 +134,14 @@ namespace distant {
 		handle_type m_handle;
 
 	}; // end class process
+
+
+	// Bitwise OR operator for access_rights 
+	process::access_rights operator |(const process::access_rights& lhs, const process::access_rights& rhs)
+	{
+		return static_cast<process::access_rights>(lhs) | 
+			   static_cast<process::access_rights>(rhs);
+	}
 
 
 } // end namespace distant
