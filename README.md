@@ -8,7 +8,7 @@ int main()
 	
 	// Open process with process id 312, and with the follwing access rights
 	process example(312, process::access_rights::vm_read | 
-						 process::access_rights::query_information);
+                       process::access_rights::query_information);
 	
 	auto mem = example.get_view();
 	auto bytes = example.read<int>(0x400000);
