@@ -1,25 +1,13 @@
 #pragma once
 
-#include <type_traits>
-
-#include <Windows.h>
+#include <cstdint>
 
 namespace distant {
 namespace memory  { 
 
-	class address
-	{
-	public:
-		using type = DWORD;
-
-	public:
-		address(type addr) : m_address(addr) {}
-
-		operator type () const { return m_address; }
-
-	private:
-		type m_address;
-	};
-
+	// Address type that is large enough to hold 64-bit addresses, while still
+	// conforming with WINAPI usage.
+	using address_type = std::uintptr_t;
+	
 } // end namespace memory
 } // end namespace distant

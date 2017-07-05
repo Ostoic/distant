@@ -1,91 +1,86 @@
 #pragma once
 
-#include <type_traits>
-
 #include <Windows.h>
+#include <type_traits>
+#include <cstdint>
+
 #include <distant\process\process.h>
+#include <distant\memory\address.h>
+#include <distant\memory\vm.h>
+
+// Either this class or VM will prevail
+// I'm still not sure on which design I like
 
 namespace distant {
+
+	// Forward delcare process
+	class process;
+
 namespace memory  {
 
-	// A view is a view into a process' virtual memory.
-	// It provides tools for manipulating and querying the memory of a process.
-	class view
+	template <typename T>
+	class view : private vm	
 	{
 	public:
 		using size_type	   = std::size_t;
 		using error_type   = DWORD;
-		using address_type = DWORD;
 
 	public:
-		view(const process& p) : m_process(p) {}
+		view(const process& p, address_type address) : vm(p), m_address(address) {}
 		
-		template <typename T>
-		T read(address_type addr)
-		{
-			T result = this->read(addr, sizeof(T));
-			return result;
-		}
+		// Note that RVO should ellide all copies below
+		/**************************************/
+		/*** memory::vm operation delegates ***/
+		/**************************************/
 
-		template <typename T>
-		T read(address_type addr, size_type bytes_to_read)
-		{
-			T result;
-			size_type bytes_read = 0;
+		// Mutates: m_error
+		// vm::read delegate
+		T read() { return vm::read<T>(m_address); }
 
-			// Ensure we have the correct access rights to perform the vm read.
-			if (m_process.check_permission(process::access_rights::vm_read))
-				ReadProcessMemory(m_process, addr, &result, bytes_to_read, &bytes_read);
+		// Mutates: m_error
+		// vm::read delegate
+		T read(size_type bytes_to_read) { return vm::read<T>(m_address, bytes_to_read); }
 
-			// Save last error for this operation
-			m_error = GetLastError();
-			return result;
-		}
+		// Mutates: m_error
+		// vm::write delegate
+		size_type write(const T& value) { return vm::write(m_address, value, sizeof(T)); }
 
-		template <typename T>
-		size_type write(address_type addr, const T& value)
-		{
-			size_type bytes_written = this->write(addr, value, sizeof(T));
-			return bytes_written;
-		}
+		// Mutates: m_error
+		// vm::write delegate
+		size_type write(T&& value) { return vm::write(m_address, std::forward(value), sizeof(T)); }
 
-		template <typename T>
-		size_type write(address_type addr, T&& value)
-		{
-			size_type bytes_written = this->write(addr, std::forward(value), sizeof(T));
-			return bytes_written;
-		}
+		// Mutates: m_error
+		// vm::write delegate
+		size_type write(T&& value, size_type bytes_to_write) { return vm::write(m_address, std::forward(buffer), bytes_to_write); }
 
-		template <typename T>
-		size_type write(address_type addr, T&& value, size_type bytes_to_write)
-		{
-			T buffer;
+		// Mutates: m_error
+		// vm::write delegate
+		size_type write(const T& value, size_type bytes_to_write) { return vm::write(m_address, value, bytes_to_write); }
 
-			std::swap(value, buffer);
-			size_type bytes_written = this->write(addr, buffer, bytes_to_write);
-			return bytes_written;
-		}
+		using vm::get_last_error;
 
-		template <typename T>
-		size_type write(address_type addr, const T& value, size_type bytes_to_write)
-		{
-			size_type bytes_written = 0;
+		template <typename U>
+		friend bool operator ==(const view<U>& lhs, const view<U>& rhs);
 
-			// Ensure we have the correct access rights to perform the vm write.
-			if (m_process.check_permission(process::access_rights::vm_write))
-				WriteProcessMemory(m_process, addr, &value, bytes_to_write, &bytes_written);
+		template <typename U>
+		friend bool operator !=(const view<U>& lhs, const view<U>& rhs);
 
-			// Save last error for this operation
-			m_error = GetLastError();
-			return bytes_written;
-		}
-
-		error_type get_last_error() const { return m_error; }
-
-	private:
-		const process& m_process;
-		error_type m_error;
+	protected:
+		const address_type m_address;
 	};
+
+	template <typename U>
+	inline bool operator ==(const view<U>& lhs, const view<U>& rhs)
+	{
+		return operator==(static_cast<vm>(lhs), static_cast<vm>(rhs)) &&
+			   lhs.m_address == rhs.m_address;
+	}
+
+	template <typename U>
+	inline bool operator !=(const view<U>& lhs, const view<U>& rhs)
+	{
+		return !operator==(lhs, rhs);
+	}
 
 } // end namespace memory
 } // end namespace distant

@@ -7,7 +7,9 @@
 #include <Windows.h>
 
 #include <distant\process\handle.h>
+#include <distant\memory\address.h>
 #include <distant\memory\view.h>
+#include <distant\memory\vm.h>
 
 namespace distant {
 
@@ -78,11 +80,11 @@ namespace distant {
 			m_handle(invalid_handle)
 		{ m_handle = this->open(); }
 
-		process(handle_type handle) :
-			m_id(GetProcessId(handle)),
-			m_flags(access_rights::query_information), // We can't assume strong access rights
-			m_handle(handle)
-		{}
+		//process(handle_type handle) :
+		//	m_id(GetProcessId(handle)),
+		//	m_flags(access_rights::query_information), // We can't assume strong access rights
+		//	m_handle(handle)
+		//{}
 
 		process(handle_type handle, flag_type flags) :
 			m_id(GetProcessId(handle)),
@@ -100,11 +102,14 @@ namespace distant {
 		process(const process&) = delete;
 		process& operator =(const process&) = delete;
 
-		// Accesors for id and flags
+		// Accessors for id and flags
 		id_type get_id()	  const { return m_id; }
 		flag_type get_flags() const { return m_flags; }
 
-		memory::view get_view() { return memory::view(*this); }
+		memory::vm get_vm() const { return memory::vm(*this); }	
+
+		template <typename T>
+		memory::view<T> get_view(memory::address_type address) const { return memory::view<T>(*this, address); }
 
 		// Check if the process handle is valid
 		bool valid_handle()  const 
@@ -119,9 +124,14 @@ namespace distant {
 		operator const handle_type&()	const { return m_handle; }
 		const handle_type& get_handle()	const { return m_handle; }
 
+		// Idea: ostream << operator for flag, id, etc
+
 		// Close process handle
 		// Mutates: from invalidate() 
 		~process() { this->close_handle(); }
+
+		friend bool operator ==(const process&, const process&);
+		friend bool operator !=(const process&, const process&);
 
 	private:
 		// Close process handle and invalidate process object
@@ -167,6 +177,19 @@ namespace distant {
 	bool process::check_permission(process::access_rights access) const
 	{
 		return (m_flags & access) == access;
+	}
+
+
+	inline bool operator ==(const process& lhs, const process& rhs)
+	{
+		return lhs.m_handle == rhs.m_handle &&
+			   lhs.m_id     == rhs.m_id     &&
+			   lhs.m_flags  == rhs.m_flags;
+	}
+
+	inline bool operator !=(const process& lhs, const process& rhs)
+	{
+		return !operator==(lhs, rhs);
 	}
 
 } // end namespace distant
