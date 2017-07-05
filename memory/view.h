@@ -8,9 +8,6 @@
 #include <distant\memory\address.h>
 #include <distant\memory\vm.h>
 
-// Either this class or VM will prevail
-// I'm still not sure on which design I like
-
 namespace distant {
 
 	// Forward delcare process

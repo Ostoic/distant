@@ -4,16 +4,21 @@
 #include <type_traits>
 #include <cstdint>
 
-#include <distant\process\process.h>
 #include <distant\memory\address.h>
+#include <distant\process\process.h>
+#include <distant\memory\pointer.h>
 //#include <distant\iterators\vm_iterator.h>
 
 namespace distant {
 
-	// Forward delcare process
+	// Forward declare distant::process
 	class process;
 
 namespace memory  {
+
+	// Forward declare distant::memory::pointer
+	template <typename T>
+	class pointer;
 
 	// A vm is a view into a process' virtual memory.
 	// It provides tools for manipulating and querying the memory of a process.
@@ -24,13 +29,14 @@ namespace memory  {
 		using error_type   = DWORD;
 
 	public:
+		vm() : m_process(process::get_current()) {}
 		vm(const process& p) : m_process(p){}
 		
 		// Mutates: m_error
 		template <typename T>
 		T read(address_type address)
 		{
-			T result = this->read<T>(sizeof(T));
+			T result = this->read<T>(address, sizeof(T));
 			return result;
 		}
 
@@ -98,6 +104,9 @@ namespace memory  {
 
 		friend bool operator ==(const vm& lhs, const vm& rhs);
 		friend bool operator !=(const vm& lhs, const vm& rhs);
+
+		template <typename T>
+		pointer<T> ptr(address_type address) { return pointer<T>(*this, address); }
 
 	protected:
 		const process& m_process;
