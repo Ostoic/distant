@@ -10,7 +10,7 @@ int main()
 	process example(312, process::access_rights::vm_read | 
 						 process::access_rights::query_information);
 	
-	auto mem = example.get_view();
+	auto mem = example.get_vm();
 	auto bytes = example.read<int>(0x400000);
 	
 	std::cout << "Exe base bytes: " << bytes << std::endl;
