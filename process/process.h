@@ -108,8 +108,8 @@ namespace distant {
 
 		memory::vm get_vm() const { return memory::vm(*this); }	
 
-		template <typename T>
-		memory::view<T> get_view(memory::address_type address) const { return memory::view<T>(*this, address); }
+		//template <typename T>
+		//memory::view<T> get_view(memory::address_type address) const { return memory::view<T>(*this, address); }
 
 		// Check if the process handle is valid
 		bool valid_handle()  const 
@@ -123,6 +123,9 @@ namespace distant {
 		// Convert to handle_type
 		operator const handle_type&()	const { return m_handle; }
 		const handle_type& get_handle()	const { return m_handle; }
+
+		// Implicitly convertible to a vm
+		operator memory::vm() const { return this->get_vm(); }
 
 		// Idea: ostream << operator for flag, id, etc
 

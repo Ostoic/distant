@@ -29,15 +29,14 @@ namespace memory  {
 		using error_type   = DWORD;
 
 	public:
-		vm() : m_process(process::get_current()) {}
+		//vm() : m_process() {}
 		vm(const process& p) : m_process(p){}
 		
 		// Mutates: m_error
 		template <typename T>
 		T read(address_type address)
 		{
-			T result = this->read<T>(address, sizeof(T));
-			return result;
+			return this->read<T>(address, sizeof(T));
 		}
 
 		// Mutates: m_error
@@ -61,16 +60,14 @@ namespace memory  {
 		template <typename T>
 		size_type write(address_type address, const T& value)
 		{
-			size_type bytes_written = this->write(address, value, sizeof(T));
-			return bytes_written;
+			return this->write<T>(address, value, sizeof(T));
 		}
 
 		// Mutates: m_error
 		template <typename T>
 		size_type write(address_type address, T&& value)
 		{
-			size_type bytes_written = this->write(address, std::forward(value), sizeof(T));
-			return bytes_written;
+			return this->write<T>(address, std::forward(value), sizeof(T));
 		}
 
 		// Mutates: m_error
@@ -80,8 +77,7 @@ namespace memory  {
 			T buffer;
 
 			std::swap(value, buffer);
-			size_type bytes_written = this->write(address, buffer, bytes_to_write);
-			return bytes_written;
+			return this->write<T>(address, buffer, bytes_to_write);
 		}
 
 		// Mutates: m_error

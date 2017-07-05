@@ -48,7 +48,7 @@ namespace detail {
 		explicit object_traits() {}
 		~object_traits() {}
 
-		memory::address_type 
+		//memory::address_type 
 	};
 
 } // end namespace detail

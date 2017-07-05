@@ -6,6 +6,9 @@
 namespace distant {
 namespace memory  {
 
+	// Forward declare memory::vm
+	class vm;
+
 	// Pointer with mutable address
 	template <typename T>
 	class value
@@ -17,9 +20,25 @@ namespace memory  {
 	public:
 		value() : m_vm(), m_address() {}
 
-		value(T&& val, address_type address) : m_address(address) { using std::swap; swap(m_val, val); }
-		value(const T& val, address_type address) : m_value(val), m_address(address) {}
-		value(const vm& v, address_type address) : m_address(address), m_vm(v) {}
+		value(vm& v, T&& val, address_type address) : 
+			m_vm(v),
+			m_address(address) 
+		{ 
+			using std::swap; 
+			swap(m_val, val); 
+			m_vm.write(val, m_address);
+		}
+
+		value(vm& v, const T& val, address_type address) :
+			m_vm(v),
+			m_value(val),
+			m_address(address) 
+		{ m_vm.write(val, m_address); }
+
+		value(vm& v, address_type address) : 
+			m_address(address), 
+			m_vm(v) 
+		{}
 
 		template <typename U>
 		friend bool operator ==(const value<U>&, const value<U>&);
@@ -38,11 +57,11 @@ namespace memory  {
 		T m_value;
 		address_type m_address;
 
-		const vm& m_vm;
+		vm& m_vm;
 	};
 
 	template <typename T>
-	friend bool operator ==(const value<T>& lhs, const value<T>& rhs)
+	inline bool operator ==(const value<T>& lhs, const value<T>& rhs)
 	{ 
 		return lhs.m_address == rhs.m_address &&
 			   lhs.m_vm == rhs.m_vm			  &&
@@ -50,7 +69,7 @@ namespace memory  {
 	}
 
 	template <typename T>
-	friend bool operator !=(const value<T>& lhs, const value<T>& rhs)
+	inline bool operator !=(const value<T>& lhs, const value<T>& rhs)
 	{ return !operator==(lhs, rhs); }
 
 } // end namespace memory
