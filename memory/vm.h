@@ -65,31 +65,16 @@ namespace memory  {
 
 		// Mutates: m_error
 		template <typename T>
-		size_type write(address_type address, T&& value)
-		{
-			return this->write<T>(address, std::forward(value), sizeof(T));
-		}
-
-		// Mutates: m_error
-		template <typename T>
-		size_type write(address_type address, T&& value, size_type bytes_to_write)
-		{
-			T buffer;
-
-			std::swap(value, buffer);
-			return this->write<T>(address, buffer, bytes_to_write);
-		}
-
-		// Mutates: m_error
-		template <typename T>
 		size_type write(address_type address, const T& value, size_type bytes_to_write)
 		{
 			SIZE_T bytes_written = 0;
 
+			T buffer = value;
+
 			// Ensure we have the correct access rights to perform the vm write.
 			if (m_process.check_permission(process::access_rights::vm_write))
 				// reinterpret_cast because of WINAPI's general-purpose address pointer
-				WriteProcessMemory(m_process, reinterpret_cast<LPVOID>(address), &value, bytes_to_write, &bytes_written);
+				WriteProcessMemory(m_process, reinterpret_cast<LPVOID>(address), &buffer, bytes_to_write, &bytes_written);
 
 			// Save last error for this operation
 			m_error = GetLastError();

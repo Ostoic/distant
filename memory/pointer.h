@@ -33,8 +33,7 @@ namespace memory  {
 		// That is, assignment should be available.
 		value<T> operator *() 
 		{ 
-			T result = m_vm.read<T>(m_address);
-			return value<T>(m_vm, result, m_address); 
+			return value<T>(m_vm, m_address);
 		}
 
 		explicit operator bool() const { return m_address != 0; }

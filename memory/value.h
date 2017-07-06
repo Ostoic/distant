@@ -20,20 +20,11 @@ namespace memory  {
 	public:
 		value() : m_vm(), m_address() {}
 
-		value(vm& v, T&& val, address_type address) : 
+		value(vm& v, address_type address, const value_type& val) :
 			m_vm(v),
+			//m_value(val),
 			m_address(address) 
-		{ 
-			using std::swap; 
-			swap(m_val, val); 
-			m_vm.write(val, m_address);
-		}
-
-		value(vm& v, const T& val, address_type address) :
-			m_vm(v),
-			m_value(val),
-			m_address(address) 
-		{ m_vm.write(val, m_address); }
+		{ m_vm.write<value_type>(m_address, val); }
 
 		value(vm& v, address_type address) : 
 			m_address(address), 
@@ -45,16 +36,17 @@ namespace memory  {
 		template <typename U>
 		friend bool operator !=(const value<U>&, const value<U>&);
 
-		operator const T&() const { return m_value; }
+		operator T() const { return m_vm.read<value_type>(m_address); }
 
-		value& operator =(const T& val)
+		value& operator =(value_type val)
 		{
-			m_vm.write(val, m_address);
-			m_value = val;
+			m_vm.write<value_type>(m_address, val);
+			//m_value = m_vm.read<value_type>(m_address);
+			return *this;
 		}
 
 	private:
-		T m_value;
+		//value_type m_value;
 		address_type m_address;
 
 		vm& m_vm;
@@ -64,8 +56,8 @@ namespace memory  {
 	inline bool operator ==(const value<T>& lhs, const value<T>& rhs)
 	{ 
 		return lhs.m_address == rhs.m_address &&
-			   lhs.m_vm == rhs.m_vm			  &&
-			   lhs.m_value == rhs.m_value;
+			   lhs.m_vm == rhs.m_vm;		  
+			   //lhs.m_value == rhs.m_value;
 	}
 
 	template <typename T>

@@ -4,8 +4,9 @@
 
 #include <boost\iterator\iterator_adaptor.hpp>
 
-#include <distant\memory\address.h>
 #include <distant\process\process.h>
+#include <distant\memory\address.h>
+#include <distant\memory\pointer.h>
 #include <distant\memory\vm.h>
 
 namespace distant	{
@@ -13,10 +14,10 @@ namespace iterators {
 
 template <typename T>
 class vm_iterator :
-	public boost::iterator_facade<vm_iterator<T>, // Derived
-								  T, // Type
-								  std::forward_iterator_tag, // Traversal 
-								  T> // Reference
+	public boost::iterator_adaptor<vm_iterator<T>, // Derived
+								   T, // Type
+								   std::forward_iterator_tag, // Traversal 
+								   T> // Reference
 {
 public:
 	//view_iterator(): m_vm(vm), m_address(address) {}

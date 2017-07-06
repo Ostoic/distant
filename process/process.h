@@ -6,10 +6,14 @@
 
 #include <Windows.h>
 
-#include <distant\process\handle.h>
+#include <distant\windows\synchro.h>
+#include <distant\windows\handle.h>
+
 #include <distant\memory\address.h>
 #include <distant\memory\view.h>
 #include <distant\memory\vm.h>
+
+#include <memory>
 
 namespace distant {
 
@@ -17,7 +21,7 @@ namespace distant {
 	//		- Process as a container
 	//		- Return view of memory into process
 	//		- Process iterators return remote memory
-	class process
+	class process : public windows::synchro
 	{
 	public:
 		enum class access_rights : int
@@ -45,87 +49,98 @@ namespace distant {
 		};
 
 	public:
+		// Synchro type information
+		using synchro_type = windows::synchro;
+		using handle_type  = synchro_type::handle_type;
+		using error_type   = synchro_type::error_type;
+
 		// Process type information
-		using id_type	  = std::size_t;
-		using flag_type   = access_rights;
-		using handle_type = HANDLE;
+		using id_type = std::size_t;
+		using flag_type = access_rights;
 
 	public: // Static process members
 
 		// Get current process
 		static process get_current() 
 		{ 
+			std::shared_ptr<int>;
 			process current(GetCurrentProcess(), access_rights::all_access);
 			return current;
 		}
 
 	public:
-		// Null initialize process
+		// Empty initialize process
 		process() : 
+			synchro(), // Empty initialize synchro
 			m_id(std::numeric_limits<id_type>::infinity()), 
-			m_flags(access_rights::all_access), 
-			m_handle(invalid_handle)
+			m_flags(access_rights::all_access)
 		{}
 
-		// Start process by id
+		// Open process by id
 		process(id_type id) : 
-			m_id(std::numeric_limits<id_type>::infinity()),
+			synchro(this->open(id, access_rights::all_access)),
+			m_id(id),
 			m_flags(access_rights::all_access) 
-		{ m_handle = this->open(); }
+		{}
 
-		// Start process by id, with flags
+		// Open process by id, with flags
 		process(id_type id, flag_type flags) : 
+			synchro(this->open(id, flags)),
 			m_id(id), 
-			m_flags(flags), 
-			m_handle(invalid_handle)
-		{ m_handle = this->open(); }
+			m_flags(flags)
+		{}
 
-		//process(handle_type handle) :
-		//	m_id(GetProcessId(handle)),
-		//	m_flags(access_rights::query_information), // We can't assume strong access rights
-		//	m_handle(handle)
-		//{}
-
+		// Take handle and valid process access_rights associated with the handle
 		process(handle_type handle, flag_type flags) :
+			synchro(handle),
 			m_id(GetProcessId(handle)),
-			m_flags(flags), // We can't assume strong access rights
-			m_handle(handle)
+			m_flags(flags)
 		{}
 
 		// Move other process handle into our possesion
 		process(process&& other) : 
+			synchro(static_cast<synchro>(other)),
 			m_id(other.get_id()), 
-			m_flags(other.get_flags()), 
-			m_handle(other.get_handle())
+			m_flags(other.get_flags()) 
 		{ other.invalidate(); }
 
+		//====================================//
+		// Process objects should not be copy //
+		// constructible, nor copy assignable //
+		//====================================//
 		process(const process&) = delete;
 		process& operator =(const process&) = delete;
 
-		// Accessors for id and flags
+		//====================================//
+		// Process id and access_rights flags //
+		// accessors                          //
+		//====================================//
 		id_type get_id()	  const { return m_id; }
 		flag_type get_flags() const { return m_flags; }
 
-		memory::vm get_vm() const { return memory::vm(*this); }	
-
-		//template <typename T>
-		//memory::view<T> get_view(memory::address_type address) const { return memory::view<T>(*this, address); }
-
 		// Check if the process handle is valid
-		bool valid_handle()  const 
+		bool valid_process()  const 
 		{ 
-			return !(m_handle == invalid_handle && 
+			return !(this->valid_handle() && 
 					 m_id == std::numeric_limits<id_type>::infinity()); 
 		}
 
+		// Check if we have permission perform the given action
 		bool check_permission(access_rights access) const;
 
-		// Convert to handle_type
-		operator const handle_type&()	const { return m_handle; }
-		const handle_type& get_handle()	const { return m_handle; }
+		bool is_running() const 
+		{
+			if (!this->valid_process()) return false;
 
-		// Implicitly convertible to a vm
-		operator memory::vm() const { return this->get_vm(); }
+			if (this->check_permission(access_rights::synchronize))
+			{
+
+			}
+
+			//ret = WaitForSingleObject(process, 0);
+			//return ret == WAIT_TIMEOUT;
+			return true;
+		}
 
 		// Idea: ostream << operator for flag, id, etc
 
@@ -133,18 +148,25 @@ namespace distant {
 		// Mutates: from invalidate() 
 		~process() { this->close_handle(); }
 
+		// Return the virtual memory of this process
+		memory::vm get_vm() const { return memory::vm(*this); }
+
+		// Implicitly convertible to a vm
+		operator memory::vm() const { return this->get_vm(); }
+
 		friend bool operator ==(const process&, const process&);
 		friend bool operator !=(const process&, const process&);
 
 	private:
 		// Close process handle and invalidate process object
 		// Mutates: from invalidate() 
-		void close_handle()
+		void close_process()
 		{
-			if (this->valid_handle())
-				CloseHandle(m_handle);
-
-			this->invalidate();
+			if (this->valid_process())
+			{
+				this->close_handle();
+				this->invalidate();
+			}
 		}
 
 		// Invalidate process id and handle
@@ -152,17 +174,20 @@ namespace distant {
 		void invalidate()
 		{
 			m_id = std::numeric_limits<id_type>::infinity();
-			m_handle = invalid_handle;
 		}
 
 		// Open process
 		// Mutates: m_handle
-		handle_type open()
+		handle_type open(id_type id, flag_type flags)
 		{
 			using T = std::underlying_type_t<flag_type>;
 
-			if (m_id != 0)
-				return (m_handle = OpenProcess(static_cast<T>(this->m_flags), false, m_id));
+			if (id != 0)
+			{
+				auto result = OpenProcess(static_cast<T>(flags), false, id);
+				m_error = GetLastError();
+				return result;
+			}
 
 			return invalid_handle;
 		}
@@ -170,13 +195,13 @@ namespace distant {
 	protected:
 		id_type m_id;
 		flag_type m_flags;
-		handle_type m_handle;
 
 	}; // end class process
 
 	// Define flag operators for use with process::access_rights
 	DEFINE_ENUM_FLAG_OPERATORS(process::access_rights)
 
+	// Check if we have permission perform the given action
 	bool process::check_permission(process::access_rights access) const
 	{
 		return (m_flags & access) == access;

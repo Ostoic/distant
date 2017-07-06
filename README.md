@@ -22,3 +22,11 @@ int main()
 	return 0;
 }
 ```
+Ideas:
+	- Implement vm::allocate, vm::deallocate
+	- Implement distant::process_entry (or whichever name I decide upon) using 
+	  an iterator type. Instead of the usual Process32Next while loop, we would 
+	  simply use an iterator loop.
+	  Dereferencing the iterator would return either a process or process_entry.
+	- Finish the custom allocator
+	- Make windows::synchro similar to shared_ptr with reference counts and all that

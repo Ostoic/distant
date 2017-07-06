@@ -4,10 +4,12 @@
 
 namespace distant {
 
+	using handle_type = HANDLE;
+
 	class invalid_handle_t
 	{
 	public:
-		using handle_type = HANDLE;
+		using handle_type = distant::handle_type;
 
 		operator handle_type () const
 		{ return m_handle; }
