@@ -10,10 +10,7 @@
 #include <distant\windows\handle.h>
 
 #include <distant\memory\address.h>
-#include <distant\memory\view.h>
 #include <distant\memory\vm.h>
-
-#include <memory>
 
 namespace distant {
 
@@ -24,7 +21,7 @@ namespace distant {
 	class process : public windows::synchro
 	{
 	public:
-		enum class access_rights : int
+		enum class access_rights
 		{
 			all_access = PROCESS_ALL_ACCESS,
 
@@ -63,46 +60,12 @@ namespace distant {
 		// Get current process
 		static process get_current() 
 		{ 
-			std::shared_ptr<int>;
+			//std::shared_ptr<int>;
 			process current(GetCurrentProcess(), access_rights::all_access);
 			return current;
 		}
 
 	public:
-		// Empty initialize process
-		process() : 
-			synchro(), // Empty initialize synchro
-			m_id(std::numeric_limits<id_type>::infinity()), 
-			m_flags(access_rights::all_access)
-		{}
-
-		// Open process by id
-		process(id_type id) : 
-			synchro(this->open(id, access_rights::all_access)),
-			m_id(id),
-			m_flags(access_rights::all_access) 
-		{}
-
-		// Open process by id, with flags
-		process(id_type id, flag_type flags) : 
-			synchro(this->open(id, flags)),
-			m_id(id), 
-			m_flags(flags)
-		{}
-
-		// Take handle and valid process access_rights associated with the handle
-		process(handle_type handle, flag_type flags) :
-			synchro(handle),
-			m_id(GetProcessId(handle)),
-			m_flags(flags)
-		{}
-
-		// Move other process handle into our possesion
-		process(process&& other) : 
-			synchro(static_cast<synchro>(other)),
-			m_id(other.get_id()), 
-			m_flags(other.get_flags()) 
-		{ other.invalidate(); }
 
 		//====================================//
 		// Process objects should not be copy //
@@ -128,31 +91,75 @@ namespace distant {
 		// Check if we have permission perform the given action
 		bool check_permission(access_rights access) const;
 
-		bool is_running() const 
+		// Mutates: gle
+		bool is_running() 
 		{
 			if (!this->valid_process()) return false;
 
+			DWORD result;
+
+			// Ensure we have the synchronize access_rights
+			// This is required to call WaitForSingleObject
 			if (this->check_permission(access_rights::synchronize))
 			{
-
+				result = WaitForSingleObject(m_handle, 0);
+				this->update_gle();
 			}
 
 			//ret = WaitForSingleObject(process, 0);
 			//return ret == WAIT_TIMEOUT;
-			return true;
+			return result == WAIT_TIMEOUT;
 		}
-
-		// Idea: ostream << operator for flag, id, etc
-
-		// Close process handle
-		// Mutates: from invalidate() 
-		~process() { this->close_handle(); }
 
 		// Return the virtual memory of this process
 		memory::vm get_vm() const { return memory::vm(*this); }
 
 		// Implicitly convertible to a vm
 		operator memory::vm() const { return this->get_vm(); }
+
+		// Idea: ostream << operator for flag, id, etc
+
+		//=========================//
+		// Process ctors and dtors //
+		//=========================//
+		// Empty initialize process
+		process() :
+			synchro(), // Empty initialize synchro
+			m_id(std::numeric_limits<id_type>::infinity()),
+			m_flags(access_rights::all_access)
+		{}
+
+		// Open process by id
+		process(id_type id) :
+			synchro(this->open(id, access_rights::all_access)),
+			m_id(id),
+			m_flags(access_rights::all_access)
+		{}
+
+		// Open process by id, with flags
+		process(id_type id, flag_type flags) :
+			synchro(this->open(id, flags)),
+			m_id(id),
+			m_flags(flags)
+		{}
+
+		// Take handle and valid process access_rights associated with the handle
+		process(handle_type&& handle, flag_type flags) :
+			synchro(std::move(handle)),
+			m_id(GetProcessId(handle)),
+			m_flags(flags)
+		{}
+
+		// Move other process handle into our possesion
+		process(process&& other) :
+			synchro(static_cast<synchro>(other)),
+			m_id(other.get_id()),
+			m_flags(other.get_flags())
+		{ other.invalidate(); }
+
+		// Close process handle
+		// Mutates: from invalidate() 
+		~process() { this->close_handle(); }
 
 		friend bool operator ==(const process&, const process&);
 		friend bool operator !=(const process&, const process&);
@@ -185,7 +192,7 @@ namespace distant {
 			if (id != 0)
 			{
 				auto result = OpenProcess(static_cast<T>(flags), false, id);
-				m_error = GetLastError();
+				this->update_gle();
 				return result;
 			}
 

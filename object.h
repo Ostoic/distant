@@ -1,31 +1,14 @@
 #pragma once
 
 #include <distant\windows\handle.h>
-#include <distant\windows\gle.h>
-
-#include <memory>
 
 namespace distant {
 namespace windows {
 
-	// Example objects are the following:
-	/************************************//*
-		Change notification
-		Console input
-		Event
-		Memory resource notification
-		Mutex
-		Process
-		Semaphore
-		Thread
-		Waitable timer
-	/************************************/
-	// Go to MSDN for more information
-	// Base synchronization object for windows
-	class synchro : public windows::gle
+	class object
 	{
 	public:
-		using error_type  = gle::error_type;
+		using error_type  = DWORD;
 		using handle_type = distant::handle_type;
 
 	public:
@@ -33,8 +16,11 @@ namespace windows {
 		/** Windows object status functions **/
 		/*************************************/
 		// Implicitly cast object to handle_type
+		operator const handle_type&()	const { return m_handle; }
 		const handle_type& get_handle()	const { return m_handle; }
-		operator const handle_type&()	const { return get_handle(); }
+
+		// Get the last error code that was recorded
+		error_type get_last_error() const { return m_error; }
 
 		// Determine if the object handle is valid
 		bool valid_handle() const
@@ -44,16 +30,13 @@ namespace windows {
 		/** Windows Object constructors **/
 		/*********************************/
 		// Invalid handle default constructor
-		constexpr synchro() : gle(), m_handle(invalid_handle) {}
+		object() : m_handle(invalid_handle) {}
 
 		// Pretty much a copy constructor
-		constexpr synchro(handle_type&& handle) : gle(), m_handle(std::move(handle)) {}
+		object(const handle_type& handle) : m_handle(handle) {}
 
 		// Close the windows handle on destruction
-		~synchro() { this->close_handle(); }
-
-		friend bool operator ==(const synchro&, const synchro&);
-		friend bool operator !=(const synchro&, const synchro&);
+		~object() { this->close_handle(); }
 
 	protected:
 		// Invalidate our handle
@@ -68,28 +51,15 @@ namespace windows {
 		void close_handle()
 		{
 			if (this->valid_handle())
-			{
 				CloseHandle(m_handle);
-				this->invalidate();
-			}
+
+			this->invalidate();
 		}
 
 	protected:
 		handle_type m_handle;
-		//handle_type m_handle;
-
+		error_type m_error;
 	};
-	
-	inline bool operator ==(const synchro& lhs, const synchro& rhs)
-	{
-		return lhs.m_handle == rhs.m_handle;
-	}
-
-	inline bool operator !=(const synchro& lhs, const synchro& rhs)
-	{
-		return !operator==(lhs, rhs);
-	}
-
 
 } // end namespace windows
 } // end namespace distant

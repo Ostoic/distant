@@ -5,93 +5,124 @@
 #include <cstdint>
 
 #include <distant\memory\address.h>
-#include <distant\process\process.h>
 #include <distant\memory\pointer.h>
+#include <distant\process\process.h>
+
+#include <distant\windows\gle.h>
+
 //#include <distant\iterators\vm_iterator.h>
+
+// Forward declare types used in vm below
 
 namespace distant {
 
-	// Forward declare distant::process
-	class process;
+// Forward declare distant::process
+class process;
 
 namespace memory  {
-
-	// Forward declare distant::memory::pointer
+	// Forward declare memory::pointer
 	template <typename T>
 	class pointer;
 
 	// A vm is a view into a process' virtual memory.
 	// It provides tools for manipulating and querying the memory of a process.
-	class vm
+	class vm : public windows::gle
 	{
 	public:
+		// Forward declare virtual memory operations
+		class operation;
+		class allocation;
+		class deletion;
+
+	public:
 		using size_type	   = std::size_t;
-		using error_type   = DWORD;
+		using address_type = memory::address_type;
 
 	public:
 		//vm() : m_process() {}
 		vm(const process& p) : m_process(p){}
-		
-		// Mutates: m_error
+
+		template <typename... Ts>
+		operation operate(Ts... args);
+
+		// Pass everything to the allocation ctor
+		template <typename... Ts>
+		allocation allocate(Ts... args);
+
+		// Pass everything to the allocation ctor
+		template <typename... Ts>
+		deletion deallocate(Ts... args);
+
+		// Mutates: gle
+		// Returns: Result of read
 		template <typename T>
 		T read(address_type address)
 		{
 			return this->read<T>(address, sizeof(T));
 		}
 
-		// Mutates: m_error
+		// Mutates: gle
+		// Returns: Result of read
 		template <typename T>
 		T read(address_type address, size_type bytes_to_read)
 		{
-			T result;
+			T result = T();
 			SIZE_T bytes_read = 0;
 
 			// Ensure we have the correct access rights to perform the vm read.
 			if (m_process.check_permission(process::access_rights::vm_read))
+			{
 				// reinterpret_cast because of WINAPI's general-purpose address pointer
 				ReadProcessMemory(m_process, reinterpret_cast<LPVOID>(address), &result, bytes_to_read, &bytes_read);
 
-			// Save last error for this operation
-			m_error = GetLastError();
+				// Save the gle for this operation
+				this->update_gle();
+			}
+
 			return result;
 		}
 
-		// Mutates: m_error
+		// Mutates: gle
+		// Returns: Number of bytes written
 		template <typename T>
-		size_type write(address_type address, const T& value)
+		size_type write(address_type address, const T& to_write)
 		{
-			return this->write<T>(address, value, sizeof(T));
+			return this->write<T>(address, to_write, sizeof(T));
 		}
 
-		// Mutates: m_error
+		// Mutates: gle
+		// Returns: Number of bytes written
 		template <typename T>
-		size_type write(address_type address, const T& value, size_type bytes_to_write)
+		size_type write(address_type address, const T& to_write, size_type bytes_to_write)
 		{
 			SIZE_T bytes_written = 0;
 
-			T buffer = value;
+			T buffer = to_write;
 
 			// Ensure we have the correct access rights to perform the vm write.
 			if (m_process.check_permission(process::access_rights::vm_write))
+			{
 				// reinterpret_cast because of WINAPI's general-purpose address pointer
 				WriteProcessMemory(m_process, reinterpret_cast<LPVOID>(address), &buffer, bytes_to_write, &bytes_written);
+			
+				// Save the gle for this operation
+				this->update_gle();
+			}
 
-			// Save last error for this operation
-			m_error = GetLastError();
 			return static_cast<size_type>(bytes_written);
 		}
 
-		error_type get_last_error() const { return m_error; }
+		// Return pointer to memory address in vm.
+		// This pointer acts as a regular pointer that is local to the current
+		// process.
+		template <typename T>
+		pointer<T> ptr(address_type address) { return pointer<T>(*this, address); }
 
 		friend bool operator ==(const vm& lhs, const vm& rhs);
 		friend bool operator !=(const vm& lhs, const vm& rhs);
 
-		template <typename T>
-		pointer<T> ptr(address_type address) { return pointer<T>(*this, address); }
-
 	protected:
 		const process& m_process;
-		error_type m_error;
 	};
 
 	inline bool operator ==(const vm& lhs, const vm& rhs)
@@ -106,3 +137,6 @@ namespace memory  {
 
 } // end namespace memory
 } // end namespace distant
+
+// Include vm::operation implementation
+#include <distant\memory\vm\allocation.inl>

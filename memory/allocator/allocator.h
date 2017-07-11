@@ -3,7 +3,7 @@
 #include <limits>
 #include <cstddef>
 
-#include <distant\memory\allocator_policy.h>
+#include <distant\memory\allocator\allocator_policy.h>
 
 namespace distant {
 namespace memory  {

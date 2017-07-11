@@ -14,7 +14,7 @@ namespace distant {
 		operator handle_type () const
 		{ return m_handle; }
 
-		invalid_handle_t() : m_handle(INVALID_HANDLE_VALUE) {}
+		constexpr invalid_handle_t() : m_handle(INVALID_HANDLE_VALUE) {}
 
 	private:
 		const handle_type m_handle;
@@ -46,6 +46,6 @@ namespace distant {
 		return !operator ==(invalid_handle, handle);
 	}
 
-	invalid_handle_t invalid_handle;
+	static constexpr invalid_handle_t invalid_handle;
 
 } // end namespace distant

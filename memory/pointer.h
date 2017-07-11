@@ -63,7 +63,9 @@ namespace memory  {
 		using value_type   = T;
 
 	public:
-		const_pointer(const vm& v, address_type address) : m_address(address), m_vm(v) {}
+		const_pointer() : m_vm(), m_address() {}
+		const_pointer(vm& v) : m_vm(v), m_address() {}
+		const_pointer(vm& v, address_type address) : m_address(address), m_vm(v) {}
 
 		template <typename U>
 		friend bool operator ==(const const_pointer<U>&, const const_pointer<U>&);
@@ -72,13 +74,13 @@ namespace memory  {
 
 		operator address_type() const { return m_address; }
 
-		const value<T> operator *() const { return value<T>(m_vm.read<T>(m_address), m_address); }
+		const value<T> operator *() const { return value<T>(m_vm, m_address); }
 
 		explicit operator bool() { return m_address != 0; }
 
 	private:
 		const address_type m_address;
-		const vm& m_vm;
+		vm& m_vm;
 	};
 
 	template <typename T>
