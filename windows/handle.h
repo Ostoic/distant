@@ -11,7 +11,7 @@ namespace distant {
 	public:
 		using handle_type = distant::handle_type;
 
-		operator handle_type () const
+		constexpr operator handle_type () const
 		{ return m_handle; }
 
 		constexpr invalid_handle_t() : m_handle(INVALID_HANDLE_VALUE) {}

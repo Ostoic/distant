@@ -46,6 +46,8 @@ namespace windows {
 		// Invalid handle default constructor
 		constexpr synchro() : gle(), m_handle(invalid_handle) {}
 
+		synchro(const synchro& other) = delete;
+
 		// Pretty much a copy constructor
 		constexpr synchro(handle_type&& handle) : gle(), m_handle(std::move(handle)) {}
 

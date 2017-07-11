@@ -15,6 +15,9 @@ namespace windows {
 		// See update_gle comment
 		error_type get_last_error() const { return m_error; }
 
+	public:
+		constexpr gle() : m_error() {}
+
 	protected:
 		// We use update_gle to explicitly update the gle
 		// This is used to record any errors inside gle encapsulations

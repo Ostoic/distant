@@ -155,7 +155,7 @@ namespace distant {
 			synchro(static_cast<synchro>(other)),
 			m_id(other.get_id()),
 			m_flags(other.get_flags())
-		{ other.invalidate(); }
+		{ other.invalidate(); other.close_handle(); }
 
 		// Close process handle
 		// Mutates: from invalidate() 
