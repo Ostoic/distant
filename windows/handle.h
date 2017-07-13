@@ -21,13 +21,18 @@ namespace windows {
 
 	static constexpr handle_type under_null_handle = NULL;
 
+	// windows::handle is a type-safe version of the WINAPI defined macro: HANDLE
 	class handle : public windows::gle
 	{
 	public:
-		// Special type literals
+		// Type-safe handle literals
 		class invalid_t : public detail::Literal {};
-		class null_t	: public detail::Literal {};
+		class null_t	: public detail::Literal {}; 
 
+		
+		// Note: Process-local handle table starts at entry 4, hence the null ( == 0) 
+		// entry is not a valid one. WINAPI functions tend to return NULL, though some
+		// of them return INVALID_HANDLE_VALUE.
 	public:
 		// Windows Handle flags
 		enum class flags
@@ -44,12 +49,12 @@ namespace windows {
 	public:
 		constexpr handle(invalid_t) :
 			m_handle_value(under_null_handle),
-			m_flags(flags::close_protected)
+			m_flags(flags::close_protected) // Close on invalid handle is invalid
 		{}
 
 		constexpr handle(null_t) :
 			m_handle_value(under_null_handle),
-			m_flags(flags::close_protected)
+			m_flags(flags::close_protected) // Close on null handle is invalid
 		{}
 
 		constexpr handle() : handle(null_t()) {}
@@ -65,7 +70,7 @@ namespace windows {
 		{}
 
 		// Close handle to windows object.
-		// Numeric validity of the handle is required for closing the handle.
+		// Handle must be weakly valid in order to close the handle.
 		~handle() { this->close_handle(); }
 
 	public:
@@ -76,9 +81,14 @@ namespace windows {
 
 		bool closed() const { return m_closed; }
 
-		// Close the handle, if it is numerically valid and its closing wasn't observed
+		// Close the handle, if it is weakly valid and its closure wasn't observed
+		// Note: This function is public since 
 		void close_handle()
 		{
+			// TODO: Query WinAPI for kernel object reference count
+			// If this reference count > 0, then continue.
+			// But if the reference count == 0, the system should destroy
+			// the object regardless?
 			if (!this->closed() && this->weakly_valid())
 			{
 				CloseHandle(m_handle_value);
@@ -96,6 +106,8 @@ namespace windows {
 		// after closing the handle.
 		void invalidate() { m_handle_value = under_null_handle; }
 
+		// Allow derived classes to interface with the handle value itself.
+		// This allows us to make API calls at a higher inheritance level.
 		value_type get_value() const { return m_handle_value; }
 
 	private:
@@ -116,18 +128,20 @@ namespace windows {
 	inline bool operator ==(const handle& lhs, const handle& rhs)
 	{
 		return
+		
+		// CompareObjectHandles is only available with the Windows 10
+		// SDK or higher. 
 #if VER_PRODUCTBUILD > 9600 
 			CompareObjectHandles(lhs.m_handle_value, rhs.m_handle_value) &&
-#else
+#else	// Otherwise, we just compare the handle values.
 			lhs.m_handle_value == rhs.m_handle_value;
 #endif
 	}
 
 	inline bool operator !=(const handle& lhs, const handle& rhs)
-	{ 
-		return !operator==(lhs, rhs); 
-	}
+	{ return !operator==(lhs, rhs); }
 
+	// Type-safe handle literals
 	static constexpr handle::null_t    null_handle;
 	static constexpr handle::invalid_t invalid_handle;
 
