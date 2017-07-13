@@ -2,6 +2,8 @@
 
 #include <Windows.h>
 
+#include <utility>
+
 namespace distant {
 namespace windows {
 
@@ -24,6 +26,15 @@ namespace windows {
 		// The user may call get_last_error after accessing the interface,
 		// to see if any gles were recorded.
 		void update_gle() { m_error = GetLastError(); }
+
+		void update_gle(const gle& other) 
+		{ m_error = other.get_last_error(); }
+
+		void update_gle(gle&& other) 
+		{ 
+			using std::swap; 
+			swap(other.m_error, m_error);
+		}
 
 		error_type m_error;
 	};
