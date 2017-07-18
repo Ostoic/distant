@@ -18,8 +18,11 @@ namespace windows {
 	class virtual_allocator
 	{
 	public:
-		using address_type = memory::address_type;
+		using address_type = memory::address;
 		using size_type = std::uintptr_t;
+
+	public:
+		//static address_type virtual_alloc(const process& p, flags, size_type size, protection:: prot)
 
 	public:
 		template <typename Flag_Type, typename Protection_Type>
@@ -55,7 +58,7 @@ namespace windows {
 				using under_flag = std::underlying_type_t<Flag_Type>;
 				using under_prot = std::underlying_type_t<Protection_Type>;
 
-				address_type result =
+				address_type result/* =
 					reinterpret_cast<address_type>(
 						VirtualAllocEx(m_process,
 							reinterpret_cast<LPVOID>(m_base),
@@ -63,7 +66,7 @@ namespace windows {
 							static_cast<under_flag>(m_flags),
 							static_cast<under_prot>(m_prot)
 						)
-					);
+					)*/;
 
 				return result;
 			}
@@ -97,12 +100,12 @@ namespace windows {
 			{
 				using under_flag = std::underlying_type_t<Flag_Type>;
 
-				auto result =
+				bool result/* =
 					VirtualFreeEx(m_process,
 						reinterpret_cast<LPVOID>(m_base),
 						m_size,
 						static_cast<under_flag>(m_flags)
-					);
+					)*/;
 
 				return result;
 			}

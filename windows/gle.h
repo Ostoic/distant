@@ -20,6 +20,10 @@ namespace windows {
 	public:
 		constexpr gle() : m_error() {}
 
+		gle(gle&& other) : 
+			m_error(std::move(other.m_error))
+		{}
+
 	protected:
 		// We use update_gle to explicitly update the gle
 		// This is used to record any errors inside gle encapsulations

@@ -15,6 +15,8 @@ namespace memory  {
 
 	// Represents a memory allocation in virtual memory
 	// XXX Allocation is convertible to memory::value, memory::pointer
+	// Note that vm allocation uses page granularity. If a 2 byte allocation
+	// is made straddling two pages, both pages will be included in that allocation.
 	class vm::operation : public  windows::gle,
 						  private windows::virtual_allocator
 	{
@@ -37,7 +39,7 @@ namespace memory  {
 		using windows::virtual_allocator::dealloc;
 
 		//using protection_type = memory::protection;
-		using address_type	  = memory::address_type;
+		using address_type	  = memory::address;
 		using flag_type		  = operation::action;
 		using size_type		  = std::uintptr_t;
 
@@ -112,9 +114,9 @@ namespace memory  {
 			operation(p, base, flags, size),
 			m_op(p, base, flags, size)
 		{
-			if (!(flags == action::decommit ||
+			/*if (!(flags == action::decommit ||
 				  flags == action::release))
-				  throw std::logic_error("Invalid allocation flags for vm deletion");
+				  throw std::logic_error("Invalid allocation flags for vm deletion");*/
 
 			// Destroy memory allocation with the given parameters
 			this->perform_allocation<decltype(m_op)>(m_op);
@@ -124,10 +126,10 @@ namespace memory  {
 			operation(p, memory::null_address, flags, size),
 			m_op(p, memory::null_address, flags, size)
 		{
-			if (!(flags == action::decommit ||
+			/*if (!(flags == action::decommit ||
 				  flags == action::release))
 				  throw std::logic_error("Invalid allocation flags for vm deletion");
-
+*/
 			// Destroy memory allocation with the given parameters
 			this->perform_allocation<decltype(m_op)>(m_op);
 		}
@@ -147,9 +149,9 @@ namespace memory  {
 			m_prot(prot),
 			m_op(p, base, flags, size, prot)
 		{
-			if (flags == action::decommit ||
+			/*if (flags == action::decommit ||
 				flags == action::release)
-				throw std::logic_error("Invalid allocation flags for vm creation");
+				throw std::logic_error("Invalid allocation flags for vm creation");*/
 
 			// Create memory allocation with the given parameters
 			this->perform_allocation<decltype(m_op)>(m_op);
@@ -160,9 +162,9 @@ namespace memory  {
 			m_prot(prot),
 			m_op(p, memory::null_address, flags, size, prot)
 		{
-			if (flags == action::decommit ||
+			/*if (flags == action::decommit ||
 				flags == action::release)
-				throw std::logic_error("Invalid allocation flags for vm creation");
+				throw std::logic_error("Invalid allocation flags for vm creation");*/
 
 			// Create memory allocation with the given parameters
 			this->perform_allocation<decltype(m_op)>(m_op);

@@ -12,7 +12,7 @@ namespace memory  {
 	class pointer
 	{
 	public:
-		using address_type = memory::address_type;
+		using address_type = memory::address;
 		using value_type   = T;
 
 	public:
@@ -59,7 +59,7 @@ namespace memory  {
 	class const_pointer
 	{
 	public:
-		using address_type = memory::address_type;
+		using address_type = memory::address;
 		using value_type   = T;
 
 	public:

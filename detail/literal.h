@@ -9,7 +9,7 @@ namespace detail  {
 	{
 	public:
 		constexpr Literal() = default;
-
+		
 	private:
 		void* operator new (std::size_t) = delete;
 		void  operator delete(void*) = delete;

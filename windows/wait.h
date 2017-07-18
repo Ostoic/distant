@@ -45,7 +45,7 @@ namespace windows {
 			using handle_type = object_type::handle_type;
 			using value_type  = handle_type::value_type;
 
-			auto value = obj.get_handle().get_value(); // Get handle value (void *)
+			auto value = detail::attorney::to_handle<wait>::get_value(obj.get_handle()); // Get handle value (void *)
 			auto result = WaitForSingleObject(value, time);
 			this->update_gle();
 

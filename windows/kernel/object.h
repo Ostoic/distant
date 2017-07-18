@@ -3,11 +3,10 @@
 #include <distant\windows\handle.h>
 #include <distant\windows\gle.h>
 
+//#include <distant\detail\fwd.h>
+
 namespace distant {
 namespace windows {
-
-class handle;
-
 namespace kernel  {
 
 	// Go to MSDN for more information
@@ -36,7 +35,13 @@ namespace kernel  {
 		// Invalid handle default constructor
 		constexpr object() : gle(), m_handle(invalid_handle) {}
 
-		object(handle_type h) : m_handle(h) {}
+		explicit object(handle_type&& h) : 
+			m_handle(std::move(h))
+		{}
+
+		object(object&& other) :
+			object(std::move(other.m_handle))
+		{}
  
 		// Calls handle destructor
 		~object() {}
@@ -44,9 +49,19 @@ namespace kernel  {
 		friend bool operator ==(const kernel::object&, const kernel::object&);
 		friend bool operator !=(const kernel::object&, const kernel::object&);
 
+		friend void swap(object& lhs, object& rhs)
+		{
+			using std::swap;
+
+			swap(lhs.m_handle, rhs.m_handle);
+			swap(lhs.m_error, rhs.m_error);
+		}
+
 	protected:
 		void close_object()
 		{ m_handle.close_handle(); }
+
+		handle_type& get_handle() { return m_handle; }
 
 	protected:
 		handle_type m_handle;

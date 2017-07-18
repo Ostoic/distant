@@ -1,0 +1,1 @@
+Rule 1: Create distant version of WinAPI call using type-safe parameters

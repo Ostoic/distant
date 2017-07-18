@@ -4,6 +4,8 @@
 #include <type_traits>
 #include <cstdint>
 
+#include <boost\concept_archetype.hpp>
+
 #include <distant\memory\address.h>
 #include <distant\memory\pointer.h>
 #include <distant\process\process.h>
@@ -36,22 +38,22 @@ namespace memory  {
 
 	public:
 		using size_type	   = std::size_t;
-		using address_type = memory::address_type;
+		using address_type = memory::address;
 
 	public:
 		//vm() : m_process() {}
 		vm(const process& p) : m_process(p){}
 
-		template <typename... Ts>
-		operation operate(Ts... args);
+		//template <typename... Ts>
+		//operation operate(Ts... args);
 
-		// Pass everything to the allocation ctor
-		template <typename... Ts>
-		allocation allocate(Ts... args);
+		//// Pass everything to the allocation ctor
+		//template <typename... Ts>
+		//allocation allocate(Ts... args);
 
-		// Pass everything to the allocation ctor
-		template <typename... Ts>
-		deletion deallocate(Ts... args);
+		//// Pass everything to the allocation ctor
+		//template <typename... Ts>
+		//deletion deallocate(Ts... args);
 
 		// Mutates: gle
 		// Returns: Result of read
@@ -66,6 +68,10 @@ namespace memory  {
 		template <typename T>
 		T read(address_type address, size_type bytes_to_read)
 		{
+			static_assert(
+				std::is_arithmetic_v<T>,
+				"Type must satisfy std::arithmetic");
+
 			T result = T();
 			SIZE_T bytes_read = 0;
 
@@ -95,6 +101,10 @@ namespace memory  {
 		template <typename T>
 		size_type write(address_type address, const T& to_write, size_type bytes_to_write)
 		{
+			static_assert(
+				std::is_arithmetic_v<T>,
+				"Type must satisfy std::arithmetic");
+
 			SIZE_T bytes_written = 0;
 
 			T buffer = to_write;

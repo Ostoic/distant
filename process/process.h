@@ -13,6 +13,8 @@
 #include <distant\memory\address.h>
 #include <distant\memory\vm.h>
 
+#include <distant\detail\attorney.h>
+
 namespace distant {
 
 	// Ideas: 
@@ -22,7 +24,7 @@ namespace distant {
 	class process : public windows::kernel::securable
 	{
 	public:
-		enum class access_rights
+		enum class access_rights : int
 		{
 			all_access = PROCESS_ALL_ACCESS,
 
@@ -57,59 +59,42 @@ namespace distant {
 		using flag_type = access_rights;
 
 	public: 
-		// Static process members
+		//===========================//
+		// Static process functions //
+		//===========================//
 		// Get current process
-		static process get_current() 
-		{ 
-			//std::shared_ptr<int>;
-			process current(GetCurrentProcess(), access_rights::all_access);
-			return current;
-		}
+		static process get_current();
+
+		// Type-safe version of OpenProcess
+		static handle_type open(id_type id, flag_type flags);
+
+		static handle_type create();
+
+		static id_type get_pid(const handle_type& h);
 
 	public:
 		//====================================//
 		// Process objects should not be copy //
 		// constructible, nor copy assignable //
 		//====================================//
-		process(const process&) = delete;
-		process& operator =(const process&) = delete;
+		//process(const process&) = delete;
+		//process& operator =(const process&) = delete;
 
 		//====================================//
 		// Process id and access_rights flags //
 		// accessors                          //
 		//====================================//
-		inline id_type get_id()		 const { return m_id; }
-		inline flag_type get_flags() const { return m_flags; }
+		id_type get_id()	   const { return m_id; }
+		flag_type get_access() const { return m_access; }
 
 		// Check if the process handle is valid
-		bool valid_process()  const 
-		{ 
-			return !(this->weakly_valid() && 
-					 get_id() == std::numeric_limits<id_type>::infinity()); 
-		}
+		bool valid() const;
 
 		// Check if we have permission perform the given action
 		bool check_permission(access_rights access) const;
 
 		// Mutates: gle
-		bool is_running() 
-		{
-			using namespace windows;
-			if (!this->valid_process()) return false;
-
-			wait wait_for;
-			wait::state state;
-
-			// Ensure we have the synchronize access_rights
-			// This is required to call WaitForSingleObject
-			if (this->check_permission(access_rights::synchronize))
-			{
-				state = wait_for(*this);
-				this->update_gle(wait_for);
-			}
-
-			return state == wait::state::timeout;
-		}
+		bool is_running();
 
 		// Return the virtual memory of this process
 		memory::vm get_vm() const { return memory::vm(*this); }
@@ -123,43 +108,32 @@ namespace distant {
 		// Process ctors and dtors //
 		//=========================//
 		// Empty initialize process
-		process() :
-			object_type(), // Empty initialize synchro
-			m_id(std::numeric_limits<id_type>::infinity()),
-			m_flags(access_rights::all_access)
-		{}
+		process();
 
 		// Open process by id
-		process(id_type id) :
-			object_type(this->open(id, access_rights::all_access)),
-			m_id(id),
-			m_flags(access_rights::all_access)
-		{}
+		process(id_type id);
 
 		// Open process by id, with flags
-		process(id_type id, flag_type flags) :
-			object_type(this->open(id, flags)),
-			m_id(id),
-			m_flags(flags)
-		{}
+		process(id_type id, flag_type flags);
 
 		// Take handle and valid process access_rights associated with the handle
-		process(handle_type&& handle, flag_type flags) :
-			object_type(std::move(handle)),
-			m_id(GetProcessId(handle)),
-			m_flags(flags)
-		{}
+		process(handle_type&& handle, flag_type flags);
 
-		// Move other process handle into our possesion
-		process(process&& other) :
-			object_type(std::move(other)),
-			m_id(other.get_id()),
-			m_flags(other.get_flags())
-		{}
+		// Take handle and valid process access_rights associated with the handle
+		process(process&& other);
 
 		// Close process handle
 		// Mutates: from invalidate() 
-		~process() { this->close_process(); }
+		~process();
+
+		process& operator =(process&& other);
+
+		friend inline void swap(process& lhs, process& rhs)
+		{
+			using std::swap;
+			swap(lhs.m_id, rhs.m_id);
+			swap(lhs.m_access, rhs.m_access);
+		}
 
 		friend bool operator ==(const process&, const process&);
 		friend bool operator !=(const process&, const process&);
@@ -167,63 +141,26 @@ namespace distant {
 	private:
 		// Close process handle and invalidate process object
 		// Mutates: from invalidate() 
-		void close_process()
-		{
-			if (this->valid_process())
-			{
-				this->close_object();
-				this->invalidate();
-			}
-		}
+		void close_process();
 
 		// Invalidate process id and handle
 		// Mutates: m_id, m_handle
-		void invalidate() { m_id = std::numeric_limits<id_type>::infinity(); }
-
-		// Type-safe version of OpenProcess
-		// Mutates: m_handle
-		handle_type open(id_type id, flag_type flags)
-		{
-			using flag_t = std::underlying_type_t<flag_type>;
-			using handle_value = handle::value_type;
-
-			if (id != 0)
-			{
-				handle_value result = OpenProcess(static_cast<flag_t>(flags), false, id);
-				this->update_gle();
-				return result; // Returns windows::handle with result as value
-			}
-
-			
-			
-			return windows::invalid_handle;
-		}
-
-		id_type get_pid(handle_type h)
-		{
-			h.get_value();
-		}
+		void invalidate();
 
 	protected:
 		id_type m_id;
-		flag_type m_flags;
+		flag_type m_access;
 
 	}; // end class process
 
 	// Define flag operators for use with process::access_rights
 	DEFINE_ENUM_FLAG_OPERATORS(process::access_rights)
 
-	// Check if we have permission perform the given action
-	bool process::check_permission(process::access_rights access) const
-	{
-		return (m_flags & access) == access;
-	}
-
 	inline bool operator ==(const process& lhs, const process& rhs)
 	{
 		return lhs.m_handle == rhs.m_handle &&
 			   lhs.m_id     == rhs.m_id     &&
-			   lhs.m_flags  == rhs.m_flags;
+			   lhs.m_access  == rhs.m_access;
 	}
 
 	inline bool operator !=(const process& lhs, const process& rhs)

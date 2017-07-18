@@ -14,7 +14,7 @@ namespace memory  {
 	class value
 	{
 	public:
-		using address_type = memory::address_type;
+		using address_type = memory::address;
 		using value_type   = T;
 
 	public:

@@ -16,7 +16,13 @@ namespace kernel  {
 		// Invalid handle default constructor
 		constexpr securable() : object() {}
 
-		securable(handle_type h) : object(h) {}
+		explicit securable(handle_type&& h) : 
+			object(std::move(h)) 
+		{}
+
+		securable(securable&& tmp) : 
+			object(std::move(tmp))
+		{}
 
 		// Calls handle destructor
 		~securable() {}

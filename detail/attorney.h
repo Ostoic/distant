@@ -1,27 +1,31 @@
 #pragma once
 
+#include <distant\detail\fwd.h>
 #include <distant\windows\handle.h>
 
-namespace distant {
-namespace detail  {
-	
+namespace distant  {
+namespace detail   {
+namespace attorney {
+
 	// Attorney class that allows the Client to view an implementation detail of the given class.
-	template <class Accessor, class F>
-	class Attorney
+	template <class Accessor>
+	class to_handle
 	{
 	public:
-		constexpr Attorney() = default;
+		constexpr to_handle() = default;
 
 	private:
-		template <typename result_type, typename Fn>
-		result_type caller(Fn f)
-		{ 
-			return h.get_sub_handle(); 
-		}
+		using result_type = HANDLE;
 
-		friend class Accessor;
-	
+		static result_type get_value(const windows::handle& h)
+		{ return h.get_value(); }
+
+		static void invalidate(windows::handle& h)
+		{ h.invalidate(); }
+
+		friend Accessor;
 	};
 	
+} // end namespace attorney
 } // end namespace detail
 } // end namespace distant
