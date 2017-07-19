@@ -62,7 +62,7 @@ namespace distant {
 		if (!this->valid()) return false;
 
 		wait wait_for;
-		wait::state state;
+		wait::state state = wait::state::abandoned;
 
 		// Ensure we have the synchronize access_rights
 		// This is required to call WaitForSingleObject
@@ -114,8 +114,9 @@ namespace distant {
 
 	process& process::operator=(process&& other)
 	{
-		using std::swap;
-		swap(*this, other);
+		object_type::operator=(std::move(other));
+		m_access = other.m_access;
+		m_id = other.m_id;
 		return *this;
 	}
 

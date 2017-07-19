@@ -128,7 +128,7 @@ namespace distant {
 
 		process& operator =(process&& other);
 
-		friend inline void swap(process& lhs, process& rhs)
+		friend inline void swap(process& lhs, process& rhs) 
 		{
 			using std::swap;
 			swap(lhs.m_id, rhs.m_id);

@@ -22,6 +22,7 @@ namespace windows {
 		// Type-safe handle literals
 		class invalid_t : public detail::Literal {};
 		class null_t	: public detail::Literal {}; 
+		class lazy_t    : public detail::Literal {};
 
 		// Note: Process-local handle table starts at entry 4, hence the null ( == 0) 
 		// entry is not a valid one. WINAPI functions tend to return NULL, though some
@@ -52,6 +53,13 @@ namespace windows {
 			m_closed(false)
 		{}
 
+		// This is for lazy handle evaluation.
+		constexpr handle(lazy_t) :
+			m_handle_value(NULL),
+			m_flags(flags::inherit), 
+			m_closed(false)
+		{}
+
 		constexpr handle() :
 			m_handle_value(NULL),
 			m_flags(flags::close_protected), // Closing null handle is not allowed
@@ -78,8 +86,11 @@ namespace windows {
 		
 		handle& operator =(handle&& other)
 		{
-			using std::swap;
-			swap(*this, other);
+			m_closed = other.m_closed;
+			m_flags = other.m_flags;
+			m_handle_value = other.m_handle_value;
+			other.invalidate();
+			// other should die very soon since it is an rvalue
 			return *this;
 		}
 
@@ -125,7 +136,7 @@ namespace windows {
 		}
 
 	protected:
-		// Numerically invalidate the handle.
+		// Numerically invalidate and close protect our handle.
 		// According to "Windows Via C\C++" by Jeffrey Richter,
 		// setting the handle to null is preferable to invalid_handle
 		// after closing the handle. This is probably because some API

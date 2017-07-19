@@ -24,6 +24,12 @@ namespace kernel  {
 			object(std::move(tmp))
 		{}
 
+		securable& operator =(securable&& other)
+		{
+			object::operator=(std::move(other));
+			return *this;
+		}
+
 		// Calls handle destructor
 		~securable() {}
 	};

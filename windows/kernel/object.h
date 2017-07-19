@@ -42,6 +42,13 @@ namespace kernel  {
 		object(object&& other) :
 			object(std::move(other.m_handle))
 		{}
+
+		object& operator =(object&& other)
+		{
+			using std::swap;
+			m_handle = std::move(other.m_handle);
+			return *this;
+		}
  
 		// Calls handle destructor
 		~object() {}
@@ -52,7 +59,6 @@ namespace kernel  {
 		friend void swap(object& lhs, object& rhs)
 		{
 			using std::swap;
-
 			swap(lhs.m_handle, rhs.m_handle);
 			swap(lhs.m_error, rhs.m_error);
 		}
