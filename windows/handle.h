@@ -5,7 +5,7 @@
 // For Windows SDK selection
 #include <ntverp.h>
 
-#include <distant\windows\gle.h>
+#include <distant\windows\error\gle.h>
 #include <distant\detail\literal.h>
 #include <distant\detail\attorney.h>
 

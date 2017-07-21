@@ -4,21 +4,18 @@
 #include <type_traits>
 #include <cstdint>
 
-#include <boost\concept_archetype.hpp>
-
 #include <distant\memory\address.h>
 #include <distant\memory\pointer.h>
-#include <distant\process\process.h>
+#include <distant\process.h>
 
-#include <distant\windows\gle.h>
+#include <distant\windows\error\gle.h>
 
 //#include <distant\iterators\vm_iterator.h>
-
-// Forward declare types used in vm below
 
 namespace distant {
 
 // Forward declare distant::process
+template <typename>
 class process;
 
 namespace memory  {

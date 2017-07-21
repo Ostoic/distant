@@ -4,13 +4,14 @@
 
 #include <distant\memory\address.h>
 #include <distant\memory\protection.h>
-#include <distant\process\process.h>
+#include <distant\process.h>
 
 #define UNUSED_TAG(tag) static_cast <void>(tag)
 
 namespace distant {
 // Forward declare process
-class process; 
+//template <typename>
+//class process; 
 
 namespace windows {
 
@@ -25,11 +26,11 @@ namespace windows {
 		//static address_type virtual_alloc(const process& p, flags, size_type size, protection:: prot)
 
 	public:
-		template <typename Flag_Type, typename Protection_Type>
+		template <access_rights access_t, typename Flag_Type, typename Protection_Type>
 		class alloc
 		{
 		private:
-			const process& m_process;
+			const process<access_t>& m_process;
 			address_type m_base;
 			size_type m_size;
 
@@ -37,7 +38,7 @@ namespace windows {
 			Protection_Type m_prot;
 
 		public:
-			alloc(const process& p, Flag_Type flags, size_type size, Protection_Type prot) :
+			alloc(const distant::process<access_t>& p, Flag_Type flags, size_type size, Protection_Type prot) :
 				m_process(p),
 				m_base(memory::null_address),
 				m_size(size),
@@ -45,7 +46,7 @@ namespace windows {
 				m_prot(prot)
 			{}
 
-			alloc(const process& p, address_type base, Flag_Type flags, size_type size, Protection_Type prot) :
+			alloc(const distant::process<access_t>& p, address_type base, Flag_Type flags, size_type size, Protection_Type prot) :
 				m_process(p),
 				m_base(base),
 				m_size(size),
@@ -76,20 +77,20 @@ namespace windows {
 		class dealloc
 		{
 		private:
-			const process& m_process;
+			const process<access_t>& m_process;
 			address_type m_base;
 			size_type m_size;
 			Flag_Type m_flags;
 
 		public:
-			dealloc(const process& p, Flag_Type flags, size_type size) :
+			dealloc(const process<access_t>& p, Flag_Type flags, size_type size) :
 				m_process(p), 
 				m_base(memory::null_address),
 				m_size(size),
 				m_flags(flags)
 			{}
 
-			dealloc(const process& p, address_type base, Flag_Type flags, size_type size) :
+			dealloc(const process<access_t>& p, address_type base, Flag_Type flags, size_type size) :
 				m_process(p),
 				m_base(base),
 				m_size(size),

@@ -2,16 +2,17 @@
 
 #include <cstddef>
 #include <limits>
-#include <bitset>
 
 #include <Windows.h>
 
 #include <distant\windows\kernel\securable.h>
+#include <distant\windows\access_rights.h>
 #include <distant\windows\handle.h>
 #include <distant\windows\wait.h>
 
+
 #include <distant\memory\address.h>
-#include <distant\memory\vm.h>
+//#include <distant\memory\vm.h>
 
 #include <distant\detail\attorney.h>
 
@@ -21,42 +22,19 @@ namespace distant {
 	//		- Process as a container
 	//		- Return view of memory into process
 	//		- Process iterators return remote memory
+	template <windows::access_rights access_t 
+			= windows::access_rights::all_access>
 	class process : public windows::kernel::securable
 	{
 	public:
-		enum class access_rights : int
-		{
-			all_access = PROCESS_ALL_ACCESS,
-
-			set_information = PROCESS_SET_INFORMATION,
-			set_quota = PROCESS_SET_QUOTA,
-
-			vm_operation = PROCESS_VM_OPERATION,
-			vm_read = PROCESS_VM_READ,
-			vm_write = PROCESS_VM_WRITE,
-
-			create_process = PROCESS_CREATE_PROCESS,
-			create_thread = PROCESS_CREATE_THREAD,
-			dup_handle = PROCESS_DUP_HANDLE,
-
-			suspend_resume = PROCESS_SUSPEND_RESUME,
-			terminate = PROCESS_TERMINATE,
-
-			query_limited_information = PROCESS_QUERY_LIMITED_INFORMATION,
-			query_information = PROCESS_QUERY_INFORMATION,
-
-			synchronize = SYNCHRONIZE,
-		};
-
-	public:
-		// Synchro type information
+		// Object type information
 		using object_type = windows::kernel::securable;
 		using handle_type = object_type::handle_type;
 		using error_type  = object_type::error_type;
 
 		// Process type information
 		using id_type = std::size_t;
-		using flag_type = access_rights;
+		using flag_type = windows::access_rights;
 
 	public: 
 		//===========================//
@@ -66,7 +44,7 @@ namespace distant {
 		static process get_current();
 
 		// Type-safe version of OpenProcess
-		static handle_type open(id_type id, flag_type flags);
+		static handle_type open(id_type id);
 
 		static handle_type create();
 
@@ -77,8 +55,8 @@ namespace distant {
 		// Process objects should not be copy //
 		// constructible, nor copy assignable //
 		//====================================//
-		//process(const process&) = delete;
-		//process& operator =(const process&) = delete;
+		process(const process&) = delete;
+		process& operator =(const process&) = delete;
 
 		//====================================//
 		// Process id and access_rights flags //
@@ -91,16 +69,16 @@ namespace distant {
 		bool valid() const;
 
 		// Check if we have permission perform the given action
-		bool check_permission(access_rights access) const;
+		bool check_permission(flag_type access) const;
 
 		// Mutates: gle
 		bool is_running();
 
 		// Return the virtual memory of this process
-		memory::vm get_vm() const { return memory::vm(*this); }
+		//memory::vm get_vm() const { return memory::vm(*this); }
 
 		// Implicitly convertible to a vm
-		operator memory::vm() const { return this->get_vm(); }
+		//operator memory::vm() const { return this->get_vm(); }
 
 		// Idea: ostream << operator for flag, id, etc
 
@@ -153,19 +131,20 @@ namespace distant {
 
 	}; // end class process
 
-	// Define flag operators for use with process::access_rights
-	DEFINE_ENUM_FLAG_OPERATORS(process::access_rights)
-
-	inline bool operator ==(const process& lhs, const process& rhs)
+	template <template T>
+	inline bool operator ==(const process<T>& lhs, const process<T>& rhs)
 	{
 		return lhs.m_handle == rhs.m_handle &&
 			   lhs.m_id     == rhs.m_id     &&
 			   lhs.m_access  == rhs.m_access;
 	}
 
-	inline bool operator !=(const process& lhs, const process& rhs)
+	template <template T>
+	inline bool operator !=(const process<T>& lhs, const process<T>& rhs)
 	{
 		return !operator==(lhs, rhs);
 	}
 
 } // end namespace distant
+
+#include <distant\process\process.inl>

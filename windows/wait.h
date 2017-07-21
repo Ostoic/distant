@@ -1,6 +1,6 @@
 #pragma once
 
-#include <distant\windows\gle.h>
+#include <distant\windows\error\gle.h>
 #include <distant\windows\kernel\object.h>
 
 #include <distant\detail\literal.h>

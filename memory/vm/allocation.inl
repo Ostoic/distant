@@ -1,12 +1,12 @@
 #pragma once
 
-#include <distant\windows\gle.h>
+#include <distant\windows\error\gle.h>
 #include <distant\windows\virtual_allocator.h>
 
 #include <distant\memory\address.h>
 #include <distant\memory\vm.h>
 #include <distant\memory\protection.h>
-#include <distant\process\process.h>
+#include <distant\process.h>
 
 #include <thread>
 
