@@ -66,12 +66,14 @@ namespace windows {
 			m_closed(false)
 		{}
 
+		// Only allow conversion to underlying type through an explicit cast/ctor 
 		constexpr explicit handle(value_type h) :
 			m_handle_value(h),
 			m_flags(flags::inherit), // This allows the handle to be closed properly
 			m_closed(false)
 		{}
 
+		// Only allow conversion to underlying type through an explicit cast/ctor 
 		constexpr explicit handle(value_type h, flag_type flags) :
 			m_handle_value(h),
 			m_flags(flags),

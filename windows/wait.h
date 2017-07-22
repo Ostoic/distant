@@ -24,7 +24,8 @@ namespace windows {
 		};
 		
 	public:
-		class infinitely : public detail::Literal {};
+		// Infinite amount of time literal
+		class infinite : public detail::Literal {};
 
 	public:
 		using object_type = kernel::object;
@@ -36,7 +37,7 @@ namespace windows {
 		{ return this->operator()(obj, 0); }
 
 		// Wait on kernel object until the object is done executing
-		wait::state operator ()(const object_type& obj, wait::infinitely)
+		wait::state operator ()(const object_type& obj, wait::infinite)
 		{ return this->operator()(obj, INFINITE); }
 
 		// Wait on kernel object for the given amount of time

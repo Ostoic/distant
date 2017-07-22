@@ -33,12 +33,10 @@ enum class access_rights : int
 };
 
 // Define flag operators for use with process::access_rights
-DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(access_rights)
-
-//constexpr bool check_permission(access_rights first, access_rights second)
-//{
-//	return (first & second) == second;
-//}
+DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(access_rights);
 
 } // end namespace windows
+
+using windows::access_rights;
+
 } // end namespace distant
