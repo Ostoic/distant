@@ -1,7 +1,17 @@
 #pragma once
 
-#include <distant\windows\handle.h>
-#include <distant\windows\error\gle.h>
+/*!
+@file
+Includes all the library components except the adapters for external
+libraries.
+
+@copyright 2017 Shaun Ostoic
+Distributed under the Apache Software License, Version 2.0.
+(See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
+*/
+
+#include <distant\windows\handle.hpp>
+#include <distant\windows\error\gle.hpp>
 
 //#include <distant\detail\fwd.h>
 
@@ -11,10 +21,10 @@ namespace kernel  {
 
 	// Go to MSDN for more information
 	// Base kernel object for windows
-	class object : public windows::gle
+	class object : public error::gle
 	{
 	public:
-		using error_type  = gle::error_type;
+		using error_type  = error::gle;
 		using handle_type = windows::handle;
 
 	public:

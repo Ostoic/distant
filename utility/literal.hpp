@@ -1,9 +1,19 @@
 #pragma once
 
+/*!
+@file
+Includes all the library components except the adapters for external
+libraries.
+
+@copyright 2017 Shaun Ostoic
+Distributed under the Apache Software License, Version 2.0.
+(See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
+*/
+
 #include <utility>
 
 namespace distant {
-namespace detail  {
+namespace utility {
 	
 	class Literal 
 	{

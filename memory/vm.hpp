@@ -12,12 +12,9 @@
 
 //#include <distant\iterators\vm_iterator.h>
 
+// https://msdn.microsoft.com/en-us/library/windows/desktop/aa366525(v=vs.85).aspx
+
 namespace distant {
-
-// Forward declare distant::process
-template <typename>
-class process;
-
 namespace memory  {
 	// Forward declare memory::pointer
 	template <typename T>

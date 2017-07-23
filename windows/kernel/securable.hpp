@@ -1,12 +1,15 @@
 #pragma once
 
-#include <distant\windows\handle.h>
-#include <distant\windows\kernel\object.h>
+#include <distant\windows\handle.hpp>
+#include <distant\windows\kernel\object.hpp>
 
 namespace distant {
 namespace windows {
 namespace kernel  {
 
+	// Could also potentially contain SECURITY_DESCRIPTOR information about the kernel object
+	// This would would be CRTP/polymorphic design, in which some features are specialized by sub-types of
+	// windows::kernel::securable.
 	class securable : public object
 	{
 	public:

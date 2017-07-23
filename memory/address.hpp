@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-#include <distant\detail\literal.h>
+#include <distant\detail\literal.hpp>
 
 namespace distant {
 namespace memory  { 

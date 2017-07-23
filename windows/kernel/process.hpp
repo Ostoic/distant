@@ -1,28 +1,34 @@
 #pragma once
 
+/*!
+@file
+Includes all the library components except the adapters for external
+libraries.
+
+@copyright 2017 Shaun Ostoic
+Distributed under the Apache Software License, Version 2.0.
+(See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
+*/
+
 #include <cstddef>
 #include <limits>
 
 #include <Windows.h>
 
-#include <distant\windows\kernel\securable.h>
-#include <distant\windows\access_rights.h>
-#include <distant\windows\handle.h>
-#include <distant\windows\wait.h>
+#include <distant\windows\kernel\securable.hpp>
+#include <distant\windows\access_rights.hpp>
+#include <distant\windows\handle.hpp>
 
-#include <distant\memory\address.h>
 //#include <distant\memory\vm.h>
 
-#include <distant\detail\attorney.h>
-
 namespace distant {
-
-
+namespace windows {
+namespace kernel  {
 	// Ideas: 
 	//		- Process as a container
 	//		- Return view of memory into process
 	//		- Process iterators return remote memory
-	template <windows::access_rights access_t>
+	template <access_rights::process access_t>
 	class process : public windows::kernel::securable
 	{
 	public:
@@ -31,9 +37,11 @@ namespace distant {
 		using handle_type = object_type::handle_type;
 		using error_type  = object_type::error_type;
 
+		using error_code_type = std::size_t;
+
 		// Process type information
 		using id_type = std::size_t;
-		using flag_type = windows::access_rights;
+		using flag_type = access_rights::process;
 
 	public: 
 		//===========================//
@@ -43,11 +51,15 @@ namespace distant {
 		static process get_current();
 
 		// Type-safe version of OpenProcess
-		static handle_type open(id_type id);
+		static handle_type open(id_type);
 
 		static handle_type create();
 
-		static id_type get_pid(const handle_type& h);
+		static error_code_type terminate(const handle_type&);
+
+		static id_type get_pid(const handle_type&);
+
+		static std::size_t get_handle_count(const handle_type&);
 
 	public:
 		//====================================//
@@ -67,17 +79,21 @@ namespace distant {
 		// Check if the process handle is valid
 		bool valid() const;
 
+		void terminate() const;
+
 		// Check if we have permission perform the given action
 		constexpr bool check_permission(flag_type access) const;
 
-		template <windows::access_rights other_t>
-		using check_permission_t = std::conditional_t<(other_t & access_t) == access_t, std::true_type, std::false_type>;
+		template <access_rights::process other_t>
+		using check_permission_t = std::conditional_t<(access_t & other_t) == other_t, std::true_type, std::false_type>;
 
-		//template <windows::access_rights other_t>
+		//template <access_rights::process other_t>
 		//using check_permission_v = check_permission_t<other_t>::value;
 
 		// Mutates: gle
 		bool is_running() const;
+
+		std::size_t get_handle_count() const;
 
 		// Return the virtual memory of this process
 		//memory::vm get_vm() const { return memory::vm(*this); }
@@ -136,7 +152,7 @@ namespace distant {
 
 	}; // end class process
 
-	template <windows::access_rights access_t>
+	template <access_rights::process access_t>
 	inline bool operator ==(const process<access_t>& lhs, const process<access_t>& rhs)
 	{
 		return lhs.m_handle == rhs.m_handle &&
@@ -144,12 +160,14 @@ namespace distant {
 			   lhs.m_access  == rhs.m_access;
 	}
 
-	template <windows::access_rights access_t>
+	template <access_rights::process access_t>
 	inline bool operator !=(const process<access_t>& lhs, const process<access_t>& rhs)
 	{
 		return !operator==(lhs, rhs);
 	}
 
+} // end namespace kernel
+} // end namespace windows
 } // end namespace distant
 
-#include <distant\process\process.inl>
+#include <distant\windows\kernel\detail\process.inl>

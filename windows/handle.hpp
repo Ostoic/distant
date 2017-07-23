@@ -1,13 +1,23 @@
 #pragma once
 
+/*!
+@file
+Includes all the library components except the adapters for external
+libraries.
+
+@copyright 2017 Shaun Ostoic
+Distributed under the Apache Software License, Version 2.0.
+(See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
+*/
+
 #include <Windows.h>
 
 // For Windows SDK selection
 #include <ntverp.h>
 
-#include <distant\windows\error\gle.h>
-#include <distant\detail\literal.h>
-#include <distant\detail\attorney.h>
+#include <distant\windows\error\gle.hpp>
+#include <distant\utility\literal.hpp>
+#include <distant\utility\attorney.hpp>
 
 #include <iostream>
 
@@ -20,9 +30,8 @@ namespace windows {
 	{
 	public:
 		// Type-safe handle literals
-		class invalid_t : public detail::Literal {};
-		class null_t	: public detail::Literal {}; 
-		class lazy_t    : public detail::Literal {};
+		class invalid_t : public utility::Literal {};
+		class null_t	: public utility::Literal {};
 
 		// Note: Process-local handle table starts at entry 4, hence the null ( == 0) 
 		// entry is not a valid one. WINAPI functions tend to return NULL, though some
@@ -50,13 +59,6 @@ namespace windows {
 		constexpr handle(null_t) :
 			m_handle_value(NULL),
 			m_flags(flags::close_protected), // Closing null handle is not allowed
-			m_closed(false)
-		{}
-
-		// This is for lazy handle evaluation.
-		constexpr handle(lazy_t) :
-			m_handle_value(NULL),
-			m_flags(flags::inherit), 
 			m_closed(false)
 		{}
 
@@ -170,7 +172,7 @@ namespace windows {
 		// This is mainly for recreated winapi functions to pass
 		// the underlying handle value into the winapi.
 		template <typename>
-		friend class detail::attorney::to_handle;
+		friend class utility::attorney::to_handle;
 
 	public:
 		friend void swap(handle& lhs, handle& rhs)
@@ -208,5 +210,7 @@ namespace windows {
 } // end namespace windows
 
 using windows::handle;
+using windows::null_handle;
+using windows::invalid_handle;
 
 } // end namespace distant
