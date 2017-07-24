@@ -100,3 +100,6 @@ will produce a compiler error of the form:
 ```
 Invalid access_rights (distant::process::is_running): Process must have synchronize access rights
 ```
+If we do not statically check the access rights associated with a process, then errors such as the above 
+one will be produced at compile-time regardless. Thus, it is more convenient to notice such errors when
+compiling.
