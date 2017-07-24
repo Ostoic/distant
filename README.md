@@ -55,15 +55,20 @@ int main()
 }
 
 ```
-Ideas:
 
-	- Implement vm::allocate, vm::deallocate
-	
-	- Implement distant::process_entry (or whichever name I decide upon) using 
-	  an iterator type. Instead of the usual Process32Next while loop, we would 
-	  simply use an iterator loop.
-	  
-	  Dereferencing the iterator would return either a process or process_entry.
-	- Finish the custom allocator
-	
-	- Make windows::synchro similar to shared_ptr with reference counts and all that
+The output of the above program is:
+
+```
+Current Process:
+PID = 8108
+Is Valid  = 1
+Is Running  = 1
+Has 13 handles active
+
+System Process:
+Process has an invalid handle.
+Last Error: Access is denied.
+```
+
+Note that the number of handles actively owned by the current process above will vary. Moreover, 
+access to process with pid 2304 will not always return a valid process object.
