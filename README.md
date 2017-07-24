@@ -35,14 +35,14 @@ int main()
 	// Contains access rights for various windows objects
 	using distant::access_rights;
 	
-	// constexpr so we can use access rights as template parameters.
+	// Request the following process access rights
 	constexpr auto access = 
 		access_rights::process::query_information | 
-		access_rights::process::terminate		  |
+		access_rights::process::terminate	  |
 		access_rights::process::synchronize;
 
 	// Open a system process (which has for example, process id 2304),
-	// with the above process access_rights.
+	// with the above process access right (query_infomation, terminate, and synchronize).
 	distant::process<access> system_proc(2304);
 	
 	// Open the current process with all_access (default template parameter is all_access).
