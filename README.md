@@ -91,7 +91,12 @@ auto current = distant::process<access>::get_current();
 
 If we would later like to check that the process is running, or perform a windows::wait operation
 on the current process object, a compiler error will be thrown. This is because the above two operations
-require at least the synchronize process access right. An example of the error produced is shown below:
+require at least the synchronize process access right. Therefore, following the above process access request,
+with query_information access rights:
+```c++
+std::cout << "Current process is running == " << current.is_running() << std::endl;
+```
+This will produce a compiler error of the form:
 ```
 Invalid access_rights (distant::process::is_running): Process must have synchronize access rights
 ```
