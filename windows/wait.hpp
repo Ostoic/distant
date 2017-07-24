@@ -14,14 +14,16 @@ Distributed under the Apache Software License, Version 2.0.
 #include <distant\windows\kernel\object.hpp>
 
 #include <distant\utility\literal.hpp>
+#include <distant\detail\attorney.hpp>
 
 #include <limits>
 #include <chrono>
+#include <utility>
 
 namespace distant {
 namespace windows {
 
-	class wait : public error::gle
+	class wait : private error::gle
 	{
 	public:
 		// Windows wait codes
@@ -44,22 +46,54 @@ namespace windows {
 		using time_type = DWORD;
 
 	public:
-		// Wait on kernel object until the object is done executing
-		wait::state operator ()(const object_type& obj, wait::infinite) const 
-		{ return this->operator()(obj, INFINITE); }
+		using gle::get_last_error;
 
-		// Wait on kernel object for the given amount of time
+	protected:
+		using gle::update_gle;
+
+	public:
+		// Wait for synchronizable object for the given amount of time
 		wait::state operator ()(const object_type& obj, time_type time) const
 		{
 			using handle_type = object_type::handle_type;
 			using value_type  = handle_type::value_type;
 
-			auto value = utility::attorney::to_handle<wait>::get_value(obj.get_handle()); // Get handle value (void *)
+			auto value = detail::attorney::to_handle<wait>::get_value(obj.get_handle()); // Get handle value (void *)
 			auto result = WaitForSingleObject(value, time);
 			this->update_gle();
 
 			return static_cast<state>(result);
 		}
+
+		// Multiple object wait
+		// Wait for synchronizable object for the given amount of time
+		//wait::state operator ()(const std::vector<object_type>& objects, time_type time) const
+		//{
+		//	using handle_type = object_type::handle_type;
+		//	using value_type = handle_type::value_type;
+
+		//	const std::size_t size = objects.size();
+
+		//	std::array<handle_type, size> handles;
+
+		//	handle_type handles[size];
+
+		//	for (const auto& obj : objects)
+		//	{
+		//		auto value = detail::attorney::to_handle<wait>::get_value(obj.get_handle()); // Get handle value (void *)
+		//		auto result = WaitForSingleObject(value, time);
+		//	}
+
+		//	this->update_gle();
+		//	return static_cast<state>(result);
+		//}
+
+		// Wait on kernel object until the object is done executing
+		wait::state operator ()(const object_type& obj, wait::infinite) const
+		{ return this->operator()(obj, INFINITE); }
+
+		//wait::state operator()
+
 	};
 
 } // end namespace windows

@@ -1,41 +1,47 @@
 #pragma once
 
+/*!
+@file
+Includes all the library components except the adapters for external
+libraries.
+
+@copyright 2017 Shaun Ostoic
+Distributed under the Apache Software License, Version 2.0.
+(See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
+*/
+
 #include <windows.h>
 #include <strsafe.h>
 
 #include <WinError.h>
+#include <string>
+
+#include <distant\detail\fwd.hpp>
 
 namespace distant {
 namespace windows {
 namespace error   {
 
-std::string format()
+std::string format(DWORD err)
 {
 	// Retrieve the system error message for the last-error code
-	LPVOID lpMsgBuf;
-	LPVOID lpDisplayBuf;
-	DWORD dw = GetLastError();
+	LPSTR messageBuffer = NULL;
 
-	FormatMessage(
+	FormatMessageA(
 		FORMAT_MESSAGE_ALLOCATE_BUFFER |
-		FORMAT_MESSAGE_FROM_SYSTEM |
+		FORMAT_MESSAGE_FROM_SYSTEM	   |
 		FORMAT_MESSAGE_IGNORE_INSERTS,
 		NULL,
-		dw,
+		err,
 		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-		(LPTSTR)&lpMsgBuf,
+		(LPSTR)&messageBuffer,
 		0, NULL);
 
-	// Display the error message and exit the process
-
-	lpDisplayBuf = static_cast<void *>(LocalAlloc(LMEM_ZEROINIT,
-		(lstrlen((LPCTSTR)lpMsgBuf) + lstrlen((LPCTSTR)lpszFunction) + 40) * sizeof(TCHAR)));
-
-	StringCchPrintf((LPTSTR)lpDisplayBuf,
-		LocalSize(lpDisplayBuf) / sizeof(TCHAR),
-		TEXT("%s failed with error %d: %s"),
-		lpszFunction, dw, lpMsgBuf);
-
-	LocalFree(lpMsgBuf);
-	LocalFree(lpDisplayBuf);
+	std::string message(messageBuffer);
+	LocalFree(messageBuffer);
+	return message;
 }
+
+} // end namespace error
+} // end namespace windows
+} // end namespace distant

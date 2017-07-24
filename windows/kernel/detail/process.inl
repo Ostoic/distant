@@ -15,7 +15,7 @@ Distributed under the Apache Software License, Version 2.0.
 #include <distant\windows\kernel\process.hpp>
 #include <distant\windows\wait.hpp>
 
-#include <distant\utility\attorney.hpp> // For extracting window::handle value_type
+#include <distant\detail\attorney.hpp> // For extracting window::handle value_type
 
 namespace distant {
 namespace windows {
@@ -55,7 +55,7 @@ namespace kernel  {
 			//throw
 		}
 
-		auto handle_value = utility::attorney::to_handle<process>::get_value(h);
+		auto handle_value = detail::attorney::to_handle<process>::get_value(h);
 		auto id = GetProcessId(handle_value);
 		return static_cast<id_type>(id);
 	}
@@ -71,25 +71,25 @@ namespace kernel  {
 
 		DWORD count = 0;
 
-		auto handle_value = utility::attorney::to_handle<process>::get_value(h);
+		auto handle_value = detail::attorney::to_handle<process>::get_value(h);
 		GetProcessHandleCount(handle_value, &count);
 		return static_cast<std::size_t>(count);
 	}
 
-	/*template <access_rights::process T>
-	error_code_type process<T>::terminate(const handle_type& h)
+	template <access_rights::process T>
+	void process<T>::terminate(const handle_type& h)
 	{
 		static_assert(
 			check_permission_t<access_rights::process::terminate>::value,
 			"Invalid access_rights (distant::process::terminate): "
 			"Process must have terminate access");
 
-		UINT exit_code = 0;
+		unsigned int exit_code = 0;
 
 		auto handle_value = detail::attorney::to_handle<process>::get_value(h);
-		TerminateProcess(handle_value, &exit_code);
-		return static_cast<>(exit_code);
-	}*/
+		TerminateProcess(handle_value, exit_code);
+		return;
+	}
 
 
 	//====================================//
@@ -102,6 +102,14 @@ namespace kernel  {
 	{
 		return this->weakly_valid() &&
 			get_id() != std::numeric_limits<id_type>::infinity();
+	}
+
+	template <access_rights::process T>
+	void process<T>::terminate() const
+	{
+		terminate(m_handle);
+		this->update_gle();
+		return;
 	}
 
 	// Check if we have permission perform the given action
@@ -127,14 +135,17 @@ namespace kernel  {
 		wait wait_for;
 		wait::state state = wait::state::abandoned;
 
+		// Return immediately
 		state = wait_for(*this, 0);
-		this->update_gle(wait_for);
+		this->update_gle();
 		return state == wait::state::timeout;
 	}
 
 	template <access_rights::process T>
 	std::size_t process<T>::get_handle_count() const
 	{
+		//if (!this->valid())
+
 		auto count = get_handle_count(m_handle);
 		this->update_gle();
 		return count;
@@ -146,7 +157,7 @@ namespace kernel  {
 	// Empty initialize process
 	template <access_rights::process T>
 	constexpr process<T>::process() :
-		object_type(), // Empty initialize synchro
+		object_type(), // Empty initialize object
 		m_id(std::numeric_limits<id_type>::infinity()),
 		m_access(T)
 	{}

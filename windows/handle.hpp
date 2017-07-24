@@ -17,7 +17,7 @@ Distributed under the Apache Software License, Version 2.0.
 
 #include <distant\windows\error\gle.hpp>
 #include <distant\utility\literal.hpp>
-#include <distant\utility\attorney.hpp>
+#include <distant\detail\attorney.hpp>
 
 #include <iostream>
 
@@ -159,7 +159,6 @@ namespace windows {
 		// Allow derived classes to interface with the handle value itself.
 		// This allows us to make API calls at a higher inheritance level.
 		value_type get_value() const { return m_handle_value; }
-
 		flag_type get_flags()  const { return m_flags; }
 
 	private:
@@ -172,7 +171,7 @@ namespace windows {
 		// This is mainly for recreated winapi functions to pass
 		// the underlying handle value into the winapi.
 		template <typename>
-		friend class utility::attorney::to_handle;
+		friend class detail::attorney::to_handle;
 
 	public:
 		friend void swap(handle& lhs, handle& rhs)

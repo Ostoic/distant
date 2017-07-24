@@ -14,7 +14,7 @@ Distributed under the Apache Software License, Version 2.0.
 #include <distant\windows\handle.hpp>
 
 namespace distant  {
-namespace utility  {
+namespace detail   {
 namespace attorney {
 
 	// Attorney class that allows the Client to view an implementation detail of the given class.
@@ -37,5 +37,5 @@ namespace attorney {
 	};
 	
 } // end namespace attorney
-} // end namespace utility
+} // end namespace detail
 } // end namespace distant

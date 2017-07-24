@@ -37,7 +37,7 @@ namespace kernel  {
 		using handle_type = object_type::handle_type;
 		using error_type  = object_type::error_type;
 
-		using error_code_type = std::size_t;
+		using exit_code_type = std::size_t;
 
 		// Process type information
 		using id_type = std::size_t;
@@ -55,7 +55,7 @@ namespace kernel  {
 
 		static handle_type create();
 
-		static error_code_type terminate(const handle_type&);
+		static void terminate(const handle_type&);
 
 		static id_type get_pid(const handle_type&);
 

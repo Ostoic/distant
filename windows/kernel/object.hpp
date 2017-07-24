@@ -21,11 +21,14 @@ namespace kernel  {
 
 	// Go to MSDN for more information
 	// Base kernel object for windows
-	class object : public error::gle
+	class object : private error::gle
 	{
 	public:
 		using error_type  = error::gle;
 		using handle_type = windows::handle;
+
+	public:
+		using gle::get_last_error;
 
 	public:
 		/*************************************/
@@ -43,7 +46,7 @@ namespace kernel  {
 		/** Windows Object constructors **/
 		/*********************************/
 		// Invalid handle default constructor
-		constexpr object() : gle(), m_handle(invalid_handle) {}
+		constexpr object() : m_handle(invalid_handle) {}
 
 		explicit object(handle_type&& h) : 
 			m_handle(std::move(h))
@@ -74,10 +77,10 @@ namespace kernel  {
 		}
 
 	protected:
+		using gle::update_gle;
+
 		void close_object()
 		{ m_handle.close_handle(); }
-
-		handle_type& get_handle() { return m_handle; }
 
 	protected:
 		handle_type m_handle;
