@@ -82,7 +82,7 @@ namespace kernel  {
 		static_assert(
 			check_permission_t<access_rights::process::terminate>::value,
 			"Invalid access_rights (distant::process::terminate): "
-			"Process must have terminate access");
+			"Process must have terminate access right");
 
 		unsigned int exit_code = 0;
 
@@ -126,8 +126,8 @@ namespace kernel  {
 		// This is required to call WaitForSingleObject
 		static_assert(
 			process<T>::check_permission_t<access_rights::process::synchronize>::value,
-			"Invalid access_rights (distant::process::is_running): "
-			"Process must have synchronize access rights");
+			"Invalid access rights (distant::process::is_running): "
+			"Process must have synchronize access right");
 
 		using windows::wait;
 		if (!this->valid()) return false;
