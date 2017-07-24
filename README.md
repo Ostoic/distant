@@ -1,7 +1,7 @@
 # distant
 A set of windows C++ process and remote memory tools 
 
-#Example
+# Example
 
 ```c++
 #include <iostream>
@@ -74,7 +74,7 @@ Process has an invalid handle.
 Last Error: Access is denied.
 ```
 
-#Process Access Type-Safety
+# Process Access Type-Safety
 
 Following the Windows "Access-Control Model", certain operations on process objects require
 specific access rights to perform said operations. We can statically check access rights
@@ -91,12 +91,12 @@ auto current = distant::process<access>::get_current();
 
 If we would later like to check that the process is running, or perform a windows::wait operation
 on the current process object, a compiler error will be thrown. This is because the above two operations
-require at least the synchronize process access right. Therefore, following the above process access request,
-with query_information access rights:
+require at least the synchronize process access right. Therefore, following the above process access request
+with query_information access rights, the code
 ```c++
 std::cout << "Current process is running == " << current.is_running() << std::endl;
 ```
-This will produce a compiler error of the form:
+will produce a compiler error of the form:
 ```
 Invalid access_rights (distant::process::is_running): Process must have synchronize access rights
 ```
