@@ -27,8 +27,8 @@ namespace attorney {
 	private:
 		using result_type = HANDLE;
 
-		static result_type get_value(const windows::handle& h)
-		{ return h.get_value(); }
+		static result_type native_handle(const windows::handle& h)
+		{ return h.native_handle(); }
 
 		static void invalidate(windows::handle& h)
 		{ h.invalidate(); }

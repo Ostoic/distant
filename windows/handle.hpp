@@ -26,7 +26,7 @@ namespace distant {
 namespace windows {
 
 	// windows::handle is a type-safe version of the WINAPI defined macro: HANDLE
-	class handle
+	class handle : private error::gle
 	{
 	public:
 		// Type-safe handle literals
@@ -46,44 +46,44 @@ namespace windows {
 
 	public:
 		// Underlying handle type. This is macro'd in Windows to be void* == (HANDLE)
-		using value_type = HANDLE;
+		using native_handle_type = HANDLE;
 		using flag_type  = handle::flags;
 
 	public:
 		constexpr handle(invalid_t) :
-			m_handle_value(NULL),
+			m_native_handle(NULL),
 			m_flags(flags::close_protected), // Closing invalid handle is not allowed
 			m_closed(false)
 		{}
 
 		constexpr handle(null_t) :
-			m_handle_value(NULL),
+			m_native_handle(NULL),
 			m_flags(flags::close_protected), // Closing null handle is not allowed
 			m_closed(false)
 		{}
 
 		constexpr handle() :
-			m_handle_value(NULL),
+			m_native_handle(NULL),
 			m_flags(flags::close_protected), // Closing null handle is not allowed
 			m_closed(false)
 		{}
 
 		// Only allow conversion to underlying type through an explicit cast/ctor 
-		constexpr explicit handle(value_type h) :
-			m_handle_value(h),
+		constexpr explicit handle(native_handle_type h) :
+			m_native_handle(h),
 			m_flags(flags::inherit), // This allows the handle to be closed properly
 			m_closed(false)
 		{}
 
 		// Only allow conversion to underlying type through an explicit cast/ctor 
-		constexpr explicit handle(value_type h, flag_type flags) :
-			m_handle_value(h),
+		constexpr explicit handle(native_handle_type h, flag_type flags) :
+			m_native_handle(h),
 			m_flags(flags),
 			m_closed(false)
 		{}
 
 		handle(handle&& other) : 
-			m_handle_value(std::move(other.m_handle_value)),
+			m_native_handle(std::move(other.m_native_handle)),
 			m_flags(std::move(other.m_flags)),
 			m_closed(std::move(other.m_closed))
 		{ other.invalidate(); }
@@ -92,7 +92,7 @@ namespace windows {
 		{
 			m_closed = other.m_closed;
 			m_flags = other.m_flags;
-			m_handle_value = other.m_handle_value;
+			m_native_handle = other.m_native_handle;
 			other.invalidate();
 			// other should die very soon since it is an rvalue
 			return *this;
@@ -109,10 +109,12 @@ namespace windows {
 		~handle() { this->close_handle(); }
 
 	public:
+		using gle::update_gle;
+
 		// This weak validity should only be used for validating the handle's numeric value.
 		// This does not ensure the handle is from a valid object.
 		bool weakly_valid() const 
-		{ return m_handle_value != NULL; }
+		{ return m_native_handle != NULL; }
 
 		bool close_protected() const
 		{ return m_flags == flags::close_protected;}
@@ -132,8 +134,9 @@ namespace windows {
 				!this->closed()			 &&
 				 this->weakly_valid())
 			{
-				CloseHandle(m_handle_value);
+				CloseHandle(m_native_handle);
 				this->invalidate();
+				this->update_gle();
 			}
 
 			m_closed = true;
@@ -148,7 +151,7 @@ namespace windows {
 		void invalidate() 
 		{ 
 			close_protect();
-			m_handle_value = NULL;
+			m_native_handle = NULL;
 		}
 		
 		void close_protect()
@@ -158,11 +161,11 @@ namespace windows {
 
 		// Allow derived classes to interface with the handle value itself.
 		// This allows us to make API calls at a higher inheritance level.
-		value_type get_value() const { return m_handle_value; }
-		flag_type get_flags()  const { return m_flags; }
+		native_handle_type native_handle() const { return m_native_handle; }
+		flag_type flags()  const { return m_flags; }
 
 	private:
-		value_type m_handle_value;
+		native_handle_type m_native_handle;
 		flag_type m_flags;
 
 		bool m_closed = false;
@@ -177,7 +180,7 @@ namespace windows {
 		friend void swap(handle& lhs, handle& rhs)
 		{
 			using std::swap;
-			swap(lhs.m_handle_value, rhs.m_handle_value);
+			swap(lhs.m_native_handle, rhs.m_native_handle);
 			swap(lhs.m_closed, rhs.m_closed);
 			swap(lhs.m_flags, rhs.m_flags);
 		}
@@ -195,7 +198,7 @@ namespace windows {
 #if VER_PRODUCTBUILD > 9600 
 			CompareObjectHandles(lhs.m_handle_value, rhs.m_handle_value) &&
 #else	// Otherwise, we just compare the handle values.
-			lhs.m_handle_value == rhs.m_handle_value;
+			lhs.m_native_handle == rhs.m_native_handle;
 #endif
 	}
 

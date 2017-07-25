@@ -56,9 +56,9 @@ namespace windows {
 		wait::state operator ()(const object_type& obj, time_type time) const
 		{
 			using handle_type = object_type::handle_type;
-			using value_type  = handle_type::value_type;
+			using value_type  = handle_type::native_handle_type;
 
-			auto value = detail::attorney::to_handle<wait>::get_value(obj.get_handle()); // Get handle value (void *)
+			auto value = detail::attorney::to_handle<wait>::native_handle(obj.get_handle()); // Get handle value (void *)
 			auto result = WaitForSingleObject(value, time);
 			this->update_gle();
 

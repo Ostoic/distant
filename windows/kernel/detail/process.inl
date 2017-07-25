@@ -35,11 +35,11 @@ namespace kernel  {
 	typename process<T>::handle_type process<T>::open(id_type id)
 	{
 		using flag_t = std::underlying_type_t<flag_type>;
-		using handle_value = windows::handle::value_type;
+		using native_handle_type = windows::handle::native_handle_type;
 	
 		if (id != 0)
 		{
-			handle_value result = OpenProcess(static_cast<flag_t>(T), false, id);
+			native_handle_type result = OpenProcess(static_cast<flag_t>(T), false, id);
 			if (result != NULL)
 				return windows::handle(result); // Returns windows::handle with result as value
 		}
@@ -55,8 +55,8 @@ namespace kernel  {
 			//throw
 		}
 
-		auto handle_value = detail::attorney::to_handle<process>::get_value(h);
-		auto id = GetProcessId(handle_value);
+		auto native_handle = detail::attorney::to_handle<process>::native_handle(h);
+		auto id = GetProcessId(native_handle);
 		return static_cast<id_type>(id);
 	}
 
@@ -71,8 +71,8 @@ namespace kernel  {
 
 		DWORD count = 0;
 
-		auto handle_value = detail::attorney::to_handle<process>::get_value(h);
-		GetProcessHandleCount(handle_value, &count);
+		auto native_handle = detail::attorney::to_handle<process>::native_handle(h);
+		GetProcessHandleCount(native_handle, &count);
 		return static_cast<std::size_t>(count);
 	}
 
@@ -86,8 +86,8 @@ namespace kernel  {
 
 		unsigned int exit_code = 0;
 
-		auto handle_value = detail::attorney::to_handle<process>::get_value(h);
-		TerminateProcess(handle_value, exit_code);
+		auto native_handle = detail::attorney::to_handle<process>::native_handle(h);
+		TerminateProcess(native_handle, exit_code);
 		return;
 	}
 
@@ -144,7 +144,6 @@ namespace kernel  {
 	template <access_rights::process T>
 	std::size_t process<T>::get_handle_count() const
 	{
-		//if (!this->valid())
 
 		auto count = get_handle_count(m_handle);
 		this->update_gle();

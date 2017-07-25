@@ -24,10 +24,13 @@ Distributed under the Apache Software License, Version 2.0.
 namespace distant {
 namespace windows {
 namespace kernel  {
-	// Ideas: 
-	//		- Process as a container
-	//		- Return view of memory into process
-	//		- Process iterators return remote memory
+	
+	/**
+	* 
+	*
+	*
+	**/
+
 	template <access_rights::process access_t>
 	class process : public windows::kernel::securable
 	{
@@ -45,7 +48,7 @@ namespace kernel  {
 
 	public: 
 		//===========================//
-		// Static process functions //
+		// Static process functions  //
 		//===========================//
 		// Get current process
 		static process get_current();
