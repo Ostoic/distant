@@ -25,9 +25,10 @@ namespace error   {
 	// Error code class for which every winapi class extends
 	class gle
 	{
-	public:
+	private:
 		using error_type = DWORD;
 
+	public:
 		// Get the last error code that was recorded
 		// See update_gle comment
 		const gle& get_last_error() const { return *this; }

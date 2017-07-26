@@ -1,10 +1,6 @@
 #pragma once
 
 /*!
-@file
-Includes all the library components except the adapters for external
-libraries.
-
 @copyright 2017 Shaun Ostoic
 Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
@@ -13,6 +9,7 @@ Distributed under the Apache Software License, Version 2.0.
 #include <cstddef>
 #include <limits>
 
+#include <string>
 #include <Windows.h>
 
 #include <distant\windows\kernel\securable.hpp>
@@ -84,6 +81,8 @@ namespace kernel  {
 
 		void terminate() const;
 
+		std::string name() const;
+
 		// Check if we have permission perform the given action
 		constexpr bool check_permission(flag_type access) const;
 
@@ -114,9 +113,6 @@ namespace kernel  {
 
 		// Open process by id
 		process(id_type id);
-
-		// Open process by id, with flags
-		//process(id_type id);
 
 		// Take handle and valid process access_rights associated with the handle
 		process(handle_type&& handle);

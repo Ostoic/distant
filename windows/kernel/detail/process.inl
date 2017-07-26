@@ -1,10 +1,6 @@
 #pragma once
 
 /*!
-@file
-Includes all the library components except the adapters for external
-libraries.
-
 @copyright 2017 Shaun Ostoic
 Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
@@ -35,11 +31,10 @@ namespace kernel  {
 	typename process<T>::handle_type process<T>::open(id_type id)
 	{
 		using flag_t = std::underlying_type_t<flag_type>;
-		using native_handle_type = windows::handle::native_handle_type;
 	
 		if (id != 0)
 		{
-			native_handle_type result = OpenProcess(static_cast<flag_t>(T), false, id);
+			auto result = OpenProcess(static_cast<flag_t>(T), false, id);
 			if (result != NULL)
 				return windows::handle(result); // Returns windows::handle with result as value
 		}
@@ -50,12 +45,12 @@ namespace kernel  {
 	template <access_rights::process T>
 	typename process<T>::id_type process<T>::get_pid(const handle_type& h)
 	{
-		if (h == distant::invalid_handle)
-		{
-			//throw
-		}
+		//if (h == distant::invalid_handle)
+		//{
+		//	//throw
+		//}
 
-		auto native_handle = detail::attorney::to_handle<process>::native_handle(h);
+		auto native_handle = distant::detail::attorney::to_handle<process>::native_handle(h);
 		auto id = GetProcessId(native_handle);
 		return static_cast<id_type>(id);
 	}
@@ -66,12 +61,12 @@ namespace kernel  {
 		static_assert(
 			check_permission_t<access_rights::process::query_information>::value ||
 			check_permission_t<access_rights::process::query_limited_information>::value,
-			"Invalid access_rights (distant::process::get_handle_count): "
+			"Invalid access rights (distant::process::get_handle_count): "
 			"Process must have query_information or query_limited_information access rights");
 
 		DWORD count = 0;
 
-		auto native_handle = detail::attorney::to_handle<process>::native_handle(h);
+		auto native_handle = distant::detail::attorney::to_handle<process>::native_handle(h);
 		GetProcessHandleCount(native_handle, &count);
 		return static_cast<std::size_t>(count);
 	}
@@ -86,7 +81,7 @@ namespace kernel  {
 
 		unsigned int exit_code = 0;
 
-		auto native_handle = detail::attorney::to_handle<process>::native_handle(h);
+		auto native_handle = distant::detail::attorney::to_handle<process>::native_handle(h);
 		TerminateProcess(native_handle, exit_code);
 		return;
 	}
@@ -133,7 +128,7 @@ namespace kernel  {
 		if (!this->valid()) return false;
 
 		wait wait_for;
-		wait::state state = wait::state::abandoned;
+		wait::state state = wait::state::failed;
 
 		// Return immediately
 		state = wait_for(*this, 0);

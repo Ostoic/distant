@@ -1,20 +1,17 @@
 #pragma once
 
 /*!
-@file
-Includes all the library components except the adapters for external
-libraries.
-
 @copyright 2017 Shaun Ostoic
 Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
-*/
+*/ 
 
 #include <distant\windows\error\gle.hpp>
 #include <distant\windows\kernel\object.hpp>
 
 #include <distant\utility\literal.hpp>
 #include <distant\detail\attorney.hpp>
+#include <distant\type_traits.hpp>
 
 #include <limits>
 #include <chrono>
@@ -55,9 +52,6 @@ namespace windows {
 		// Wait for synchronizable object for the given amount of time
 		wait::state operator ()(const object_type& obj, time_type time) const
 		{
-			using handle_type = object_type::handle_type;
-			using value_type  = handle_type::native_handle_type;
-
 			auto value = detail::attorney::to_handle<wait>::native_handle(obj.get_handle()); // Get handle value (void *)
 			auto result = WaitForSingleObject(value, time);
 			this->update_gle();

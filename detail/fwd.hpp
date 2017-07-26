@@ -27,12 +27,12 @@ class wait;
 
 namespace kernel {
 
-	class object;
-	class securable;
+class object;
+class securable;
 
-	// Default template argument is all_access
-	template <access_rights::process access_t = access_rights::process::all_access>
-	class process;
+// Default template argument is all_access
+template <access_rights::process access_t = access_rights::process::all_access>
+class process;
 
 } // end namespace kernel
 

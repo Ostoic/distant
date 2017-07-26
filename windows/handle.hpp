@@ -1,10 +1,6 @@
 #pragma once
 
 /*!
-@file
-Includes all the library components except the adapters for external
-libraries.
-
 @copyright 2017 Shaun Ostoic
 Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
@@ -46,7 +42,7 @@ namespace windows {
 
 	public:
 		// Underlying handle type. This is macro'd in Windows to be void* == (HANDLE)
-		using native_handle_type = HANDLE;
+		using native_type = HANDLE;
 		using flag_type  = handle::flags;
 
 	public:
@@ -69,14 +65,14 @@ namespace windows {
 		{}
 
 		// Only allow conversion to underlying type through an explicit cast/ctor 
-		constexpr explicit handle(native_handle_type h) :
+		constexpr explicit handle(native_type h) :
 			m_native_handle(h),
 			m_flags(flags::inherit), // This allows the handle to be closed properly
 			m_closed(false)
 		{}
 
 		// Only allow conversion to underlying type through an explicit cast/ctor 
-		constexpr explicit handle(native_handle_type h, flag_type flags) :
+		constexpr explicit handle(native_type h, flag_type flags) :
 			m_native_handle(h),
 			m_flags(flags),
 			m_closed(false)
@@ -161,11 +157,11 @@ namespace windows {
 
 		// Allow derived classes to interface with the handle value itself.
 		// This allows us to make API calls at a higher inheritance level.
-		native_handle_type native_handle() const { return m_native_handle; }
+		native_type native_handle() const { return m_native_handle; }
 		flag_type flags()  const { return m_flags; }
 
 	private:
-		native_handle_type m_native_handle;
+		native_type m_native_handle;
 		flag_type m_flags;
 
 		bool m_closed = false;

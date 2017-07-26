@@ -1,10 +1,6 @@
 #pragma once
 
 /*!
-@file
-Includes all the library components except the adapters for external
-libraries.
-
 @copyright 2017 Shaun Ostoic
 Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
@@ -25,9 +21,7 @@ namespace attorney {
 		constexpr to_handle() = default;
 
 	private:
-		using result_type = HANDLE;
-
-		static result_type native_handle(const windows::handle& h)
+		static HANDLE native_handle(const windows::handle& h)
 		{ return h.native_handle(); }
 
 		static void invalidate(windows::handle& h)
