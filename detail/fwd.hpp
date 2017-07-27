@@ -22,7 +22,9 @@ class gle;
 
 } // end namespace error
 	 
+template <typename>
 class handle;
+
 class wait;
 
 namespace kernel {

@@ -25,7 +25,7 @@ namespace system  {
 		using object_type = ObjectType;
 		using handle_type = typename object_type::handle_type;
 		
-		using iterator = int;
+		using iterator = int;	
 		using const_iterator = int;
 
 	public:
@@ -43,6 +43,8 @@ namespace system  {
 		{ this->update_gle(); }
 
 	protected:
+		using gle::update_gle;
+
 		handle_type m_handle;
 	};
 

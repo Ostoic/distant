@@ -21,10 +21,12 @@ namespace attorney {
 		constexpr to_handle() = default;
 
 	private:
-		static HANDLE native_handle(const windows::handle& h)
+		template <class object_t>
+		static HANDLE native_handle(const windows::handle<object_t>& h)
 		{ return h.native_handle(); }
 
-		static void invalidate(windows::handle& h)
+		template <class object_t>
+		static void invalidate(windows::handle<object_t>& h)
 		{ h.invalidate(); }
 
 		friend Accessor;

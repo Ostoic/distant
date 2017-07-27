@@ -139,7 +139,6 @@ namespace kernel  {
 	template <access_rights::process T>
 	std::size_t process<T>::get_handle_count() const
 	{
-
 		auto count = get_handle_count(m_handle);
 		this->update_gle();
 		return count;
@@ -151,7 +150,7 @@ namespace kernel  {
 	// Empty initialize process
 	template <access_rights::process T>
 	constexpr process<T>::process() :
-		object_type(), // Empty initialize object
+		base_type(), // Empty initialize object
 		m_id(std::numeric_limits<id_type>::infinity()),
 		m_access(T)
 	{}
@@ -159,7 +158,7 @@ namespace kernel  {
 	// Open process by id
 	template <access_rights::process T>
 	process<T>::process(id_type id) :
-		object_type(this->open(id)),
+		base_type(this->open(id)),
 		m_id(id),
 		m_access(T)
 	{ this->update_gle(); }
@@ -169,7 +168,7 @@ namespace kernel  {
 	// to any kernel object.
 	template <access_rights::process T>
 	process<T>::process(handle_type&& handle) :
-		object_type(std::move(handle)), // steal handle
+		base_type(std::move(handle)), // steal handle
 		m_access(T)						// steal access flags
 	{ m_id = get_pid(m_handle); }		// retrieve process id
 										// This is done after initialization to ensure the operation
@@ -177,7 +176,7 @@ namespace kernel  {
 
 	template <access_rights::process T>
 	process<T>::process(process<T>&& other) :
-		securable(std::move(other)),
+		base_type(std::move(other)),
 		m_id(std::move(other.m_id)),
 		m_access(std::move(other.m_access)) // XXX Choose weakest access rights
 	{}
@@ -185,7 +184,7 @@ namespace kernel  {
 	template <access_rights::process T>
 	process<T>& process<T>::operator=(process<T>&& other)
 	{
-		object_type::operator=(std::move(other));
+		base_type::operator=(std::move(other));
 		m_access = other.m_access; // XXX Choose weakest access rights
 		m_id = other.m_id;
 		return *this;

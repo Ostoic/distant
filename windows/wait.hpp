@@ -52,11 +52,15 @@ namespace windows {
 		// Wait for synchronizable object for the given amount of time
 		wait::state operator ()(const object_type& obj, time_type time) const
 		{
-			auto value = detail::attorney::to_handle<wait>::native_handle(obj.get_handle()); // Get handle value (void *)
-			auto result = WaitForSingleObject(value, time);
+			//using get = detail::attorney::to_handle<wait>;
+
+			//auto value = get::native_handle<object_type>(obj.get_handle());
+
+			//auto value = detail::attorney::to_handle<wait>::native_handle<object_type>(obj.get_handle()); // Get handle value (void *)
+			//auto result = WaitForSingleObject(value, time);
 			this->update_gle();
 
-			return static_cast<state>(result);
+			return static_cast<state>(1);
 		}
 
 		// Multiple object wait

@@ -13,6 +13,8 @@ Distributed under the Apache Software License, Version 2.0.
 #include <distant\windows\handle.hpp>
 #include <distant\windows\error\gle.hpp>
 
+#include <distant\type_traits.hpp>
+
 //#include <distant\detail\fwd.h>
 
 namespace distant {
@@ -21,11 +23,13 @@ namespace kernel  {
 
 	// Go to MSDN for more information
 	// Base kernel object for windows
+	// Default: encode self type into handle_type
+	// Specified: encodes specified type into handle_type
 	class object : private error::gle
 	{
 	public:
-		using error_type  = error::gle;
-		using handle_type = windows::handle;
+		using error_type  = object_traits<object>::error_type;
+		using handle_type = object_traits<object>::handle_type;
 
 	public:
 		using gle::get_last_error;

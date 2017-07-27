@@ -3,6 +3,8 @@
 #include <distant\windows\handle.hpp>
 #include <distant\windows\kernel\object.hpp>
 
+#include <distant\type_traits.hpp>
+
 namespace distant {
 namespace windows {
 namespace kernel  {
@@ -12,6 +14,9 @@ namespace kernel  {
 	// windows::kernel::securable.
 	class securable : public object
 	{
+	public:
+		using handle_type = object_traits<securable>::handle_type;
+
 	public:
 		/*********************************/
 		/** Windows Object constructors **/

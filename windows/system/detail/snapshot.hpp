@@ -15,7 +15,6 @@ namespace detail  {
 	windows::handle get_snapshot(const kernel::process<access>&)
 	{
 		auto native_handle = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-
 		if (native_handle == INVALID_HANDLE_VALUE)
 			return windows::invalid_handle;
 

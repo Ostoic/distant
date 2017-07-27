@@ -22,20 +22,19 @@ namespace distant {
 namespace windows {
 namespace kernel  {
 	
-	/**
-	* 
-	*
-	*
-	**/
-
+	// Windows process object extending a kernel securable object.
+	// This is the main class to use when querying process information in 
+	// this library.
 	template <access_rights::process access_t>
 	class process : public windows::kernel::securable
 	{
 	public:
 		// Object type information
-		using object_type = windows::kernel::securable;
-		using handle_type = object_type::handle_type;
-		using error_type  = object_type::error_type;
+		using object_type = process;
+		using base_type   = windows::kernel::securable;
+
+		using error_type  = typename object_traits<process>::error_type;
+		using handle_type = typename object_traits<process>::handle_type;
 
 		using exit_code_type = std::size_t;
 
