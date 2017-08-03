@@ -15,6 +15,8 @@ Distributed under the Apache Software License, Version 2.0.
 #include <distant\utility\literal.hpp>
 #include <distant\detail\attorney.hpp>
 
+#include <distant\windows\access_rights.hpp>
+
 #include <iostream>
 
 namespace distant {
@@ -32,18 +34,10 @@ namespace windows {
 	class handle : private error::gle
 	{
 	public:
-		// Windows Handle flags
-		enum class flags
-		{
-			inherit = HANDLE_FLAG_INHERIT,					  // Child process will inherit object handle
-			close_protected = HANDLE_FLAG_PROTECT_FROM_CLOSE, // Prevent CloseHandle from closing handle
-		};
-
-	public:
 		// Underlying handle type. This is macro'd in Windows to be void* == (HANDLE)
 		using object_type = Object_t;
 		using native_type = HANDLE;
-		using flag_type   = flags;
+		using flag_type   = access_rights::handle;
 
 		// Note: Process-local handle table starts at entry 4, hence the null ( == 0) 
 		// entry is not a valid one. WINAPI functions tend to return NULL, though some
@@ -62,13 +56,29 @@ namespace windows {
 		// Only allow conversion to underlying type through an explicit cast/ctor 
 		constexpr explicit handle(native_type h, flag_type flags);
 
+		/*typename enable_if<!is_array<_Ty2>::value
+			&& is_assignable<_Dx&, _Dx2&&>::value
+			&& is_convertible<typename unique_ptr<_Ty2, _Dx2>::pointer,
+			pointer>::value,
+			_Myt&>::type*/
+
 		// Move constructor
-		template <typename other_object_t>
-		handle(handle<other_object_t>&& other);
+		template <typename other_t>
+		handle(handle<other_t>&& other);
 		
 		// Move assignment
-		template <typename other_object_t>
-		handle& operator =(handle<other_object_t>&& other);
+		template <typename other_t>
+		handle& operator =(handle<other_t>&& other);
+		
+		template <typename other_t>
+		explicit operator const handle<other_t>&() const
+		{ 
+			static_assert(
+				is_related<object_type, other_t>::value,
+				"Handle object types are not related.");
+			
+			return *this;
+		}
 
 		// If we allow copy ctor/assignment, then multiple copies
 		// will eventually attempt to close the same handle, which
@@ -126,15 +136,12 @@ namespace windows {
 		template <typename>
 		friend class distant::detail::attorney::to_handle;
 
-	public:
-		/*friend void swap(handle& lhs, handle& rhs)
-		{
-			using std::swap;
-			swap(lhs.m_native_handle, rhs.m_native_handle);
-			swap(lhs.m_closed, rhs.m_closed);
-			swap(lhs.m_flags, rhs.m_flags);
-		}*/
+		// Provide any templated version of windows::handle access to implementation details
+		// This is clearly the normal for objects under the same instantiation
+		template <typename>
+		friend class handle;
 
+	public:
 		template <typename T, typename U>
 		friend bool operator ==(const handle<T>&, const handle<U>&);
 

@@ -1,5 +1,11 @@
 #pragma once
 
+/*!
+@copyright 2017 Shaun Ostoic
+Distributed under the Apache Software License, Version 2.0.
+(See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
+*/
+
 #include <distant\windows\handle.hpp>
 
 namespace distant {
@@ -8,21 +14,21 @@ namespace windows {
 	template <typename T>
 	constexpr handle<T>::handle(detail::invalid_t) :
 		m_native_handle(NULL),
-		m_flags(flags::close_protected), // Closing invalid handle is not allowed
+		m_flags(flag_type::close_protected), // Closing invalid handle is not allowed
 		m_closed(false)
 	{}
 
 	template <typename T>
 	constexpr handle<T>::handle(detail::null_t) :
 		m_native_handle(NULL),
-		m_flags(flags::close_protected), // Closing null handle is not allowed
+		m_flags(flag_type::close_protected), // Closing null handle is not allowed
 		m_closed(false)
 	{}
 
 	template <typename T>
 	constexpr handle<T>::handle() :
 		m_native_handle(NULL),
-		m_flags(flags::close_protected), // Closing null handle is not allowed
+		m_flags(flag_type::close_protected), // Closing null handle is not allowed
 		m_closed(false)
 	{}
 
@@ -30,7 +36,7 @@ namespace windows {
 	template <typename T>
 	constexpr handle<T>::handle(native_type h) :
 		m_native_handle(h),
-		m_flags(flags::inherit), // This allows the handle to be closed properly
+		m_flags(flag_type::inherit), // This allows the handle to be closed properly
 		m_closed(false)
 	{}
 
@@ -43,19 +49,27 @@ namespace windows {
 	{}
 
 	template <typename T>
-	template <typename other_object_t>
-	handle<T>::handle(handle<other_object_t>&& other) :
+	template <typename other_t>
+	handle<T>::handle(handle<other_t>&& other) :
 		m_native_handle(std::move(other.m_native_handle)),
 		m_flags(std::move(other.m_flags)),
 		m_closed(std::move(other.m_closed)) 
 	{
+		static_assert(
+			is_related<T, other_t>::value,
+			"Handle object types are unrelated.");
+
 		other.invalidate();
 	}
 
 	template <typename T>
-	template <typename other_object_t>
-	handle<T>& handle<T>::operator=(handle<other_object_t>&& other)
+	template <typename other_t>
+	handle<T>& handle<T>::operator=(handle<other_t>&& other)
 	{
+		static_assert(
+			is_related<T, other_t>::value,
+			"Handle object types are not related.");
+
 		m_closed = other.m_closed;
 		m_flags = other.m_flags;
 		m_native_handle = other.m_native_handle;
@@ -75,7 +89,7 @@ namespace windows {
 	template <typename T>
 	bool handle<T>::close_protected() const
 	{
-		return m_flags == flags::close_protected;
+		return m_flags == flag_type::close_protected;
 	}
 
 	template <typename T>
@@ -118,7 +132,7 @@ namespace windows {
 	template <typename T>
 	void handle<T>::close_protect()
 	{
-		m_flags = flags::close_protected;
+		m_flags = flag_type::close_protected;
 	}
 
 } // end namespace windows

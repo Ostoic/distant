@@ -10,8 +10,9 @@ Distributed under the Apache Software License, Version 2.0.
 #include <distant\windows\kernel\object.hpp>
 
 #include <distant\utility\literal.hpp>
-#include <distant\detail\attorney.hpp>
 #include <distant\type_traits.hpp>
+
+#include <distant\detail\attorney.hpp>
 
 #include <limits>
 #include <chrono>
@@ -52,15 +53,13 @@ namespace windows {
 		// Wait for synchronizable object for the given amount of time
 		wait::state operator ()(const object_type& obj, time_type time) const
 		{
-			//using get = detail::attorney::to_handle<wait>;
+			using get = distant::detail::attorney::to_handle<wait>;
 
-			//auto value = get::native_handle<object_type>(obj.get_handle());
-
-			//auto value = detail::attorney::to_handle<wait>::native_handle<object_type>(obj.get_handle()); // Get handle value (void *)
-			//auto result = WaitForSingleObject(value, time);
+			auto value = get::native_handle(obj.get_handle<object_type>());
+			auto result = WaitForSingleObject(value, time);
 			this->update_gle();
 
-			return static_cast<state>(1);
+			return static_cast<state>(result);
 		}
 
 		// Multiple object wait
@@ -87,8 +86,11 @@ namespace windows {
 		//}
 
 		// Wait on kernel object until the object is done executing
-		wait::state operator ()(const object_type& obj, wait::infinite) const
-		{ return this->operator()(obj, INFINITE); }
+		wait::state operator ()(const object_type& obj, wait::infinite tag) const
+		{ 
+			static_cast<void>(tag);
+			return this->operator()(obj, INFINITE); 
+		}
 
 		//wait::state operator()
 

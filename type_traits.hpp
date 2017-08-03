@@ -1,14 +1,40 @@
 #pragma once
 
+/*!
+@copyright 2017 Shaun Ostoic
+Distributed under the Apache Software License, Version 2.0.
+(See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
+*/
+
 #include <type_traits>
 
 #include <distant\detail\fwd.hpp>
 
 namespace distant {
-namespace windows {
+	
+template <class A, class B>
+using is_related = 
+	std::conditional_t<
+		std::is_base_of<A, B>::value ||	// If A is a base of B,
+		std::is_base_of<B, A>::value,	// or B is a base of A,
+			std::true_type,				// then return true.
+			std::false_type				// Otherwise return false
+	>;
 
+namespace windows {
+	// Metafunction for detecting whether a type is a windows::kernel::object
 	template <class T>
-	struct is_kernel_object : std::false_type {};
+	struct is_kernel_object
+	{
+		using result = typename
+			std::conditional_t<
+				std::is_base_of_v<kernel::object, T>, // If T derives from kernel::object,
+					std::true_type,					  // return true.
+					std::false_type					  // Otherwise return false
+			>;
+
+		static constexpr bool value = result::value;
+	};
 
 	template <>
 	struct is_kernel_object<kernel::object> : std::true_type {};
@@ -19,33 +45,22 @@ namespace windows {
 	template <access_rights::process T>
 	struct is_kernel_object<kernel::process<T>> : std::true_type {};
 
-	template <class T>
-	struct is_interoperable
-	{
-
-	};
-
 	// Traits
 	template <class T>
 	struct object_traits 
 	{
 		static_assert (
 			is_kernel_object<T>::value,
-			"Type must derive from windows kernel object");
+			"Type must derive from windows::kernel::object");
 
 		using handle_type = windows::handle<T>;
-		using error_type = windows::error::gle;
+		using error_type  = windows::error::gle;
+		using object_type = T;
 	};
-
-	//template <>
-	//struct object_traits<tag::self>
-	//{
-	//	//using handle_type = typename Object_t::handle_type;
-	//	//using error_type = typename Object_t::error_type;
-	//};
 
 } // end namespace windows
 
 using windows::object_traits;
+using windows::is_kernel_object;
 
 } // end namespace distant

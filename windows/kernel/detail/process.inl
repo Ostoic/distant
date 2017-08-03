@@ -11,7 +11,7 @@ Distributed under the Apache Software License, Version 2.0.
 #include <distant\windows\kernel\process.hpp>
 #include <distant\windows\wait.hpp>
 
-#include <distant\detail\attorney.hpp> // For extracting window::handle value_type
+#include <distant\detail\attorney.hpp> // For extracting windows::handle value_type
 
 namespace distant {
 namespace windows {
@@ -22,7 +22,7 @@ namespace kernel  {
 	template <access_rights::process T>
 	process<T> process<T>::get_current()
 	{
-		process<T> current(static_cast<windows::handle>(GetCurrentProcess()));
+		process<T> current(static_cast<handle_type>(GetCurrentProcess()));
 		return current;
 	}
 	
@@ -36,7 +36,7 @@ namespace kernel  {
 		{
 			auto result = OpenProcess(static_cast<flag_t>(T), false, id);
 			if (result != NULL)
-				return windows::handle(result); // Returns windows::handle with result as value
+				return handle_type(result); // Returns windows::handle with result as value
 		}
 
 		return windows::invalid_handle;
@@ -45,11 +45,6 @@ namespace kernel  {
 	template <access_rights::process T>
 	typename process<T>::id_type process<T>::get_pid(const handle_type& h)
 	{
-		//if (h == distant::invalid_handle)
-		//{
-		//	//throw
-		//}
-
 		auto native_handle = distant::detail::attorney::to_handle<process>::native_handle(h);
 		auto id = GetProcessId(native_handle);
 		return static_cast<id_type>(id);
@@ -59,9 +54,9 @@ namespace kernel  {
 	std::size_t process<T>::get_handle_count(const handle_type& h)
 	{
 		static_assert(
-			check_permission_t<access_rights::process::query_information>::value ||
-			check_permission_t<access_rights::process::query_limited_information>::value,
-			"Invalid access rights (distant::process::get_handle_count): "
+			check_permission(access_rights::process::query_information) ||
+			check_permission(access_rights::process::query_limited_information),
+			"Invalid access rights (access_rights::process::get_handle_count): "
 			"Process must have query_information or query_limited_information access rights");
 
 		DWORD count = 0;
@@ -75,8 +70,8 @@ namespace kernel  {
 	void process<T>::terminate(const handle_type& h)
 	{
 		static_assert(
-			check_permission_t<access_rights::process::terminate>::value,
-			"Invalid access_rights (distant::process::terminate): "
+			check_permission(access_rights::process::terminate),
+			"Invalid access_rights (access_rights::process::terminate): "
 			"Process must have terminate access right");
 
 		unsigned int exit_code = 0;
@@ -102,17 +97,15 @@ namespace kernel  {
 	template <access_rights::process T>
 	void process<T>::terminate() const
 	{
-		terminate(m_handle);
+		terminate(get_handle<process>());
 		this->update_gle();
 		return;
 	}
 
-	// Check if we have permission perform the given action
+	// Check if we have permission to perform the given action
 	template <access_rights::process T>
-	constexpr bool process<T>::check_permission(flag_type access) const
-	{
-		return (T & access) == access;
-	}
+	inline constexpr bool process<T>::check_permission(flag_type access)
+	{ return (T & access) == access; }
 
 	template <access_rights::process T>
 	bool process<T>::is_running() const
@@ -120,8 +113,8 @@ namespace kernel  {
 		// Ensure we have the synchronize access_rights
 		// This is required to call WaitForSingleObject
 		static_assert(
-			process<T>::check_permission_t<access_rights::process::synchronize>::value,
-			"Invalid access rights (distant::process::is_running): "
+			check_permission(access_rights::process::synchronize),
+			"Invalid access rights (access_rights::process::is_running): "
 			"Process must have synchronize access right");
 
 		using windows::wait;
@@ -139,7 +132,7 @@ namespace kernel  {
 	template <access_rights::process T>
 	std::size_t process<T>::get_handle_count() const
 	{
-		auto count = get_handle_count(m_handle);
+		auto count = get_handle_count(get_handle());
 		this->update_gle();
 		return count;
 	}
@@ -168,17 +161,17 @@ namespace kernel  {
 	// to any kernel object.
 	template <access_rights::process T>
 	process<T>::process(handle_type&& handle) :
-		base_type(std::move(handle)), // steal handle
-		m_access(T)						// steal access flags
-	{ m_id = get_pid(m_handle); }		// retrieve process id
-										// This is done after initialization to ensure the operation
-										// is performed after moving handle into our possession.
+		base_type(std::move(handle)),			// steal handle
+		m_access(T)								// steal access flags
+	{ m_id = get_pid(get_handle()); }			// retrieve process id
+												// This is done after initialization to ensure the operation
+												// is performed after moving handle into our possession.
 
 	template <access_rights::process T>
 	process<T>::process(process<T>&& other) :
 		base_type(std::move(other)),
 		m_id(std::move(other.m_id)),
-		m_access(std::move(other.m_access)) // XXX Choose weakest access rights
+		m_access(std::move(other.m_access)) // XXX Choose weakest access rights or produce error about incompatible access rights
 	{}
 
 	template <access_rights::process T>

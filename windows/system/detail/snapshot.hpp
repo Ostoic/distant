@@ -6,19 +6,27 @@
 #include <distant\type_traits.hpp>
 #include <distant\windows\handle.hpp>
 
-namespace distant {
-namespace windows {
-namespace system {
-namespace detail  {
+#include <distant\windows\system\detail\snapshot_traits.hpp>
 
-	template <access_rights::process access>
-	windows::handle get_snapshot(const kernel::process<access>&)
+namespace distant::windows::system::detail {
+
+	template <typename Object_t, typename Snapshot_t>
+	windows::handle<Snapshot_t> get_snapshot(process_tag tag)
 	{
+		// Create a snapshot of all processes that we are allowed to see
 		auto native_handle = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 		if (native_handle == INVALID_HANDLE_VALUE)
 			return windows::invalid_handle;
 
-		return windows::handle(native_handle);
+		return windows::handle<Snapshot_t>(native_handle);
+	}
+	
+	// We templated Snapshot_t because we are lazy.
+	template <typename Object_t, typename Snapshot_t>
+	windows::handle<Snapshot_t> get_snapshot()
+	{
+		using dispatch = typename snapshot_dispatcher<Object_t>::dispatch;
+		return get_snapshot<Object_t, Snapshot_t>(dispatch());
 	}
 
 	/*windows::handle get_snapshot(tag::thread)
@@ -31,7 +39,4 @@ namespace detail  {
 		return windows::handle(native_handle);
 	}*/
 
-} // end namespace detail
-} // end namespace system
-} // end namespace windows
-} // end namespace distant
+} // end namespace distant::windows::system::detail

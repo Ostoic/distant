@@ -12,9 +12,11 @@ Distributed under the Apache Software License, Version 2.0.
 #include <string>
 #include <Windows.h>
 
-#include <distant\windows\kernel\securable.hpp>
+#include <distant\windows\kernel\object.hpp>
 #include <distant\windows\access_rights.hpp>
 #include <distant\windows\handle.hpp>
+
+#include <distant\type_traits.hpp>
 
 //#include <distant\memory\vm.h>
 
@@ -26,12 +28,11 @@ namespace kernel  {
 	// This is the main class to use when querying process information in 
 	// this library.
 	template <access_rights::process access_t>
-	class process : public windows::kernel::securable
+	class process : public windows::kernel::object
 	{
 	public:
 		// Object type information
-		using object_type = process;
-		using base_type   = windows::kernel::securable;
+		using base_type   = windows::kernel::object;
 
 		using error_type  = typename object_traits<process>::error_type;
 		using handle_type = typename object_traits<process>::handle_type;
@@ -75,26 +76,23 @@ namespace kernel  {
 		id_type get_id()	   const { return m_id; }
 		flag_type get_access() const { return m_access; }
 
+		const windows::handle<process>& get_handle() const { return object::get_handle<process>(); }
+
 		// Check if the process handle is valid
 		bool valid() const;
 
 		void terminate() const;
 
-		std::string name() const;
+		//std::string name() const;
 
-		// Check if we have permission perform the given action
-		constexpr bool check_permission(flag_type access) const;
-
-		template <access_rights::process other_t>
-		using check_permission_t = std::conditional_t<(access_t & other_t) == other_t, std::true_type, std::false_type>;
-
-		//template <access_rights::process other_t>
-		//using check_permission_v = check_permission_t<other_t>::value;
+		// Function used to to check if we have permission perform the given action
+		inline static constexpr bool check_permission(flag_type access);
 
 		// Mutates: gle
 		bool is_running() const;
 
 		std::size_t get_handle_count() const;
+		//inline const handle_type& get_handle() const { return m_handle; }
 
 		// Return the virtual memory of this process
 		//memory::vm get_vm() const { return memory::vm(*this); }
@@ -111,7 +109,7 @@ namespace kernel  {
 		constexpr process();
 
 		// Open process by id
-		process(id_type id);
+		explicit process(id_type id);
 
 		// Take handle and valid process access_rights associated with the handle
 		process(handle_type&& handle);
@@ -124,13 +122,6 @@ namespace kernel  {
 		~process();
 
 		process& operator =(process&& other);
-
-		friend inline void swap(process& lhs, process& rhs) 
-		{
-			using std::swap;
-			swap(lhs.m_id, rhs.m_id);
-			swap(lhs.m_access, rhs.m_access);
-		}
 
 		friend bool operator ==(const process&, const process&);
 		friend bool operator !=(const process&, const process&);

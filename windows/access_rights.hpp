@@ -42,6 +42,13 @@ struct access_rights
 
 		synchronize = SYNCHRONIZE,
 	};
+
+	enum class handle
+	{
+		inherit = HANDLE_FLAG_INHERIT,					  // Child process will inherit object handle
+		close_protected = HANDLE_FLAG_PROTECT_FROM_CLOSE, // Prevent CloseHandle from closing handle
+	};
+
 };
 
 // Define flag operators for use with access_rights::process

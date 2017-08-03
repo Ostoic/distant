@@ -10,6 +10,8 @@ Distributed under the Apache Software License, Version 2.0.
 #include <distant\windows\handle.hpp>
 #include <distant\windows\system\detail\snapshot.hpp>
 
+#include <distant\type_traits.hpp>
+
 namespace distant {
 namespace windows {
 namespace system  {
@@ -23,7 +25,7 @@ namespace system  {
 	{
 	public:
 		using object_type = ObjectType;
-		using handle_type = typename object_type::handle_type;
+		using handle_type = windows::handle<snapshot>;
 		
 		using iterator = int;	
 		using const_iterator = int;
@@ -39,7 +41,7 @@ namespace system  {
 
 	public:
 		snapshot() : 
-			m_handle(system::detail::get_snapshot(object_type()))
+			m_handle(system::detail::get_snapshot<object_type, snapshot>())
 		{ this->update_gle(); }
 
 	protected:

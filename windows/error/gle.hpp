@@ -18,9 +18,7 @@ Distributed under the Apache Software License, Version 2.0.
 
 #include <distant\windows\error\format.hpp>
 
-namespace distant {
-namespace windows {
-namespace error   {
+namespace distant::windows::error {
 
 	// Error code class for which every winapi class extends
 	class gle
@@ -67,6 +65,4 @@ namespace error   {
 		return stream;
 	}
 
-} // end namespace error
-} // end namespace windows
-} // end namespace distant
+} // end namespace distant::windows::error 

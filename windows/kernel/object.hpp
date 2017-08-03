@@ -1,10 +1,6 @@
 #pragma once
 
 /*!
-@file
-Includes all the library components except the adapters for external
-libraries.
-
 @copyright 2017 Shaun Ostoic
 Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
@@ -33,14 +29,24 @@ namespace kernel  {
 
 	public:
 		using gle::get_last_error;
-
-	public:
+		
 		/*************************************/
 		/** Windows object status functions **/
 		/*************************************/
 		// Implicitly cast object to handle_type
-		const handle_type& get_handle()	const { return m_handle; }
-		operator const handle_type&()	const { return get_handle(); }
+	public:
+		template <typename other_t>
+		const windows::handle<other_t>& get_handle() const 
+		{ 
+			static_assert(
+				is_related<object, other_t>::value,
+				"Handle types are not convertible.");
+
+			return *reinterpret_cast<const windows::handle<other_t>*>(&m_handle);
+		}
+		
+		template <typename other_t>
+		explicit operator const windows::handle<other_t>&() const { return get_handle<other_t>(); }
 
 		// Determine if the object handle is valid
 		bool weakly_valid() const
@@ -52,7 +58,8 @@ namespace kernel  {
 		// Invalid handle default constructor
 		constexpr object() : m_handle(invalid_handle) {}
 
-		explicit object(handle_type&& h) : 
+		template <typename other_t>
+		explicit object(windows::handle<other_t>&& h) : 
 			m_handle(std::move(h))
 		{}
 
@@ -62,7 +69,6 @@ namespace kernel  {
 
 		object& operator =(object&& other)
 		{
-			using std::swap;
 			m_handle = std::move(other.m_handle);
 			return *this;
 		}
@@ -72,13 +78,6 @@ namespace kernel  {
 
 		friend bool operator ==(const kernel::object&, const kernel::object&);
 		friend bool operator !=(const kernel::object&, const kernel::object&);
-
-		friend void swap(object& lhs, object& rhs)
-		{
-			using std::swap;
-			swap(lhs.m_handle, rhs.m_handle);
-			swap(lhs.m_error, rhs.m_error);
-		}
 
 	protected:
 		using gle::update_gle;

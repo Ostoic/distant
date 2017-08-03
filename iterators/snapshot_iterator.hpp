@@ -6,6 +6,7 @@
 
 #include <distant\windows\access_rights.hpp>
 #include <distant\windows\kernel\process.hpp>
+#include <distant\windows\system\snapshot.hpp>
 
 namespace distant	{
 namespace iterators {
@@ -19,7 +20,7 @@ namespace iterators {
 		>	// The rest is use_default
 	{
 	public:
-		//snapshot_iterator() :
+		snapshot_iterator() :
 
 
 	private:
@@ -27,9 +28,10 @@ namespace iterators {
 
 		void increment() {}
 
-		//bool equal(snapshot_iterator
+		bool equal(snapshot_iterato
 
 	private:
+
 	};
 
 } // end namespace iterators
