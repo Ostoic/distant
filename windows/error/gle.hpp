@@ -1,10 +1,6 @@
 #pragma once
 
 /*!
-@file
-Includes all the library components except the adapters for external
-libraries.
-
 @copyright 2017 Shaun Ostoic
 Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
@@ -34,16 +30,18 @@ namespace distant::windows::error {
 	public:
 		constexpr gle() : m_error() {}
 
-		gle(gle&& other) : 
-			m_error(std::move(other.m_error))
+		gle(gle&& other) 
+			: m_error(std::move(other.m_error))
 		{}
-		
-		std::string to_string() const
-		{ return error::format(get_value()); }
 
 		friend std::ostream& operator <<(std::ostream&, const gle&);
 
 	protected:
+		std::string to_string() const
+		{ 
+			return error::format(get_value()); 
+		}
+
 		error_type get_value() const { return m_error; }
 
 		// We use update_gle to explicitly update the gle
@@ -53,6 +51,8 @@ namespace distant::windows::error {
 		void update_gle() const { m_error = GetLastError(); }
 
 		void update_gle(const gle& other) const { m_error = other.get_value(); }
+
+		void set_last_error(error_type error_code) const { m_error = error_code; SetLastError(error_code); }
 
 		// m_error is mutable so we can still use const member functions
 		// in gle-derived classes.

@@ -21,7 +21,7 @@ Distributed under the Apache Software License, Version 2.0.
 namespace distant {
 namespace windows {
 
-	class wait : private error::gle
+	class wait : public error::gle
 	{
 	public:
 		// Windows wait codes
@@ -42,12 +42,6 @@ namespace windows {
 	public:
 		using object_type = kernel::object;
 		using time_type = DWORD;
-
-	public:
-		using gle::get_last_error;
-
-	protected:
-		using gle::update_gle;
 
 	public:
 		// Wait for synchronizable object for the given amount of time

@@ -11,7 +11,7 @@
 namespace distant::windows::system::detail {
 
 	template <typename Object_t, typename Snapshot_t>
-	windows::handle<Snapshot_t> get_snapshot(process_tag tag)
+	inline windows::handle<Snapshot_t> get_snapshot(process_tag tag)
 	{
 		// Create a snapshot of all processes that we are allowed to see
 		auto native_handle = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
@@ -23,13 +23,13 @@ namespace distant::windows::system::detail {
 	
 	// We templated Snapshot_t because we are lazy.
 	template <typename Object_t, typename Snapshot_t>
-	windows::handle<Snapshot_t> get_snapshot()
+	inline windows::handle<Snapshot_t> get_snapshot()
 	{
 		using dispatch = typename snapshot_dispatcher<Object_t>::dispatch;
 		return get_snapshot<Object_t, Snapshot_t>(dispatch());
 	}
 
-	/*windows::handle get_snapshot(tag::thread)
+	/*windows::handle get_snapshot(tag::thread)																			
 	{
 		auto native_handle = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
 

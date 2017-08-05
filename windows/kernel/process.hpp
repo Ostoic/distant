@@ -18,15 +18,16 @@ Distributed under the Apache Software License, Version 2.0.
 
 #include <distant\type_traits.hpp>
 
+#include <distant\windows\detail\handle_service.hpp>
+
 //#include <distant\memory\vm.h>
 
-namespace distant {
-namespace windows {
-namespace kernel  {
+namespace distant::windows::kernel {
 	
 	// Windows process object extending a kernel securable object.
 	// This is the main class to use when querying process information in 
 	// this library.
+	
 	template <access_rights::process access_t>
 	class process : public windows::kernel::object
 	{
@@ -36,63 +37,63 @@ namespace kernel  {
 
 		using error_type  = typename object_traits<process>::error_type;
 		using handle_type = typename object_traits<process>::handle_type;
+		using access_rights = access_rights::process;
 
 		using exit_code_type = std::size_t;
 
 		// Process type information
-		using id_type = std::size_t;
-		using flag_type = access_rights::process;
+		using pid_type = std::size_t;
+		using flag_type = access_rights;
 
-	public: 
 		//===========================//
 		// Static process functions  //
 		//===========================//
+		// XXX Consider moving most of these into free functions
+		// XXX Currently these are exposed as part of process objects.
+		// XXX I believe this complicates the interface.
+		// XXX Perhaps move them into an api namespace under kernel (kernel::api).
+	public:
+
 		// Get current process
 		static process get_current();
 
-		// Type-safe version of OpenProcess
-		static handle_type open(id_type);
+		// Function used to to check if we have permission perform the given action
+		static constexpr bool check_permission(flag_type access);
 
+	protected:
+		static handle_type open(pid_type);
+
+		// XXX Implement
 		static handle_type create();
 
 		static void terminate(const handle_type&);
 
-		static id_type get_pid(const handle_type&);
+		static pid_type get_pid(const handle_type&);
+
+		static std::string get_file_path(const handle_type&);
 
 		static std::size_t get_handle_count(const handle_type&);
 
 	public:
 		//====================================//
-		// Process objects should not be copy //
-		// constructible, nor copy assignable //
-		//====================================//
-		process(const process&) = delete;
-		process& operator =(const process&) = delete;
-
-		//====================================//
 		// Process id and access_rights flags //
 		// accessors                          //
 		//====================================//
-		id_type get_id()	   const { return m_id; }
+		pid_type get_pid()	   const { return m_pid; }
 		flag_type get_access() const { return m_access; }
+		std::string get_file_path() const;
 
-		const windows::handle<process>& get_handle() const { return object::get_handle<process>(); }
+		const windows::handle<process>& get_handle() const;
 
 		// Check if the process handle is valid
 		bool valid() const;
 
 		void terminate() const;
 
-		//std::string name() const;
-
-		// Function used to to check if we have permission perform the given action
-		inline static constexpr bool check_permission(flag_type access);
-
 		// Mutates: gle
-		bool is_running() const;
+		bool is_active() const;
 
 		std::size_t get_handle_count() const;
-		//inline const handle_type& get_handle() const { return m_handle; }
 
 		// Return the virtual memory of this process
 		//memory::vm get_vm() const { return memory::vm(*this); }
@@ -109,24 +110,28 @@ namespace kernel  {
 		constexpr process();
 
 		// Open process by id
-		explicit process(id_type id);
+		explicit process(pid_type id);
 
-		// Take handle and valid process access_rights associated with the handle
-		process(handle_type&& handle);
+		// not copy constructible/assignable
+		process(const process&) = delete;
+		process& operator =(const process&) = delete;
 
-		// Take handle and valid process access_rights associated with the handle
+		// move constructible/assignable
 		process(process&& other);
+		process& operator =(process&& other);
+
+		process(handle_type&& handle);
 
 		// Close process handle
 		// Mutates: from invalidate() 
 		~process();
 
-		process& operator =(process&& other);
-
+		// XXX Template both types so we can allow for access_rights conversion
 		friend bool operator ==(const process&, const process&);
 		friend bool operator !=(const process&, const process&);
 
 	private:
+		using attorney_get = distant::detail::attorney::to_handle<process>;
 		// Close process handle and invalidate process object
 		// Mutates: from invalidate() 
 		void close_process();
@@ -136,7 +141,7 @@ namespace kernel  {
 		void invalidate();
 
 	protected:
-		id_type m_id;
+		pid_type m_pid;
 		flag_type m_access;
 
 	}; // end class process
@@ -145,8 +150,8 @@ namespace kernel  {
 	inline bool operator ==(const process<access_t>& lhs, const process<access_t>& rhs)
 	{
 		return lhs.m_handle == rhs.m_handle &&
-			   lhs.m_id     == rhs.m_id     &&
-			   lhs.m_access  == rhs.m_access;
+			   lhs.m_pid    == rhs.m_pid    &&
+			   lhs.m_access == rhs.m_access;
 	}
 
 	template <access_rights::process access_t>
@@ -155,8 +160,41 @@ namespace kernel  {
 		return !operator==(lhs, rhs);
 	}
 
-} // end namespace kernel
-} // end namespace windows
-} // end namespace distant
+} // end namespace distant::windows::kernel
 
 #include <distant\windows\kernel\detail\process.inl>
+
+/* Debug privileges for memory hacking software
+BOOL EnableDebugPrivileges()
+{
+	HANDLE hToken;
+	LUID lLuid;
+	TOKEN_PRIVILEGES tkPrivileges;
+
+	if (!(OpenProcessToken(GetCurrentProcess(), TOKEN_ALL_ACCESS, &hToken)))
+	{
+		CloseHandle(hToken);
+		return FALSE;
+	}
+
+	if (!(LookupPrivilegeValue(NULL, SE_DEBUG_NAME, &lLuid)))
+	{
+		CloseHandle(hToken);
+		return FALSE;
+	}
+
+	tkPrivileges.PrivilegeCount = 1;
+	tkPrivileges.Privileges[0].Luid = lLuid;
+	tkPrivileges.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+
+	if (!AdjustTokenPrivileges(hToken, FALSE, &tkPrivileges, sizeof(tkPrivileges), NULL, NULL))
+	{
+		CloseHandle(hToken);
+		return FALSE;
+	}
+
+	vflog("Debug privileges enabled");
+	return TRUE;
+}
+
+*/

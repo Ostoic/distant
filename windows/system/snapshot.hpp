@@ -8,20 +8,18 @@ Distributed under the Apache Software License, Version 2.0.
 
 #include <distant\windows\error\gle.hpp>
 #include <distant\windows\handle.hpp>
-#include <distant\windows\system\detail\snapshot.hpp>
+#include <distant\windows\system\detail\get_snapshot.inl>
+
+#include <distant\windows\detail\handle_service.hpp>
 
 #include <distant\type_traits.hpp>
 
-namespace distant {
-namespace windows {
-namespace system  {
+namespace distant::windows::system {
 
-	// Make this CRTP (Or just tagged?) where any derived class is at least a windows::kernel::object
-	// The snapshot ctor should tag dispatch based on the templated type
-	// kernel::process should dispatch to CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-	// Similary, other objects supported by system::snapshot should dispatch to their respective flag.
-	template <class ObjectType>
-	class snapshot : private error::gle
+	template <typename ObjectType>
+	class snapshot : 
+		public error::gle,
+		public windows::detail::handle_service<snapshot<ObjectType>>
 	{
 	public:
 		using object_type = ObjectType;
@@ -31,25 +29,19 @@ namespace system  {
 		using const_iterator = int;
 
 	public:
-		using gle::get_last_error;
-
 		iterator begin();
 		iterator end();
 
-		const_iterator cbegin();
-		const_iterator cend();
+		const_iterator cbegin() const;
+		const_iterator cend() const;
 
 	public:
-		snapshot() : 
-			m_handle(system::detail::get_snapshot<object_type, snapshot>())
-		{ this->update_gle(); }
+		snapshot();
 
 	protected:
-		using gle::update_gle;
-
 		handle_type m_handle;
 	};
 
-} // end namespace system
-} // end namespace windows
-} // end namespace distant
+} // end namespace distant::windows::system
+
+#include <distant\windows\system\detail\snapshot.inl>

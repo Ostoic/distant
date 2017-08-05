@@ -31,7 +31,7 @@ namespace windows {
 
 	// windows::handle is a type-safe version of the WINAPI defined macro: HANDLE
 	template <typename Object_t> // Encode the object type into the handle for type safety
-	class handle : private error::gle
+	class handle : public error::gle
 	{
 	public:
 		// Underlying handle type. This is macro'd in Windows to be void* == (HANDLE)
@@ -71,14 +71,7 @@ namespace windows {
 		handle& operator =(handle<other_t>&& other);
 		
 		template <typename other_t>
-		explicit operator const handle<other_t>&() const
-		{ 
-			static_assert(
-				is_related<object_type, other_t>::value,
-				"Handle object types are not related.");
-			
-			return *this;
-		}
+		explicit operator const handle<other_t>&() const;
 
 		// If we allow copy ctor/assignment, then multiple copies
 		// will eventually attempt to close the same handle, which
@@ -91,13 +84,11 @@ namespace windows {
 		~handle() { this->close_handle(); }
 
 	public:
-		using gle::update_gle;
-
 		// This weak validity should only be used for validating the handle's numeric value.
 		// This does not ensure the handle is from a valid object.
-		bool weakly_valid() const;
 		bool close_protected() const;
 		bool closed() const;
+		bool weakly_valid() const;
 
 		// Close the handle, if it is weakly valid and its closure wasn't observed
 		// Note: This function is public since handles occasionally need to be closed before the
@@ -155,7 +146,7 @@ namespace windows {
 		// Objects must be compatible.
 		// Example: thread ~/~ process, but process ~ securable
 		static_assert(
-			std::is_convertible_v<T, U>, // XXX Revise type check
+			is_related<T, U>::value, // XXX Revise type check
 			"Handle equality operator: Object types must be compatible");
 
 		return
@@ -163,9 +154,9 @@ namespace windows {
 		// SDK or higher. 
 #if VER_PRODUCTBUILD > 9600 
 			CompareObjectHandles(lhs.m_handle_value, rhs.m_handle_value) &&
-#else	// Otherwise, we just compare the handle values.
-			lhs.m_native_handle == rhs.m_native_handle;
 #endif
+			lhs.m_native_handle == rhs.m_native_handle;
+
 	}
 
 	template <typename T, typename U>
