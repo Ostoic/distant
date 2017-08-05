@@ -4,7 +4,7 @@
 
 #include <boost\iterator\iterator_facade.hpp>
 
-#include <distant\type_traits.hpp>
+#include <distant\utility\type_traits.hpp>
 
 #include <distant\windows\kernel\process.hpp>
 #include <distant\windows\system\snapshot.hpp>

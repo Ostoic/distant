@@ -16,7 +16,7 @@ Distributed under the Apache Software License, Version 2.0.
 #include <distant\windows\access_rights.hpp>
 #include <distant\windows\handle.hpp>
 
-#include <distant\type_traits.hpp>
+#include <distant\utility\type_traits.hpp>
 
 #include <distant\windows\detail\handle_service.hpp>
 
@@ -145,20 +145,6 @@ namespace distant::windows::kernel {
 		flag_type m_access;
 
 	}; // end class process
-
-	template <access_rights::process access_t>
-	inline bool operator ==(const process<access_t>& lhs, const process<access_t>& rhs)
-	{
-		return lhs.m_handle == rhs.m_handle &&
-			   lhs.m_pid    == rhs.m_pid    &&
-			   lhs.m_access == rhs.m_access;
-	}
-
-	template <access_rights::process access_t>
-	inline bool operator !=(const process<access_t>& lhs, const process<access_t>& rhs)
-	{
-		return !operator==(lhs, rhs);
-	}
 
 } // end namespace distant::windows::kernel
 

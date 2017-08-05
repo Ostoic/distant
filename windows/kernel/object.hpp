@@ -11,13 +11,11 @@ Distributed under the Apache Software License, Version 2.0.
 
 #include <distant\windows\detail\handle_service.hpp>
 
-#include <distant\type_traits.hpp>
+#include <distant\utility\type_traits.hpp>
 
 //#include <distant\detail\fwd.h>
 
-namespace distant {
-namespace windows {
-namespace kernel  {
+namespace distant::windows::kernel {
 
 	// Go to MSDN for more information
 	// Base kernel object for windows
@@ -37,40 +35,24 @@ namespace kernel  {
 		/*************************************/
 		// Implicitly cast object to handle_type
 		template <typename other_t>
-		const windows::handle<other_t>& get_handle() const 
-		{ 
-			static_assert(
-				is_related<object, other_t>::value,
-				"Handle types are not convertible.");
-
-			return *reinterpret_cast<const windows::handle<other_t>*>(&m_handle);
-		}
+		const windows::handle<other_t>& get_handle() const;
 		
 		template <typename other_t>
-		explicit operator const windows::handle<other_t>&() const { return get_handle<other_t>(); }
-
+		explicit operator const windows::handle<other_t>&() const;
 
 		/*********************************/
 		/** Windows Object constructors **/
 		/*********************************/
 		// Invalid handle default constructor
-		constexpr object() : m_handle(invalid_handle) {}
+		constexpr object();
 
 		template <typename other_t>
-		explicit object(windows::handle<other_t>&& h) : 
-			m_handle(std::move(h))
-		{}
+		explicit object(windows::handle<other_t>&& h);
 
 		// Move constructible/assignable.
-		object(object&& other) :
-			object(std::move(other.m_handle))
-		{}
+		object(object&& other);
 
-		object& operator =(object&& other)
-		{
-			m_handle = std::move(other.m_handle);
-			return *this;
-		}
+		object& operator =(object&& other);
  
 		// Calls handle destructor
 		~object() {}
@@ -80,31 +62,15 @@ namespace kernel  {
 
 	protected:
 		// Determine if the object handle is valid
-		bool weakly_valid() const
-		{
-			return m_handle.weakly_valid();
-		}
+		bool weakly_valid() const;
 
-		void close_object()
-		{ 
-			m_handle.close_handle(); 
-		}
+		void close_object();
 
 	protected:
 		handle_type m_handle;
 	};
-	
-	inline bool operator ==(const kernel::object& lhs, const kernel::object& rhs)
-	{
-		return windows::operator==(lhs.m_handle, rhs.m_handle);
-	}
 
-	inline bool operator !=(const kernel::object& lhs, const kernel::object& rhs)
-	{
-		return windows::operator!=(lhs.m_handle, rhs.m_handle);
-	}
+} // end namespace distant::windows::kernel
 
-} // end namespace kernel
-} // end namespace windows
-} // end namespace distant
+#include <distant\windows\kernel\detail\object.inl>
 

@@ -11,15 +11,18 @@ Distributed under the Apache Software License, Version 2.0.
 #include <distant\detail\fwd.hpp>
 
 namespace distant {
-	
-template <class A, class B>
-using is_related = 
-	std::conditional_t<
-		std::is_base_of<A, B>::value ||	// If A is a base of B,
-		std::is_base_of<B, A>::value,	// or B is a base of A,
-			std::true_type,				// then return true.
-			std::false_type				// Otherwise return false
-	>;
+namespace utility {
+
+	template <class A, class B>
+	using is_related = 
+		std::conditional_t<
+			std::is_base_of<A, B>::value ||	// If A is a base of B,
+			std::is_base_of<B, A>::value,	// or B is a base of A,
+				std::true_type,				// then return true.
+				std::false_type				// Otherwise return false
+		>;
+
+} // end namespace utility
 
 namespace windows {
 	// Metafunction for detecting whether a type is a windows::kernel::object
@@ -51,7 +54,7 @@ namespace windows {
 	{
 		static_assert (
 			is_kernel_object<T>::value,
-			"Type must derive from windows::kernel::object");
+			"Type must derive from kernel::object");
 
 		using handle_type = windows::handle<T>;
 		using error_type  = windows::error::gle;

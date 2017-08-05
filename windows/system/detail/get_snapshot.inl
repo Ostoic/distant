@@ -3,7 +3,7 @@
 #include <Tlhelp32.h>
 
 #include <distant\detail\fwd.hpp>
-#include <distant\type_traits.hpp>
+#include <distant\utility\type_traits.hpp>
 #include <distant\windows\handle.hpp>
 
 #include <distant\windows\system\detail\snapshot_traits.hpp>

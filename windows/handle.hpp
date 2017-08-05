@@ -70,6 +70,7 @@ namespace windows {
 		template <typename other_t>
 		handle& operator =(handle<other_t>&& other);
 		
+		// Covariant handle cast
 		template <typename other_t>
 		explicit operator const handle<other_t>&() const;
 
@@ -139,29 +140,6 @@ namespace windows {
 		template <typename T, typename U>
 		friend bool operator !=(const handle<T>&, const handle<U>&);
 	};
-
-	template <typename T, typename U>
-	inline bool operator ==(const handle<T>& lhs, const handle<U>& rhs)
-	{
-		// Objects must be compatible.
-		// Example: thread ~/~ process, but process ~ securable
-		static_assert(
-			is_related<T, U>::value, // XXX Revise type check
-			"Handle equality operator: Object types must be compatible");
-
-		return
-		// CompareObjectHandles is only available with the Windows 10
-		// SDK or higher. 
-#if VER_PRODUCTBUILD > 9600 
-			CompareObjectHandles(lhs.m_handle_value, rhs.m_handle_value) &&
-#endif
-			lhs.m_native_handle == rhs.m_native_handle;
-
-	}
-
-	template <typename T, typename U>
-	inline bool operator !=(const handle<T>& lhs, const handle<U>& rhs)
-	{ return !operator==(lhs, rhs); }
 
 	// Type-safe handle literals
 	static constexpr typename detail::null_t	null_handle;

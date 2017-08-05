@@ -12,7 +12,7 @@ Distributed under the Apache Software License, Version 2.0.
 
 #include <distant\windows\detail\handle_service.hpp>
 
-#include <distant\type_traits.hpp>
+#include <distant\utility\type_traits.hpp>
 
 namespace distant::windows::system {
 

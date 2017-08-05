@@ -10,6 +10,7 @@ Distributed under the Apache Software License, Version 2.0.
 
 namespace distant::windows {
 
+//public:
 	template <typename T>
 	inline constexpr handle<T>::handle(detail::invalid_t)
 		: m_native_handle(NULL)
@@ -47,6 +48,7 @@ namespace distant::windows {
 		, m_closed(false)
 	{}
 
+	// Move constructor
 	template <typename T>
 	template <typename other_t>
 	inline handle<T>::handle(handle<other_t>&& other)
@@ -55,18 +57,19 @@ namespace distant::windows {
 		, m_closed(std::move(other.m_closed)) 
 	{
 		static_assert(
-			is_related<T, other_t>::value,
+			utility::is_related<T, other_t>::value,
 			"Handle object types are unrelated.");
 
 		other.invalidate();
 	}
 
+	// Move assignment
 	template <typename T>
 	template <typename other_t>
 	inline handle<T>& handle<T>::operator=(handle<other_t>&& other)
 	{
 		static_assert(
-			is_related<T, other_t>::value,
+			utility::is_related<T, other_t>::value,
 			"Handle object types are unrelated.");
 
 		m_closed = other.m_closed;
@@ -77,6 +80,7 @@ namespace distant::windows {
 		return *this;
 	}
 
+	// Covariant handle cast
 	template<typename Object_t>
 	template<typename other_t>
 	inline handle<Object_t>::operator const handle<other_t>&() const
@@ -88,14 +92,6 @@ namespace distant::windows {
 		return *this;
 	}
 
-	// This weak validity should only be used for validating the handle's numeric value.
-	// This does not ensure the handle is from a valid object.
-	template <typename T>
-	inline bool handle<T>::weakly_valid() const
-	{
-		return m_native_handle != NULL;
-	}
-
 	template <typename T>
 	inline bool handle<T>::close_protected() const
 	{
@@ -103,7 +99,18 @@ namespace distant::windows {
 	}
 
 	template <typename T>
-	inline bool handle<T>::closed() const { return m_closed; }
+	inline bool handle<T>::closed() const
+	{
+		return m_closed;
+	}
+
+	// This weak validity should only be used for validating the handle's numeric value.
+	// This does not ensure the handle is from a valid object.
+	template <typename T>
+	inline bool handle<T>::weakly_valid() const
+	{
+		return m_native_handle != NULL;
+	}
 
 	// Close the handle, if it is weakly valid and its closure wasn't observed
 	// Note: This function is public since handles occasionally need to be closed before the
@@ -143,6 +150,32 @@ namespace distant::windows {
 	inline void handle<T>::close_protect()
 	{
 		m_flags = flag_type::close_protected;
+	}
+
+//free:
+	template <typename T, typename U>
+	inline bool operator ==(const handle<T>& lhs, const handle<U>& rhs)
+	{
+		// Objects must be compatible.
+		// Example: thread ~/~ process, but process ~ securable
+		static_assert(
+			utility::is_related<T, U>::value, // XXX Revise type check
+			"Handle equality operator: Object types must be compatible");
+
+		return
+			// CompareObjectHandles is only available with the Windows 10
+			// SDK or higher. 
+#if VER_PRODUCTBUILD > 9600 
+			CompareObjectHandles(lhs.m_handle_value, rhs.m_handle_value) &&
+#endif
+			lhs.m_native_handle == rhs.m_native_handle;
+
+	}
+
+	template <typename T, typename U>
+	inline bool operator !=(const handle<T>& lhs, const handle<U>& rhs)
+	{
+		return !operator==(lhs, rhs);
 	}
 
 } // end namespace distant::windows

@@ -15,6 +15,8 @@ Distributed under the Apache Software License, Version 2.0.
 
 namespace distant::windows::kernel {
 
+
+//public:
 	//===========================//
 	// Static process functions //
 	//===========================//
@@ -24,7 +26,8 @@ namespace distant::windows::kernel {
 		process<T> current(static_cast<handle_type>(GetCurrentProcess()));
 		return current;
 	}
-	
+
+//protected:
 	// Type-safe version of OpenProcess
 	template <access_rights::process T>
 	inline typename process<T>::handle_type process<T>::open(pid_type id)
@@ -39,6 +42,20 @@ namespace distant::windows::kernel {
 		}
 
 		return windows::invalid_handle;
+	}
+
+	template <access_rights::process T>
+	inline void process<T>::terminate(const handle_type& h)
+	{
+		static_assert(
+			check_permission(access_rights::terminate),
+			"Invalid access_rights (process::terminate): "
+			"Process must have terminate access right");
+
+		unsigned int exit_code = 0;
+		auto native_handle = attorney_get::native_handle(h);
+		TerminateProcess(native_handle, exit_code);
+		return;
 	}
 
 	template <access_rights::process T>
@@ -84,21 +101,7 @@ namespace distant::windows::kernel {
 		return static_cast<std::size_t>(count);
 	}
 
-	template <access_rights::process T>
-	inline void process<T>::terminate(const handle_type& h)
-	{
-		static_assert(
-			check_permission(access_rights::terminate),
-			"Invalid access_rights (process::terminate): "
-			"Process must have terminate access right");
-
-		unsigned int exit_code = 0;
-		auto native_handle = attorney_get::native_handle(h);
-		TerminateProcess(native_handle, exit_code);
-		return;
-	}
-
-
+//public:
 	//====================================//
 	// Process id and access_rights flags //
 	// accessors                          //
@@ -213,6 +216,7 @@ namespace distant::windows::kernel {
 		return *this;
 	}
 
+//private:
 	// Close process handle and invalidate process object
 	// Mutates: from invalidate() 
 	template <access_rights::process T>
@@ -239,5 +243,20 @@ namespace distant::windows::kernel {
 	// Mutates: m_id, m_handle
 	template <access_rights::process T>
 	inline void process<T>::invalidate() { m_pid = std::numeric_limits<pid_type>::infinity(); }
+
+//free:
+	template <access_rights::process T>
+	inline bool operator ==(const process<T>& lhs, const process<T>& rhs)
+	{
+		return lhs.m_handle == rhs.m_handle &&
+			lhs.m_pid == rhs.m_pid    &&
+			lhs.m_access == rhs.m_access;
+	}
+
+	template <access_rights::process T>
+	inline bool operator !=(const process<T>& lhs, const process<T>& rhs)
+	{
+		return !operator==(lhs, rhs);
+	}
 
 } // end namespace distant::windows::kernel
