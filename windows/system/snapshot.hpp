@@ -13,6 +13,7 @@ Distributed under the Apache Software License, Version 2.0.
 #include <distant\windows\detail\handle_service.hpp>
 
 #include <distant\utility\type_traits.hpp>
+#include <distant\iterators\snapshot_iterator.hpp>
 
 namespace distant::windows::system {
 
@@ -25,8 +26,8 @@ namespace distant::windows::system {
 		using object_type = ObjectType;
 		using handle_type = windows::handle<snapshot>;
 		
-		using iterator = int;	
-		using const_iterator = int;
+		using iterator = iterators::snapshot_iterator<ObjectType>;
+		using const_iterator = iterators::snapshot_iterator<ObjectType>;
 
 	public:
 		iterator begin();
@@ -37,9 +38,10 @@ namespace distant::windows::system {
 
 	public:
 		snapshot();
-
+		~snapshot() = default;
 	protected:
 		handle_type m_handle;
+		friend windows::detail::handle_service<snapshot<ObjectType>>;
 	};
 
 } // end namespace distant::windows::system

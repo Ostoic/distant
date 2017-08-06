@@ -11,41 +11,28 @@ Distributed under the Apache Software License, Version 2.0.
 namespace distant::windows {
 
 //public:
-	template <typename T>
-	inline constexpr handle<T>::handle(detail::invalid_t)
-		: m_native_handle(NULL)
-		, m_flags(flag_type::close_protected) // Closing invalid handle is prohibited
-		, m_closed(false)
-	{}
-
-	template <typename T>
-	inline constexpr handle<T>::handle(detail::null_t)
-		: m_native_handle(NULL)
-		, m_flags(flag_type::close_protected) // Closing null handle is prohibited
-		, m_closed(false)
-	{}
-
-	template <typename T>
-	inline constexpr handle<T>::handle()
-		: m_native_handle(NULL)
-		, m_flags(flag_type::close_protected) // Closing null handle is prohibited
-		, m_closed(false)
-	{}
-
-	// Only allow conversion to underlying type through an explicit cast/ctor 
-	template <typename T>
-	inline constexpr handle<T>::handle(native_type h)
-		: m_native_handle(h)
-		, m_flags(flag_type::inherit)  // This allows the handle to be closed properly
-		, m_closed(false)
-	{}
-
-	// Only allow conversion to underlying type through an explicit cast/ctor 
+	// Only allow native coversion via explicit cast/ctor 
 	template <typename T>
 	inline constexpr handle<T>::handle(native_type h, flag_type flags)
 		: m_native_handle(h)
 		, m_flags(flags)
 		, m_closed(false)
+	{}
+
+	// Only allow native coversion via explicit cast/ctor 
+	template <typename T>
+	inline constexpr handle<T>::handle(native_type h)
+		: handle(h, flag_type::inherit)
+	{}
+
+	template <typename T>
+	inline constexpr handle<T>::handle()
+		: handle(NULL, flag_type::close_protected)
+	{}
+
+	template <typename T>
+	inline constexpr handle<T>::handle(const detail::invalid_t&)
+		: handle()
 	{}
 
 	// Move constructor
@@ -154,7 +141,7 @@ namespace distant::windows {
 
 //free:
 	template <typename T, typename U>
-	inline bool operator ==(const handle<T>& lhs, const handle<U>& rhs)
+	inline constexpr bool operator ==(const handle<T>& lhs, const handle<U>& rhs)
 	{
 		// Objects must be compatible.
 		// Example: thread ~/~ process, but process ~ securable
@@ -173,7 +160,7 @@ namespace distant::windows {
 	}
 
 	template <typename T, typename U>
-	inline bool operator !=(const handle<T>& lhs, const handle<U>& rhs)
+	inline constexpr bool operator !=(const handle<T>& lhs, const handle<U>& rhs)
 	{
 		return !operator==(lhs, rhs);
 	}

@@ -37,7 +37,7 @@ namespace windows {
 		
 	public:
 		// Infinite amount of time literal
-		class infinite : public utility::Literal {};
+		class infinite : public utility::Literal<wait> {};
 
 	public:
 		using object_type = kernel::object;

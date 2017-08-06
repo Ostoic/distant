@@ -4,7 +4,7 @@
 #include <ratio>
 
 #include <distant\windows\error\gle.hpp>
-#include <distant\windows\kernel\process.hpp>
+#include <distant\detail\fwd.hpp>
 
 namespace distant::windows::system {
 

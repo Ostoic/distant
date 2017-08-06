@@ -13,6 +13,7 @@ Distributed under the Apache Software License, Version 2.0.
 
 #include <distant\windows\error\gle.hpp>
 #include <distant\utility\literal.hpp>
+#include <distant\utility\type_traits.hpp>
 #include <distant\detail\attorney.hpp>
 
 #include <distant\windows\access_rights.hpp>
@@ -23,10 +24,7 @@ namespace distant {
 namespace windows {
 
 	namespace detail {
-
-		// Type-safe handle literals
-		class invalid_t : public utility::Literal {};
-		class null_t : public utility::Literal {};
+		class invalid_t;
 	}
 
 	// windows::handle is a type-safe version of the WINAPI defined macro: HANDLE
@@ -43,18 +41,16 @@ namespace windows {
 		// entry is not a valid one. WINAPI functions tend to return NULL, though some
 		// of them return INVALID_HANDLE_VALUE.
 	public:
-		constexpr handle(detail::invalid_t);
-		
-		constexpr handle(detail::null_t);
-		
-		constexpr handle();
-
-		// Only allow conversion to underlying type through an explicit cast/ctor 
+		// ***Explicit only at declaration, not definition
+		// Only allow native coversion via explicit cast/ctor 
+		constexpr explicit handle(native_type h, flag_type flags);
 		constexpr explicit handle(native_type h);
 
-		// ***Explicit only at declaration, not definition
-		// Only allow conversion to underlying type through an explicit cast/ctor 
-		constexpr explicit handle(native_type h, flag_type flags);
+		// invalid_handle literal ctor
+		constexpr handle();
+		constexpr handle(const detail::invalid_t&);
+
+		// Only allow native coversion via explicit cast/ctor 
 
 		/*typename enable_if<!is_array<_Ty2>::value
 			&& is_assignable<_Dx&, _Dx2&&>::value
@@ -135,20 +131,22 @@ namespace windows {
 
 	public:
 		template <typename T, typename U>
-		friend bool operator ==(const handle<T>&, const handle<U>&);
+		friend constexpr bool operator ==(const handle<T>&, const handle<U>&);
 
 		template <typename T, typename U>
-		friend bool operator !=(const handle<T>&, const handle<U>&);
+		friend constexpr bool operator !=(const handle<T>&, const handle<U>&);
 	};
 
-	// Type-safe handle literals
-	static constexpr typename detail::null_t	null_handle;
-	static constexpr typename detail::invalid_t invalid_handle;
+	namespace detail {
+		class invalid_t : public utility::Literal<invalid_t> {};
+	}
+
+	// Type-safe handle literal
+	constexpr typename detail::invalid_t invalid_handle;
 
 } // end namespace windows
 
 using windows::handle;
-using windows::null_handle;
 using windows::invalid_handle;
 
 } // end namespace distant

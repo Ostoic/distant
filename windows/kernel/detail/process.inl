@@ -125,7 +125,9 @@ namespace distant::windows::kernel {
 	// Check if we have permission to perform the given action
 	template <access_rights::process T>
 	inline constexpr bool process<T>::check_permission(flag_type access)
-	{ return (T & access) == access; }
+	{ 
+		return (T & access) == access; 
+	}
 
 	template <access_rights::process T>
 	inline bool process<T>::is_active() const
@@ -239,18 +241,27 @@ namespace distant::windows::kernel {
 	template <access_rights::process T>
 	inline process<T>::~process() { this->invalidate(); }
 
+	template <access_rights::process T>
+	process<T>::operator bool() const
+	{ 
+		return this->valid(); 
+	}
+
 	// Invalidate process id and handle
 	// Mutates: m_id, m_handle
 	template <access_rights::process T>
-	inline void process<T>::invalidate() { m_pid = std::numeric_limits<pid_type>::infinity(); }
+	inline void process<T>::invalidate() 
+	{ 
+		m_pid = std::numeric_limits<pid_type>::infinity(); 
+	}
 
 //free:
 	template <access_rights::process T>
 	inline bool operator ==(const process<T>& lhs, const process<T>& rhs)
 	{
 		return lhs.m_handle == rhs.m_handle &&
-			lhs.m_pid == rhs.m_pid    &&
-			lhs.m_access == rhs.m_access;
+			   lhs.m_pid	== rhs.m_pid;    
+			   //lhs.m_access == rhs.m_access;
 	}
 
 	template <access_rights::process T>

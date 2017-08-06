@@ -13,6 +13,8 @@ namespace distant::windows::system::detail {
 	template <typename Object_t, typename Snapshot_t>
 	inline windows::handle<Snapshot_t> get_snapshot(process_tag tag)
 	{
+		static_cast<void>(tag);
+
 		// Create a snapshot of all processes that we are allowed to see
 		auto native_handle = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 		if (native_handle == INVALID_HANDLE_VALUE)

@@ -13,11 +13,15 @@ Distributed under the Apache Software License, Version 2.0.
 namespace distant {
 namespace utility {
 
+	namespace detail { class force_relation {}; }
+
 	template <class A, class B>
 	using is_related = 
 		std::conditional_t<
 			std::is_base_of<A, B>::value ||	// If A is a base of B,
-			std::is_base_of<B, A>::value,	// or B is a base of A,
+			std::is_base_of<B, A>::value ||	// or B is a base of A,
+			std::is_same<A, detail::force_relation>::value || // or if the user is forcing a relation on the two types
+			std::is_same<B, detail::force_relation>::value,  
 				std::true_type,				// then return true.
 				std::false_type				// Otherwise return false
 		>;

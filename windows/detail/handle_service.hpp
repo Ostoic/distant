@@ -31,6 +31,16 @@ namespace distant::windows::detail {
 		{
 			return self()->m_handle;
 		}
+
+		bool valid() const
+		{
+			return self()->m_handle.weakly_valid();
+		}
+
+		explicit operator bool() const
+		{
+			return this->valid();
+		}
 	};
 
 

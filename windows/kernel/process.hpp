@@ -130,6 +130,8 @@ namespace distant::windows::kernel {
 		friend bool operator ==(const process&, const process&);
 		friend bool operator !=(const process&, const process&);
 
+		explicit operator bool() const;
+
 	private:
 		using attorney_get = distant::detail::attorney::to_handle<process>;
 		// Close process handle and invalidate process object
@@ -141,6 +143,9 @@ namespace distant::windows::kernel {
 		void invalidate();
 
 	protected:
+		// XXX Consider containing a (lazy) list of threads inside process (so stack unwind would close thread handles first)
+		// XXX Otherwise provide a function to return a reference to thread handles from this process (but the stack unwind might be problematic)
+		// XXX Is it important to consider the order of closing a thread from a process? (ie close(thread); close(process) compared with the converse).
 		pid_type m_pid;
 		flag_type m_access;
 
