@@ -66,13 +66,14 @@ namespace distant::windows::kernel {
 		// XXX Implement
 		static handle_type create();
 
-		static void terminate(const handle_type&);
+		// These functions 
+		//static void terminate(const handle_type&);
+
+		//static std::string get_file_path(const handle_type&);
+
+		//static std::size_t get_handle_count(const handle_type&);
 
 		static pid_type get_pid(const handle_type&);
-
-		static std::string get_file_path(const handle_type&);
-
-		static std::size_t get_handle_count(const handle_type&);
 
 	public:
 		//====================================//
@@ -133,7 +134,7 @@ namespace distant::windows::kernel {
 		explicit operator bool() const;
 
 	private:
-		using attorney_get = distant::detail::attorney::to_handle<process>;
+		using expose = distant::detail::attorney::to_handle<process>;
 		// Close process handle and invalidate process object
 		// Mutates: from invalidate() 
 		void close_process();

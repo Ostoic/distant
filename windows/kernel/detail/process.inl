@@ -44,7 +44,7 @@ namespace distant::windows::kernel {
 		return windows::invalid_handle;
 	}
 
-	template <access_rights::process T>
+	/*template <access_rights::process T>
 	inline void process<T>::terminate(const handle_type& h)
 	{
 		static_assert(
@@ -53,39 +53,37 @@ namespace distant::windows::kernel {
 			"Process must have terminate access right");
 
 		unsigned int exit_code = 0;
-		auto native_handle = attorney_get::native_handle(h);
+		auto native_handle = expose::native_handle(h);
 		TerminateProcess(native_handle, exit_code);
 		return;
-	}
+	}*/
 
 	template <access_rights::process T>
 	inline typename process<T>::pid_type process<T>::get_pid(const handle_type& h)
 	{
-		auto native_handle = attorney_get::native_handle(h);
+		auto native_handle = expose::native_handle(h);
 		auto id = GetProcessId(native_handle);
 		return static_cast<pid_type>(id);
 	}
 
-	template <access_rights::process T>
-	inline std::string process<T>::get_file_path(const handle_type& h)
-	{
-		static_assert(
-			check_permission(access_rights::query_information) ||
-			check_permission(access_rights::query_limited_information),
-			"Invalid access rights (process::get_file_path): "
-			"Process must have query_information or query_limited_information access rights");
+	//template <access_rights::process T>
+	//inline std::string process<T>::get_file_path(const handle_type& h)
+	//{
+	//	static_assert(
+	//		check_permission(access_rights::query_information) ||
+	//		check_permission(access_rights::query_limited_information),
+	//		"Invalid access rights (process::get_file_path): "
+	//		"Process must have query_information or query_limited_information access rights");
+	//	auto native_handle = expose::native_handle(h);
+	//	char out_string[MAX_PATH] = "";
+	//	DWORD max_path = MAX_PATH;
 
-		auto native_handle = attorney_get::native_handle(h);
+	//	// 0 indicates: The name should use the Win32 path format.
+	//	QueryFullProcessImageNameA(native_handle, 0, out_string, &max_path);
+	//	return std::string(out_string);
+	//}
 
-		char out_string[MAX_PATH] = "";
-		DWORD max_path = MAX_PATH;
-
-		// 0 indicates: The name should use the Win32 path format.
-		QueryFullProcessImageNameA(native_handle, 0, out_string, &max_path);
-		return std::string(out_string);
-	}
-
-	template <access_rights::process T>
+	/*template <access_rights::process T>
 	inline std::size_t process<T>::get_handle_count(const handle_type& h)
 	{
 		static_assert(
@@ -94,12 +92,12 @@ namespace distant::windows::kernel {
 			"Invalid access rights (process::get_handle_count): "
 			"Process must have query_information or query_limited_information access rights");
 
-		auto native_handle = attorney_get::native_handle(h);
+		auto native_handle = expose::native_handle(h);
 
 		DWORD count = 0;
 		GetProcessHandleCount(native_handle, &count);
 		return static_cast<std::size_t>(count);
-	}
+	}*/
 
 //public:
 	//====================================//
@@ -117,8 +115,24 @@ namespace distant::windows::kernel {
 	template <access_rights::process T>
 	inline void process<T>::terminate() const
 	{
-		terminate(get_handle<process>());
-		this->update_gle();
+		static_assert(
+			check_permission(access_rights::terminate),
+			"Invalid access_rights (process::terminate): "
+			"Process must have terminate access right");
+
+		if (!this->valid())
+			//throw std::invalid_argument("Invalid process handle");
+		{
+			this->set_last_error(ERROR_INVALID_HANDLE);
+			return;
+		}
+
+		unsigned int exit_code = 0;
+		auto native_handle = expose::native_handle(m_handle);
+		if (!::TerminateProcess(native_handle, exit_code))
+			this->update_gle();
+		else
+			this->set_success();
 		return;
 	}
 
@@ -140,7 +154,12 @@ namespace distant::windows::kernel {
 			"Process must have synchronize access right");
 
 		using windows::wait;
-		if (!this->valid()) return false;
+		if (!this->valid())
+			//throw std::invalid_argument("Invalid process handle");
+		{
+			this->set_last_error(ERROR_INVALID_HANDLE);
+			return "";
+		}
 
 		wait wait_for;
 
@@ -153,17 +172,58 @@ namespace distant::windows::kernel {
 	template <access_rights::process T>
 	inline std::size_t process<T>::get_handle_count() const
 	{
-		auto count = get_handle_count(get_handle());
-		this->update_gle();
-		return count;
+		static_assert(
+			check_permission(access_rights::query_information) ||
+			check_permission(access_rights::query_limited_information),
+			"Invalid access rights (process::get_handle_count): "
+			"Process must have query_information or query_limited_information access rights");
+
+		if (!this->valid())
+			//throw std::invalid_argument("Invalid process handle");
+		{
+			this->set_last_error(ERROR_INVALID_HANDLE);
+			return 0;
+		}
+
+		auto native_handle = expose::native_handle(m_handle);
+
+		DWORD count = 0;
+		if (!::GetProcessHandleCount(native_handle, &count))
+			this->update_gle();
+		else
+			this->set_success();
+		
+		return static_cast<std::size_t>(count);
 	}
 
 	template <access_rights::process T>
 	inline std::string process<T>::get_file_path() const 
-	{ 
-		std::string path = get_file_path(get_handle());
-		this->update_gle();
-		return path;
+	{
+		static_assert(
+			check_permission(access_rights::query_information) ||
+			check_permission(access_rights::query_limited_information),
+			"Invalid access rights (process::get_file_path): "
+			"Process must have query_information or query_limited_information access rights");
+
+		if (!this->valid())
+			//throw std::invalid_argument("Invalid process handle");
+		{
+			this->set_last_error(ERROR_INVALID_HANDLE);
+			return "";
+		}
+
+		auto native_handle = expose::native_handle(m_handle);
+
+		char out_string[MAX_PATH] = "";
+		DWORD max_path = MAX_PATH;
+
+		// 0 indicates: The name should use the Win32 path format.
+		if (!::QueryFullProcessImageNameA(native_handle, 0, out_string, &max_path))
+			this->update_gle();
+		else
+			this->set_success();
+		
+		return std::string(out_string);
 	}
 
 	template <access_rights::process T>
@@ -180,8 +240,7 @@ namespace distant::windows::kernel {
 	inline constexpr process<T>::process() :
 		base_type(), // Empty initialize object
 		m_pid(std::numeric_limits<pid_type>::infinity()),
-		m_access(T)
-	{}
+		m_access(T) {}
 
 	// Open process by id
 	template <access_rights::process T>
@@ -206,9 +265,8 @@ namespace distant::windows::kernel {
 	inline process<T>::process(process<T>&& other) :
 		base_type(std::move(other)),
 		m_pid(std::move(other.m_pid)),
-		m_access(std::move(other.m_access)) // XXX Choose weakest access rights or produce error about incompatible access rights
-	{}
-
+		m_access(std::move(other.m_access)) {} // XXX Choose weakest access rights or produce error about incompatible access rights
+	
 	template <access_rights::process T>
 	inline process<T>& process<T>::operator=(process<T>&& other)
 	{
@@ -239,7 +297,10 @@ namespace distant::windows::kernel {
 	//		4. ~handle() <-- calls CloseHandle
 	// Mutates: from invalidate() 
 	template <access_rights::process T>
-	inline process<T>::~process() { this->invalidate(); }
+	inline process<T>::~process() 
+	{
+		this->invalidate(); 
+	}
 
 	template <access_rights::process T>
 	process<T>::operator bool() const

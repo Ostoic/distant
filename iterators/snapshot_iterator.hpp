@@ -5,7 +5,7 @@
 #include <distant\utility\type_traits.hpp>
 
 #include <distant\windows\kernel\process.hpp>
-#include <distant\windows\system\detail\snapshot_traits.hpp>
+#include <distant\windows\system\detail\tool_help.hpp>
 #include <distant\detail\attorney.hpp>
 
 // Forward declare snapshot
@@ -37,8 +37,11 @@ namespace distant::iterators {
 			: m_native_snap(expose::native_handle(snapshot.get_handle()))
 			, m_index(1)
 		{
+			// Bring the snapshot_entry implementation free functions into scope
+			using windows::system::detail::snapshot_entry::first;
+
 			m_entry.dwSize = sizeof(entry_type);
-			if (!Process32First(m_native_snap, &m_entry))
+			if (!first<Kernel_Object>(m_native_snap, &m_entry))
 				m_index = 0;
 		}
 
@@ -51,9 +54,12 @@ namespace distant::iterators {
 
 		void increment() 
 		{
+			// Bring the snapshot_entry implementation free functions into scope
+			using windows::system::detail::snapshot_entry::next;
+
 			if (m_index)
 			{
-				if (!Process32Next(m_native_snap, &m_entry))
+				if (!next<Kernel_Object>(m_native_snap, &m_entry))
 					m_index = 0;
 				else
 					m_index++;
@@ -62,7 +68,10 @@ namespace distant::iterators {
 
 		Kernel_Object dereference() const
 		{
-			auto pid = m_entry.th32ProcessID;
+			// Bring the snapshot_entry implementation get_id into scope
+			using windows::system::detail::snapshot_entry::get_id;
+
+			auto pid = get_id<Kernel_Object>(m_entry);
 			return Kernel_Object(pid);
 		}
 

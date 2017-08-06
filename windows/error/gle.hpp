@@ -71,6 +71,11 @@ namespace distant::windows::error {
 			m_error = other.get_value();
 		}
 
+		void set_success() const
+		{
+			this->set_last_error(ERROR_SUCCESS);
+		}
+
 		void set_last_error(error_type error_code) const 
 		{
 			m_error = error_code; 
