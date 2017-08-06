@@ -31,7 +31,7 @@ If we do not statically check the access rights associated with a process, then 
 one will be produced at run-time regardless. It is much easier to detect bugs through the compiler, instead of
 at runtime, where simply forgetting the correct access rights for an API call can be harder to notice.
 
-# Example
+# Opening a System Process 
 
 ```c++
 #include <iostream>
@@ -122,7 +122,7 @@ to the type of object you want to query. Then a do {...} while (Process32Next(..
 the information desired. However, we can simply write a C++11 range-based for loop with the given snapshot object as our
 range.
 
-# Snapshot Example
+# Traversing the Process List
 ```c++
 // When iterating through each process, attempt to open the process with access_rights::all_access.
 using process = distant::process<>;
