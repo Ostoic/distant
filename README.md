@@ -121,3 +121,27 @@ query. Typically this would be done through a call to CreateToolhelp32Snapshot, 
 to the type of object you want to query. Then a do {...} while (Process32Next(...)); loop would suffice for collecting
 the information desired. However, we can simply write a C++11 range-based for loop with the given snapshot object as our
 range.
+
+# Snapshot Example
+```c++
+// When iterating through each process, attempt to open the process with access_rights::all_access.
+using process = distant::process<>;
+
+// Create a system snapshot of all currently active processes
+distant::system::snapshot<process> snapshot;
+
+if (snapshot)
+{
+	// Display information about each proccess
+	// Note: display_info is as defined as in the first example above
+	// display_info also performs the correct error handling
+	for (auto proc : snapshot)
+		display_info(proc);
+}
+else
+{
+	std::cout << "Unable to create system::snapshot: " << snapshot.get_last_error() << std::endl;
+	return;
+}
+	
+```
