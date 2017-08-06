@@ -21,7 +21,7 @@ on the current process object, a compiler error will be thrown. This is because 
 require at least the synchronize process access right. Therefore, following the above process access request
 with query_information access rights, the code
 ```c++
-std::cout << "Current process is running == " << current.is_active() << std::endl;
+if (current.is_active()) {...}
 ```
 will produce a compiler error of the form:
 ```
