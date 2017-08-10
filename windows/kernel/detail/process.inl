@@ -11,8 +11,6 @@ Distributed under the Apache Software License, Version 2.0.
 #include <distant\windows\kernel\process.hpp>
 #include <distant\windows\wait.hpp>
 
-#include <distant\detail\attorney.hpp> // For extracting windows::handle value_type
-
 namespace distant::windows::kernel {
 
 
@@ -158,7 +156,7 @@ namespace distant::windows::kernel {
 			//throw std::invalid_argument("Invalid process handle");
 		{
 			this->set_last_error(ERROR_INVALID_HANDLE);
-			return "";
+			return false;
 		}
 
 		wait wait_for;
@@ -250,13 +248,12 @@ namespace distant::windows::kernel {
 		m_access(T)
 	{ this->update_gle(); }
 
-	// Take possession of process handle
-	// NOTE: This is sort of type-unsafe since the handle could be a handle
-	// to any kernel object.
+	// Take possession of process handle. It is ensured to be a convertible process handle
+	// due to encoded type in windows::handle.
 	template <access_rights::process T>
 	inline process<T>::process(handle_type&& handle) :
 		base_type(std::move(handle)),			// steal handle
-		m_access(T)								// steal access flags
+		m_access(T)					// steal access flags
 	{ m_pid = get_pid(get_handle()); }			// retrieve process id
 												// This is done after initialization to ensure the operation
 												// is performed after moving handle into our possession.
