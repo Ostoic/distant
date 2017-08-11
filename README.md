@@ -111,8 +111,6 @@ Last Error: Access is denied.
 
 # System Snapshots
 
-The system::snapshot models the Boost.Range concept (though we do not use Boost.Range currently), since it is does 
-not implement copy semantics, nor does it contain its member data. It is not a container for at least these reasons. 
 Accessing data of a snapshot constructs a kernel::object, whose type is passed as a template parameter. This is done via 
 snapshot_iterators, where dereferencing an iterator returns a newly-constructed kernel::object. It is in this sense that
 a system::snapshot is a lazily evaluated range.
