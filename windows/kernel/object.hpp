@@ -17,15 +17,15 @@ Distributed under the Apache Software License, Version 2.0.
 
 namespace distant::windows::kernel {
 
-	// Go to MSDN for more information
-	// Base kernel object for windows
-	// Default: encode self type into handle_type
-	// Specified: encodes specified type into handle_type
+	// Base class for all windows kernel objects
 	class object : 
 		public error::gle
 		//public windows::detail::handle_service<object>
 	{
 	public:
+		// Go to MSDN for a list of kernel objects
+		// XXX Provide link of objects
+
 		using error_type  = object_traits<object>::error_type;
 		using handle_type = object_traits<object>::handle_type;
 
@@ -57,8 +57,8 @@ namespace distant::windows::kernel {
 		// Calls handle destructor
 		~object() {}
 
-		friend bool operator ==(const kernel::object&, const kernel::object&);
-		friend bool operator !=(const kernel::object&, const kernel::object&);
+		//friend bool operator ==(const kernel::object&, const kernel::object&);
+		//friend bool operator !=(const kernel::object&, const kernel::object&);
 
 	protected:
 		// Determine if the object handle is valid

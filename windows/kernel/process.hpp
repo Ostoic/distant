@@ -16,6 +16,8 @@ Distributed under the Apache Software License, Version 2.0.
 #include <distant\windows\access_rights.hpp>
 #include <distant\windows\handle.hpp>
 
+#include <distant\windows\system\process_memory.hpp>
+
 #include <distant\utility\type_traits.hpp>
 
 #include <distant\windows\detail\handle_service.hpp>
@@ -82,7 +84,6 @@ namespace distant::windows::kernel {
 		//====================================//
 		pid_type get_pid()	   const { return m_pid; }
 		flag_type get_access() const { return m_access; }
-		std::string get_file_path() const;
 
 		const windows::handle<process>& get_handle() const;
 
@@ -95,6 +96,11 @@ namespace distant::windows::kernel {
 		bool is_active() const;
 
 		std::size_t get_handle_count() const;
+
+		std::string get_file_path() const;
+
+		void get_status() const;
+		system::process_memory get_memory_status() const;
 
 		// Return the virtual memory of this process
 		//memory::vm get_vm() const { return memory::vm(*this); }
@@ -127,9 +133,11 @@ namespace distant::windows::kernel {
 		// Mutates: from invalidate() 
 		~process();
 
-		// XXX Template both types so we can allow for access_rights conversion
-		friend bool operator ==(const process&, const process&);
-		friend bool operator !=(const process&, const process&);
+		template <access_rights T, access_rights U>
+		friend bool operator ==(const process<T>&, const process<U>&);
+
+		template <access_rights T, access_rights U>
+		friend bool operator !=(const process<T>&, const process<U>&);
 
 		explicit operator bool() const;
 
@@ -144,7 +152,7 @@ namespace distant::windows::kernel {
 		void invalidate();
 
 	protected:
-		// XXX Consider containing a (lazy) list of threads inside process (so stack unwind would close thread handles first)
+		// XXX Consider containing a (lazy) list (view?) of threads inside process (so stack unwind would close thread handles first)
 		// XXX Otherwise provide a function to return a reference to thread handles from this process (but the stack unwind might be problematic)
 		// XXX Is it important to consider the order of closing a thread from a process? (ie close(thread); close(process) compared with the converse).
 		pid_type m_pid;

@@ -23,8 +23,9 @@ namespace distant::windows::kernel {
 	template <access_rights::process T>
 	inline process<T> process<T>::get_current()
 	{
-		process<T> current(static_cast<handle_type>(GetCurrentProcess()));
-		return current;
+		auto native_handle = ::GetCurrentProcess();
+		auto pid = ::GetProcessId(native_handle);
+		return process(pid);
 	}
 
 //protected:
@@ -36,7 +37,7 @@ namespace distant::windows::kernel {
 	
 		if (id != 0)
 		{
-			auto result = OpenProcess(static_cast<flag_t>(T), false, id);
+			auto result = ::OpenProcess(static_cast<flag_t>(T), false, id);
 			if (result != NULL)
 				return handle_type(result); // Returns windows::handle with result as value
 		}
@@ -227,6 +228,12 @@ namespace distant::windows::kernel {
 	}
 
 	template <access_rights::process T>
+	system::process_memory process<T>::get_memory_status() const
+	{
+		return system::process_memory(*this);
+	}
+
+	template <access_rights::process T>
 	inline const windows::handle<process<T>>& process<T>::get_handle() const 
 	{ 
 		return object::get_handle<process<T>>(); 
@@ -317,16 +324,16 @@ namespace distant::windows::kernel {
 	}
 
 //free:
-	template <access_rights::process T>
-	inline bool operator ==(const process<T>& lhs, const process<T>& rhs)
+	template <access_rights::process T, access_rights::process U>
+	inline bool operator ==(const process<T>& lhs, const process<U>& rhs)
 	{
 		return lhs.m_handle == rhs.m_handle &&
 			   lhs.m_pid	== rhs.m_pid;    
 			   //lhs.m_access == rhs.m_access;
 	}
 
-	template <access_rights::process T>
-	inline bool operator !=(const process<T>& lhs, const process<T>& rhs)
+	template <access_rights::process T, access_rights::process U>
+	inline bool operator !=(const process<T>& lhs, const process<U>& rhs)
 	{
 		return !operator==(lhs, rhs);
 	}

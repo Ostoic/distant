@@ -45,7 +45,7 @@ namespace distant::windows::kernel {
 		return *this;
 	}
 
-	inline bool operator ==(const kernel::object& lhs, const kernel::object& rhs)
+	/*inline bool operator ==(const kernel::object& lhs, const kernel::object& rhs)
 	{
 		return windows::operator==(lhs.m_handle, rhs.m_handle);
 	}
@@ -53,7 +53,7 @@ namespace distant::windows::kernel {
 	inline bool operator !=(const kernel::object& lhs, const kernel::object& rhs)
 	{
 		return windows::operator!=(lhs.m_handle, rhs.m_handle);
-	}
+	}*/
 
 //protected:
 	// Determine if the object handle is valid

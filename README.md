@@ -1,6 +1,6 @@
 # distant
 An experimental C++14 header-only library that aims to provide remote memory and process tools for 
-the Windows operating system, with STL compliance and type safety in mind.
+the Windows operating system, with standard compliance and type safety in mind.
 
 # Process Access Type Safety
 
