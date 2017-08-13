@@ -1,3 +1,4 @@
+#include <distant\windows\kernel\object.hpp>
 
 namespace distant::windows::kernel {
 

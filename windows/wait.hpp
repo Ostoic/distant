@@ -6,13 +6,7 @@ Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
 */ 
 
-#include <distant\windows\error\gle.hpp>
 #include <distant\windows\kernel\object.hpp>
-
-#include <distant\utility\literal.hpp>
-#include <distant\utility\type_traits.hpp>
-
-#include <distant\detail\attorney.hpp>
 
 #include <limits>
 #include <chrono>
@@ -47,10 +41,12 @@ namespace windows {
 		// Wait for synchronizable object for the given amount of time
 		wait::state operator ()(const object_type& obj, time_type time) const
 		{
-			using get = distant::detail::attorney::to_handle<wait>;
+			using expose = distant::detail::attorney::to_handle<wait>;
 
-			auto value = get::native_handle(obj.get_handle<object_type>());
-			auto result = WaitForSingleObject(value, time);
+			const auto value = expose::native_handle(obj.get_handle<object_type>());
+			const auto result = ::WaitForSingleObject(value, time);
+
+			// XXX WaitForSingleObject has a particular gle syntax. Look into this.
 			this->update_gle();
 
 			return static_cast<state>(result);
@@ -58,6 +54,7 @@ namespace windows {
 
 		// Multiple object wait
 		// Wait for synchronizable object for the given amount of time
+		// XXX WaitFor...Object has a particular gle syntax. Look into this.
 		//wait::state operator ()(const std::vector<object_type>& objects, time_type time) const
 		//{
 		//	using handle_type = object_type::handle_type;

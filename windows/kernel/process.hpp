@@ -11,16 +11,11 @@ Distributed under the Apache Software License, Version 2.0.
 
 #include <string>
 #include <Windows.h>
+#include <exception>
 
 #include <distant\windows\kernel\object.hpp>
-#include <distant\windows\access_rights.hpp>
-#include <distant\windows\handle.hpp>
-
-#include <distant\windows\system\process_memory.hpp>
 
 #include <distant\utility\type_traits.hpp>
-
-#include <distant\windows\detail\handle_service.hpp>
 
 //#include <distant\memory\vm.h>
 
@@ -34,6 +29,13 @@ namespace distant::windows::kernel {
 	class process : public windows::kernel::object
 	{
 	public:
+		class memory_status;
+		friend memory_status;
+
+	private:
+		using memory_status_t = memory_status;
+
+	public:
 		// Object type information
 		using base_type   = windows::kernel::object;
 
@@ -42,7 +44,7 @@ namespace distant::windows::kernel {
 		using access_rights = access_rights::process;
 
 		using exit_code_type = std::size_t;
-
+		
 		// Process type information
 		using pid_type = std::size_t;
 		using flag_type = access_rights;
@@ -78,37 +80,33 @@ namespace distant::windows::kernel {
 		static pid_type get_pid(const handle_type&);
 
 	public:
-		//====================================//
-		// Process id and access_rights flags //
-		// accessors                          //
-		//====================================//
-		pid_type get_pid()	   const { return m_pid; }
-		flag_type get_access() const { return m_access; }
+		//===================//
+		// Process interface //
+		//===================//
+		pid_type pid()	   const { return m_pid; }
+		flag_type access() const { return m_access; }
 
 		const windows::handle<process>& get_handle() const;
 
 		// Check if the process handle is valid
 		bool valid() const;
 
+		// Terminate the process
 		void terminate() const;
 
-		// Mutates: gle
+		// Query the process handle to see if it is still active
 		bool is_active() const;
-
-		std::size_t get_handle_count() const;
 
 		std::string get_file_path() const;
 
-		void get_status() const;
-		system::process_memory get_memory_status() const;
+		//void get_status() const;
+		memory_status_t memory_status() const;
 
 		// Return the virtual memory of this process
 		//memory::vm get_vm() const { return memory::vm(*this); }
 
 		// Implicitly convertible to a vm
 		//operator memory::vm() const { return this->get_vm(); }
-
-		// Idea: ostream << operator for flag, id, etc
 
 		//=========================//
 		// Process ctors and dtors //
@@ -119,19 +117,22 @@ namespace distant::windows::kernel {
 		// Open process by id
 		explicit process(pid_type id);
 
-		// not copy constructible/assignable
-		process(const process&) = delete;
-		process& operator =(const process&) = delete;
+		process(const process&) = delete; // not copy constructible
+		process& operator =(const process&) = delete; // not copy assignable
 
-		// move constructible/assignable
-		process(process&& other);
-		process& operator =(process&& other);
+		process(process&& other); // move constructible
+		process& operator =(process&& other); // move assignable
 
 		process(handle_type&& handle);
 
-		// Close process handle
-		// Mutates: from invalidate() 
-		~process();
+		//operator const handle_type&
+
+		// Process destructor: Clean up handles and invalidate interior data.
+		// Call Chain:
+		//		1. ~process()
+		//		2. ~object()
+		//		3. ~handle() <-- calls CloseHandle
+		~process() = default;
 
 		template <access_rights T, access_rights U>
 		friend bool operator ==(const process<T>&, const process<U>&);
@@ -139,17 +140,11 @@ namespace distant::windows::kernel {
 		template <access_rights T, access_rights U>
 		friend bool operator !=(const process<T>&, const process<U>&);
 
+		// For use with conditional logic to check for validity of the process
 		explicit operator bool() const;
 
 	private:
 		using expose = distant::detail::attorney::to_handle<process>;
-		// Close process handle and invalidate process object
-		// Mutates: from invalidate() 
-		void close_process();
-
-		// Invalidate process id and handle
-		// Mutates: m_id, m_handle
-		void invalidate();
 
 	protected:
 		// XXX Consider containing a (lazy) list (view?) of threads inside process (so stack unwind would close thread handles first)
@@ -162,6 +157,8 @@ namespace distant::windows::kernel {
 
 } // end namespace distant::windows::kernel
 
+// Include implementation of memory_status
+#include <distant\windows\kernel\process\memory_status.hpp>
 #include <distant\windows\kernel\detail\process.inl>
 
 /* Debug privileges for memory hacking software

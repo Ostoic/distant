@@ -7,7 +7,7 @@ Distributed under the Apache Software License, Version 2.0.
 */
 
 #include <distant\detail\fwd.hpp>
-#include <distant\windows\handle.hpp>
+//#include <distant\windows\handle.hpp>
 
 namespace distant  {
 namespace detail   {

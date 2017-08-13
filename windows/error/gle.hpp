@@ -47,14 +47,9 @@ namespace distant::windows::error {
 		friend std::ostream& operator <<(std::ostream&, const gle&);
 
 	protected:
-		std::string to_string() const
+		std::string format_gle() const
 		{ 
-			return error::format(get_value()); 
-		}
-
-		error_type get_value() const 
-		{
-			return m_error; 
+			return error::format(get_error_code()); 
 		}
 
 		// We use update_gle to explicitly update the gle
@@ -68,7 +63,7 @@ namespace distant::windows::error {
 
 		void update_gle(const gle& other) const 
 		{ 
-			m_error = other.get_value();
+			m_error = other.get_error_code();
 		}
 
 		void set_success() const
@@ -89,7 +84,7 @@ namespace distant::windows::error {
 
 	inline std::ostream& operator <<(std::ostream& stream, const gle& err)
 	{
-		stream << err.to_string();
+		stream << err.format_gle();
 		return stream;
 	}
 

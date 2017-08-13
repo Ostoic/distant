@@ -7,13 +7,7 @@ Distributed under the Apache Software License, Version 2.0.
 */
 
 #include <distant\windows\handle.hpp>
-#include <distant\windows\error\gle.hpp>
-
 #include <distant\windows\detail\handle_service.hpp>
-
-#include <distant\utility\type_traits.hpp>
-
-//#include <distant\detail\fwd.h>
 
 namespace distant::windows::kernel {
 

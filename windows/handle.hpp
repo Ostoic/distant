@@ -14,11 +14,10 @@ Distributed under the Apache Software License, Version 2.0.
 #include <distant\windows\error\gle.hpp>
 #include <distant\utility\literal.hpp>
 #include <distant\utility\type_traits.hpp>
+
 #include <distant\detail\attorney.hpp>
 
 #include <distant\windows\access_rights.hpp>
-
-#include <iostream>
 
 namespace distant {
 namespace windows {

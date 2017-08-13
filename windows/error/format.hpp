@@ -33,7 +33,7 @@ inline std::string format(DWORD error_code)
 
 	std::string message(messageBuffer);
 	LocalFree(messageBuffer);
-	return message;
+	return { message };
 }
 
 } // end namespace distant::windows::error
