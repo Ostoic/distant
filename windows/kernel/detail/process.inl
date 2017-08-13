@@ -156,8 +156,7 @@ namespace distant::windows::kernel {
 	}
 
 	template <access_rights::process T>
-	inline auto 
-	process<T>::memory_status() const
+	inline auto process<T>::memory_status() const
 	{
 		return memory_status_t{ *this };
 	}
