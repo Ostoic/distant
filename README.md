@@ -117,10 +117,7 @@ Last Error: Access is denied.
 # System Snapshots
 
 Accessing data of a snapshot constructs a kernel::object, whose type is passed as a template parameter. This is done via 
-snapshot_iterators, where dereferencing an iterator returns a newly-constructed kernel::object. It is in this sense that
-a system::snapshot is a lazily evaluated range.
-
-Using system::snapshot, it is possible to iterate through a list of kernel objects that are active at the time of 
+snapshot_iterators, where dereferencing an iterator returns a newly-constructed kernel::object. Using system::snapshot, it is possible to iterate through a list of kernel objects that are active at the time of 
 query. Typically this would be done through a call to CreateToolhelp32Snapshot, with the correct flag corresponding
 to the type of object you want to query. Then a do {...} while (Process32Next(...)); loop would suffice for collecting
 the information desired. However, we can simply write a C++11 range-based for loop with the given snapshot object as our
