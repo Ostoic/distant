@@ -20,6 +20,7 @@ namespace distant {
 //		  Also follows Alexandrescu's composable allocator design.
 //		- Finish system::snapshot for threads, heaps
 //		- Fix up memory::vm to work with the new versions of distant::process and distant::handle
+//		- Consider caching process path name / name for efficiency.
 
 // XXX Consider implementing error::gle as a derivation of std::error_code / std::error_conditional.
 // XXX My initial thoughts were to avoid virtual functions, since they probably won't be needed.

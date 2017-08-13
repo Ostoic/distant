@@ -16,24 +16,20 @@ namespace distant::windows {
 	inline constexpr handle<T>::handle(native_type h, flag_type flags)
 		: m_native_handle(h)
 		, m_flags(flags)
-		, m_closed(false)
-	{}
+		, m_closed(false) {}
 
 	// Only allow native coversion via explicit cast/ctor 
 	template <typename T>
 	inline constexpr handle<T>::handle(native_type h)
-		: handle(h, flag_type::inherit)
-	{}
+		: handle(h, flag_type::inherit) {}
 
 	template <typename T>
 	inline constexpr handle<T>::handle()
-		: handle(NULL, flag_type::close_protected)
-	{}
+		: handle(NULL, flag_type::close_protected) {}
 
 	template <typename T>
-	inline constexpr handle<T>::handle(const detail::invalid_t&)
-		: handle()
-	{}
+	inline constexpr handle<T>::handle(detail::invalid_t t)
+		: handle() {}
 
 	// Move constructor
 	template <typename T>

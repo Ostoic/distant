@@ -10,6 +10,7 @@ namespace memory  {
 	class vm;
 
 	// Pointer with mutable address
+	// XXX Should be nested class in memory::vm
 	template <typename T>
 	class value
 	{

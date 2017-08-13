@@ -4,7 +4,7 @@
 
 #include <distant\utility\type_traits.hpp>
 
-#include <distant\windows\kernel\process.hpp>
+//#include <distant\windows\kernel\process.hpp>
 #include <distant\windows\system\detail\tool_help.hpp>
 #include <distant\detail\attorney.hpp>
 
@@ -84,7 +84,7 @@ namespace distant::iterators {
 		using expose = distant::detail::attorney::to_handle<snapshot_iterator>;
 
 		index_type m_index;
-		const HANDLE m_native_snap;
+		HANDLE m_native_snap;
 
 		entry_type m_entry;
 	};

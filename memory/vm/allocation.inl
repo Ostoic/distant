@@ -68,10 +68,10 @@ namespace memory  {
 			// a distant virtual allocation (create or destroy)
 			// If we want portability later, use tag dispatch for 
 			// distant::process with windows::process::access_rights
-			if (m_process.check_permission(process::access_rights::vm_operation))
+			if (m_process.check_permission(access_rights::process::vm_operation))
 			{
 				// Perform virtual operation
-				auto result = op();
+				const auto result = op();
 
 				// Update last error code
 				this->update_gle();

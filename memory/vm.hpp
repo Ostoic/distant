@@ -52,7 +52,7 @@ namespace memory  {
 		// Mutates: gle
 		// Returns: Result of read
 		template <typename T>
-		T read(address_type address)
+		T read(address_type address) const
 		{
 			return this->read<T>(address, sizeof(T));
 		}
@@ -60,11 +60,11 @@ namespace memory  {
 		// Mutates: gle
 		// Returns: Result of read
 		template <typename T>
-		T read(address_type address, size_type bytes_to_read)
+		T read(address_type address, size_type bytes_to_read) const
 		{
 			static_assert(
 				std::is_arithmetic_v<T>,
-				"Type must satisfy std::arithmetic");
+				"Type must satisfy std::is_arithmetic");
 
 			T result = T();
 			SIZE_T bytes_read = 0;
@@ -85,7 +85,7 @@ namespace memory  {
 		// Mutates: gle
 		// Returns: Number of bytes written
 		template <typename T>
-		size_type write(address_type address, const T& to_write)
+		size_type write(address_type address, const T& to_write) const
 		{
 			return this->write<T>(address, to_write, sizeof(T));
 		}
@@ -93,11 +93,11 @@ namespace memory  {
 		// Mutates: gle
 		// Returns: Number of bytes written
 		template <typename T>
-		size_type write(address_type address, const T& to_write, size_type bytes_to_write)
+		size_type write(address_type address, const T& to_write, size_type bytes_to_write) const
 		{
 			static_assert(
 				std::is_arithmetic_v<T>,
-				"Type must satisfy std::arithmetic");
+				"Type must satisfy std::is_arithmetic");
 
 			SIZE_T bytes_written = 0;
 
@@ -119,6 +119,7 @@ namespace memory  {
 		// Return pointer to memory address in vm.
 		// This pointer acts as a regular pointer that is local to the current
 		// process.
+		// XXX Rename to make_ptr
 		template <typename T>
 		pointer<T> ptr(address_type address) { return pointer<T>(*this, address); }
 

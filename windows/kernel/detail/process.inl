@@ -10,6 +10,8 @@ Distributed under the Apache Software License, Version 2.0.
 #include <distant\windows\kernel\process.hpp>
 #include <distant\windows\wait.hpp>
 
+
+// 01312160
 namespace distant::windows::kernel {
 
 //public:
@@ -31,14 +33,8 @@ namespace distant::windows::kernel {
 	{
 		using flag_t = std::underlying_type_t<flag_type>;
 	
-		if (id != 0)
-		{
-			const auto result = ::OpenProcess(static_cast<flag_t>(T), false, id);
-			if (result != NULL)
-				return handle_type(result); // Returns windows::handle with result as value
-		}
-
-		return windows::invalid_handle;
+		const auto result = ::OpenProcess(static_cast<flag_t>(T), false, id);
+		return handle_type(result); // Returns windows::handle with result as value
 	}
 
 	template <access_rights::process T>
@@ -71,7 +67,11 @@ namespace distant::windows::kernel {
 			"Process must have terminate access right");
 
 		if (!this->valid())
-			throw std::invalid_argument(this->format_gle());
+			//throw std::invalid_argument(this->format_gle());
+		{
+			this->set_last_error(ERROR_INVALID_HANDLE);
+			return;
+		}
 
 		const unsigned int exit_code = 0;
 		auto native_handle = expose::native_handle(m_handle);
@@ -102,15 +102,28 @@ namespace distant::windows::kernel {
 		using windows::wait;
 
 		if (!this->valid())
-			throw std::invalid_argument(this->format_gle());
+			//throw std::invalid_argument(this->format_gle());
+		{
+			this->set_last_error(ERROR_INVALID_HANDLE);
+			return false;
+		}
 
 		wait wait_for;
 
 		// Return immediately
-		auto result = wait_for(*this, 0);
+		const auto result = wait_for(*this, 0);
 		this->update_gle(wait_for);
 		return result == wait::state::timeout;
 	}
+
+	template <access_rights::process T>
+	std::string process<T>::name() const
+	{
+		const auto path = get_file_path();
+		const auto start = path.find_last_of('\\');
+		return path.substr(start + 1, path.size() - (start + 1));
+	}
+
 
 	template <access_rights::process T>
 	inline std::string process<T>::get_file_path() const 
@@ -122,7 +135,11 @@ namespace distant::windows::kernel {
 			"Process must have query_information or query_limited_information access rights");
 
 		if (!this->valid())
-			throw std::invalid_argument(this->format_gle());
+			//throw std::invalid_argument(this->format_gle());
+		{
+			this->set_last_error(ERROR_INVALID_HANDLE);
+			return "";
+		}
 
 		const auto native_handle = expose::native_handle(m_handle);
 
@@ -139,7 +156,7 @@ namespace distant::windows::kernel {
 	}
 
 	template <access_rights::process T>
-	inline typename process<T>::memory_status_t 
+	inline auto 
 	process<T>::memory_status() const
 	{
 		return memory_status_t{ *this };
@@ -205,15 +222,9 @@ namespace distant::windows::kernel {
 	template <access_rights::process T, access_rights::process U>
 	inline bool operator ==(const process<T>& lhs, const process<U>& rhs)
 	{
-		return lhs.m_handle == rhs.m_handle &&
+		return /*lhs.m_handle == rhs.m_handle &&*/
 			   lhs.m_pid	== rhs.m_pid;    
 			   //lhs.m_access == rhs.m_access;
-	}
-
-	template <access_rights::process T, access_rights::process U>
-	inline bool operator !=(const process<T>& lhs, const process<U>& rhs)
-	{
-		return !operator==(lhs, rhs);
 	}
 
 	/*template <access_rights::process T>

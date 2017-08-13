@@ -47,7 +47,7 @@ namespace windows {
 
 		// invalid_handle literal ctor
 		constexpr handle();
-		constexpr handle(const detail::invalid_t&);
+		constexpr handle(detail::invalid_t);
 
 		// Only allow native coversion via explicit cast/ctor 
 

@@ -86,6 +86,8 @@ namespace distant::windows::kernel {
 		pid_type pid()	   const { return m_pid; }
 		flag_type access() const { return m_access; }
 
+		std::string name() const;
+
 		const windows::handle<process>& get_handle() const;
 
 		// Check if the process handle is valid
@@ -100,7 +102,7 @@ namespace distant::windows::kernel {
 		std::string get_file_path() const;
 
 		//void get_status() const;
-		memory_status_t memory_status() const;
+		auto memory_status() const;
 
 		// Return the virtual memory of this process
 		//memory::vm get_vm() const { return memory::vm(*this); }

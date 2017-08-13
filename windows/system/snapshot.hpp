@@ -6,12 +6,10 @@ Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
 */
 
-#include <distant\windows\error\gle.hpp>
 #include <distant\windows\handle.hpp>
 #include <distant\windows\detail\handle_service.hpp>
 
 #include <distant\windows\system\detail\tool_help.hpp>
-#include <distant\utility\type_traits.hpp>
 
 #include <distant\iterators\snapshot_iterator.hpp>
 

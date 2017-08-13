@@ -35,28 +35,28 @@ namespace distant::windows::kernel {
 	template <access_rights::process access_t>
 	inline std::size_t process<access_t>::memory_status::private_usage() const
 	{
-		return m_memory_counters.PagefileUsage;
+		return m_memory_counters.PagefileUsage / KB;
 	}
 
 	// Largest private usage over the course its execution
 	template <access_rights::process access_t>
 	inline std::size_t process<access_t>::memory_status::peak_private_usage() const
 	{
-		return m_memory_counters.PeakPagefileUsage;
+		return m_memory_counters.PeakPagefileUsage / KB;
 	}
 
 	// The size of memory occupied by the process in RAM. 
 	template <access_rights::process access_t>
 	inline std::size_t process<access_t>::memory_status::working_set() const
 	{
-		return m_memory_counters.WorkingSetSize;
+		return m_memory_counters.WorkingSetSize / KB;
 	}
 
 	// Largest working set over the course its execution
 	template <access_rights::process access_t>
 	inline std::size_t process<access_t>::memory_status::peak_working_set() const
 	{
-		return m_memory_counters.PeakWorkingSetSize;
+		return m_memory_counters.PeakWorkingSetSize / KB;
 	}
 
 	// Number of page fault errors that have occurred over the course of its execution

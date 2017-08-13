@@ -25,17 +25,17 @@ namespace distant::windows::kernel {
 		explicit memory_status(const process<access_t>& process);
 		//explicit memory_status(const windows::handle<process<access>>& handle);
 
-		// Total amount of memory committed for the process
+		// Total amount of memory (kb) committed for the process
 		std::size_t private_usage() const;
 
-		// Largest private usage over the course its execution
+		// Largest private usage (kb) over the course its execution
 		std::size_t peak_private_usage() const;
 
-		// The size of memory occupied by the process in RAM. 
+		// The size of memory (kb) occupied by the process in RAM. 
 		// See: https://en.wikipedia.org/wiki/Resident_set_size
 		std::size_t working_set() const;
 
-		// Largest working set over the course its execution
+		// Largest working set (kb) over the course its execution
 		std::size_t peak_working_set() const;
 
 		// Number of page fault errors that have occurred over the course of its execution
@@ -45,6 +45,8 @@ namespace distant::windows::kernel {
 		std::size_t handle_count() const;
 		
 	private:
+		static constexpr std::size_t KB = 1024;
+
 		using expose = distant::detail::attorney::to_handle<memory_status>;
 
 		PROCESS_MEMORY_COUNTERS m_memory_counters;
