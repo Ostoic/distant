@@ -43,24 +43,29 @@ template <distant::access_rights::process T>
 void display_info(const distant::process<T>& p)
 {
 	// distant::process is explicitly convertible to bool
-	if (!p)
-	{
-		std::cout << "An error occured while opening process " << p.get_pid() << std::endl;
-
-		// Output a formatted last error message
-		std::cout << "Last Error: " << p.get_last_error() << std::endl;
-	}
-	else
+	if (p)
 	{
 		std::string active_string = (p.is_active()) ? "Active" : "Inactive";
 		// Process information
-		std::cout << "Process " << p.get_pid()	 << std::endl
-		std::cout << "State: "  << active_string << std::endl
-		std::cout << "Active Handles: " << p.get_handle_count() << std::endl;
+		std::cout << "Process " << p.pid() << '\n';
+		std::cout << "State: " << active_string << '\n';
+		std::cout << "Name: " << p.name() << '\n';
 
-		std::cout << "File path: "  << p.get_file_path()  << std::endl;
-		std::cout << "Last error: " << p.get_last_error() << std::endl << std::endl;
+		auto ms = p.memory_status();
+		std::cout << "Private Usage: " << ms.private_usage() << " kb \n";
+		std::cout << "Peak Private Usage: " << ms.peak_private_usage() << " kb \n";
+
+		std::cout << "Working Set: " << ms.working_set() << " kb \n";
+		std::cout << "Peak Working Set: " << ms.peak_working_set() << " kb \n";
+
+		std::cout << "Number of Page Faults: " << ms.page_fault_count() << '\n';
+		std::cout << "Number of Active Handles: " << ms.handle_count() << '\n';
 	}
+	else
+		std::cout << "An error occured while opening process " << p.pid() << '\n';
+
+	// Output a formatted last error message
+	std::cout << "Last error: " << p.get_last_error() << '\n' << '\n';
 }
 
 int main()
@@ -72,7 +77,7 @@ int main()
 	// Request the following process access rights
 	constexpr auto access = 
 		access_rights::query_limited_information |
-		access_rights::synchronize				 |
+		access_rights::synchronize		 |
 		access_rights::vm_read;
 
 	// Open a system process (which has for example, process id 9148),
@@ -143,4 +148,43 @@ else
 	return;
 }
 	
+```
+
+# Search By Executable Name
+
+```c++
+
+auto find_process(const std::string& name)
+{
+	using process = distant::process<>;
+	distant::system::snapshot<process> snapshot;
+
+	if (snapshot)
+	{
+		auto it = std::find_if(snapshot.begin(), snapshot.end(), [&](const auto& p)
+		{
+			return p.name() == name;
+		});
+
+		if (it != snapshot.end()) return *it;
+	}
+
+	return process{};
+}
+
+int main()
+{
+	auto found = find_process("Explorer.exe");
+	
+	if (found)
+	{
+		std::cout << "Explorer.exe found!\n";
+		display_info(found);
+	}
+	else
+		std::cout << "Unable to find process with that name\n";
+		
+	return 0;
+}
+
 ```
