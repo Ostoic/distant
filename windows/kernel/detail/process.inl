@@ -143,7 +143,7 @@ namespace distant::windows::kernel {
 
 		const auto native_handle = expose::native_handle(m_handle);
 
-		char out_path[MAX_PATH];
+		char out_path[MAX_PATH] = "";
 		DWORD max_path = MAX_PATH;
 
 		// 0 indicates: The name should use the Win32 path format.
