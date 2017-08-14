@@ -55,11 +55,16 @@ namespace distant::windows {
 			utility::is_related<T, other_t>::value,
 			"Handle object types are unrelated.");
 
+		// Ensure we don't have a handle leak
+		this->close_handle(); 
+
+		// Copy other's data
 		m_closed = other.m_closed;
 		m_flags = other.m_flags;
 		m_native_handle = other.m_native_handle;
+
+		// Invalidate moved-from handle
 		other.invalidate();
-		// other should die very soon since it is an rvalue
 		return *this;
 	}
 
@@ -70,7 +75,7 @@ namespace distant::windows {
 	{
 		static_assert(
 			is_related<Object_t, other_t>::value,
-			"Handle object types are not related.");
+			"Handle object types are unrelated.");
 
 		return *this;
 	}
@@ -111,7 +116,7 @@ namespace distant::windows {
 		{
 			CloseHandle(m_native_handle);
 			this->invalidate();
-			this->update_gle();
+			//this->update_gle();
 		}
 
 		m_closed = true;

@@ -25,6 +25,8 @@ namespace distant {
 //		  bloat. A possible fix is to reduce the size of member functions of distant::process, and delegate most
 //		  of the work out to "implementation-detail" free functions.
 //		  Examples: http://imgur.com/a/97IAD
+//		  To build on this idea further, each member function would ideally be extremely short (a couple of lines)
+//		  and the free (possibly non-templated) functions would contain all the work.
 
 // Ideas
 // XXX Consider implementing error::gle as a derivation of std::error_code / std::error_conditional.

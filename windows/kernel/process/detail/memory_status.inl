@@ -15,7 +15,7 @@ namespace distant::windows::kernel {
 			process::check_permission(access_rights::vm_read) &&
 				(process::check_permission(access_rights::query_information) ||
 				 process::check_permission(access_rights::query_limited_information)),
-			"Invalid access rights (process_memory::ctor): "
+			"Invalid access rights (memory_status::ctor): "
 			"Process must have vm_read access right, and either query_information or query_limited_information access rights");
 
 		const auto native_handle = expose::native_handle(m_process.get_handle());

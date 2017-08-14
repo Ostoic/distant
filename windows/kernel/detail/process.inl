@@ -117,21 +117,21 @@ namespace distant::windows::kernel {
 	}
 
 	template <access_rights::process T>
-	std::string process<T>::name() const
+	auto process<T>::name() const
 	{
-		const auto path = get_file_path();
-		const auto start = path.find_last_of('\\');
-		return path.substr(start + 1, path.size() - (start + 1));
+		const auto path = file_path();
+		const auto start = path.find_last_of('\\'); // Get file name from directory string
+
+		return path.substr(start + 1);
 	}
 
-
 	template <access_rights::process T>
-	inline std::string process<T>::get_file_path() const 
+	inline std::string process<T>::file_path() const
 	{
 		static_assert(
 			check_permission(access_rights::query_information) ||
 			check_permission(access_rights::query_limited_information),
-			"Invalid access rights (process::get_file_path): "
+			"Invalid access rights (process::file_path): "
 			"Process must have query_information or query_limited_information access rights");
 
 		if (!this->valid())
@@ -143,16 +143,16 @@ namespace distant::windows::kernel {
 
 		const auto native_handle = expose::native_handle(m_handle);
 
-		char out_string[MAX_PATH] = "";
+		char out_path[MAX_PATH];
 		DWORD max_path = MAX_PATH;
 
 		// 0 indicates: The name should use the Win32 path format.
-		if (!::QueryFullProcessImageNameA(native_handle, 0, out_string, &max_path))
+		if (!::QueryFullProcessImageNameA(native_handle, 0, out_path, &max_path))
 			this->update_gle();
 		else
 			this->set_success();
 		
-		return { out_string };
+		return { out_path };
 	}
 
 	template <access_rights::process T>
@@ -173,25 +173,25 @@ namespace distant::windows::kernel {
 	//=========================//
 	// Empty initialize process
 	template <access_rights::process T>
-	inline constexpr process<T>::process() :
-		base_type(), // Empty initialize object
-		m_pid(std::numeric_limits<pid_type>::infinity()),
-		m_access(T) {}
+	inline constexpr process<T>::process()
+		: base_type() // Empty initialize object
+		, m_pid(std::numeric_limits<pid_type>::infinity())
+		, m_access(T) {}
 
 	// Open process by id
 	template <access_rights::process T>
-	inline process<T>::process(pid_type id) :
-		base_type(this->open(id)),
-		m_pid(id),
-		m_access(T)
+	inline process<T>::process(pid_type id) 
+		: base_type(this->open(id))
+		, m_pid(id)
+		, m_access(T)
 	{ this->update_gle(); }
 
 	// Take possession of process handle. It is ensured to be a convertible process handle
 	// due to encoded type in windows::handle.
 	template <access_rights::process T>
-	inline process<T>::process(handle_type&& handle) :
-		base_type(std::move(handle)),			// steal handle
-		m_access(T)					// steal access flags
+	inline process<T>::process(handle_type&& handle) 
+		: base_type(std::move(handle))	// steal handle
+		, m_access(T)					// steal access flags
 	{ m_pid = get_pid(get_handle()); }			// retrieve process id
 												// This is done after initialization to ensure the operation
 												// is performed after moving handle into our possession.
@@ -224,6 +224,12 @@ namespace distant::windows::kernel {
 		return /*lhs.m_handle == rhs.m_handle &&*/
 			   lhs.m_pid	== rhs.m_pid;    
 			   //lhs.m_access == rhs.m_access;
+	}
+
+	template <access_rights::process T, access_rights::process U>
+	inline bool operator !=(const process<T>& lhs, const process<U>& rhs)
+	{
+		return !operator==(lhs, rhs);
 	}
 
 	/*template <access_rights::process T>

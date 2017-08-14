@@ -10,8 +10,10 @@ Distributed under the Apache Software License, Version 2.0.
 #include <limits>
 
 #include <string>
+#include <string_view>
+
 #include <Windows.h>
-#include <exception>
+//#include <exception>
 
 #include <distant\windows\kernel\object.hpp>
 
@@ -73,7 +75,7 @@ namespace distant::windows::kernel {
 		// These functions 
 		//static void terminate(const handle_type&);
 
-		//static std::string get_file_path(const handle_type&);
+		//static std::string file_path(const handle_type&);
 
 		//static std::size_t get_handle_count(const handle_type&);
 
@@ -86,7 +88,7 @@ namespace distant::windows::kernel {
 		pid_type pid()	   const { return m_pid; }
 		flag_type access() const { return m_access; }
 
-		std::string name() const;
+		auto name() const;
 
 		const windows::handle<process>& get_handle() const;
 
@@ -99,7 +101,7 @@ namespace distant::windows::kernel {
 		// Query the process handle to see if it is still active
 		bool is_active() const;
 
-		std::string get_file_path() const;
+		std::string file_path() const;
 
 		//void get_status() const;
 		auto memory_status() const;
@@ -154,6 +156,11 @@ namespace distant::windows::kernel {
 		// XXX Is it important to consider the order of closing a thread from a process? (ie close(thread); close(process) compared with the converse).
 		pid_type m_pid;
 		flag_type m_access;
+
+	private:
+		// XXX std::string doubles the size of distant::process
+		// XXX Size vs. speed tradeoff?
+		//mutable std::string m_file_path_cache;
 
 	}; // end class process
 
