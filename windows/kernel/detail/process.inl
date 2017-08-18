@@ -82,6 +82,7 @@ namespace distant::windows::kernel {
 			check_permission(access_rights::query_limited_information),
 			"Invalid access rights (process::file_path): "
 			"Process must have query_information or query_limited_information access rights");
+<<<<<<< HEAD
 		
 		return process_base::file_path();
 	}
