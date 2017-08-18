@@ -34,7 +34,7 @@ namespace distant::windows::detail {
 
 		bool valid() const
 		{
-			return self()->m_handle.weakly_valid();
+			return self()->m_handle.valid();
 		}
 
 		explicit operator bool() const

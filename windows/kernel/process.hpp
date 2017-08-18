@@ -15,7 +15,7 @@ Distributed under the Apache Software License, Version 2.0.
 #include <Windows.h>
 //#include <exception>
 
-#include <distant\windows\kernel\object.hpp>
+#include <distant\windows\kernel\detail\process_base.hpp>
 
 #include <distant\utility\type_traits.hpp>
 
@@ -28,37 +28,23 @@ namespace distant::windows::kernel {
 	// this library.
 	
 	template <access_rights::process access_t>
-	class process : public windows::kernel::object
+	class process : public windows::kernel::detail::process_base
 	{
 	public:
 		class memory_status;
 		friend memory_status;
 
 	private:
+		using process_base = detail::process_base;
 		using memory_status_t = memory_status;
 
 	public:
-		// Object type information
-		using base_type   = windows::kernel::object;
-
-		using error_type  = typename object_traits<process>::error_type;
-		using handle_type = typename object_traits<process>::handle_type;
-		using access_rights = access_rights::process;
-
-		using exit_code_type = std::size_t;
+		//using handle_type = typename object_traits<process>::handle_type;
 		
-		// Process type information
-		using pid_type = std::size_t;
-		using flag_type = access_rights;
-
+	public:
 		//===========================//
 		// Static process functions  //
 		//===========================//
-		// XXX Consider moving most of these into free functions
-		// XXX Currently these are exposed as part of process objects.
-		// XXX I believe this complicates the interface.
-		// XXX Perhaps move them into an api namespace under kernel (kernel::api).
-	public:
 
 		// Get current process
 		static process get_current();
@@ -67,33 +53,14 @@ namespace distant::windows::kernel {
 		static constexpr bool check_permission(flag_type access);
 
 	protected:
-		static handle_type open(pid_type);
-
 		// XXX Implement
 		static handle_type create();
-
-		// These functions 
-		//static void terminate(const handle_type&);
-
-		//static std::string file_path(const handle_type&);
-
-		//static std::size_t get_handle_count(const handle_type&);
-
-		static pid_type get_pid(const handle_type&);
 
 	public:
 		//===================//
 		// Process interface //
 		//===================//
-		pid_type pid()	   const { return m_pid; }
-		flag_type access() const { return m_access; }
-
-		auto name() const;
-
 		const windows::handle<process>& get_handle() const;
-
-		// Check if the process handle is valid
-		bool valid() const;
 
 		// Terminate the process
 		void terminate() const;
@@ -101,6 +68,7 @@ namespace distant::windows::kernel {
 		// Query the process handle to see if it is still active
 		bool is_active() const;
 
+		auto name() const;
 		std::string file_path() const;
 
 		//void get_status() const;
@@ -120,9 +88,6 @@ namespace distant::windows::kernel {
 
 		// Open process by id
 		explicit process(pid_type id);
-
-		process(const process&) = delete; // not copy constructible
-		process& operator =(const process&) = delete; // not copy assignable
 
 		process(process&& other); // move constructible
 		process& operator =(process&& other); // move assignable
@@ -144,18 +109,8 @@ namespace distant::windows::kernel {
 		template <access_rights T, access_rights U>
 		friend bool operator !=(const process<T>&, const process<U>&);
 
-		// For use with conditional logic to check for validity of the process
-		explicit operator bool() const;
-
 	private:
 		using expose = distant::detail::attorney::to_handle<process>;
-
-	protected:
-		// XXX Consider containing a (lazy) list (view?) of threads inside process (so stack unwind would close thread handles first)
-		// XXX Otherwise provide a function to return a reference to thread handles from this process (but the stack unwind might be problematic)
-		// XXX Is it important to consider the order of closing a thread from a process? (ie close(thread); close(process) compared with the converse).
-		pid_type m_pid;
-		flag_type m_access;
 
 	private:
 		// XXX std::string doubles the size of distant::process

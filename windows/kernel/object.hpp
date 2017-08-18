@@ -6,6 +6,9 @@ Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
 */
 
+#include <distant\windows\error\gle.hpp>
+
+#include <distant\utility\type_traits.hpp>
 #include <distant\windows\handle.hpp>
 #include <distant\windows\detail\handle_service.hpp>
 
@@ -31,8 +34,8 @@ namespace distant::windows::kernel {
 		template <typename other_t>
 		const windows::handle<other_t>& get_handle() const;
 		
-		template <typename other_t>
-		explicit operator const windows::handle<other_t>&() const;
+		//template <typename other_t>
+		//explicit operator const windows::handle<other_t>&() const;
 
 		/*********************************/
 		/** Windows Object constructors **/
@@ -56,7 +59,7 @@ namespace distant::windows::kernel {
 
 	protected:
 		// Determine if the object handle is valid
-		bool weakly_valid() const;
+		bool valid() const;
 
 		void close_object();
 

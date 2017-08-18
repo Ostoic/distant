@@ -56,9 +56,9 @@ namespace windows {
 	template <class T>
 	struct object_traits 
 	{
-		static_assert (
+		/*static_assert (
 			is_kernel_object<T>::value,
-			"Type must derive from kernel::object");
+			"Type must derive from kernel::object");*/
 
 		using handle_type = windows::handle<T>;
 		using error_type  = windows::error::gle;

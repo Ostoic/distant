@@ -18,11 +18,11 @@ namespace distant::windows::kernel {
 	}
 
 	// Performs covariant cast to related handle type
-	template <typename other_t>
+	/*template <typename other_t>
 	inline object::operator const windows::handle<other_t>&() const
 	{ 
 		return get_handle<other_t>(); 
-	}
+	}*/
 
 	/*********************************/
 	/** Windows Object constructors **/
@@ -58,13 +58,13 @@ namespace distant::windows::kernel {
 
 //protected:
 	// Determine if the object handle is valid
-	inline bool object::weakly_valid() const
+	inline bool object::valid() const
 	{
-		return m_handle.weakly_valid();
+		return m_handle.valid();
 	}
 
 	inline void object::close_object()
 	{
-		m_handle.close_handle();
+		m_handle.close();
 	}
 } // end namespace distant::windows::kernel
