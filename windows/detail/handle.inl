@@ -75,7 +75,9 @@ namespace distant::windows {
 			utility::is_related<T, U>::value, // XXX Revise type check
 			"Handle equality operator: Object types must be compatible");
 
-		return handle_base::operator==(lhs, rhs);
+		return operator==(
+			static_cast<const detail::handle_base&>(lhs),
+			static_cast<const detail::handle_base&>(rhs));
 	}
 
 	template <typename T, typename U>
