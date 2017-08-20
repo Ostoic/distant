@@ -140,14 +140,14 @@ int main()
 
 	constexpr auto access = access_rights::vm_read | access_rights::query_information;
 
-	// Open a system process (which has for example, process id 9148),
-	// with the above process access rights.
-	distant::process<access> proc1(12664);
+	// Open processs 1 with pid 7372, and process 2 with pid 12664
+	distant::process<access> proc1(7372);
 	distant::process<access | access_rights::synchronize> proc2(12664);
 
+	// Retrieve the file paths of their executables
 	const auto fp1 = proc1.file_path();
 	const auto fp2 = proc2.file_path();
-
+	
 	printf("File path for proc1 = %s\n", fp1.c_str());
 	printf("File path for proc2 = %s\n", fp2.c_str());
 
@@ -160,7 +160,7 @@ This is a simple example that obtains the file path to the given process' execut
 
 First, a few details about the implementation of distant::process. As we mentioned before, distant::process is a very thin phantom type wrapper around the core functionality of distant::process. The implementation is encapsulated in distant::windows::kernel::detail::process_base, in which every constructor is defined as either _declspec(noinline), or inline. 
 
-We shall first choose to inline all constructors for process_base. Keeping this in mind, we might expect main to call both process<access>::{ctor}} and process<all_access>::{ctor}, which would then both call process_base::{ctor}. Ideally, the compiler would recognize the identical functionality of the wrapper constructors, and remove the first call altogether. However, this behaviour was not observed upon inspection of the (C++ converted) generated assembly:
+We shall first choose to inline all constructors for process_base. Keeping this in mind, we might expect the compiled main to call both process<access>::{ctor}} and process<access | synchronize>::{ctor}, which would then both call process_base::{ctor}. Ideally, the compiler would recognize the identical functionality of the wrapper constructors, and remove the wrapper call altogether. However, this behaviour was not observed upon inspection of the (C++ converted) generated assembly:
 
 The disassembler IDA Pro is used together with the Hex Rays plugin since it is easier to read than the assembly itself
 
@@ -170,24 +170,35 @@ Our first observation is that the compiler has created two identical copies of p
 
 A nice optimization provided by the compiler is that both instantiations of process::file_path compiled into one copy of process::file, and any incompatible phantom types would be implicitly casted into the correct type in order to use that version of file_path. This means that the compiler recognized the identical functionality of each instantiation of process::file_path, which is what we might expect.
 
-For completeness, we include see the list of compiled distant library functions, again proving that the compiler has indeed created two copies of the process constructor: 
+For completeness, we include see the list of compiled distant library functions, again proving that the compiler has indeed created two copies of the process constructor:
 
 ![alt text](http://i.imgur.com/kv16cVs.png)
 
-1CCC
-Our first observation is that the process with pid 12664 (0x3178u in hex) is constructed directly through process_base, which is 
+We see that the compiler has inlined the call to process_base::{ctor}.
 
+Next, we shall compile the implementation of process_base that uses the _declspec(noinline) keyword, to forbid the compiler from inlining the process_base constructors:
 
+![alt text](http://i.imgur.com/KF4eLrh.png)
+
+This time we observe that both processes are constructed directly through process_base, meaning the call to process::{ctor} has been inlined by the compiler. This is the ideal situation in order to reduce code bloat. The process_base constructor is first called with process id 7372 (0x1CCC), and then with process id 12664 (0x3178).
+
+Again, the compiler provides us with this nice reinterpret_cast optimization.
+
+We see that in the list of compiled distant library functions, no distant::process constructor is compiled, effectively combining both previous distant::process constructors (1024 and 1024614) into a single call to the base constructor:
+
+![alt text](http://i.imgur.com/ywKDIkg.png)
 
 The output for running both the inlined and noinlined versions is as follows:
-It seems that Adobe Reader was involved in the crossfire.
+
+(Chrome and Adobe Reader were the processes with pids 7372 and 12664 at the time of running the tests)
 
 ```
-main = 0xe311f0
-File path for current = C:\Users\Owner\Documents\Visual Studio 2017\Projects\distance dev\Release\distance dev.exe
-File path for proc = C:\Program Files (x86)\Common Files\Adobe\ARM\1.0\AdobeARM.exe
+File path for proc1 = C:\Program Files (x86)\Google\Chrome\Application\chrome.exe
+File path for proc2 = C:\Program Files (x86)\Common Files\Adobe\ARM\1.0\AdobeARM.exe
 ```
+In conclusion, this might seem to be extremely pedantic, but even so, it is interesting to investigate. As a library writer, it is important to understand how your library could possibly be used by compilers, and to provide the best possible compatibility. 
 
+In this case, the compiler seems to inline the deepest nested function call first, then continue upwards to the highest level, possibly inlining function calls along the way. It is probably a good idea to let the compiler perform its optimizations despite our investigations. Moreover, this also shows that the compiler will be able to significantly reduce code bloat to the point of becoming a non-issue.
 
 # System Snapshots
 
