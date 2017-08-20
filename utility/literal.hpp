@@ -55,6 +55,6 @@ namespace distant::utility {
 
 	// Literal on right, type on left
 	template <typename T, typename L>
-	inline constexpr bool operator!=(const T& lhs, const Literal<T>& rhs) { return operator!=(rhs, lhs); }
+	inline constexpr bool operator!=(const T& lhs, const Literal<T>& rhs) { return !operator==(lhs, rhs); }
 	
 } // end namespace distant::utility

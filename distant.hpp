@@ -35,5 +35,3 @@ namespace distant {
 // XXX computation-intensive manner (I think).
 
 // XXX Consider caching process file_path / name for efficiency.
-
-// XXX Create handle_base for main implementation, and write distant::handle as a wrapper with enriched type information

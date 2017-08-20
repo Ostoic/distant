@@ -6,8 +6,10 @@ the Windows operating system, with standard compliance and type safety in mind.
 
 Following the Windows "Access-Control Model", certain operations on process objects require
 specific access rights to perform said operations. We can statically check access rights
-at compile-time to at least ensure proper access is requested when opening a process. This 
-is done through templated process access rights.
+at compile-time using a kind of "phantom type" to at least ensure proper access is requested when opening a process. 
+The access rights template parameter is not entirely a phantom type, since it is actually used 
+within the class itself, but it also serves a purpose similar to what phantom types do. Let us 
+look at some of the benefits we might see when using templated access rights.
 
 Suppose we would like to open the current process with the query_information access right. 
 The following code would suffice in this request:
@@ -114,6 +116,51 @@ An error occured while opening process 9148
 Last Error: Access is denied.
 ```
 
+# A Remark About Code Bloat
+
+Although we would like to rely on the compiler properly "optimizing out" the access rights as a template parameter,
+so as to reduce the compiler creating a class for every used access right in the program, it is sometimes the case
+that such copies will creep their way into binaries. Such a case was observed when using Visual Studio 2017 with the
+following program:
+
+```c++
+int main()
+{
+	// Use the process access_rights enum exclusively
+	using access_rights = distant::access_rights::process;
+	using process = distant::process<>;
+
+	// Attempt to get information to perform a virtual memory read, and 
+	// process query information, which are both required for process::file_path()
+	constexpr auto access = access_rights::vm_read
+						  | access_rights::query_information;
+
+	// Open the process which has pid 12664
+	distant::process<access> proc(12664);
+
+	// Open the current process with all_access
+	const auto current = process::get_current();
+
+	const auto cur_fp = current.file_path();
+	const auto proc_fp = proc.file_path();
+
+	printf("File path for current = %s\n", cur_fp.c_str());
+	printf("File path for proc = %s\n", proc_fp.c_str());
+	
+	return 0;
+}
+```
+
+The output for running both inlined and noinlined versions is as follows:
+
+```
+main = 0xe311f0
+File path for current = C:\Users\Owner\Documents\Visual Studio 2017\Projects\distance dev\Release\distance dev.exe
+File path for proc = C:\Program Files (x86)\Common Files\Adobe\ARM\1.0\AdobeARM.exe
+```
+
+It seems that Adobe Reader must have gotten caught in our tests. 
+
 # System Snapshots
 
 Accessing data of a snapshot constructs a kernel::object, whose type is passed as a template parameter. This is done via 
@@ -146,7 +193,6 @@ else
 }
 	
 ```
-
 # Search By Executable Name
 
 ```c++

@@ -56,7 +56,7 @@ namespace distant::windows::kernel {
 		// This is required to call WaitForSingleObject
 		static_assert(
 			check_permission(access_rights::synchronize),
-			"Invalid access rights (process::is_running): "
+			"Invalid access rights (process::is_active): "
 			"Process must have synchronize access right");
 
 		return process_base::is_active();
@@ -68,7 +68,7 @@ namespace distant::windows::kernel {
 		static_assert(
 			check_permission(access_rights::query_information) ||
 			check_permission(access_rights::query_limited_information),
-			"Invalid access rights (process::file_path): "
+			"Invalid access rights (process::name): "
 			"Process must have query_information or query_limited_information access rights");
 
 		return process_base::name();
@@ -96,7 +96,7 @@ namespace distant::windows::kernel {
 	inline const windows::handle<process<T>>& 
 	process<T>::get_handle() const 
 	{ 
-		return object::get_handle<process<T>>(); 
+		return object::get_handle<process>(); 
 	}
 
 	//=========================//
@@ -108,8 +108,8 @@ namespace distant::windows::kernel {
 		: process_base() {}
 
 	// Open process by id
-	template <access_rights::process T>
-	inline process<T>::process(pid_type id) 
+	template <access_rights::process T>	
+	inline process<T>::process(pid_type id)
 		: process_base(id, T) {}
 
 	// Take possession of process handle. It is ensured to be a convertible process handle

@@ -109,14 +109,6 @@ namespace distant::windows::kernel {
 		template <access_rights T, access_rights U>
 		friend bool operator !=(const process<T>&, const process<U>&);
 
-	private:
-		using expose = distant::detail::attorney::to_handle<process>;
-
-	private:
-		// XXX std::string doubles the size of distant::process
-		// XXX Size vs. speed tradeoff?
-		//mutable std::string m_file_path_cache;
-
 	}; // end class process
 
 } // end namespace distant::windows::kernel
