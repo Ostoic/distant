@@ -115,6 +115,77 @@ System Process:
 An error occured while opening process 9148
 Last Error: Access is denied.
 ```
+# System Snapshots
+
+Accessing data of a snapshot constructs a kernel::object, whose type is passed as a template parameter. This is done via 
+snapshot_iterators, where dereferencing an iterator returns a newly-constructed kernel::object. Using system::snapshot, it is possible to iterate through a list of kernel objects that are active at the time of 
+query. Typically this would be done through a call to CreateToolhelp32Snapshot, with the correct flag corresponding
+to the type of object you want to query. Then a do {...} while (Process32Next(...)); loop would suffice for collecting
+the information desired. However, we can simply write a C++11 range-based for loop with the given snapshot object as our
+range.
+
+# Traversing the Process List
+```c++
+// When iterating through each process, attempt to open the process with access_rights::all_access.
+using process = distant::process<>;
+
+// Create a system snapshot of all currently active processes
+distant::system::snapshot<process> snapshot;
+
+if (snapshot)
+{
+	// Display information about each proccess
+	// Note: display_info is as defined as in the first example above
+	// display_info also performs the correct error handling
+	for (auto proc : snapshot)
+		display_info(proc);
+}
+else
+{
+	std::cout << "Unable to create system::snapshot: " << snapshot.get_last_error() << std::endl;
+	return;
+}
+	
+```
+# Search By Executable Name
+
+```c++
+
+auto find_process(const std::string& name)
+{
+	using process = distant::process<>;
+	distant::system::snapshot<process> snapshot;
+
+	if (snapshot)
+	{
+		auto it = std::find_if(snapshot.begin(), snapshot.end(), [&](const auto& p)
+		{
+			return p.name() == name;
+		});
+
+		if (it != snapshot.end()) return *it;
+	}
+
+	return process{};
+}
+
+int main()
+{
+	auto found = find_process("Explorer.exe");
+	
+	if (found)
+	{
+		std::cout << "Explorer.exe found!\n";
+		display_info(found);
+	}
+	else
+		std::cout << "Unable to find process with that name\n";
+		
+	return 0;
+}
+
+```
+
 
 # On Potential Code Bloat of distant::process<uint>
 
@@ -196,77 +267,6 @@ The output for running both the inlined and noinlined versions is as follows:
 File path for proc1 = C:\Program Files (x86)\Google\Chrome\Application\chrome.exe
 File path for proc2 = C:\Program Files (x86)\Common Files\Adobe\ARM\1.0\AdobeARM.exe
 ```
-In conclusion, this might seem to be extremely pedantic, but even so, it is interesting to investigate. As a library writer, it is important to understand how your library could possibly be used by compilers, and to provide the best possible compatibility. 
+In conclusion, this might seem to be extremely pedantic, but even so it is interesting to investigate. As a library writer, it is important to understand how your library could possibly be used by compilers, and to provide the best possible compatibility. 
 
 In this case, the compiler seems to inline the deepest nested function call first, then continue upwards to the highest level, possibly inlining function calls along the way. It is probably a good idea to let the compiler perform its optimizations despite our investigations. Moreover, this also shows that the compiler will be able to significantly reduce code bloat to the point of becoming a non-issue.
-
-# System Snapshots
-
-Accessing data of a snapshot constructs a kernel::object, whose type is passed as a template parameter. This is done via 
-snapshot_iterators, where dereferencing an iterator returns a newly-constructed kernel::object. Using system::snapshot, it is possible to iterate through a list of kernel objects that are active at the time of 
-query. Typically this would be done through a call to CreateToolhelp32Snapshot, with the correct flag corresponding
-to the type of object you want to query. Then a do {...} while (Process32Next(...)); loop would suffice for collecting
-the information desired. However, we can simply write a C++11 range-based for loop with the given snapshot object as our
-range.
-
-# Traversing the Process List
-```c++
-// When iterating through each process, attempt to open the process with access_rights::all_access.
-using process = distant::process<>;
-
-// Create a system snapshot of all currently active processes
-distant::system::snapshot<process> snapshot;
-
-if (snapshot)
-{
-	// Display information about each proccess
-	// Note: display_info is as defined as in the first example above
-	// display_info also performs the correct error handling
-	for (auto proc : snapshot)
-		display_info(proc);
-}
-else
-{
-	std::cout << "Unable to create system::snapshot: " << snapshot.get_last_error() << std::endl;
-	return;
-}
-	
-```
-# Search By Executable Name
-
-```c++
-
-auto find_process(const std::string& name)
-{
-	using process = distant::process<>;
-	distant::system::snapshot<process> snapshot;
-
-	if (snapshot)
-	{
-		auto it = std::find_if(snapshot.begin(), snapshot.end(), [&](const auto& p)
-		{
-			return p.name() == name;
-		});
-
-		if (it != snapshot.end()) return *it;
-	}
-
-	return process{};
-}
-
-int main()
-{
-	auto found = find_process("Explorer.exe");
-	
-	if (found)
-	{
-		std::cout << "Explorer.exe found!\n";
-		display_info(found);
-	}
-	else
-		std::cout << "Unable to find process with that name\n";
-		
-	return 0;
-}
-
-```
