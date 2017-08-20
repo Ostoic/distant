@@ -116,17 +116,26 @@ An error occured while opening process 9148
 Last Error: Access is denied.
 ```
 
-# A Remark About Code Bloat
+# On Potential Code Bloat of distant::process<uint>
 
-Although we would like to rely on the compiler properly "optimizing out" the access rights as a template parameter,
-so as to reduce the compiler creating a class for every used access right in the program, it is sometimes the case
-that such copies will creep their way into binaries. Such a case was observed when using Visual Studio 2017 with the
-following program:
+For each instantiation of the class template distant::process<access_rights>, a copy of that class is created.
+This is the purpose of templates, to provide a generic blueprint of a piece of code where upon its instantiation, that particular
+version of the code is created for the instantiated type. Although we enjoy the type safety provided by creating distant::process
+a class template (phantom type), the above situation is undesirable. The implementation of distant::process depends very loosely on its templated access rights, so we can assume process<1> will act identically to process<2>, however they will have their own copies of their implementation, which is wasteful.
+
+Indeed, this seems to be an issue for the phantom type idiom, as the encoded type is no more than a compile-time identifier to help improve the safety of the code you write. Despite this issue, we can usually rely on the fact that the compiler is a brilliant assembler to "optimize out" the phantom type, or in our case, the access rights for the process. However, depending on the sophistication of the compiler you are using (in my case Visual C++), this is not always the case. 
+
+Moreover if this situation occurs, there is a possible 16! explosion of template instantiations (if you are irresponsible, to say the least) that will inflict pain upon your compiler. Thus, our main resolve is to minimize the amount of code to be copied by the compiler if this happens. Moving the core functionality into a base class, and keeping the phantom type class as a thin wrapper around the base.
+
+Although we would like to rely on the compiler properly "optimizing out" the access rights as a template parameter it is sometimes
+the case that copies of each instantiation will creep their way into our binaries, despite their equivalent behaviour. Let us investigate how a compiler might deal with this situation. Armed with nothing but Visual Studio 2017, the following program was compiled on release mode with full program optimization enabled. 
+
+(Note that we use printf instead of std::cout to improve readability of the generated assembly that we shall see)
 
 ```c++
 int main()
 {
-	// Use the process access_rights enum exclusively
+	// Use process access_rights exclusively
 	using access_rights = distant::access_rights::process;
 	using process = distant::process<>;
 
@@ -150,6 +159,15 @@ int main()
 	return 0;
 }
 ```
+
+This is a simple example that obtains the file path to the given process' executable file. We create two distant::process objects, both with differing access rights. The former is the process with process id (pid) 12664 with vm_read and query_information access rights, and the latter is the current process, with all access requested. Again, we omit any error checking for readability of the generated assembly we will be looking at. However, we will change the implementation of distant::process slightly so as to observe the affects of how the compiler inlines our code.
+
+First, a few details about the implementation of distant::process. As we mentioned before, distant::process is a class templated that is a very thin wrapper around the core functionality of distant::process. The implementation is encapsulated in distant::windows::kernel::detail::process_base, in which every constructor is declared inline. Keeping this in mind, we might expect main to call both process<access>::{ctor}} and process<all_access>::{ctor}, which would then both call process_base::{ctor}. Ideally, the compiler would recognize the identical functionality of the wrapper constructors, and remove the first call altogether. However, this behaviour was not observed upon inspection of the (C++ converted) generated assembly:
+
+(The disassembler IDA Pro is used together with the Hex Rays plugin since it is easier to read than the assembly itself)
+
+![alt text](http://i.imgur.com/7zHTcKw.png)
+
 
 The output for running both inlined and noinlined versions is as follows:
 
