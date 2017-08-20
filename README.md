@@ -130,46 +130,57 @@ Moreover if this situation occurs, there is a possible 16! explosion of template
 Although we would like to rely on the compiler properly "optimizing out" the access rights as a template parameter it is sometimes
 the case that copies of each instantiation will creep their way into our binaries, despite their equivalent behaviour. Let us investigate how a compiler might deal with this situation. Armed with nothing but Visual Studio 2017, the following program was compiled on release mode with full program optimization enabled. 
 
-(Note that we use printf instead of std::cout to improve readability of the generated assembly that we shall see)
+Note that we use printf instead of std::cout to improve readability of the generated assembly that we shall see
 
 ```c++
 int main()
 {
-	// Use process access_rights exclusively
+	// Contains access rights for various windows objects
 	using access_rights = distant::access_rights::process;
-	using process = distant::process<>;
 
-	// Attempt to get information to perform a virtual memory read, and 
-	// process query information, which are both required for process::file_path()
-	constexpr auto access = access_rights::vm_read
-						  | access_rights::query_information;
+	constexpr auto access = access_rights::vm_read | access_rights::query_information;
 
-	// Open the process which has pid 12664
-	distant::process<access> proc(12664);
+	// Open a system process (which has for example, process id 9148),
+	// with the above process access rights.
+	distant::process<access> proc1(12664);
+	distant::process<access | access_rights::synchronize> proc2(12664);
 
-	// Open the current process with all_access
-	const auto current = process::get_current();
+	const auto fp1 = proc1.file_path();
+	const auto fp2 = proc2.file_path();
 
-	const auto cur_fp = current.file_path();
-	const auto proc_fp = proc.file_path();
+	printf("File path for proc1 = %s\n", fp1.c_str());
+	printf("File path for proc2 = %s\n", fp2.c_str());
 
-	printf("File path for current = %s\n", cur_fp.c_str());
-	printf("File path for proc = %s\n", proc_fp.c_str());
-	
+	//std::cin.get();
 	return 0;
 }
 ```
 
 This is a simple example that obtains the file path to the given process' executable file. We create two distant::process objects, both with differing access rights. The former is the process with process id (pid) 12664 with vm_read and query_information access rights, and the latter is the current process, with all access requested. Again, we omit any error checking for readability of the generated assembly we will be looking at. However, we will change the implementation of distant::process slightly so as to observe the affects of how the compiler inlines our code.
 
-First, a few details about the implementation of distant::process. As we mentioned before, distant::process is a class templated that is a very thin wrapper around the core functionality of distant::process. The implementation is encapsulated in distant::windows::kernel::detail::process_base, in which every constructor is declared inline. Keeping this in mind, we might expect main to call both process<access>::{ctor}} and process<all_access>::{ctor}, which would then both call process_base::{ctor}. Ideally, the compiler would recognize the identical functionality of the wrapper constructors, and remove the first call altogether. However, this behaviour was not observed upon inspection of the (C++ converted) generated assembly:
+First, a few details about the implementation of distant::process. As we mentioned before, distant::process is a very thin phantom type wrapper around the core functionality of distant::process. The implementation is encapsulated in distant::windows::kernel::detail::process_base, in which every constructor is defined as either _declspec(noinline), or inline. 
 
-(The disassembler IDA Pro is used together with the Hex Rays plugin since it is easier to read than the assembly itself)
+We shall first choose to inline all constructors for process_base. Keeping this in mind, we might expect main to call both process<access>::{ctor}} and process<all_access>::{ctor}, which would then both call process_base::{ctor}. Ideally, the compiler would recognize the identical functionality of the wrapper constructors, and remove the first call altogether. However, this behaviour was not observed upon inspection of the (C++ converted) generated assembly:
 
-![alt text](http://i.imgur.com/7zHTcKw.png)
+The disassembler IDA Pro is used together with the Hex Rays plugin since it is easier to read than the assembly itself
+
+![alt text](http://i.imgur.com/EeoY0dO.png)
+
+Our first observation is that the compiler has created two identical copies of process::{ctor}, which is a consequence of encoding the access rights into its type. The process with access rights 1040 (vm_read | query_information) is constructed first, followed by the process with access rights 1049616 (vm_read | query_information | synchronize). We see that the disassembled C++ version did not pick up the initialized process ids of 7372 and 12664, which are certainly noticeable in the assembly of main (http://i.imgur.com/0w6i5Kb.png if you would like to see).
+
+A nice optimization provided by the compiler is that both instantiations of process::file_path compiled into one copy of process::file, and any incompatible phantom types would be implicitly casted into the correct type in order to use that version of file_path. This means that the compiler recognized the identical functionality of each instantiation of process::file_path, which is what we might expect.
+
+For completeness, we include see the list of compiled distant library functions, again proving that the compiler has indeed created two copies of the process constructor: 
+
+![alt text](http://i.imgur.com/kv16cVs.png)
+
+1CCC
+Our first observation is that the process with pid 12664 (0x3178u in hex) is constructed directly through process_base, which is 
 
 
-The output for running both inlined and noinlined versions is as follows:
+
+The output for running both the inlined and noinlined versions is as follows:
+It seems that Adobe Reader was involved in the crossfire.
 
 ```
 main = 0xe311f0
@@ -177,7 +188,6 @@ File path for current = C:\Users\Owner\Documents\Visual Studio 2017\Projects\dis
 File path for proc = C:\Program Files (x86)\Common Files\Adobe\ARM\1.0\AdobeARM.exe
 ```
 
-It seems that Adobe Reader must have gotten caught in our tests. 
 
 # System Snapshots
 
