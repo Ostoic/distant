@@ -6,15 +6,23 @@ Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
 */
 
-#include <Windows.h>
+#include <windows.h>
 
 #include <distant\utility\enum_operators.hpp>
 
-namespace distant {
-namespace windows {
+namespace distant::windows {
 
 struct access_rights
 {
+	enum class standard
+	{
+		Delete = DELETE,
+		read_control = READ_CONTROL,
+		synchronize = SYNCHRONIZE,
+		write_dac = WRITE_DAC,
+		writer_owner = WRITE_OWNER
+	};
+
 	enum class process
 	{
 		all_access = PROCESS_ALL_ACCESS,
@@ -38,17 +46,35 @@ struct access_rights
 
 		synchronize = SYNCHRONIZE,
 	};
+	
+	enum class token
+	{
+		adjust_default = TOKEN_ADJUST_DEFAULT, 		// Required to change the default owner, primary group, or DACL of an access token.
+		adjust_groups = TOKEN_ADJUST_GROUPS,		// Required to adjust the attributes of the groups in an access token.
+		adjust_privileges = TOKEN_ADJUST_PRIVILEGES,// Required to enable or disable the privileges in an access token.
+		adjust_sessionId = TOKEN_ADJUST_SESSIONID,	// Required to adjust the session ID of an access token. The SE_TCB_NAME privilege is required.
+		assign_primary = TOKEN_ASSIGN_PRIMARY,		// Required to attach a primary token to a process. The SE_ASSIGNPRIMARYTOKEN_NAME privilege is also required to accomplish this task.
+		duplicate = TOKEN_DUPLICATE,				// Required to duplicate an access token.
+		execute = TOKEN_EXECUTE,					// Combines STANDARD_RIGHTS_EXECUTE and TOKEN_IMPERSONATE.
+		impersonate = TOKEN_IMPERSONATE,			// Required to attach an impersonation access token to a process.
+		query = TOKEN_QUERY,						// Required to query an access token.
+		query_source = TOKEN_QUERY_SOURCE,			// Required to query the source of an access token.
+		read = TOKEN_READ,							// Combines STANDARD_RIGHTS_READ and TOKEN_QUERY.
+		write = TOKEN_WRITE,						// Combines STANDARD_RIGHTS_WRITE, TOKEN_ADJUST_PRIVILEGES, TOKEN_ADJUST_GROUPS, and TOKEN_ADJUST_DEFAULT.
+		all_access = TOKEN_ALL_ACCESS				// Combines all possible access rights for a token.
+		
+	};
 
 	enum class handle
 	{
 		inherit = HANDLE_FLAG_INHERIT,					  // Child process will inherit object handle
 		close_protected = HANDLE_FLAG_PROTECT_FROM_CLOSE, // Prevent CloseHandle from closing handle
 	};
-
 };
 
-// Define flag operators for use with access_rights::process
+// Define flag operators for use with conforming access_rights
 DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(access_rights::process);
+DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(access_rights::token);
+DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(access_rights::standard);
 
-} // end namespace windows
-} // end namespace distant
+} // end namespace distant::windows

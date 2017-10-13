@@ -20,13 +20,6 @@ namespace distant {
 //		  Also follows Alexandrescu's composable allocator design.
 //		- Finish system::snapshot for threads, heaps, modules
 //		- Fix up memory::vm to work with the new versions of distant::process and distant::handle
-//		- Find way to reduce code bloat in distant::process. This isn't currently a problem, but seeing 
-//		  as each function is copied for each unique access_right combination, this could lead to considerable 
-//		  bloat. A possible fix is to reduce the size of member functions of distant::process, and delegate most
-//		  of the work out to "implementation-detail" free functions.
-//		  Examples of possible bloat: http://imgur.com/a/97IAD
-//		  To build on this idea further, each member function would ideally be extremely short (a couple of lines)
-//		  and the free (possibly non-templated) functions would contain all the work.
 
 // Ideas
 // XXX Consider implementing error::gle as a derivation of std::error_code / std::error_conditional.

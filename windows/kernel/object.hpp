@@ -15,8 +15,7 @@ Distributed under the Apache Software License, Version 2.0.
 namespace distant::windows::kernel {
 
 	// Base class for all windows kernel objects
-	class object : 
-		public error::gle
+	class object : public error::gle
 		//public windows::detail::handle_service<object>
 	{
 	public:
@@ -52,7 +51,7 @@ namespace distant::windows::kernel {
 		object& operator =(object&& other);
  
 		// Calls handle destructor
-		~object() {}
+		~object() = default;
 
 		//friend bool operator ==(const kernel::object&, const kernel::object&);
 		//friend bool operator !=(const kernel::object&, const kernel::object&);

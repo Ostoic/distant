@@ -8,9 +8,7 @@ Distributed under the Apache Software License, Version 2.0.
 
 #include <cstddef>
 #include <limits>
-
-#include <string>
-#include <string_view>
+#include <string>>
 
 #include <Windows.h>
 //#include <exception>
@@ -23,10 +21,8 @@ Distributed under the Apache Software License, Version 2.0.
 
 namespace distant::windows::kernel {
 	
-	// Windows process object extending a kernel securable object.
-	// This is the main class to use when querying process information in 
-	// this library.
-	
+	// Windows process object.
+	// Used to interact with windows processes
 	template <access_rights::process access_t>
 	class process : public windows::kernel::detail::process_base
 	{
@@ -68,17 +64,13 @@ namespace distant::windows::kernel {
 		// Query the process handle to see if it is still active
 		bool is_active() const;
 
-		auto name() const;
+		std::string name() const;
 		std::string file_path() const;
 
-		//void get_status() const;
 		auto memory_status() const;
 
 		// Return the virtual memory of this process
 		//memory::vm get_vm() const { return memory::vm(*this); }
-
-		// Implicitly convertible to a vm
-		//operator memory::vm() const { return this->get_vm(); }
 
 		//=========================//
 		// Process ctors and dtors //
@@ -92,7 +84,7 @@ namespace distant::windows::kernel {
 		process(process&& other); // move constructible
 		process& operator =(process&& other); // move assignable
 
-		process(handle_type&& handle);
+		explicit process(handle_type&& handle);
 
 		//operator const handle_type&
 

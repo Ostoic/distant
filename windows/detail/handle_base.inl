@@ -10,7 +10,7 @@ Distributed under the Apache Software License, Version 2.0.
 
 namespace distant::windows::detail {
 
-	//public:
+//public:
 	// Only allow native coversion via explicit cast/ctor 
 	inline constexpr handle_base::handle_base(native_type h, flag_type flags)
 		: m_native_handle(h)
@@ -41,25 +41,15 @@ namespace distant::windows::detail {
 	}
 
 	inline bool handle_base::close_protected() const
-	{
-		return m_flags == flag_type::close_protected;
-	}
+	{ return m_flags == flag_type::close_protected; }
 
 	inline bool handle_base::closed() const
-	{
-		return m_closed;
-	}
+	{ return m_closed; }
 
-	// This weak validity should only be used for validating the handle's numeric value.
-	// This does not ensure the handle is from a valid object.
 	inline bool handle_base::valid() const
-	{
-		return m_native_handle != NULL;
-	}
+	{ return m_native_handle != NULL; }
 
 	// Close the handle, if it is weakly valid and its closure wasn't observed
-	// Note: This function is public since handles occasionally need to be closed before the
-	// stack unwind.
 	inline void handle_base::close()
 	{
 		// TODO: Query WinAPI for kernel object reference count
@@ -75,11 +65,6 @@ namespace distant::windows::detail {
 		m_closed = true;
 	}
 
-	// Numerically invalidate and close protect our handle.
-	// According to "Windows Via C\C++" by Jeffrey Richter,
-	// setting the handle to null is preferable to invalid_handle
-	// after closing the handle. This is probably because some API
-	// calls take invalid_handle as the current process.
 	inline void handle_base::invalidate()
 	{
 		protect();
@@ -90,6 +75,14 @@ namespace distant::windows::detail {
 	{
 		m_flags = flag_type::close_protected;
 	}
+
+	inline handle_base::native_type 
+	handle_base::native_handle() const 
+	{ return m_native_handle; }
+
+	inline handle_base::flag_type 
+	handle_base::flags() const 
+	{ return m_flags; }
 
 //free:
 	inline constexpr bool operator ==(const handle_base& lhs, const handle_base& rhs)

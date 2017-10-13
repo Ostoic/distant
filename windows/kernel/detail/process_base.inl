@@ -10,7 +10,7 @@ Distributed under the Apache Software License, Version 2.0.
 #include <distant\windows\kernel\detail\process_base.hpp>
 #include <distant\windows\wait.hpp>
 
-#define FORBID_INLINE /*__declspec(noinline)*/
+#define FORBID_INLINE __declspec(noinline)
 
 namespace distant::windows::kernel::detail {
 
@@ -146,13 +146,15 @@ namespace distant::windows::kernel::detail {
 	// completely optimized out.
 
 	// Empty initialize process
-	FORBID_INLINE constexpr process_base::process_base()
+	FORBID_INLINE 
+	constexpr process_base::process_base()
 		: base_type() // Empty initialize object
 		, m_pid(std::numeric_limits<pid_type>::infinity())
 		, m_access() {}
 
 	// Open process by id
-	FORBID_INLINE process_base::process_base(pid_type id, access_rights access)
+	FORBID_INLINE 
+	process_base::process_base(pid_type id, access_rights access)
 		: base_type(this->open(id, access))
 		, m_pid(id)
 		, m_access(access)
@@ -160,19 +162,22 @@ namespace distant::windows::kernel::detail {
 
 	// Take possession of process handle. It is ensured to be a convertible process handle
 	// due to encoded type in windows::handle.
-	FORBID_INLINE process_base::process_base(handle_type&& handle, access_rights access)
+	FORBID_INLINE 
+	process_base::process_base(handle_type&& handle, access_rights access)
 		: base_type(std::move(handle))	// steal handle
 		, m_access(access)				
 	{ m_pid = get_pid(get_handle<process_base>()); }	// retrieve process id
 				// This is done after initialization to ensure the operation
 				// is performed after moving handle into our possession.
 
-	FORBID_INLINE process_base::process_base(process_base&& other) :
+	FORBID_INLINE 
+	process_base::process_base(process_base&& other) :
 		base_type(std::move(other)),
 		m_pid(std::move(other.m_pid)),
 		m_access(std::move(other.m_access)) {} // XXX Choose weakest access rights or produce error about incompatible access rights
 
-	FORBID_INLINE process_base& process_base::operator=(process_base&& other)
+	FORBID_INLINE 
+	process_base& process_base::operator=(process_base&& other)
 	{
 		base_type::operator=(std::move(other)); // This should invalide other
 		m_access = other.m_access;

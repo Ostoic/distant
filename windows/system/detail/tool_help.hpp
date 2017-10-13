@@ -10,12 +10,12 @@ namespace distant::windows::system::detail {
 
 	// get_snapshot process tag implementation
 	template <typename Object_t, typename Snapshot_t>
-	inline windows::handle<Snapshot_t> get_snapshot(process_tag tag)
+	inline windows::handle<Snapshot_t> get_snapshot(windows::detail::process_tag tag)
 	{
 		static_cast<void>(tag);
 
 		// Create a snapshot of all processes that we are allowed to see
-		auto native_handle = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+		const auto native_handle = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 		if (native_handle == INVALID_HANDLE_VALUE)
 			return windows::invalid_handle;
 
@@ -34,7 +34,7 @@ namespace distant::windows::system::detail {
 	namespace snapshot_entry {
 
 		// snapshot_first process tag implementation
-		inline bool first(HANDLE native_handle, PROCESSENTRY32* entry, process_tag tag)
+		inline bool first(HANDLE native_handle, PROCESSENTRY32* entry, windows::detail::process_tag tag)
 		{
 			static_cast<void>(tag);
 			return Process32First(native_handle, entry);
@@ -52,7 +52,7 @@ namespace distant::windows::system::detail {
 		}
 
 		// snapshot_next process tag implementation
-		inline bool next(HANDLE native_handle, PROCESSENTRY32* entry, process_tag tag)
+		inline bool next(HANDLE native_handle, PROCESSENTRY32* entry, windows::detail::process_tag tag)
 		{
 			static_cast<void>(tag);
 			return Process32Next(native_handle, entry);
@@ -70,8 +70,7 @@ namespace distant::windows::system::detail {
 		}
 
 		// snapshot_next process tag implementation
-		inline auto get_id(const PROCESSENTRY32& entry, process_tag tag) ->
-			decltype(entry.th32ProcessID)
+		inline DWORD get_id(const PROCESSENTRY32& entry, windows::detail::process_tag tag)
 		{
 			static_cast<void>(tag);
 			return entry.th32ProcessID;

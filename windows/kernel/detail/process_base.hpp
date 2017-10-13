@@ -105,10 +105,7 @@ namespace distant::windows::kernel::detail {
 		process_base(process_base&& other); // move constructible
 		process_base& operator =(process_base&& other); // move assignable
 
-		process_base(handle_type&& handle, access_rights access);
-		//process_base(handle_type&& handle);
-
-		//operator const handle_type&
+		explicit process_base(handle_type&& handle, access_rights access);
 
 		friend bool operator ==(const process_base&, const process_base&);
 		friend bool operator !=(const process_base&, const process_base&);

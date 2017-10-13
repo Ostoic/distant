@@ -23,6 +23,12 @@ namespace distant::windows::kernel {
 	{
 	public:
 		explicit memory_status(const process<access_t>& process);
+
+		// Not copy constructible
+		memory_status(const memory_status&) = delete;
+
+		// Not copy assignable
+		memory_status& operator=(const memory_status&) = delete;
 		//explicit memory_status(const windows::handle<process<access>>& handle);
 
 		// Total amount of memory (kb) committed for the process

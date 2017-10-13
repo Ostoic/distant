@@ -36,7 +36,7 @@ namespace distant::windows::system {
 
 	public:
 		snapshot();
-		~snapshot() = default;
+
 	protected:
 		handle_type m_handle;
 		friend windows::detail::handle_service<snapshot<ObjectType>>;

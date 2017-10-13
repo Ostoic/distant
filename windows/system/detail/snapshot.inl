@@ -5,7 +5,8 @@
 namespace distant::windows::system {
 
 	template <class ObjectType>
-	inline snapshot<ObjectType>::snapshot() : m_handle(system::detail::get_snapshot<object_type, snapshot>())
+	inline snapshot<ObjectType>::snapshot() 
+		: m_handle(system::detail::get_snapshot<object_type, snapshot>())
 	{
 		static_assert(
 			windows::is_kernel_object<ObjectType>::value,
@@ -14,7 +15,6 @@ namespace distant::windows::system {
 
 		this->update_gle();
 	}
-
 	
 	template <class ObjectType>
 	inline typename snapshot<ObjectType>::iterator

@@ -9,9 +9,7 @@ namespace distant {
 namespace windows {
 namespace kernel  {
 
-	// Could also potentially contain SECURITY_DESCRIPTOR information about the kernel object
-	// This would would be CRTP/polymorphic design, in which some features are specialized by sub-types of
-	// windows::kernel::securable.
+	// https://msdn.microsoft.com/en-us/library/windows/desktop/aa379557(v=vs.85).aspx
 	class securable : public object
 	{
 	public:

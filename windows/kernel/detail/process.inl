@@ -63,7 +63,7 @@ namespace distant::windows::kernel {
 	}
 
 	template <access_rights::process T>
-	inline auto process<T>::name() const
+	inline std::string process<T>::name() const
 	{
 		static_assert(
 			check_permission(access_rights::query_information) ||

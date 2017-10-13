@@ -21,11 +21,7 @@ namespace detail		   {
 		using native_type = HANDLE;
 		using flag_type = windows::access_rights::handle;
 
-		// Note: Process-local handle table starts at entry 4, hence the null ( == 0) 
-		// entry is not a valid one. WINAPI functions tend to return NULL, though some
-		// of them return INVALID_HANDLE_VALUE.
 	public:
-		// ***Explicit only at declaration, not definition
 		// Only allow native coversion via explicit cast/ctor 
 		constexpr explicit handle_base(native_type h, flag_type flags);
 
@@ -50,16 +46,16 @@ namespace detail		   {
 		// This does not ensure the handle is from a valid object.
 		bool valid() const;
 
-		// Disable the ability to close the handle
+		// Check if the handle is close protected
 		bool close_protected() const;
 
 		// Check if handle's closure has been observed
-		bool closed() const;
-
-		// Close the handle, if it is valid and its closure wasn't observed
 		// Note: This function is public since handles occasionally need to be closed before the
 		// stack unwind (I think).
-		// XXX Consider protecting close_handle
+		bool closed() const;
+
+
+		// Close the handle, if it is valid and its closure wasn't observed
 		void close();
 
 	protected:
@@ -75,8 +71,8 @@ namespace detail		   {
 
 		// Allow derived classes to interface with the handle value itself.
 		// This allows us to make API calls at a higher inheritance level.
-		native_type native_handle() const { return m_native_handle; }
-		flag_type flags()  const { return m_flags; }
+		native_type native_handle() const;
+		flag_type flags()  const;
 
 	protected:
 		// HANDLE value
@@ -106,3 +102,8 @@ namespace detail		   {
 } // end namespace distant::windows
 
 #include <distant\windows\detail\handle_base.inl>
+
+  // Remarks:
+  //		Process-local handle table starts at entry 4, hence the null ( == 0) 
+  // entry is not a valid one. WINAPI functions tend to return NULL, though some
+  // of them return INVALID_HANDLE_VALUE.
