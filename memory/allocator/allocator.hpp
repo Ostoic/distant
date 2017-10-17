@@ -19,8 +19,8 @@ class allocator_base <const T> {
 };
 
 //template<typename T/*,
-//		 typename Policy = distant::memory::windows::allocation_policy<T>,
-//		 typename Traits = distant::memory::windows::*/>
+//		 typename Policy = distant::memory::allocation_policy<T>,
+//		 typename Traits = distant::memory::*/>
 //class allocator : allocator_base<T>
 //{
 //public : 

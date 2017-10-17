@@ -28,8 +28,7 @@ namespace utility {
 
 } // end namespace utility
 
-namespace windows {
-	// Metafunction for detecting whether a type is a windows::kernel::object
+	// Metafunction for detecting whether a type is a kernel::object
 	template <class T>
 	struct is_kernel_object
 	{
@@ -49,6 +48,9 @@ namespace windows {
 	template <>
 	struct is_kernel_object<kernel::securable> : std::true_type {};
 
+	//template <>
+	//struct is_kernel_object<kernel::detail::process_base> : std::true_type {};
+
 	template <access_rights::process T>
 	struct is_kernel_object<kernel::process<T>> : std::true_type {};
 
@@ -60,14 +62,9 @@ namespace windows {
 			is_kernel_object<T>::value,
 			"Type must derive from kernel::object");*/
 
-		using handle_type = windows::handle<T>;
-		using error_type  = windows::error::gle;
+		using handle_type = handle<T>;
+		using error_type  = error::gle;
 		using object_type = T;
 	};
-
-} // end namespace windows
-
-using windows::object_traits;
-using windows::is_kernel_object;
 
 } // end namespace distant
