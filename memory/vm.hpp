@@ -8,7 +8,7 @@
 #include <distant\memory\pointer.h>
 #include <distant\process.h>
 
-#include <distant\windows\error\gle.h>
+#include <distant\error\gle.h>
 
 //#include <distant\iterators\vm_iterator.h>
 
@@ -22,7 +22,7 @@ namespace memory  {
 
 	// A vm is a view into a process' virtual memory.
 	// It provides tools for manipulating and querying the memory of a process.
-	class vm : public windows::gle
+	class vm : public gle
 	{
 	public:
 		// Forward declare virtual memory operations

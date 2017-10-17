@@ -1,6 +1,6 @@
 #pragma once
 
-#include <distant\windows\gle.h>
+#include <distant\gle.h>
 #include <distant\memory\address.h>
 
 namespace distant {
@@ -8,7 +8,7 @@ namespace memory  {
 
 	// Perhaps use policy-based system to inherit windows 
 	// get-page-size function
-	class page : public windows::gle
+	class page : public gle
 	{
 	public:
 		using address_type = memory::address_type;

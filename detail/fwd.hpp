@@ -12,10 +12,9 @@ Distributed under the Apache Software License, Version 2.0.
 
 // Forward declarations of some public (non-implemention) classes.
 
-#include <distant\windows\access_rights.hpp>
+#include <distant\access_rights.hpp>
 
 namespace distant {
-namespace windows {
 namespace error   {
 
 class gle;
@@ -37,6 +36,4 @@ template <access_rights::process access_t = access_rights::process::all_access>
 class process;
 
 } // end namespace kernel
-
-} // end namespace windows
 } // end namespace distant

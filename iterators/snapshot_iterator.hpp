@@ -4,14 +4,14 @@
 
 #include <distant\utility\type_traits.hpp>
 
-//#include <distant\windows\kernel\process.hpp>
-#include <distant\windows\system\detail\tool_help.hpp>
+#include <distant\system\detail\tool_help.hpp>
 #include <distant\detail\attorney.hpp>
 
 // Forward declare snapshot
-namespace distant::windows::system { template <class> class snapshot; }
+namespace distant::system { template <class> class snapshot; }
 namespace distant::iterators {
 
+	// snapshot_iterator models the ForwardIterator concept
 	template <typename Kernel_Object>
 	class snapshot_iterator : 
 		public boost::iterator_facade<
@@ -23,8 +23,8 @@ namespace distant::iterators {
 	{
 	private:
 		using index_type = std::size_t;
-		using snapshot_type = windows::system::snapshot<Kernel_Object>;
-		using entry_type = typename windows::system::detail::snapshot_dispatcher<Kernel_Object>::entry_type;
+		using snapshot_type = system::snapshot<Kernel_Object>;
+		using entry_type = typename system::detail::snapshot_dispatcher<Kernel_Object>::entry_type;
 
 	public:
 		class snapshot_end {};
@@ -38,7 +38,7 @@ namespace distant::iterators {
 			, m_index(1)
 		{
 			// Bring the snapshot_entry implementation free functions into scope
-			using windows::system::detail::snapshot_entry::first;
+			using system::detail::snapshot_entry::first;
 
 			m_entry.dwSize = sizeof(entry_type);
 			if (!first<Kernel_Object>(m_native_snap, &m_entry))
@@ -55,7 +55,7 @@ namespace distant::iterators {
 		void increment() 
 		{
 			// Bring the snapshot_entry implementation free functions into scope
-			using windows::system::detail::snapshot_entry::next;
+			using system::detail::snapshot_entry::next;
 
 			if (m_index)
 			{
@@ -69,7 +69,7 @@ namespace distant::iterators {
 		Kernel_Object dereference() const
 		{
 			// Bring the snapshot_entry implementation get_id into scope
-			using windows::system::detail::snapshot_entry::get_id;
+			using system::detail::snapshot_entry::get_id;
 
 			auto pid = get_id<Kernel_Object>(m_entry);
 			return Kernel_Object(pid);

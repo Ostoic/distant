@@ -7,11 +7,8 @@ Distributed under the Apache Software License, Version 2.0.
 */
 
 #include <distant\detail\fwd.hpp>
-//#include <distant\windows\handle.hpp>
 
-namespace distant  {
-namespace detail   {
-namespace attorney {
+namespace distant::detail::attorney  {
 
 	// Attorney class that allows the Client to view an implementation detail of the given class.
 	template <class Accessor>
@@ -22,16 +19,14 @@ namespace attorney {
 
 	private:
 		template <class object_t>
-		static HANDLE native_handle(const windows::handle<object_t>& h)
+		static HANDLE native_handle(const handle<object_t>& h)
 		{ return h.native_handle(); }
 
 		template <class object_t>
-		static void invalidate(windows::handle<object_t>& h)
+		static void invalidate(handle<object_t>& h)
 		{ h.invalidate(); }
 
 		friend Accessor;
 	};
 	
-} // end namespace attorney
-} // end namespace detail
-} // end namespace distant
+} // end namespace distant::detail::attorney

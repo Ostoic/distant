@@ -1,7 +1,7 @@
 #pragma once
 
-#include <distant\windows\error\gle.h>
-#include <distant\windows\virtual_allocator.h>
+#include <distant\error\gle.h>
+#include <distant\virtual_allocator.h>
 
 #include <distant\memory\address.h>
 #include <distant\memory\vm.h>
@@ -17,8 +17,8 @@ namespace memory  {
 	// XXX Allocation is convertible to memory::value, memory::pointer
 	// Note that vm allocation uses page granularity. If a 2 byte allocation
 	// is made straddling two pages, both pages will be included in that allocation.
-	class vm::operation : public  windows::gle,
-						  private windows::virtual_allocator
+	class vm::operation : public  gle,
+						  private virtual_allocator
 	{
 	public:
 		enum class action
@@ -35,8 +35,8 @@ namespace memory  {
 		};
 
 	public: // Type information
-		using windows::virtual_allocator::alloc;
-		using windows::virtual_allocator::dealloc;
+		using virtual_allocator::alloc;
+		using virtual_allocator::dealloc;
 
 		//using protection_type = memory::protection;
 		using address_type	  = memory::address;
@@ -67,7 +67,7 @@ namespace memory  {
 			// We need to have at least vm_operation access to perform
 			// a distant virtual allocation (create or destroy)
 			// If we want portability later, use tag dispatch for 
-			// distant::process with windows::process::access_rights
+			// distant::process with process::access_rights
 			if (m_process.check_permission(access_rights::process::vm_operation))
 			{
 				// Perform virtual operation
