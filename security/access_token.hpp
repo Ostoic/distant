@@ -1,11 +1,13 @@
 #pragma once
 
 #include <distant\handle.hpp>
+#include <distant\access_rights.hpp>
 
 #include <windows.h>
 
 namespace distant::security 
 {
+	// 
 	template <access_rights::token access, typename KernelObject>
 	class access_token
 	{
@@ -15,6 +17,7 @@ namespace distant::security
 		explicit access_token(handle<access_token>&&);
 
 		template <access_rights::token OtherAccess, typename OtherObject>
+		explicit access_token(const access_token<OtherAccess, OtherObject>&& other);
 
 		template <access_rights::token OtherAccess, typename OtherObject>
 		access_token& operator= (access_token<OtherAccess, OtherObject>&& other);
@@ -31,6 +34,7 @@ namespace distant::security
 
 	template <access_rights::token access, typename KernelObject>
 	access_token<access, KernelObject> get_token(const KernelObject&) noexcept;
+
 }
 
 #include <distant\security\detail\access_token.inl>
