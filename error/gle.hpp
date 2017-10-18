@@ -11,12 +11,23 @@ Distributed under the Apache Software License, Version 2.0.
 #include <utility>
 #include <string>
 #include <iostream>
+#include <system_error>
+
 
 #include <distant\error\format.hpp>
 
 namespace distant::error {
 
-	// Error code class for which every winapi class extends
+	/*struct gle_category : std::error_category
+	{
+		const char* name() const noexcept override
+		{ return "GetLastError"; }
+
+		std::string message(int code) const override
+		{ return error::format(code); }
+	};*/
+	
+	// Error code for objects that set GetLastError in the TLS
 	class gle
 	{
 	private:

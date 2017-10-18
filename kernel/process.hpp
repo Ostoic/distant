@@ -35,9 +35,6 @@ namespace distant::kernel {
 		using memory_status_t = memory_status;
 
 	public:
-		//using handle_type = typename object_traits<process>::handle_type;
-		
-	public:
 		//===========================//
 		// Static process functions  //
 		//===========================//
@@ -50,7 +47,7 @@ namespace distant::kernel {
 
 	protected:
 		// XXX Implement
-		static handle_type create();
+		static handle<process> create();
 
 	public:
 		//===================//
@@ -84,10 +81,8 @@ namespace distant::kernel {
 		process(process&& other); // move constructible
 		process& operator =(process&& other); // move assignable
 
-		explicit process(handle_type&& handle);
-
-		//operator const handle_type&
-
+		explicit process(handle<process>&& handle);
+		
 		// Process destructor: Clean up handles and invalidate interior data.
 		// Call Chain:
 		//		1. ~process()
@@ -105,7 +100,7 @@ namespace distant::kernel {
 
 } // end namespace distant::kernel
 
-// Include implementation of memory_status
+// Implementation 
 #include <distant\kernel\process\memory_status.hpp>
 #include <distant\kernel\detail\process.inl>
 

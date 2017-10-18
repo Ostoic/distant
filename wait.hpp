@@ -40,6 +40,8 @@ namespace distant {
 		// Wait for synchronizable object for the given amount of time
 		wait::state operator ()(const object_type& obj, time_type time) const
 		{
+			// Consider making free and including std::lock_guard or something
+			// Or just the usual below 
 			using expose = distant::detail::attorney::to_handle<wait>;
 
 			const auto value = expose::native_handle(obj.get_handle<object_type>());
@@ -64,6 +66,8 @@ namespace distant {
 		//	std::array<handle_type, size> handles;
 
 		//	handle_type handles[size];
+
+		//  WaitForMultipleObjects?
 
 		//	for (const auto& obj : objects)
 		//	{

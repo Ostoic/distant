@@ -146,11 +146,10 @@ namespace distant::kernel::detail {
 	// Empty initialize process
 	FORBID_INLINE 
 	constexpr process_base::process_base()
-		: base_type() // Empty initialize object
+		: base_type()
 		, m_pid(std::numeric_limits<pid_type>::infinity())
 		, m_access() {}
 
-	// Open process by id
 	FORBID_INLINE 
 	process_base::process_base(pid_type id, access_rights access)
 		: base_type(this->open(id, access))
@@ -169,10 +168,11 @@ namespace distant::kernel::detail {
 				// is performed after moving handle into our possession.
 
 	FORBID_INLINE 
-	process_base::process_base(process_base&& other) :
-		base_type(std::move(other)),
-		m_pid(std::move(other.m_pid)),
-		m_access(std::move(other.m_access)) {} // XXX Choose weakest access rights or produce error about incompatible access rights
+	process_base::process_base(process_base&& other) 
+		: base_type(std::move(other))
+		, m_pid(std::move(other.m_pid))
+		, m_access(std::move(other.m_access)) {} 
+	// XXX Choose weakest access rights or produce error about incompatible access rights
 
 	FORBID_INLINE 
 	process_base& process_base::operator=(process_base&& other)
@@ -183,7 +183,7 @@ namespace distant::kernel::detail {
 		return *this;
 	}
 	
-	/* explicit */ process_base::operator bool() const
+	process_base::operator bool() const
 	{
 		return this->valid();
 	}

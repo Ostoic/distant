@@ -27,8 +27,7 @@ namespace distant {
 		using object_type = Object_t;
 
 	public:
-		constexpr explicit handle(native_type h, flag_type flags);
-		constexpr explicit handle(native_type h);
+		constexpr explicit handle(native_type h, flag_type flags = flag_type::inherit);
 
 		// invalid_handle literal ctor
 		constexpr handle();
@@ -45,6 +44,8 @@ namespace distant {
 		// Close handle to windows object.
 		// Handle must be weakly valid in order to close the handle.
 		~handle() = default;
+
+
 
 	private:	
 		// Allow attorney to expose some implementation details

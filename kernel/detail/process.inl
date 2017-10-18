@@ -111,7 +111,7 @@ namespace distant::kernel {
 	// Take possession of process handle. It is ensured to be a convertible process handle
 	// due to encoded type in handle.
 	template <access_rights::process T>
-	inline process<T>::process(handle_type&& handle) 
+	inline process<T>::process(handle<process>&& handle)
 		: process_base(std::move(handle), T){}											
 
 	// XXX Choose weakest access rights or produce error about incompatible access rights

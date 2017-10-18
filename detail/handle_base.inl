@@ -12,20 +12,20 @@ namespace distant::detail {
 
 //public:
 	// Only allow native coversion via explicit cast/ctor 
-	inline constexpr handle_base::handle_base(native_type h, flag_type flags)
+	inline constexpr handle_base::handle_base(native_type h, flag_type flags) noexcept
 		: m_native_handle(h)
 		, m_flags(flags)
 		, m_closed(false) {}
 
 	// Move constructor
-	inline handle_base::handle_base(handle_base&& other)
+	inline handle_base::handle_base(handle_base&& other) noexcept
 		: m_native_handle(std::move(other.m_native_handle))
 		, m_flags(std::move(other.m_flags))
 		, m_closed(std::move(other.m_closed))
 	{ other.invalidate(); }
 
 	// Move assignment
-	inline handle_base& handle_base::operator=(handle_base&& other)
+	inline handle_base& handle_base::operator=(handle_base&& other) noexcept
 	{
 		// Ensure we don't have a handle leak
 		this->close();
@@ -40,17 +40,20 @@ namespace distant::detail {
 		return *this;
 	}
 
-	inline bool handle_base::close_protected() const
-	{ return m_flags == flag_type::close_protected; }
-
-	inline bool handle_base::closed() const
-	{ return m_closed; }
-
-	inline bool handle_base::valid() const
+	inline bool handle_base::valid() const noexcept
 	{ return m_native_handle != NULL; }
 
+	inline handle_base::operator bool() const noexcept
+	{ return valid(); }
+
+	inline bool handle_base::close_protected() const noexcept
+	{ return m_flags == flag_type::close_protected; }
+
+	inline bool handle_base::closed() const noexcept
+	{ return m_closed; }
+
 	// Close the handle, if it is weakly valid and its closure wasn't observed
-	inline void handle_base::close()
+	inline void handle_base::close() noexcept
 	{
 		// TODO: Query WinAPI for kernel object reference count
 		// If this reference count > 0, then continue.
@@ -65,27 +68,28 @@ namespace distant::detail {
 		m_closed = true;
 	}
 
-	inline void handle_base::invalidate()
+//protected:
+	inline void handle_base::invalidate() noexcept
 	{
 		protect();
 		m_native_handle = NULL;
 	}
 
-	inline void handle_base::protect()
+	inline void handle_base::protect() noexcept
 	{
 		m_flags = flag_type::close_protected;
 	}
 
 	inline handle_base::native_type 
-	handle_base::native_handle() const 
+	handle_base::native_handle() const noexcept
 	{ return m_native_handle; }
 
 	inline handle_base::flag_type 
-	handle_base::flags() const 
+	handle_base::flags() const noexcept
 	{ return m_flags; }
 
 //free:
-	inline constexpr bool operator ==(const handle_base& lhs, const handle_base& rhs)
+	inline constexpr bool operator ==(const handle_base& lhs, const handle_base& rhs) noexcept
 	{
 		return
 			// CompareObjectHandles is only available with the Windows 10
@@ -97,7 +101,7 @@ namespace distant::detail {
 
 	}
 
-	inline constexpr bool operator !=(const handle_base& lhs, const handle_base& rhs)
+	inline constexpr bool operator !=(const handle_base& lhs, const handle_base& rhs) noexcept
 	{
 		return !operator==(lhs, rhs);
 	}

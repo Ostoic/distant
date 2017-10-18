@@ -23,13 +23,13 @@ namespace detail  {
 
 	public:
 		// Only allow native coversion via explicit cast/ctor 
-		constexpr explicit handle_base(native_type h, flag_type flags);
+		constexpr explicit handle_base(native_type h, flag_type flags = flag_type::inherit) noexcept;
 
 		// Move copyable
-		handle_base(handle_base&&);
+		handle_base(handle_base&&) noexcept;
 
 		// Move assignable
-		handle_base& operator=(handle_base&&);
+		handle_base& operator=(handle_base&&) noexcept;
 
 		// If we allow copy ctor/assignment, then multiple copies
 		// will eventually attempt to close the same handle, which
@@ -40,23 +40,24 @@ namespace detail  {
 		// Close handle to windows object.
 		// Handle must be weakly valid in order to close the handle.
 		~handle_base() { this->close(); }
-
+		
 	public:
 		// This weak validity should only be used for validating the handle's numeric value.
 		// This does not ensure the handle is from a valid object.
-		bool valid() const;
+		bool valid() const noexcept;
+
+		explicit operator bool() const noexcept;
 
 		// Check if the handle is close protected
-		bool close_protected() const;
+		bool close_protected() const noexcept;
 
 		// Check if handle's closure has been observed
 		// Note: This function is public since handles occasionally need to be closed before the
 		// stack unwind (I think).
-		bool closed() const;
-
+		bool closed() const noexcept;
 
 		// Close the handle, if it is valid and its closure wasn't observed
-		void close();
+		void close() noexcept;
 
 	protected:
 		// Numerically invalidate and close protect our handle.
@@ -64,15 +65,15 @@ namespace detail  {
 		// setting the handle to null is preferable to invalid_handle
 		// after closing the handle. This is probably because some API
 		// calls take invalid_handle as the current process.
-		void invalidate();
+		void invalidate() noexcept;
 
 		// Protect the handle from being closed
-		void protect();
+		void protect() noexcept;
 
 		// Allow derived classes to interface with the handle value itself.
 		// This allows us to make API calls at a higher inheritance level.
-		native_type native_handle() const;
-		flag_type flags()  const;
+		native_type native_handle() const noexcept;
+		flag_type flags()  const noexcept;
 
 	protected:
 		// HANDLE value
@@ -86,8 +87,8 @@ namespace detail  {
 		bool m_closed = false;
 
 	public:
-		friend constexpr bool operator ==(const handle_base&, const handle_base&);
-		friend constexpr bool operator !=(const handle_base&, const handle_base&);
+		friend constexpr bool operator ==(const handle_base&, const handle_base&) noexcept;
+		friend constexpr bool operator !=(const handle_base&, const handle_base&) noexcept;
 	};
 
 	class invalid_t : public utility::Literal<invalid_t> {};

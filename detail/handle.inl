@@ -11,15 +11,9 @@ Distributed under the Apache Software License, Version 2.0.
 namespace distant {
 
 //public:
-	// Only allow native coversion via explicit cast/ctor 
 	template <typename T>
 	inline constexpr handle<T>::handle(native_type h, flag_type flags)
 		: handle_base(h, flags) {}
-
-	// Only allow native coversion via explicit cast/ctor 
-	template <typename T>
-	inline constexpr handle<T>::handle(native_type h)
-		: handle(h, flag_type::inherit) {}
 
 	template <typename T>
 	inline constexpr handle<T>::handle()
