@@ -227,7 +227,7 @@ int main()
 }
 ```
 
-This is a simple example that obtains the file path to the given process' executable file. We create two distant::process objects, both with differing access rights. The former is the process with process id (pid) 12664 with vm_read and query_information access rights, and the latter is the current process, with all access requested. Again, we omit any error checking for readability of the generated assembly we will be looking at. However, we will change the implementation of distant::process slightly so as to observe the affects of how the compiler inlines our code.
+This is a simple example that obtains the file path to the given process' executable file. We create two distant::process objects, both with differing access rights. The former is the process with process id (pid) 12664 with vm_read and query_information access rights, and the latter is the current process, with all access requested. Again, we omit any error checking for readability of the generated assembly we will be looking at. However, we will change the implementation of distant::process slightly so as to observe the effects of how the compiler inlines our code.
 
 First, a few details about the implementation of distant::process. As we mentioned before, distant::process is a very thin phantom type wrapper around the core functionality of distant::process. The implementation is encapsulated in distant::windows::kernel::detail::process_base, in which every constructor is defined as either _declspec(noinline), or inline. 
 
