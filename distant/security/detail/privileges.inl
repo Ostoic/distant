@@ -40,6 +40,7 @@ namespace distant::security {
 		return distant::config::string(std::move(buffer));
 	}
 
+	// XXX Input domain should be restricted to SE_XXX_NAME macro types
 	// Lookup the privilege local UID and attribute given the name.
 	inline privilege lookup_privilege(distant::config::string_view privilege_name)
 	{

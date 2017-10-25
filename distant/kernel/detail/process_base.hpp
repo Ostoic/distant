@@ -22,9 +22,8 @@ Distributed under the Apache Software License, Version 2.0.
 
 namespace distant::kernel::detail {
 
-	// Windows process object extending a kernel securable object.
-	// This is the main class to use when querying process information in 
-	// this library.
+	/// Base type of distant::process
+	/// This version does not have static access_rights checking
 	class process_base : public kernel::object
 	{
 	public:
@@ -59,13 +58,14 @@ namespace distant::kernel::detail {
 
 		static pid_type get_pid(const handle_type&);
 
-		auto name() const;
+
+		std::string name() const;
 		std::string file_path() const;
 
-		// Query the process handle to see if it is still active
+		/// Query the process handle to see if it is still active
 		bool is_active() const;
 
-		// Terminate the process
+		/// Terminate the process
 		void terminate() const;
 
 	public:
@@ -111,6 +111,8 @@ namespace distant::kernel::detail {
 		friend bool operator !=(const process_base&, const process_base&);
 
 		// For use with conditional logic to check for validity of the process
+		/// Check if the process is valid or not
+		/// \return true if the underlying handle is valid, and it has a valid process id
 		explicit operator bool() const;
 
 	private:

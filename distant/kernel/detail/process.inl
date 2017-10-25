@@ -83,7 +83,8 @@ namespace distant::kernel {
 	}
 
 	template <access_rights::process T>
-	inline auto process<T>::memory_status() const
+	inline process<T>::memory_status_t 
+	process<T>::memory_status() const
 	{
 		return memory_status_t{ *this };
 	}

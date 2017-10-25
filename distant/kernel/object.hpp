@@ -14,9 +14,8 @@ Distributed under the Apache Software License, Version 2.0.
 
 namespace distant::kernel {
 
-	// Base class for all windows kernel objects
+	/// Base class for kernel objects
 	class object : public error::gle
-		//public detail::handle_service<object>
 	{
 	public:
 		// Go to MSDN for a list of kernel objects
@@ -29,37 +28,31 @@ namespace distant::kernel {
 		/*************************************/
 		/** Windows object status functions **/
 		/*************************************/
-		// Implicitly cast object to handle_type
+		/// Bivariant type cast for kernel objects
 		template <typename other_t>
 		const handle<other_t>& get_handle() const;
 		
-		//template <typename other_t>
-		//explicit operator const handle<other_t>&() const;
-
 		/*********************************/
 		/** Windows Object constructors **/
 		/*********************************/
-		// Invalid handle default constructor
+		/// Invalid handle default constructor
 		constexpr object();
 
+		/// Bivarient move constructor
 		template <typename other_t>
 		explicit object(handle<other_t>&& h);
 
-		// Move constructible/assignable.
+		/// Move constructible
 		object(object&& other);
 
+		/// Move assignable
 		object& operator =(object&& other);
  
-		// Calls handle destructor
-		~object() = default;
-
-		//friend bool operator ==(const kernel::object&, const kernel::object&);
-		//friend bool operator !=(const kernel::object&, const kernel::object&);
-
 	protected:
-		// Determine if the object handle is valid
+		/// Check if the process handle is valid
 		bool valid() const;
 
+		/// Close the underlying handle
 		void close_object();
 
 	protected:

@@ -16,7 +16,7 @@ Distributed under the Apache Software License, Version 2.0.
 
 namespace distant {
 
-	// Type-safe handle for windows objects
+	/// Type-safe handle for (kernel) objects
 	template <typename Object_t> 
 	class handle : public detail::handle_base 
 	{
@@ -29,26 +29,25 @@ namespace distant {
 	public:
 		constexpr explicit handle(native_type h, flag_type flags = flag_type::inherit);
 
-		// invalid_handle literal ctor
+		/// Invalid handle literal constructor
 		constexpr handle();
+
+		/// Invalid handle literal constructor
 		constexpr handle(detail::invalid_t);
 
-		// Bivariant move constructor
+		/// Bivariant move constructor
 		template <typename other_t>
 		handle(handle<other_t>&& other);
 		
-		// Bivariant move assignment
+		/// Bivariant move assignment
 		template <typename other_t>
 		handle& operator =(handle<other_t>&& other);
 		
-		// Close handle to windows object.
-		// Handle must be weakly valid in order to close the handle.
+		/// Close handle to windows object.
 		~handle() = default;
 
-
-
 	private:	
-		// Allow attorney to expose some implementation details
+		/// Allow attorney to expose some implementation details
 		// This is mainly for recreated winapi functions to pass
 		// the underlying handle value into the winapi.
 		template <typename>

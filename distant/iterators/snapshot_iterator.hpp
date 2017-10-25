@@ -27,7 +27,7 @@ namespace distant::iterators {
 		using entry_type = typename system::detail::snapshot_dispatcher<Kernel_Object>::entry_type;
 
 	public:
-		class snapshot_end {};
+		class snapshot_end {}; // sentinel value
 
 		explicit snapshot_iterator(const snapshot_type& snapshot, snapshot_end)
 			: m_native_snap(expose::native_handle(snapshot.get_handle()))

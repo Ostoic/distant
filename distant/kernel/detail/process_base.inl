@@ -78,7 +78,7 @@ namespace distant::kernel::detail {
 		return result == wait::state::timeout;
 	}
 
-	inline auto process_base::name() const
+	inline std::string process_base::name() const
 	{
 		const auto path = file_path();
 		const auto start = path.find_last_of('\\'); // Get file name from directory string

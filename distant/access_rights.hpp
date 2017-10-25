@@ -12,6 +12,8 @@ Distributed under the Apache Software License, Version 2.0.
 
 namespace distant {
 
+/// Contains enums for the following access rights:
+///		process, token, handle, file, standard
 struct access_rights
 {
 	enum class standard

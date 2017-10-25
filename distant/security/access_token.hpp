@@ -38,7 +38,6 @@ namespace distant::security
 
 	public:
 		class information;
-		class privilege;
 
 	protected:
 		// Expose implementation to other access token types

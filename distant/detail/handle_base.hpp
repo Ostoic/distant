@@ -22,13 +22,13 @@ namespace detail  {
 		using flag_type = access_rights::handle;
 
 	public:
-		// Only allow native coversion via explicit cast/ctor 
+		/// Only allow native coversion via explicit cast/ctor 
 		constexpr explicit handle_base(native_type h, flag_type flags = flag_type::inherit) noexcept;
 
-		// Move copyable
+		/// Move copyable
 		handle_base(handle_base&&) noexcept;
 
-		// Move assignable
+		/// Move assignable
 		handle_base& operator=(handle_base&&) noexcept;
 
 		// If we allow copy ctor/assignment, then multiple copies
@@ -37,53 +37,65 @@ namespace detail  {
 		constexpr handle_base(const handle_base&) = delete;
 		handle_base& operator =(const handle_base&) = delete;
 
-		// Close handle to windows object.
-		// Handle must be weakly valid in order to close the handle.
+		/// Close handle to windows object.
+		/// Handle must be weakly valid in order to close the handle.
 		~handle_base() { this->close(); }
 		
 	public:
-		// This weak validity should only be used for validating the handle's numeric value.
-		// This does not ensure the handle is from a valid object.
+		/// Checks the if the native handle is valid
+		/// \return true if the native_handle is not NULL, and false otherwise
 		bool valid() const noexcept;
 
+		/// Explicit bool operator wrapper for valid()
 		explicit operator bool() const noexcept;
 
-		// Check if the handle is close protected
+		/// Check if the handle is close protected
+		/// \return true if the handle cannot be closed, false otherwise
 		bool close_protected() const noexcept;
 
-		// Check if handle's closure has been observed
+		/// Check if handle's closure has been observed
 		// Note: This function is public since handles occasionally need to be closed before the
 		// stack unwind (I think).
+		/// \return true if the handle's closure was observed, and false otherwise
 		bool closed() const noexcept;
 
-		// Close the handle, if it is valid and its closure wasn't observed
+		/// Close the handle, if it is valid and its closure wasn't observed
 		void close() noexcept;
 
+
 	protected:
-		// Numerically invalidate and close protect our handle.
+
 		// According to "Windows Via C\C++" by Jeffrey Richter,
 		// setting the handle to null is preferable to invalid_handle
 		// after closing the handle. This is probably because some API
 		// calls take invalid_handle as the current process.
+		/// Numerically invalidate and close protect our handle.
 		void invalidate() noexcept;
 
-		// Protect the handle from being closed
+		/// Protect the handle from being closed
 		void protect() noexcept;
 
 		// Allow derived classes to interface with the handle value itself.
 		// This allows us to make API calls at a higher inheritance level.
+
+		/// Get the value of the native handle
+		/// \return value of the native handle
 		native_type native_handle() const noexcept;
+
+		/// Get the handle's flag type
+		/// \return distant::access_rights::handle flag type
 		flag_type flags()  const noexcept;
 
 	protected:
-		// HANDLE value
+		/// native HANDLE value
 		native_type m_native_handle;
 
-		// Handle close protection flags
+		/// Handle close protection flags
 		flag_type m_flags;
 
 		// If we somehow attempt to call CloseHandle multiple times,
 		// this will help prevent further unnecessary calls.
+		/// Switch to check if closure was observed 
 		bool m_closed = false;
 
 	public:
@@ -93,7 +105,7 @@ namespace detail  {
 
 	class invalid_t : public utility::Literal<invalid_t> {};
 
-	// Type-safe handle literal
+	/// Type-safe handle literal
 	constexpr typename detail::invalid_t invalid_handle;
 
 } // end namespace detail

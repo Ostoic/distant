@@ -1,6 +1,8 @@
 #pragma once
 
 /*!
+@file Defines distant::kernel::process
+
 @copyright 2017 Shaun Ostoic
 Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
@@ -21,8 +23,7 @@ Distributed under the Apache Software License, Version 2.0.
 
 namespace distant::kernel {
 	
-	// Windows process object.
-	// Used to interact with windows processes
+	/// Representation of an executable program
 	template <access_rights::process access_t>
 	class process : public kernel::detail::process_base
 	{
@@ -39,10 +40,13 @@ namespace distant::kernel {
 		// Static process functions  //
 		//===========================//
 
-		// Get current process
+		/// Get the process on which the code is running
 		static process get_current();
 
-		// Function used to to check if we have permission perform the given action
+		///Function used to to check if we have permission to perform the given action
+		/// \param access_rights::process flag specifying the other access to check against
+		/// \return true if parameter access_rights are allowable with our given access rights, 
+		/// \return and false otherwise
 		static constexpr bool check_permission(flag_type access);
 
 	protected:
@@ -53,18 +57,28 @@ namespace distant::kernel {
 		//===================//
 		// Process interface //
 		//===================//
+		/// Get handle to process
+		/// \return handle<process> to the process
 		const handle<process>& get_handle() const;
 
-		// Terminate the process
+		/// Terminate the process
 		void terminate() const;
 
-		// Query the process handle to see if it is still active
+		/// Query the process handle to see if it is still active
+		/// \return true if the process is active, and false otherwise
 		bool is_active() const;
 
+		/// Get the executable name of the process
+		/// \return std::string containing the executable name of the process
 		std::string name() const;
+
+		/// \brief Get the file path (in WIN32 format) of the process
+		/// \return std::string containing the file path of the process
 		std::string file_path() const;
 
-		auto memory_status() const;
+		/// Query the process for memory information 
+		/// \return memory_status object used to query for process information
+		memory_status_t memory_status() const;
 
 		// Return the virtual memory of this process
 		//memory::vm get_vm() const { return memory::vm(*this); }
@@ -72,14 +86,14 @@ namespace distant::kernel {
 		//=========================//
 		// Process ctors and dtors //
 		//=========================//
-		// Empty initialize process
+		/// Default process constructor
 		constexpr process();
 
-		// Open process by id
+		/// Open process by id
 		explicit process(pid_type id);
 
-		process(process&& other); // move constructible
-		process& operator =(process&& other); // move assignable
+		process(process&& other); /// move constructible
+		process& operator =(process&& other); /// move assignable
 
 		explicit process(handle<process>&& handle);
 		
@@ -88,7 +102,6 @@ namespace distant::kernel {
 		//		1. ~process()
 		//		2. ~object()
 		//		3. ~handle() <-- calls CloseHandle
-		~process() = default;
 
 		template <access_rights T, access_rights U>
 		friend bool operator ==(const process<T>&, const process<U>&);

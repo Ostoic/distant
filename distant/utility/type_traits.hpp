@@ -54,7 +54,7 @@ namespace utility {
 	template <access_rights::process T>
 	struct is_kernel_object<kernel::process<T>> : std::true_type {};
 
-	// Traits
+	/// Contains kernel object traits
 	template <class T>
 	struct object_traits 
 	{
