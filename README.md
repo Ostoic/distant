@@ -39,7 +39,7 @@ at runtime, where simply forgetting the correct access rights for an API call ca
 ```c++
 #include <iostream>
 
-#include <distant\process.hpp>
+#include <distant.hpp>
 
 template <distant::access_rights::process T>
 void display_info(const distant::process<T>& p)
