@@ -23,13 +23,13 @@ namespace distant::detail {
 				is_related<Object_Type, other_t>::value,
 				"Handle types are unrelated.");
 
-			return *reinterpret_cast<const handle<other_t>*>(&self()->m_handle);
+			return *reinterpret_cast<const handle<other_t>*>(&static_cast<const Object_Type*>(this)->m_handle);
 		}
 
 		// Return local object's handle
 		const handle<Object_Type>& get_handle() const
 		{
-			return self()->m_handle;
+			return static_cast<const Object_Type*>(this)->m_handle;
 		}
 
 		bool valid() const

@@ -38,21 +38,24 @@ namespace distant::kernel {
 		return m_memory_counters.PagefileUsage / KB;
 	}
 
-	// Largest private usage over the course its execution
+	/// Largest private usage over the course its execution
+	/// \return the amount of memory in KB.
 	template <access_rights::process access_t>
 	inline std::size_t process<access_t>::memory_status::peak_private_usage() const
 	{
 		return m_memory_counters.PeakPagefileUsage / KB;
 	}
 
-	// The size of memory occupied by the process in RAM. 
+	/// The size of memory occupied by the process in RAM. 
+	/// \return the amount of memory in KB.
 	template <access_rights::process access_t>
 	inline std::size_t process<access_t>::memory_status::working_set() const
 	{
 		return m_memory_counters.WorkingSetSize / KB;
 	}
 
-	// Largest working set over the course its execution
+	/// Largest working set over the course its execution
+	/// \return the amount of memory in KB.
 	template <access_rights::process access_t>
 	inline std::size_t process<access_t>::memory_status::peak_working_set() const
 	{

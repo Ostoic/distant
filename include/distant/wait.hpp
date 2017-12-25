@@ -18,7 +18,7 @@ namespace distant {
 	{
 	public:
 		// Windows wait codes
-		enum class state
+		enum class state : long long int
 		{
 			abandoned = WAIT_ABANDONED, // Wait abandoned
 			signaled = WAIT_OBJECT_0,	// Object returned from wait

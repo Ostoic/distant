@@ -99,8 +99,16 @@ namespace detail  {
 		bool m_closed = false;
 
 	public:
-		friend constexpr bool operator ==(const handle_base&, const handle_base&) noexcept;
-		friend constexpr bool operator !=(const handle_base&, const handle_base&) noexcept;
+		friend 
+#if not VER_PRODUCTBUILD > 9600
+			constexpr
+#endif
+			bool operator ==(const handle_base&, const handle_base&) noexcept;
+		friend
+#if not VER_PRODUCTBUILD > 9600
+			constexpr
+#endif	
+			bool operator !=(const handle_base&, const handle_base&) noexcept;
 	};
 
 	class invalid_t : public utility::Literal<invalid_t> {};

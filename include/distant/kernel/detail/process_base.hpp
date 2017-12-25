@@ -58,7 +58,6 @@ namespace distant::kernel::detail {
 
 		static pid_type get_pid(const handle_type&);
 
-
 		std::string name() const;
 		std::string file_path() const;
 

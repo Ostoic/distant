@@ -89,19 +89,27 @@ namespace distant::detail {
 	{ return m_flags; }
 
 //free:
-	inline constexpr bool operator ==(const handle_base& lhs, const handle_base& rhs) noexcept
+	inline 
+#if not VER_PRODUCTBUILD > 9600
+		constexpr 
+#endif
+		bool operator ==(const handle_base& lhs, const handle_base& rhs) noexcept
 	{
 		return
 			// CompareObjectHandles is only available with the Windows 10
 			// SDK or higher. 
 #if VER_PRODUCTBUILD > 9600 
-			CompareObjectHandles(lhs.m_handle_value, rhs.m_handle_value) &&
+			CompareObjectHandles(lhs.native_handle(), rhs.native_handle()) &&
 #endif
 			lhs.m_native_handle == rhs.m_native_handle;
 
 	}
 
-	inline constexpr bool operator !=(const handle_base& lhs, const handle_base& rhs) noexcept
+	inline
+#if not VER_PRODUCTBUILD > 9600
+		constexpr
+#endif
+		bool operator !=(const handle_base& lhs, const handle_base& rhs) noexcept
 	{
 		return !operator==(lhs, rhs);
 	}

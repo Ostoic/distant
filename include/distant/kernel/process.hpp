@@ -78,7 +78,7 @@ namespace distant::kernel {
 
 		/// Query the process for memory information 
 		/// \return memory_status object used to query for process information
-		memory_status_t memory_status() const;
+		auto memory_status() const;
 
 		// Return the virtual memory of this process
 		//memory::vm get_vm() const { return memory::vm(*this); }

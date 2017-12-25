@@ -83,10 +83,9 @@ namespace distant::kernel {
 	}
 
 	template <access_rights::process T>
-	inline process<T>::memory_status_t 
-	process<T>::memory_status() const
+	inline auto process<T>::memory_status() const
 	{
-		return memory_status_t{ *this };
+		return process<T>::memory_status_t{ *this };
 	}
 
 	template <access_rights::process T>
@@ -118,7 +117,7 @@ namespace distant::kernel {
 	// XXX Choose weakest access rights or produce error about incompatible access rights
 	template <access_rights::process T>
 	inline process<T>::process(process<T>&& other) 
-		: process_base(std::move(other)), {} 
+		: process_base(std::move(other)) {} 
 	
 	template <access_rights::process T>
 	inline process<T>& process<T>::operator=(process<T>&& other)
