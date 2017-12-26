@@ -90,15 +90,15 @@ namespace distant::detail {
 
 //free:
 	inline 
-#if not VER_PRODUCTBUILD > 9600
+#if BOOST_USE_WINAPI_VERSION < BOOST_WINAPI_VERSION_WIN10
 		constexpr 
 #endif
-		bool operator ==(const handle_base& lhs, const handle_base& rhs) noexcept
+	bool operator ==(const handle_base& lhs, const handle_base& rhs) noexcept
 	{
 		return
 			// CompareObjectHandles is only available with the Windows 10
 			// SDK or higher. 
-#if VER_PRODUCTBUILD > 9600 
+#if BOOST_USE_WINAPI_VERSION >= BOOST_WINAPI_VERSION_WIN10
 			CompareObjectHandles(lhs.native_handle(), rhs.native_handle()) &&
 #endif
 			lhs.m_native_handle == rhs.m_native_handle;
@@ -106,10 +106,10 @@ namespace distant::detail {
 	}
 
 	inline
-#if not VER_PRODUCTBUILD > 9600
+#if BOOST_USE_WINAPI_VERSION < BOOST_WINAPI_VERSION_WIN10
 		constexpr
 #endif
-		bool operator !=(const handle_base& lhs, const handle_base& rhs) noexcept
+	bool operator !=(const handle_base& lhs, const handle_base& rhs) noexcept
 	{
 		return !operator==(lhs, rhs);
 	}

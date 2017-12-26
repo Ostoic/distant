@@ -61,5 +61,5 @@ namespace distant::kernel {
 
 } // end namespace distant::kernel
 
-#include <distant\kernel\detail\object.inl>
+#include <distant\kernel\detail\object.hxx>
 

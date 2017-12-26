@@ -10,28 +10,23 @@ Distributed under the Apache Software License, Version 2.0.
 #include <distant\kernel\detail\process_base.hpp>
 #include <distant\wait.hpp>
 
+#include <distant\support\filesystem.hpp>
+
+#include <boost\winapi\process.hpp>
+#include <boost\winapi\error_codes.hpp>
+#include <boost\winapi\limits.hpp>
+
 #define FORBID_INLINE __declspec(noinline)
 
 namespace distant::kernel::detail {
 
-//public:
-	//===========================//
-	// Static process functions //
-	//===========================//
-	/*template <access_rights::process T>
-	inline process_base process_base::get_current()
-	{
-		const auto native_handle = ::GetCurrentProcess();
-		const auto pid = ::GetProcessId(native_handle);
-		return process{ pid };
-	}*/
-
 //protected:
-	inline typename process_base::handle_type process_base::open(pid_type pid, access_rights access)
+	inline typename process_base::handle_type process_base::open(pid_type pid, access_rights_t access)
 	{
+		namespace winapi = boost::winapi;
 		using flag_t = std::underlying_type_t<flag_type>;
 
-		const auto result = ::OpenProcess(static_cast<flag_t>(access), false, pid);
+		const auto result = winapi::OpenProcess(static_cast<flag_t>(access), false, pid);
 		return handle_type(result); // Returns handle with result as value
 	}
 
@@ -45,27 +40,30 @@ namespace distant::kernel::detail {
 
 	inline void process_base::terminate() const
 	{
+		namespace winapi = boost::winapi;
+
 		if (!this->valid())
-			//throw std::invalid_argument(this->format_gle());
 		{
-			set_last_error(ERROR_INVALID_HANDLE);
+			this->set_last_error(winapi::ERROR_INVALID_HANDLE_);
 			return;
 		}
 
 		const unsigned int exit_code = 0;
 		auto native_handle = expose::native_handle(m_handle);
-		if (!::TerminateProcess(native_handle, exit_code))
-			update_gle();
+
+		if (!winapi::TerminateProcess(native_handle, exit_code))
+			this->update_gle();
 		else
-			set_success();
+			this->set_success();
 		return;
 	}
 
 	inline bool process_base::is_active() const
 	{
+		namespace winapi = boost::winapi;
 		if (!this->valid())
 		{
-			this->set_last_error(ERROR_INVALID_HANDLE);
+			this->set_last_error(winapi::ERROR_INVALID_HANDLE_);
 			return false;
 		}
 
@@ -73,32 +71,31 @@ namespace distant::kernel::detail {
 
 		// Return immediately
 		const auto result = wait_for(*this, 0);
-		update_gle(wait_for);
+		this->update_gle(wait_for);
 
 		return result == wait::state::timeout;
 	}
 
-	inline std::string process_base::name() const
+	inline std::string process_base::filename() const
 	{
-		const auto path = file_path();
-		const auto start = path.find_last_of('\\'); // Get file name from directory string
-
-		return path.substr(start + 1);
+		return this->file_path().filename().string();
 	}
 
-	inline std::string process_base::file_path() const
+	inline distant::filesystem::path process_base::file_path() const
 	{
-		if (!valid())
+		namespace winapi = boost::winapi;
+
+		if (!this->valid())
 			//throw std::invalid_argument(this->format_gle());
 		{
-			this->set_last_error(ERROR_INVALID_HANDLE);
+			this->set_last_error(winapi::ERROR_INVALID_HANDLE_);
 			return "";
 		}
 
 		const auto native_handle = expose::native_handle(m_handle);
 
-		char out_path[MAX_PATH] = "";
-		DWORD max_path = MAX_PATH;
+		char out_path[winapi::MAX_PATH_] = "";
+		DWORD max_path = winapi::MAX_PATH_;
 
 		// 0 indicates: The name should use the Win32 path format.
 		if (!::QueryFullProcessImageNameA(native_handle, 0, out_path, &max_path))
@@ -151,7 +148,7 @@ namespace distant::kernel::detail {
 		, m_access() {}
 
 	FORBID_INLINE 
-	process_base::process_base(pid_type id, access_rights access)
+	process_base::process_base(pid_type id, access_rights_t access)
 		: base_type(this->open(id, access))
 		, m_pid(id)
 		, m_access(access)
@@ -160,7 +157,7 @@ namespace distant::kernel::detail {
 	// Take possession of process handle. It is ensured to be a convertible process handle
 	// due to encoded type in handle.
 	FORBID_INLINE 
-	process_base::process_base(handle_type&& handle, access_rights access)
+	process_base::process_base(handle_type&& handle, access_rights_t access)
 		: base_type(std::move(handle))	// steal handle
 		, m_access(access)				
 	{ m_pid = get_pid(get_handle<process_base>()); }	// retrieve process id

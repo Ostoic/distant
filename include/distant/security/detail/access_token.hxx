@@ -37,17 +37,22 @@ namespace distant::security
 //class access_token
 //public:
 	template <access_rights::token A, typename K>
-	inline access_token<A, K>::access_token(const K& k) noexcept
+	inline access_token<A, K>::access_token(const K& k)
 		: m_handle(distant::handle<access_token>(
 			detail::get_token_impl<K>(
 				expose::native_handle(k.get_handle()), static_cast<DWORD>(A)))) 
-	{ if (!m_handle) update_gle(); }
+	{ 
+		if (!m_handle) throw std::invalid_argument("Invalid access token handle");
+	}
 
 	// Bivariant move constructor
 	template <access_rights::token A, typename K>
 	template <access_rights::token OA, typename OO>
-	inline access_token<A, K>::access_token(access_token<OA, OO>&& other) noexcept
-		: m_handle(std::move(other.m_handle)) {}
+	inline access_token<A, K>::access_token(access_token<OA, OO>&& other)
+		: m_handle(std::move(other.m_handle)) 
+	{
+		if (!m_handle) throw std::invalid_argument("Invalid access token handle");
+	}
 
 	// Bivariant move assignment
 	template <access_rights::token A, typename K>
@@ -59,7 +64,7 @@ namespace distant::security
 	}
 
 	template <access_rights::token A, typename K>
-	inline bool access_token<A, K>::adjust(security::privilege p) noexcept
+	inline bool access_token<A, K>::adjust(const security::privilege& p) noexcept
 	{
 		TOKEN_PRIVILEGES temp = p;
 		if (!::AdjustTokenPrivileges(expose::native_handle(m_handle), false, &temp, sizeof(temp), NULL, NULL))

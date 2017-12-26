@@ -67,4 +67,4 @@ namespace distant {
 
 } // end namespace distant
 
-#include <distant\detail\handle.inl>
+#include <distant\detail\handle.hxx>

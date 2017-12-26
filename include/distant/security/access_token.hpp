@@ -15,12 +15,12 @@ namespace distant::security
 
 	public:
 		constexpr access_token() = default;
-		explicit access_token(const KernelObject&) noexcept;
-		explicit access_token(handle<access_token>&&) noexcept;
+		explicit access_token(const KernelObject&);
+		explicit access_token(handle<access_token>&&);
 
 		// Bivariant move construtible
 		template <access_rights::token OtherAccess, typename OtherObject>
-		access_token(access_token<OtherAccess, OtherObject>&& other) noexcept;
+		access_token(access_token<OtherAccess, OtherObject>&& other);
 
 		// Bivariant move assignable
 		template <access_rights::token OtherAccess, typename OtherObject>
@@ -32,7 +32,7 @@ namespace distant::security
 		// Not copy assignable
 		access_token& operator=(const access_token&) = delete;
 
-		bool adjust(security::privilege p) noexcept;
+		bool adjust(const security::privilege& p) noexcept;
 
 		explicit operator bool() const noexcept;
 
@@ -53,4 +53,4 @@ namespace distant::security
 	access_token<access, KernelObject> get_token(const KernelObject&) noexcept;
 }
 
-#include <distant\security\detail\access_token.inl>
+#include <distant\security\detail\access_token.hxx>

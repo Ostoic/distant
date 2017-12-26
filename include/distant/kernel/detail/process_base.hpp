@@ -15,8 +15,9 @@ Distributed under the Apache Software License, Version 2.0.
 //#include <exception>
 
 #include <distant\kernel\object.hpp>
-
 #include <distant\utility\type_traits.hpp>
+
+#include <distant\support\filesystem.hpp>
 
 //#include <distant\memory\vm.h>
 
@@ -32,13 +33,13 @@ namespace distant::kernel::detail {
 
 		using error_type = typename object_traits<process_base>::error_type;
 		using handle_type = typename object_traits<process_base>::handle_type;
-		using access_rights = access_rights::process;
+		using access_rights_t = access_rights::process;
 
 		using exit_code_type = std::size_t;
 
 		// Process type information
 		using pid_type = std::size_t;
-		using flag_type = access_rights;
+		using flag_type = access_rights_t;
 
 	public:
 		//===========================//
@@ -51,15 +52,13 @@ namespace distant::kernel::detail {
 		//static constexpr bool check_permission(flag_type access);
 
 	protected:
-		static handle_type open(pid_type, access_rights);
-
-		// XXX Implement
-		static handle_type create();
+		static handle_type open(pid_type, access_rights_t);
 
 		static pid_type get_pid(const handle_type&);
 
-		std::string name() const;
-		std::string file_path() const;
+		std::string process_base::filename() const;
+
+		distant::filesystem::path file_path() const;
 
 		/// Query the process handle to see if it is still active
 		bool is_active() const;
@@ -71,10 +70,9 @@ namespace distant::kernel::detail {
 		//===================//
 		// Process interface //
 		//===================//
-		pid_type pid()	   const { return m_pid; }
-		flag_type access() const { return m_access; }
+		pid_type pid() const { return m_pid; }
+		flag_type access_rights() const { return m_access; }
 		
-
 		//const handle<process_base>& get_handle() const;
 
 		// Check if the process handle is valid
@@ -96,7 +94,7 @@ namespace distant::kernel::detail {
 		constexpr process_base();
 
 		// Open process by id
-		explicit process_base(pid_type id, access_rights access);
+		explicit process_base(pid_type id, access_rights_t access);
 
 		process_base(const process_base&) = delete; // not copy constructible
 		process_base& operator =(const process_base&) = delete; // not copy assignable
@@ -104,7 +102,7 @@ namespace distant::kernel::detail {
 		process_base(process_base&& other); // move constructible
 		process_base& operator =(process_base&& other); // move assignable
 
-		explicit process_base(handle_type&& handle, access_rights access);
+		explicit process_base(handle_type&& handle, access_rights_t access);
 
 		friend bool operator ==(const process_base&, const process_base&);
 		friend bool operator !=(const process_base&, const process_base&);
@@ -122,7 +120,7 @@ namespace distant::kernel::detail {
 		// XXX Otherwise provide a function to return a reference to thread handles from this process (but the stack unwind might be problematic)
 		// XXX Is it important to consider the order of closing a thread from a process? (ie close(thread); close(process) compared with the converse).
 		pid_type m_pid;
-		access_rights m_access;
+		access_rights_t m_access;
 
 		// Process destructor: Clean up handles and invalidate interior data.
 		// Call Chain:
@@ -141,4 +139,4 @@ namespace distant::kernel::detail {
 } // end namespace distant::kernel::detail
 
 //#include <distant\kernel\process\memory_status.hpp>
-#include <distant\kernel\detail\process_base.inl>
+#include <distant\kernel\detail\process_base.hxx>

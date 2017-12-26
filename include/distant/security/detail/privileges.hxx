@@ -6,9 +6,6 @@ namespace distant::security {
 
 //class privilege
 //public:
-	inline constexpr privilege::privilege() noexcept
-		: m_count(0) {}
-
 	inline privilege::privilege(security::luid luid, attribute attrib) noexcept
 		: m_attribute(attrib), m_luid(luid), m_count(1) {}
 
@@ -46,7 +43,7 @@ namespace distant::security {
 	{
 		security::luid luid;
 		if (!::LookupPrivilegeValue(NULL, privilege_name.data(), &luid))
-			return {};
+			throw std::invalid_argument("Invalid privilege value");
 
 		return privilege(luid);
 	}

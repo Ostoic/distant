@@ -11,7 +11,7 @@ Distributed under the Apache Software License, Version 2.0.
 
 #include <distant\system\detail\tool_help.hpp>
 
-#include <distant\iterators\snapshot_iterator.hpp>
+#include <distant\system\snapshot_iterator.hpp>
 
 namespace distant::system {
 
@@ -50,4 +50,4 @@ namespace distant::system {
 
 } // end namespace distant::system
 
-#include <distant\system\detail\snapshot.inl>
+#include <distant\system\detail\snapshot.hxx>

@@ -11,5 +11,14 @@ namespace distant::config {
 	using string_view = std::string_view;
 #endif
 
+#ifdef __cpp_lib_experimental_filesystem
+
+#endif
+
+#ifdef __cpp_lib_filesystem
+
+#endif
+
+
 	using string_elem = std::decay_t<string::reference>;
 }

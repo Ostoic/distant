@@ -144,4 +144,4 @@ namespace memory  {
 } // end namespace distant
 
 // Include vm::operation implementation
-#include <distant\memory\vm\allocation.inl>
+#include <distant\memory\vm\allocation.hxx>

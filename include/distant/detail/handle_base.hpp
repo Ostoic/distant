@@ -7,6 +7,8 @@
 #include <distant\detail\attorney.hpp>
 #include <distant\utility\literal.hpp>
 
+#include <boost\detail\winapi\config.hpp>
+
 namespace distant {
 namespace detail  {
 
@@ -100,15 +102,16 @@ namespace detail  {
 
 	public:
 		friend 
-#if not VER_PRODUCTBUILD > 9600
+#if BOOST_USE_WINAPI_VERSION < BOOST_WINAPI_VERSION_WIN10
 			constexpr
 #endif
-			bool operator ==(const handle_base&, const handle_base&) noexcept;
+		bool operator ==(const handle_base&, const handle_base&) noexcept;
+
 		friend
-#if not VER_PRODUCTBUILD > 9600
+#if BOOST_USE_WINAPI_VERSION < BOOST_WINAPI_VERSION_WIN10
 			constexpr
 #endif	
-			bool operator !=(const handle_base&, const handle_base&) noexcept;
+		bool operator !=(const handle_base&, const handle_base&) noexcept;
 	};
 
 	class invalid_t : public utility::Literal<invalid_t> {};
@@ -122,7 +125,7 @@ using detail::invalid_handle;
 
 } // end namespace distant
 
-#include <distant\detail\handle_base.inl>
+#include <distant\detail\handle_base.hxx>
 
   // Remarks:
   //		Process-local handle table starts at entry 4, hence the null ( == 0) 

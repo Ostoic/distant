@@ -16,13 +16,6 @@ namespace distant::kernel {
 	//===========================//
 	// Static process functions //
 	//===========================//
-	template <access_rights::process T>
-	inline process<T> process<T>::get_current()
-	{
-		const auto native_handle = ::GetCurrentProcess();
-		const auto pid = ::GetProcessId(native_handle);
-		return process{ pid };
-	}
 
 //protected:
 
@@ -59,23 +52,23 @@ namespace distant::kernel {
 	}
 
 	template <access_rights::process T>
-	inline std::string process<T>::name() const
+	inline std::string process<T>::filename() const
 	{
 		static_assert(
-			check_permission(access_rights::query_information) ||
-			check_permission(access_rights::query_limited_information),
+			check_permission(access_rights_t::query_information) ||
+			check_permission(access_rights_t::query_limited_information),
 			"Invalid access rights (process::name): "
 			"Process must have query_information or query_limited_information access rights");
 
-		return process_base::name();
+		return process_base::filename();
 	}
 
 	template <access_rights::process T>
-	inline std::string process<T>::file_path() const
+	inline distant::filesystem::path process<T>::file_path() const
 	{
 		static_assert(
-			check_permission(access_rights::query_information) ||
-			check_permission(access_rights::query_limited_information),
+			check_permission(access_rights_t::query_information) ||
+			check_permission(access_rights_t::query_limited_information),
 			"Invalid access rights (process::file_path): "
 			"Process must have query_information or query_limited_information access rights");
 		
@@ -132,5 +125,13 @@ namespace distant::kernel {
 
 	template <access_rights::process T, access_rights::process U>
 	inline bool operator !=(const process<T>& lhs, const process<U>& rhs) { return !operator==(lhs, rhs); }
+
+	inline process<access_rights::process::all_access> 
+	current_process()
+	{
+		const auto native_handle = ::GetCurrentProcess();
+		const auto pid = ::GetProcessId(native_handle);
+		return process<>{ pid };
+	}
 
 } // end namespace distant::kernel

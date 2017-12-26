@@ -39,4 +39,4 @@ namespace distant::system {
 
 } // end namespace distant::system
 
-//#include <distant\system\detail\process_status.inl>
+//#include <distant\system\detail\process_status.hxx>

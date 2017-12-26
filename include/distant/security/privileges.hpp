@@ -19,7 +19,7 @@ namespace distant::security {
 		};
 
 	public:
-		constexpr privilege() noexcept;
+		privilege() = delete;
 
 		explicit privilege(security::luid luid, attribute attrib = attribute::enabled) noexcept;
 
@@ -45,4 +45,4 @@ namespace distant::security {
 } // end namespace distant::security
 
 // Implementation
-#include <distant\security\detail\privileges.inl>
+#include <distant\security\detail\privileges.hxx>

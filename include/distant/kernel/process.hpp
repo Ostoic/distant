@@ -21,7 +21,8 @@ Distributed under the Apache Software License, Version 2.0.
 
 //#include <distant\memory\vm.h>
 
-namespace distant::kernel {
+namespace distant {
+namespace kernel  {
 	
 	/// Representation of an executable program
 	template <access_rights::process access_t>
@@ -40,18 +41,11 @@ namespace distant::kernel {
 		// Static process functions  //
 		//===========================//
 
-		/// Get the process on which the code is running
-		static process get_current();
-
 		///Function used to to check if we have permission to perform the given action
 		/// \param access_rights::process flag specifying the other access to check against
 		/// \return true if parameter access_rights are allowable with our given access rights, 
 		/// \return and false otherwise
 		static constexpr bool check_permission(flag_type access);
-
-	protected:
-		// XXX Implement
-		static handle<process> create();
 
 	public:
 		//===================//
@@ -70,11 +64,11 @@ namespace distant::kernel {
 
 		/// Get the executable name of the process
 		/// \return std::string containing the executable name of the process
-		std::string name() const;
+		std::string filename() const;
 
 		/// \brief Get the file path (in WIN32 format) of the process
 		/// \return std::string containing the file path of the process
-		std::string file_path() const;
+		distant::filesystem::path file_path() const;
 
 		/// Query the process for memory information 
 		/// \return memory_status object used to query for process information
@@ -103,51 +97,29 @@ namespace distant::kernel {
 		//		2. ~object()
 		//		3. ~handle() <-- calls CloseHandle
 
-		template <access_rights T, access_rights U>
+		template <access_rights::process T, access_rights::process U>
 		friend bool operator ==(const process<T>&, const process<U>&);
 
-		template <access_rights T, access_rights U>
+		template <access_rights::process T, access_rights::process U>
 		friend bool operator !=(const process<T>&, const process<U>&);
 
 	}; // end class process
 
-} // end namespace distant::kernel
+
+	/// Create a new process
+	template <access_rights::process access_flag>
+	process<access_flag> launch();
+
+	/// Get the current process
+	/// \return distant::process object containing the current process.
+	process<access_rights::process::all_access> current_process();
+
+} // end namespace kernel
+
+using kernel::current_process;
+
+} // end namespace distant
 
 // Implementation 
 #include <distant\kernel\process\memory_status.hpp>
-#include <distant\kernel\detail\process.inl>
-
-/* Debug privileges for memory hacking software
-BOOL EnableDebugPrivileges()
-{
-	HANDLE hToken;
-	LUID lLuid;
-	TOKEN_PRIVILEGES tkPrivileges;
-
-	if (!(OpenProcessToken(GetCurrentProcess(), TOKEN_ALL_ACCESS, &hToken)))
-	{
-		CloseHandle(hToken);
-		return FALSE;
-	}
-
-	if (!(LookupPrivilegeValue(NULL, SE_DEBUG_NAME, &lLuid)))
-	{
-		CloseHandle(hToken);
-		return FALSE;
-	}
-
-	tkPrivileges.PrivilegeCount = 1;
-	tkPrivileges.Privileges[0].Luid = lLuid;
-	tkPrivileges.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
-
-	if (!AdjustTokenPrivileges(hToken, FALSE, &tkPrivileges, sizeof(tkPrivileges), NULL, NULL))
-	{
-		CloseHandle(hToken);
-		return FALSE;
-	}
-
-	vflog("Debug privileges enabled");
-	return TRUE;
-}
-
-*/
+#include <distant\kernel\detail\process.hxx>

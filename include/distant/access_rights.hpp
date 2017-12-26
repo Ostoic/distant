@@ -6,71 +6,93 @@ Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
 */
 
-#include <windows.h>
+//#include <windows.h>
 
 #include <distant\utility\enum_operators.hpp>
+
+#include <boost\detail\winapi\access_rights.hpp>
+#include <boost\detail\winapi\process.hpp>
+#include <boost\detail\winapi\handle_info.hpp>
 
 namespace distant {
 
 /// Contains enums for the following access rights:
-///		process, token, handle, file, standard
+///	process, token, handle, file, standard
 struct access_rights
 {
 	enum class standard
 	{
-		Delete = DELETE,
-		read_control = READ_CONTROL,
-		synchronize = SYNCHRONIZE,
-		write_dac = WRITE_DAC,
-		writer_owner = WRITE_OWNER
+		Delete = boost::winapi::DELETE_,
+		read_control = boost::winapi::READ_CONTROL_,
+		synchronize = boost::winapi::SYNCHRONIZE_,
+		write_dac = boost::winapi::WRITE_DAC_,
+		writer_owner = boost::winapi::WRITE_OWNER_
 	};
 
 	enum class process
 	{
-		all_access = PROCESS_ALL_ACCESS,
+		all_access = boost::winapi::PROCESS_ALL_ACCESS_,
 
-		set_information = PROCESS_SET_INFORMATION,
-		set_quota = PROCESS_SET_QUOTA,
+		set_information = boost::winapi::PROCESS_SET_INFORMATION_,
+		set_quota = boost::winapi::PROCESS_SET_QUOTA_,
 
-		vm_operation = PROCESS_VM_OPERATION,
-		vm_read = PROCESS_VM_READ,
-		vm_write = PROCESS_VM_WRITE,
+		vm_operation = boost::winapi::PROCESS_VM_OPERATION_,
+		vm_read = boost::winapi::PROCESS_VM_READ_,
+		vm_write = boost::winapi::PROCESS_VM_WRITE_,
 
-		create_process = PROCESS_CREATE_PROCESS,
-		create_thread = PROCESS_CREATE_THREAD,
-		dup_handle = PROCESS_DUP_HANDLE,
+		create_process = boost::winapi::PROCESS_CREATE_PROCESS_,
+		create_thread = boost::winapi::PROCESS_CREATE_THREAD_,
+		dup_handle = boost::winapi::PROCESS_DUP_HANDLE_,
 
-		suspend_resume = PROCESS_SUSPEND_RESUME,
-		terminate = PROCESS_TERMINATE,
+		suspend_resume = boost::winapi::PROCESS_SUSPEND_RESUME_,
+		terminate = boost::winapi::PROCESS_TERMINATE_,
 
-		query_limited_information = PROCESS_QUERY_LIMITED_INFORMATION,
-		query_information = PROCESS_QUERY_INFORMATION,
+		// boost::winapi doesn't have query_limited_information?
+		query_limited_information = 0x1000,
+		query_information = boost::winapi::PROCESS_QUERY_INFORMATION_,
 
-		synchronize = SYNCHRONIZE,
+		synchronize = boost::winapi::SYNCHRONIZE_,
 	};
-	
+
 	enum class token
 	{
-		adjust_default = TOKEN_ADJUST_DEFAULT, 		// Required to change the default owner, primary group, or DACL of an access token.
-		adjust_groups = TOKEN_ADJUST_GROUPS,		// Required to adjust the attributes of the groups in an access token.
-		adjust_privileges = TOKEN_ADJUST_PRIVILEGES,// Required to enable or disable the privileges in an access token.
-		adjust_sessionId = TOKEN_ADJUST_SESSIONID,	// Required to adjust the session ID of an access token. The SE_TCB_NAME privilege is required.
-		assign_primary = TOKEN_ASSIGN_PRIMARY,		// Required to attach a primary token to a process. The SE_ASSIGNPRIMARYTOKEN_NAME privilege is also required to accomplish this task.
-		duplicate = TOKEN_DUPLICATE,				// Required to duplicate an access token.
-		execute = TOKEN_EXECUTE,					// Combines STANDARD_RIGHTS_EXECUTE and TOKEN_IMPERSONATE.
-		impersonate = TOKEN_IMPERSONATE,			// Required to attach an impersonation access token to a process.
-		query = TOKEN_QUERY,						// Required to query an access token.
-		query_source = TOKEN_QUERY_SOURCE,			// Required to query the source of an access token.
-		read = TOKEN_READ,							// Combines STANDARD_RIGHTS_READ and TOKEN_QUERY.
-		write = TOKEN_WRITE,						// Combines STANDARD_RIGHTS_WRITE, TOKEN_ADJUST_PRIVILEGES, TOKEN_ADJUST_GROUPS, and TOKEN_ADJUST_DEFAULT.
-		all_access = TOKEN_ALL_ACCESS				// Combines all possible access rights for a token.
+		assign_primary = 0x0001,		// Required to attach a primary token to a process. The SE_ASSIGNPRIMARYTOKEN_NAME privilege is also required to accomplish this task.
+		duplicate = 0x0002,				// Required to duplicate an access token.
+		impersonate = 0x0004,			// Required to attach an impersonation access token to a process.
+		query = 0x0008,					// Required to query an access token.
+		query_source = 0x0010,			// Required to query the source of an access token.
+		adjust_privileges = 0x0020,		// Required to enable or disable the privileges in an access token.
+		adjust_groups = 0x0040,			// Required to adjust the attributes of the groups in an access token.
+		adjust_default = 0x0080, 		// Required to change the default owner, primary group, or DACL of an access token.
+		adjust_sessionId = 0x0100,		// Required to adjust the session ID of an access token. The SE_TCB_NAME privilege is required.
+
+		// XX ???
+		trust_constraint_mask = boost::winapi::STANDARD_RIGHTS_READ_ | query | query_source,
+
+		// Combines STANDARD_RIGHTS_READ and TOKEN_QUERY.
+		read = boost::winapi::STANDARD_RIGHTS_READ_ | query,
+
+		// Combines STANDARD_RIGHTS_WRITE, TOKEN_ADJUST_PRIVILEGES, TOKEN_ADJUST_GROUPS, and TOKEN_ADJUST_DEFAULT.
+		write = boost::winapi::STANDARD_RIGHTS_WRITE_ | adjust_privileges |
+		adjust_groups | adjust_default,
+
+		// Combines STANDARD_RIGHTS_EXECUTE and TOKEN_IMPERSONATE.
+		execute = boost::winapi::STANDARD_RIGHTS_EXECUTE_, 
+
+		// Combines all possible access rights for a token.
+		all_access = boost::winapi::STANDARD_RIGHTS_REQUIRED_ |
+			assign_primary | duplicate | impersonate | query | query_source |
+			adjust_privileges | adjust_groups | adjust_default
+#if BOOST_USE_WINAPI_VERSION >= BOOST_WINAPI_VERSION_WIN2K
+			| adjust_sessionId,
+#endif
 		
 	};
 
 	enum class handle
 	{
-		inherit = HANDLE_FLAG_INHERIT,					  // Child process will inherit object handle
-		close_protected = HANDLE_FLAG_PROTECT_FROM_CLOSE, // Prevent CloseHandle from closing handle
+		inherit = boost::winapi::HANDLE_FLAG_INHERIT_,					  // Child process will inherit object handle
+		close_protected = boost::winapi::HANDLE_FLAG_PROTECT_FROM_CLOSE_, // Prevent CloseHandle from closing handle
 	};
 };
 

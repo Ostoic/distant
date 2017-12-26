@@ -61,4 +61,4 @@ namespace distant::kernel {
 
 } // end namespace distant::kernel
 
-#include <distant\kernel\process\detail\memory_status.inl>
+#include <distant\kernel\process\detail\memory_status.hxx>
