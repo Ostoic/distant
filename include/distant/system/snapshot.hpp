@@ -12,14 +12,13 @@ Distributed under the Apache Software License, Version 2.0.
 #include <distant\system\detail\tool_help.hpp>
 
 #include <distant\system\snapshot_iterator.hpp>
+#include <distant\kernel\object.hpp>
 
 namespace distant::system {
 
 	// system::snapshot models the ForwardRange concept
 	template <typename ObjectType>
-	class snapshot : 
-		public error::gle,
-		public distant::detail::handle_service<snapshot<ObjectType>>
+	class snapshot : public kernel::object
 	{
 	public:
 		using object_type = ObjectType;
@@ -43,9 +42,6 @@ namespace distant::system {
 
 		// Not copy assignable
 		snapshot& operator=(const snapshot&) = delete;
-	protected:
-		handle_type m_handle;
-		friend distant::detail::handle_service<snapshot<ObjectType>>;
 	};
 
 } // end namespace distant::system

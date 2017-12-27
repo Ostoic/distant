@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Psapi.h>
+//#include <Psapi.h>
 
-#include <distant\error\gle.hpp>
+#include <distant\error\windows_error.hpp>
 #include <distant\detail\fwd.hpp>
 
 namespace distant::system {
@@ -17,12 +17,10 @@ namespace distant::system {
 	// XXX This could possibly be done through function-local class definition in
 	// XXX process.
 
-	class process_status : public error::gle
+	class process_status
 	{
 	private:
 		using access_rights = access_rights::process;
-		using error::gle::update_gle;
-		using error::gle::set_last_error;
 
 	public:
 		template <access_rights access>

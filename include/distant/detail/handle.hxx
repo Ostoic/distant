@@ -12,21 +12,21 @@ namespace distant {
 
 //public:
 	template <typename T>
-	inline constexpr handle<T>::handle(native_type h, flag_type flags)
+	inline constexpr handle<T>::handle(native_type h, flag_type flags) noexcept
 		: handle_base(h, flags) {}
 
 	template <typename T>
-	inline constexpr handle<T>::handle()
+	inline constexpr handle<T>::handle() noexcept
 		: handle(NULL, flag_type::close_protected) {}
 
 	template <typename T>
-	inline constexpr handle<T>::handle(detail::invalid_t t)
+	inline constexpr handle<T>::handle(detail::invalid_t t) noexcept
 		: handle() {}
 
 	// Move constructor
 	template <typename T>
 	template <typename other_t>
-	inline handle<T>::handle(handle<other_t>&& other)
+	inline handle<T>::handle(handle<other_t>&& other) noexcept
 		: handle_base(std::move(other))
 	{
 		static_assert(
@@ -37,7 +37,7 @@ namespace distant {
 	// Move assignment
 	template <typename T>
 	template <typename other_t>
-	inline handle<T>& handle<T>::operator=(handle<other_t>&& other)
+	inline handle<T>& handle<T>::operator=(handle<other_t>&& other) noexcept
 	{
 		static_assert(
 			utility::is_related<T, other_t>::value,
@@ -49,7 +49,7 @@ namespace distant {
 
 //free:
 	template <typename T, typename U>
-	inline constexpr bool operator ==(const handle<T>& lhs, const handle<U>& rhs)
+	inline constexpr bool operator ==(const handle<T>& lhs, const handle<U>& rhs) noexcept
 	{
 		// Objects must be compatible.
 		// Example: thread ~/~ process, but process ~ securable
@@ -63,7 +63,7 @@ namespace distant {
 	}
 
 	template <typename T, typename U>
-	inline constexpr bool operator !=(const handle<T>& lhs, const handle<U>& rhs)
+	inline constexpr bool operator !=(const handle<T>& lhs, const handle<U>& rhs) noexcept
 	{
 		return !operator==(lhs, rhs);
 	}

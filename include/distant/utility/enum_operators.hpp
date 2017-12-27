@@ -6,8 +6,6 @@ Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
 */
 
-#include <Windows.h>
-
 #include <type_traits>
 
 // enum_operators.hpp provides constexpr flag operators for use with strongly typed enums

@@ -7,13 +7,13 @@
 
 #pragma once
 
-#include <boost/winapi/basic_types.hpp>
+#include <boost\winapi\basic_types.hpp>
+#include <distant\support\winapi\config.hpp>
 
-extern "C" {
-	BOOST_SYMBOL_IMPORT boost::winapi::VOID_ WINAPI SetLastError(boost::winapi::DWORD_ error_code);
-}
+BOOST_SYMBOL_IMPORT boost::winapi::VOID_ WINAPI SetLastError(
+	boost::winapi::DWORD_ error_code);
 
-namespace distant {
+namespace boost {
 	namespace winapi {
 		using ::SetLastError;
 	}

@@ -7,7 +7,7 @@ Distributed under the Apache Software License, Version 2.0.
 */
 
 // Implementation header of distant::kernel::process
-#include <distant\kernel\detail\process_base.hpp>
+#include <distant\kernel\process_base.hpp>
 #include <distant\wait.hpp>
 
 #include <distant\support\filesystem.hpp>
@@ -16,25 +16,28 @@ Distributed under the Apache Software License, Version 2.0.
 #include <boost\winapi\process.hpp>
 #include <boost\winapi\error_codes.hpp>
 #include <boost\winapi\limits.hpp>
+#include <boost\winapi\get_current_process_id.hpp>
 
 #define FORBID_INLINE __declspec(noinline)
 
-namespace distant::kernel::detail {
+namespace distant::kernel {
 
 //protected:
-	inline typename process_base::handle_type process_base::open(pid_type pid, access_rights_t access)
+	inline typename process_base::handle_type process_base::open(pid_type pid, access_rights_t access) noexcept
 	{
 		namespace winapi = boost::winapi;
 		using flag_t = std::underlying_type_t<flag_type>;
 
-		const auto result = winapi::OpenProcess(static_cast<flag_t>(access), false, pid);
-		return handle_type(result); // Returns handle with result as value
+		auto result = winapi::OpenProcess(static_cast<flag_t>(access), false, pid);
+		return handle_type(result); 
 	}
 
-	inline typename process_base::pid_type process_base::get_pid(const handle_type& h)
+	inline typename process_base::pid_type process_base::get_pid(const handle_type& h) noexcept
 	{
+		namespace winapi = boost::winapi;
+
 		const auto native_handle = expose::native_handle(h);
-		const auto id = ::GetProcessId(native_handle);
+		const auto id = boost::winapi::get_process_id(native_handle);
 		return static_cast<pid_type>(id);
 	}
 
@@ -45,7 +48,7 @@ namespace distant::kernel::detail {
 
 		if (!this->valid())
 		{
-			this->set_last_error(winapi::ERROR_INVALID_HANDLE_);
+			m_last_error.set(winapi::ERROR_INVALID_HANDLE_);
 			return;
 		}
 
@@ -53,18 +56,20 @@ namespace distant::kernel::detail {
 		auto native_handle = expose::native_handle(m_handle);
 
 		if (!winapi::TerminateProcess(native_handle, exit_code))
-			this->update_gle();
+			m_last_error.update();
 		else
-			this->set_success();
+			m_last_error.set_success();
+
 		return;
 	}
 
-	inline bool process_base::is_active() const
+	inline bool process_base::is_active() const noexcept
 	{
 		namespace winapi = boost::winapi;
+
 		if (!this->valid())
 		{
-			this->set_last_error(winapi::ERROR_INVALID_HANDLE_);
+			m_last_error.set(winapi::ERROR_INVALID_HANDLE_);
 			return false;
 		}
 
@@ -72,7 +77,7 @@ namespace distant::kernel::detail {
 
 		// Return immediately
 		const auto result = wait_for(*this, 0);
-		this->update_gle(wait_for);
+		m_last_error.update();
 
 		return result == wait::state::timeout;
 	}
@@ -89,46 +94,30 @@ namespace distant::kernel::detail {
 		if (!this->valid())
 			//throw std::invalid_argument(this->format_gle());
 		{
-			this->set_last_error(winapi::ERROR_INVALID_HANDLE_);
+			m_last_error.set(winapi::ERROR_INVALID_HANDLE_);
 			return "";
 		}
 
 		const auto native_handle = expose::native_handle(m_handle);
 
 		char out_path[winapi::MAX_PATH_] = "";
-		DWORD max_path = winapi::MAX_PATH_;
+		winapi::DWORD_ max_path = winapi::MAX_PATH_;
 
 		// 0 indicates: The name should use the Win32 path format.
-		if (!distant::winapi::query_full_process_image_name(native_handle, 0, out_path, &max_path))
-			this->update_gle();
+		if (!boost::winapi::query_full_process_image_name(native_handle, 0, out_path, &max_path))
+			m_last_error.update();
 		else
-			this->set_success();
+			m_last_error.set_success();
 
 		return { out_path };
 	}
 
 //public:
-	//====================================//
-	// Process id and access_rights flags //
-	// accessors                          //
-	//====================================//
-	// Check if the process handle is valid
-	inline bool process_base::valid()  const
+	inline bool process_base::valid() const noexcept
 	{
 		return base_type::valid() &&
 			id() != std::numeric_limits<pid_type>::infinity();
 	}
-
-	/*inline auto process_base::memory_status() const
-	{
-		return memory_status_t{ *this };
-	}*/
-
-	/*inline const handle<process_base>&
-		process_base::get_handle() const
-	{
-		return object::get_handle<process_base>();
-	}*/
 
 	//=========================//
 	// Process ctors and dtor  //
@@ -143,58 +132,58 @@ namespace distant::kernel::detail {
 
 	// Empty initialize process
 	FORBID_INLINE 
-	constexpr process_base::process_base()
+	constexpr process_base::process_base() noexcept
 		: base_type()
 		, m_id(std::numeric_limits<pid_type>::infinity())
 		, m_access_rights() {}
 
 	FORBID_INLINE 
-	process_base::process_base(pid_type id, access_rights_t access)
+	process_base::process_base(pid_type id, access_rights_t access) noexcept
 		: base_type(this->open(id, access))
 		, m_id(id)
 		, m_access_rights(access)
-	{ update_gle(); }
+	{ m_last_error.update(); }
 
 	// Take possession of process handle. It is ensured to be a convertible process handle
 	// due to encoded type in handle.
-	FORBID_INLINE 
-	process_base::process_base(handle_type&& handle, access_rights_t access)
-		: base_type(std::move(handle))	// steal handle
-		, m_access_rights(access)				
-	{ m_id = get_pid(get_handle<process_base>()); }	// retrieve process id
+	//FORBID_INLINE 
+	//process_base::process_base(handle_type&& handle, access_rights_t access) noexcept
+	//	: base_type(std::move(handle))	// steal handle
+	//	, m_access_rights(access)				
+	//{ m_id = get_pid(get_handle<process_base>()); }	// retrieve process id
 				// This is done after initialization to ensure the operation
 				// is performed after moving handle into our possession.
 
 	FORBID_INLINE 
-	process_base::process_base(process_base&& other) 
+	process_base::process_base(process_base&& other) noexcept
 		: base_type(std::move(other))
 		, m_id(std::move(other.m_id))
 		, m_access_rights(std::move(other.m_access_rights)) {} 
 	// XXX Choose weakest access rights or produce error about incompatible access rights
 
 	FORBID_INLINE 
-	process_base& process_base::operator=(process_base&& other)
+	process_base& process_base::operator=(process_base&& other) noexcept
 	{
-		base_type::operator=(std::move(other)); // This should invalide other
+		base_type::operator=(std::move(other));
 		m_access_rights = other.m_access_rights;
 		m_id = other.m_id;
 		return *this;
 	}
 	
-	process_base::operator bool() const
+	process_base::operator bool() const noexcept
 	{
 		return this->valid();
 	}
 
 //free:
-	FORBID_INLINE bool operator ==(const process_base& lhs, const process_base& rhs)
+	FORBID_INLINE bool operator ==(const process_base& lhs, const process_base& rhs) noexcept
 	{
 		return /*lhs.m_handle == rhs.m_handle &&*/
 			lhs.m_id == rhs.m_id;
 		//lhs.m_access == rhs.m_access;
 	}
 
-	FORBID_INLINE bool operator !=(const process_base& lhs, const process_base& rhs)
+	FORBID_INLINE bool operator !=(const process_base& lhs, const process_base& rhs) noexcept
 	{
 		return !operator==(lhs, rhs);
 	}

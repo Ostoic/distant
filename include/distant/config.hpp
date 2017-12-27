@@ -19,6 +19,5 @@ namespace distant::config {
 
 #endif
 
-
 	using string_elem = std::decay_t<string::reference>;
 }

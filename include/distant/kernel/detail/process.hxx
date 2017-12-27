@@ -13,13 +13,6 @@ Distributed under the Apache Software License, Version 2.0.
 namespace distant::kernel {
 
 //public:
-	//===========================//
-	// Static process functions //
-	//===========================//
-
-//protected:
-
-//public:
 	template <access_rights::process T>
 	inline void process<T>::terminate() const
 	{
@@ -77,18 +70,18 @@ namespace distant::kernel {
 		return process_base::file_path();
 	}
 
-	template <access_rights::process T>
+	/*template <access_rights::process T>
 	inline auto process<T>::memory_status() const
 	{
 		return process<T>::memory_status_t{ *this };
-	}
+	}*/
 
-	template <access_rights::process T>
-	inline const handle<process<T>>& 
+	/*template <access_rights::process T>
+	inline const handle<process<T>*>& 
 	process<T>::get_handle() const 
 	{ 
-		return object::get_handle<process>(); 
-	}
+		return reinterpret_cast<const handle<process<T>*>&>object::get_handle(); 
+	}*/
 
 	//=========================//
 	// Process ctors and dtor  //

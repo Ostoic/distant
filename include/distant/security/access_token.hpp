@@ -8,7 +8,7 @@
 namespace distant::security 
 {
 	template <access_rights::token access, typename KernelObject>
-	class access_token : public error::gle
+	class access_token : public error::windows_error
 	{
 	private:
 		using object_type = typename object_traits<KernelObject>::object_type;
@@ -50,10 +50,11 @@ namespace distant::security
 		using expose = distant::detail::attorney::to_handle<access_token>;
 
 		handle<access_token> m_handle;
+		mutable error::windows_error m_last_error;
 	};
 
 	template <access_rights::token access, typename KernelObject>
-	access_token<access, KernelObject> get_token(const KernelObject&);
+	access_token<access, KernelObject> get_access_token(const KernelObject&);
 }
 
 #include <distant\security\detail\access_token.hxx>

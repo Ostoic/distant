@@ -1,6 +1,5 @@
 #pragma once
 
-#include <Windows.h>
 #include <cstddef>
 
 #include <distant\memory\address.h>

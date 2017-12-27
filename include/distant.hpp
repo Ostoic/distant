@@ -6,6 +6,8 @@ Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
 */
 
+#include <Windows.h>
+
 #include <distant\handle.hpp>
 #include <distant\kernel\process.hpp>
 #include <distant\system\snapshot.hpp>

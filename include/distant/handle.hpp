@@ -27,25 +27,24 @@ namespace distant {
 		using object_type = Object_t;
 
 	public:
-		constexpr explicit handle(native_type h, flag_type flags = flag_type::inherit);
+		/// \param h the native handle value
+		/// \param flags handle flags 
+		constexpr explicit handle(native_type h, flag_type flags = flag_type::inherit) noexcept;
 
 		/// Invalid handle literal constructor
-		constexpr handle();
+		constexpr handle() noexcept;
 
 		/// Invalid handle literal constructor
-		constexpr handle(detail::invalid_t);
+		constexpr handle(detail::invalid_t) noexcept;
 
 		/// Bivariant move constructor
 		template <typename other_t>
-		handle(handle<other_t>&& other);
+		handle(handle<other_t>&& other) noexcept;
 		
 		/// Bivariant move assignment
 		template <typename other_t>
-		handle& operator =(handle<other_t>&& other);
+		handle& operator =(handle<other_t>&& other) noexcept;
 		
-		/// Close handle to windows object.
-		~handle() = default;
-
 	private:	
 		/// Allow attorney to expose some implementation details
 		// This is mainly for recreated winapi functions to pass
@@ -59,10 +58,10 @@ namespace distant {
 
 	public:
 		template <typename T, typename U>
-		friend constexpr bool operator ==(const handle<T>&, const handle<U>&);
+		friend constexpr bool operator ==(const handle<T>&, const handle<U>&) noexcept;
 
 		template <typename T, typename U>
-		friend constexpr bool operator !=(const handle<T>&, const handle<U>&);
+		friend constexpr bool operator !=(const handle<T>&, const handle<U>&) noexcept;
 	};
 
 } // end namespace distant

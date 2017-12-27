@@ -1,8 +1,9 @@
 #pragma once
 
 #include <boost\winapi\basic_types.hpp>
+#include <distant\support\winapi\config.hpp>
 
-namespace distant::winapi 
+namespace boost::winapi 
 {
 	typedef struct _LUID_ {
 		boost::winapi::DWORD_ LowPart;

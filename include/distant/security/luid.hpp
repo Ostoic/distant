@@ -4,5 +4,5 @@
 
 namespace distant::security
 {
-	using luid = distant::winapi::LUID_;
+	using luid = boost::winapi::LUID_;
 }

@@ -6,73 +6,64 @@
 namespace distant::kernel {
 
 //public:
-	template <access_rights::process access_t>
-	inline process<access_t>::memory_status::memory_status(const process<access_t>& process)
-		: m_process(process)
-		, m_memory_counters()
+	template <access_rights::process T>
+	inline memory_status<T>::memory_status(const process<T>& process)
+		: m_process(process), m_memory_counters()
 	{
 		using access_rights = access_rights::process;
 
 		static_assert(
-			process::check_permission(access_rights::vm_read) &&
-				(process::check_permission(access_rights::query_information) ||
-				 process::check_permission(access_rights::query_limited_information)),
+			process<T>::check_permission(access_rights::vm_read) &&
+				(process<T>::check_permission(access_rights::query_information) ||
+				 process<T>::check_permission(access_rights::query_limited_information)),
 			"Invalid access rights (memory_status::ctor): "
 			"Process must have vm_read access right, and either query_information or query_limited_information access rights");
 
 		const auto native_handle = expose::native_handle(m_process.get_handle());
 
 		if (native_handle == NULL)
-			throw std::invalid_argument(m_process.format_gle());
+			throw std::system_error();
 		else
 		{
-			if (!::GetProcessMemoryInfo(native_handle, &m_memory_counters, sizeof(m_memory_counters)))
+			if (!boost::winapi::get_process_memory_info(native_handle, &m_memory_counters, sizeof(m_memory_counters)))
 				m_process.update_gle(); // Function failed, retrieve error
 			else
 				m_process.set_success(); // Indicate success
 		}
 	}
 
-	// Total amount of memory committed for the process
-	template <access_rights::process access_t>
-	inline std::size_t process<access_t>::memory_status::private_usage() const
+	template <access_rights::process T>
+	inline std::size_t memory_status<T>::private_usage() const noexcept
 	{
 		return m_memory_counters.PagefileUsage / KB;
 	}
 
-	/// Largest private usage over the course its execution
-	/// \return the amount of memory in KB.
 	template <access_rights::process access_t>
-	inline std::size_t process<access_t>::memory_status::peak_private_usage() const
+	inline std::size_t memory_status<access_t>::peak_private_usage() const noexcept
 	{
 		return m_memory_counters.PeakPagefileUsage / KB;
 	}
 
-	/// The size of memory occupied by the process in RAM. 
-	/// \return the amount of memory in KB.
 	template <access_rights::process access_t>
-	inline std::size_t process<access_t>::memory_status::working_set() const
+	inline std::size_t memory_status<access_t>::working_set() const noexcept
 	{
 		return m_memory_counters.WorkingSetSize / KB;
 	}
 
-	/// Largest working set over the course its execution
-	/// \return the amount of memory in KB.
 	template <access_rights::process access_t>
-	inline std::size_t process<access_t>::memory_status::peak_working_set() const
+	inline std::size_t process<access_t>::peak_working_set() const noexcept
 	{
 		return m_memory_counters.PeakWorkingSetSize / KB;
 	}
 
-	// Number of page fault errors that have occurred over the course of its execution
 	template <access_rights::process access_t>
-	inline std::size_t process<access_t>::memory_status::page_fault_count() const
+	inline std::size_t memory_status<access_t>::page_fault_count() const noexcept
 	{
 		return m_memory_counters.PageFaultCount;
 	}
 
 	template <access_rights::process T>
-	inline std::size_t process<T>::memory_status::handle_count() const
+	inline std::size_t memory_status<T>::handle_count() const
 	{
 		using access_rights = access_rights::process;
 
@@ -87,7 +78,7 @@ namespace distant::kernel {
 
 		const auto native_handle = expose::native_handle(m_process.get_handle());
 
-		DWORD count = 0;
+		boost::winapi::DWORD_ count = 0;
 		if (!::GetProcessHandleCount(native_handle, &count))
 			m_process.update_gle();
 		else

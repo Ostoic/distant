@@ -7,6 +7,7 @@ Distributed under the Apache Software License, Version 2.0.
 */ 
 
 #include <distant\kernel\object.hpp>
+#include <boost\winapi\wait.hpp>
 
 #include <limits>
 #include <chrono>
@@ -16,18 +17,18 @@ namespace distant {
 
 	// XX Consider moving into distant::handle as a member/free function.
 	// XX Look at injectory's wait interface.
-	class wait : public error::gle
+	class wait
 	{
 	public:
 		// Windows wait codes
 		enum class state : long long int
 		{
-			abandoned = WAIT_ABANDONED, // Wait abandoned
-			signaled = WAIT_OBJECT_0,	// Object returned from wait
-			timeout = WAIT_TIMEOUT,		// Wait timed out
-			failed = WAIT_FAILED,		// Bad call
+			abandoned = boost::winapi::WAIT_ABANDONED_, // Wait abandoned
+			signaled = boost::winapi::WAIT_OBJECT_0_,	// Object returned from wait
+			timeout = boost::winapi::WAIT_TIMEOUT_,		// Wait timed out
+			failed = boost::winapi::WAIT_FAILED_,		// Bad call
 
-			io_completion = WAIT_IO_COMPLETION, // APC ended call
+			//io_completion = boost::winapi::WAIT_IO_COMPLETION_, // APC ended call
 		};
 		
 	public:
@@ -36,7 +37,7 @@ namespace distant {
 
 	public:
 		using object_type = kernel::object;
-		using time_type = DWORD;
+		using time_type = boost::winapi::DWORD_;
 
 	public:
 		// Wait for synchronizable object for the given amount of time
@@ -46,11 +47,11 @@ namespace distant {
 			// Or just the usual below 
 			using expose = distant::detail::attorney::to_handle<wait>;
 
-			const auto value = expose::native_handle(obj.get_handle<object_type>());
-			const auto result = ::WaitForSingleObject(value, time);
+			const auto value = expose::native_handle(obj.get_handle());
+			const auto result = boost::winapi::WaitForSingleObject(value, time);
 
 			// XXX WaitForSingleObject has a particular gle syntax. Look into this.
-			this->update_gle();
+			m_last_error.update();
 
 			return static_cast<state>(result);
 		}
@@ -85,11 +86,12 @@ namespace distant {
 		wait::state operator ()(const object_type& obj, wait::infinite tag) const
 		{ 
 			static_cast<void>(tag);
-			return this->operator()(obj, INFINITE); 
+			return this->operator()(obj, boost::winapi::INFINITE_); 
 		}
 
 		//wait::state operator()
-
+	private:
+		mutable error::windows_error m_last_error;
 	};
 
 } // end namespace distant

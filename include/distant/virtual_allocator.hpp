@@ -1,7 +1,5 @@
 #pragma once
 
-#include <Windows.h>
-
 #include <distant\memory\address.h>
 #include <distant\memory\protection.h>
 #include <distant\process.h>

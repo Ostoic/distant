@@ -14,7 +14,7 @@ BOOST_SYMBOL_IMPORT boost::winapi::BOOL_ WINAPI AdjustTokenPrivileges(
 	boost::winapi::PDWORD_ ReturnLength
 );
 
-namespace distant::winapi
+namespace boost::winapi
 {
 	//
 	// Token Specific Access Rights.
@@ -31,10 +31,10 @@ namespace distant::winapi
 	const boost::winapi::DWORD_  TOKEN_ADJUST_SESSIONID_ = 0x0100;
 
 	const boost::winapi::DWORD_ TOKEN_ALL_ACCESS_P_ = STANDARD_RIGHTS_REQUIRED  |
-		TOKEN_ASSIGN_PRIMARY_		| TOKEN_DUPLICATE_			|
-		TOKEN_IMPERSONATE_			| TOKEN_QUERY_				|
-		TOKEN_QUERY_SOURCE_			| TOKEN_ADJUST_PRIVILEGES_	|
-		TOKEN_ADJUST_GROUPS_		| TOKEN_ADJUST_DEFAULT_;
+		TOKEN_ASSIGN_PRIMARY_	| TOKEN_DUPLICATE_			|
+		TOKEN_IMPERSONATE_		| TOKEN_QUERY_				|
+		TOKEN_QUERY_SOURCE_		| TOKEN_ADJUST_PRIVILEGES_	|
+		TOKEN_ADJUST_GROUPS_	| TOKEN_ADJUST_DEFAULT_;
 
 #if ((defined(_WIN32_WINNT) && (_WIN32_WINNT > 0x0400)) || (!defined(_WIN32_WINNT)))
 	const boost::winapi::DWORD_ TOKEN_ALL_ACCESS_ = TOKEN_ALL_ACCESS_P_ | TOKEN_ADJUST_SESSIONID_;
@@ -55,16 +55,16 @@ namespace distant::winapi
 
 	typedef struct _TOKEN_PRIVILEGES_ {
 		boost::winapi::DWORD_ PrivilegeCount;
-		distant::winapi::LUID_AND_ATTRIBUTES_ Privileges[ANYSIZE_ARRAY];
+		boost::winapi::LUID_AND_ATTRIBUTES_ Privileges[ANYSIZE_ARRAY];
 	} TOKEN_PRIVILEGES_, *PTOKEN_PRIVILEGES_;
 
 
 	BOOST_FORCEINLINE boost::winapi::DWORD_ adjust_token_privilege(
 		boost::winapi::HANDLE_ TokenHandle,
 		boost::winapi::BOOL_ DisableAllPrivileges,
-		distant::winapi::PTOKEN_PRIVILEGES_ NewState,
+		boost::winapi::PTOKEN_PRIVILEGES_ NewState,
 		boost::winapi::DWORD_ BufferLength,
-		_Out_writes_bytes_to_opt_(BufferLength, *ReturnLength) distant::winapi::PTOKEN_PRIVILEGES_ PreviousState,
+		_Out_writes_bytes_to_opt_(BufferLength, *ReturnLength) boost::winapi::PTOKEN_PRIVILEGES_ PreviousState,
 		boost::winapi::PDWORD_ ReturnLength)
 	{
 		return ::AdjustTokenPrivileges(

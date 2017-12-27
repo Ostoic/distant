@@ -6,14 +6,13 @@ Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
 */
 
-//#include <windows.h>
-
 #include <distant\utility\enum_operators.hpp>
 
 #include <boost\winapi\access_rights.hpp>
 #include <boost\winapi\handle_info.hpp>
 
 #include <distant\support\winapi\process.hpp>
+#include <distant\support\winapi\token.hpp>
 #include <boost\winapi\process.hpp>
 
 namespace distant {
@@ -50,7 +49,7 @@ struct access_rights
 		terminate = boost::winapi::PROCESS_TERMINATE_,
 
 		// boost::winapi doesn't have query_limited_information?
-		query_limited_information = distant::winapi::PROCESS_QUERY_LIMITED_INFORMATION_,
+		query_limited_information = boost::winapi::PROCESS_QUERY_LIMITED_INFORMATION_,
 		query_information = boost::winapi::PROCESS_QUERY_INFORMATION_,
 
 		synchronize = boost::winapi::SYNCHRONIZE_,
@@ -58,37 +57,47 @@ struct access_rights
 
 	enum class token
 	{
-		assign_primary = 0x0001,		// Required to attach a primary token to a process. The SE_ASSIGNPRIMARYTOKEN_NAME privilege is also required to accomplish this task.
-		duplicate = 0x0002,				// Required to duplicate an access token.
-		impersonate = 0x0004,			// Required to attach an impersonation access token to a process.
-		query = 0x0008,					// Required to query an access token.
-		query_source = 0x0010,			// Required to query the source of an access token.
-		adjust_privileges = 0x0020,		// Required to enable or disable the privileges in an access token.
-		adjust_groups = 0x0040,			// Required to adjust the attributes of the groups in an access token.
-		adjust_default = 0x0080, 		// Required to change the default owner, primary group, or DACL of an access token.
-		adjust_sessionId = 0x0100,		// Required to adjust the session ID of an access token. The SE_TCB_NAME privilege is required.
+		// Required to attach a primary token to a process. The SE_ASSIGNPRIMARYTOKEN_NAME privilege is also required to accomplish this task.
+		assign_primary = boost::winapi::TOKEN_ASSIGN_PRIMARY_,
+
+		// Required to duplicate an access token.
+		duplicate = boost::winapi::TOKEN_DUPLICATE_,
+
+		// Required to attach an impersonation access token to a process.
+		impersonate = boost::winapi::TOKEN_DUPLICATE_,
+
+		// Required to query an access token.
+		query = boost::winapi::TOKEN_QUERY_,
+
+		// Required to query the source of an access token.
+		query_source = boost::winapi::TOKEN_QUERY_SOURCE_,
+
+		// Required to enable or disable the privileges in an access token.
+		adjust_privileges = boost::winapi::TOKEN_ADJUST_PRIVILEGES_,
+
+		// Required to adjust the attributes of the groups in an access token.
+		adjust_groups = boost::winapi::TOKEN_ADJUST_GROUPS_,
+
+		// Required to change the default owner, primary group, or DACL of an access token.
+		adjust_default = boost::winapi::TOKEN_ADJUST_DEFAULT_,
+
+		// Required to adjust the session ID of an access token. The SE_TCB_NAME privilege is required.
+		adjust_sessionId = boost::winapi::TOKEN_ADJUST_SESSIONID_,
 
 		// XX ???
-		trust_constraint_mask = boost::winapi::STANDARD_RIGHTS_READ_ | query | query_source,
+		trust_constraint_mask = boost::winapi::TOKEN_TRUST_CONSTRAINT_MASK_,
 
 		// Combines STANDARD_RIGHTS_READ and TOKEN_QUERY.
-		read = boost::winapi::STANDARD_RIGHTS_READ_ | query,
+		read = boost::winapi::TOKEN_READ_,
 
 		// Combines STANDARD_RIGHTS_WRITE, TOKEN_ADJUST_PRIVILEGES, TOKEN_ADJUST_GROUPS, and TOKEN_ADJUST_DEFAULT.
-		write = boost::winapi::STANDARD_RIGHTS_WRITE_ | adjust_privileges |
-		adjust_groups | adjust_default,
+		write = boost::winapi::TOKEN_WRITE_,
 
 		// Combines STANDARD_RIGHTS_EXECUTE and TOKEN_IMPERSONATE.
-		execute = boost::winapi::STANDARD_RIGHTS_EXECUTE_, 
+		execute = boost::winapi::TOKEN_EXECUTE_,
 
 		// Combines all possible access rights for a token.
-		all_access = boost::winapi::STANDARD_RIGHTS_REQUIRED_ |
-			assign_primary | duplicate | impersonate | query | query_source |
-			adjust_privileges | adjust_groups | adjust_default
-#if BOOST_USE_WINAPI_VERSION >= BOOST_WINAPI_VERSION_WIN2K
-			| adjust_sessionId,
-#endif
-		
+		all_access = boost::winapi::TOKEN_ALL_ACCESS_,
 	};
 
 	enum class handle

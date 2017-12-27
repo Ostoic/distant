@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <distant\security\luid.hpp>
 #include <distant\config.hpp>
 
@@ -13,10 +14,10 @@ namespace distant::security {
 	public:
 		enum class attribute
 		{
-			enabled = distant::winapi::SE_PRIVILEGE_ENABLED_,
-			enabled_by_default = distant::winapi::SE_PRIVILEGE_ENABLED_BY_DEFAULT_,
-			removed = distant::winapi::SE_PRIVILEGE_REMOVED_,
-			used_for_access = distant::winapi::SE_PRIVILEGE_USED_FOR_ACCESS_,
+			enabled = boost::winapi::SE_PRIVILEGE_ENABLED_,
+			enabled_by_default = boost::winapi::SE_PRIVILEGE_ENABLED_BY_DEFAULT_,
+			removed = boost::winapi::SE_PRIVILEGE_REMOVED_,
+			used_for_access = boost::winapi::SE_PRIVILEGE_USED_FOR_ACCESS_,
 		};
 
 	public:
@@ -24,7 +25,9 @@ namespace distant::security {
 
 		explicit privilege(security::luid luid, attribute attrib = attribute::enabled) noexcept;
 
-		operator winapi::TOKEN_PRIVILEGES_() const noexcept;
+		explicit privilege(const std::string& privilegeName, attribute attrib = attribute::enabled) noexcept;
+
+		operator boost::winapi::TOKEN_PRIVILEGES_() const noexcept;
 
 		explicit operator bool() const noexcept;
 
@@ -40,8 +43,6 @@ namespace distant::security {
 
 	// Lookup the privilege local UID and attribute given the name.
 	privilege lookup_privilege(distant::config::string_view privilege_name);
-
-
 
 } // end namespace distant::security
 

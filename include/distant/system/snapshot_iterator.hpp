@@ -1,6 +1,7 @@
 #pragma once
 
 #include <boost\iterator\iterator_facade.hpp>
+#include <boost\winapi\basic_types.hpp>
 
 #include <distant\utility\type_traits.hpp>
 
@@ -84,7 +85,7 @@ namespace distant::iterators {
 		using expose = distant::detail::attorney::to_handle<snapshot_iterator>;
 
 		index_type m_index;
-		HANDLE m_native_snap;
+		boost::winapi::HANDLE_ m_native_snap;
 
 		entry_type m_entry;
 	};

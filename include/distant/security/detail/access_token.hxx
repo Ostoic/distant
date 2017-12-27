@@ -43,7 +43,10 @@ namespace distant::security
 			detail::get_token_impl<K>(
 				expose::native_handle(k.get_handle()), static_cast<DWORD>(A)))) 
 	{ 
-		if (!m_handle) throw std::invalid_argument("Invalid access token handle");
+		if (!m_handle) throw 
+			std::system_error(
+				distant::windows_error(boost::winapi::GetLastError()), 
+				"Invalid access token handle");
 	}
 
 	// Bivariant move constructor
@@ -67,11 +70,11 @@ namespace distant::security
 	template <access_rights::token A, typename K>
 	inline bool access_token<A, K>::adjust(const security::privilege& p) noexcept
 	{
-		winapi::TOKEN_PRIVILEGES_ temp = p;
+		boost::winapi::TOKEN_PRIVILEGES_ temp = p;
 
-		if (!winapi::adjust_token_privilege(expose::native_handle(m_handle), false, &temp, sizeof(temp), NULL, NULL))
+		if (!boost::winapi::adjust_token_privilege(expose::native_handle(m_handle), false, &temp, sizeof(temp), NULL, NULL))
 		{
-			this->update_gle();
+			m_last_error.update();
 			return false;
 		}
 
@@ -86,7 +89,7 @@ namespace distant::security
 
 //free:
 	template <access_rights::token access = access_token::token::all_access, typename KernelObject>
-	inline access_token<access, KernelObject> get_token(const KernelObject& object)
+	inline access_token<access, KernelObject> get_access_token(const KernelObject& object)
 	{
 		return access_token<access, KernelObject>(object);
 	}

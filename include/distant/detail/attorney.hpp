@@ -8,6 +8,8 @@ Distributed under the Apache Software License, Version 2.0.
 
 #include <distant\detail\fwd.hpp>
 
+#include <boost\winapi\basic_types.hpp>
+
 namespace distant::detail::attorney  {
 
 	// Attorney class that allows the Client to view an implementation detail of the given class.
@@ -19,7 +21,7 @@ namespace distant::detail::attorney  {
 
 	private:
 		template <class object_t>
-		static HANDLE native_handle(const handle<object_t>& h)
+		static boost::winapi::HANDLE_ native_handle(const handle<object_t>& h)
 		{ return h.native_handle(); }
 
 		template <class object_t>

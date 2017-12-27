@@ -6,7 +6,7 @@ Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
 */
 
-#include <distant\error\gle.hpp>
+#include <distant\error\windows_error.hpp>
 
 #include <distant\utility\type_traits.hpp>
 #include <distant\handle.hpp>
@@ -15,48 +15,41 @@ Distributed under the Apache Software License, Version 2.0.
 namespace distant::kernel {
 
 	/// Base class for kernel objects
-	class object : public error::gle
+	class object
 	{
 	public:
-		// Go to MSDN for a list of kernel objects
-		// XXX Provide link of objects
-
 		using error_type  = object_traits<object>::error_type;
 		using handle_type = object_traits<object>::handle_type;
 
 	public:
-		/*************************************/
-		/** Windows object status functions **/
-		/*************************************/
 		/// Bivariant type cast for kernel objects
-		template <typename other_t>
-		const handle<other_t>& get_handle() const noexcept;
+		virtual const handle<object>& get_handle() const noexcept;
 		
-		/*********************************/
-		/** Windows Object constructors **/
-		/*********************************/
 		/// Invalid handle default constructor
-		constexpr object() noexcept;
+		object() noexcept;
 
-		/// Bivarient move constructor
-		template <typename other_t>
-		explicit object(handle<other_t>&& h);
+		/// Bivariant handle move constructor
+		template <typename other_t>	
+		explicit object(handle<other_t>&& h) noexcept;
 
 		/// Move constructible
-		object(object&& other);
+		object(object&& other) noexcept;
 
 		/// Move assignable
-		object& operator =(object&& other);
- 
-	protected:
-		/// Check if the process handle is valid
-		bool valid() const noexcept;
+		object& operator =(object&& other) noexcept;
 
-		/// Close the underlying handle
-		void close_object();
+		/// Test if the object is valid or not
+		/// \return true if the object is valid, false otherwise.
+		virtual operator bool() const noexcept;
+
+		/// Check if the process handle is valid
+		virtual bool valid() const noexcept;
+
+		virtual ~object() = default;
 
 	protected:
 		handle_type m_handle;
+		mutable distant::error::windows_error m_last_error;
 	};
 
 } // end namespace distant::kernel

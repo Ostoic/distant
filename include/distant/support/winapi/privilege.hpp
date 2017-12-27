@@ -24,14 +24,14 @@ BOOST_SYMBOL_IMPORT boost::winapi::BOOL_ WINAPI LookupPrivilegeDisplayNameW(
 #if !defined(BOOST_NO_ANSI_APIS)
 BOOST_SYMBOL_IMPORT boost::winapi::BOOL_ WINAPI LookupPrivilegeNameA(
 	boost::winapi::LPCSTR_ lpSystemName,
-	distant::winapi::PLUID_ lpLuid,
+	boost::winapi::PLUID_ lpLuid,
 	_Out_writes_to_opt_(*cchDisplayName, *cchDisplayName + 1) boost::winapi::LPSTR_ lpName,
 	boost::winapi::LPDWORD_ cchName);
 #endif
 
 BOOST_SYMBOL_IMPORT boost::winapi::BOOL_ WINAPI LookupPrivilegeNameW(
 	boost::winapi::LPCWSTR_ lpSystemName,
-	distant::winapi::PLUID_ lpLuid,
+	boost::winapi::PLUID_ lpLuid,
 	_Out_writes_to_opt_(*cchDisplayName, *cchDisplayName + 1) boost::winapi::LPWSTR_ lpName,
 	boost::winapi::LPDWORD_ cchName);
 
@@ -39,16 +39,15 @@ BOOST_SYMBOL_IMPORT boost::winapi::BOOL_ WINAPI LookupPrivilegeNameW(
 BOOST_SYMBOL_IMPORT boost::winapi::BOOL_ WINAPI LookupPrivilegeValueA(
 	boost::winapi::LPCSTR_ lpSystemName,
 	boost::winapi::LPCSTR_ lpName,
-	distant::winapi::PLUID_ lpLuid);
+	boost::winapi::PLUID_ lpLuid);
 #endif
 
 BOOST_SYMBOL_IMPORT boost::winapi::BOOL_ WINAPI LookupPrivilegeValueW(
 	boost::winapi::LPCWSTR_ lpSystemName,
 	boost::winapi::LPCWSTR_ lpName,
-	distant::winapi::PLUID_ lpLuid);
+	boost::winapi::PLUID_ lpLuid);
 
-namespace distant {
-namespace winapi {
+namespace boost::winapi {
 
 	const boost::winapi::DWORD_ ANYSIZE_ARRAY_ = 1;
 
@@ -102,7 +101,7 @@ namespace winapi {
 #if !defined(BOOST_NO_ANSI_APIS)
 	BOOST_FORCEINLINE boost::winapi::DWORD_ lookup_privilege_name(
 		boost::winapi::LPCSTR_ lpSystemName,
-		distant::winapi::PLUID_ lpLuid,
+		boost::winapi::PLUID_ lpLuid,
 		_Out_writes_to_opt_(*cchDisplayName, *cchDisplayName + 1) boost::winapi::LPSTR_ lpName,
 		boost::winapi::LPDWORD_ cchName)
 	{
@@ -116,7 +115,7 @@ namespace winapi {
 
 	BOOST_FORCEINLINE boost::winapi::DWORD_ lookup_privilege_name(
 		boost::winapi::LPCWSTR_ lpSystemName,
-		distant::winapi::PLUID_ lpLuid,
+		boost::winapi::PLUID_ lpLuid,
 		_Out_writes_to_opt_(*cchDisplayName, *cchDisplayName + 1) boost::winapi::LPWSTR_ lpName,
 		boost::winapi::LPDWORD_ cchName)
 	{
@@ -131,7 +130,7 @@ namespace winapi {
 	BOOST_FORCEINLINE boost::winapi::DWORD_ lookup_privilege_value(
 		boost::winapi::LPCSTR_ lpSystemName,
 		boost::winapi::LPCSTR_ lpName,
-		distant::winapi::PLUID_ lpLuid)
+		boost::winapi::PLUID_ lpLuid)
 	{
 		return ::LookupPrivilegeValueA(
 			lpSystemName,
@@ -142,7 +141,7 @@ namespace winapi {
 	BOOST_FORCEINLINE boost::winapi::DWORD_ lookup_privilege_value(
 		boost::winapi::LPCWSTR_ lpSystemName,
 		boost::winapi::LPCWSTR_ lpName,
-		distant::winapi::PLUID_ lpLuid)
+		boost::winapi::PLUID_ lpLuid)
 	{
 		return ::LookupPrivilegeValueW(
 			lpSystemName,
@@ -167,5 +166,4 @@ namespace winapi {
 //	LUID_AND_ATTRIBUTES Privilege[ANYSIZE_ARRAY];
 //} PRIVILEGE_SET, *PPRIVILEGE_SET;
 
-} // end namespace winapi
-} // end namespace boost
+} // end namespace boost::winapi

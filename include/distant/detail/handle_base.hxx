@@ -7,6 +7,7 @@ Distributed under the Apache Software License, Version 2.0.
 */
 
 #include <distant\detail\handle_base.hpp>
+#include <boost\winapi\handles.hpp>
 
 namespace distant::detail {
 
@@ -30,12 +31,10 @@ namespace distant::detail {
 		// Ensure we don't have a handle leak
 		this->close();
 
-		// Copy other's data
 		m_closed = other.m_closed;
 		m_flags = other.m_flags;
 		m_native_handle = other.m_native_handle;
 
-		// Invalidate moved-from handle
 		other.invalidate();
 		return *this;
 	}
@@ -59,10 +58,10 @@ namespace distant::detail {
 		// If this reference count > 0, then continue.
 		// But if the reference count == 0, the system should destroy
 		// the object regardless?
-		if (!close_protected() && !closed() && valid())
+		if (!this->close_protected() && !this->closed() && this->valid())
 		{
-			CloseHandle(m_native_handle);
-			invalidate();
+			boost::winapi::CloseHandle(m_native_handle);
+			this->invalidate();
 		}
 
 		m_closed = true;
@@ -71,7 +70,7 @@ namespace distant::detail {
 //protected:
 	inline void handle_base::invalidate() noexcept
 	{
-		protect();
+		this->protect();
 		m_native_handle = NULL;
 	}
 

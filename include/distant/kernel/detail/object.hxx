@@ -3,40 +3,35 @@
 namespace distant::kernel {
 
 //public:
-	template <typename other_t>
-	inline const handle<other_t>& object::get_handle() const noexcept
+	inline const handle<object>& object::get_handle() const noexcept
 	{
-		static_assert(
-			utility::is_related<object, other_t>::value,
-			"Handle types are not convertible.");
-
-		return *reinterpret_cast<const handle<other_t>*>(&m_handle);
+		return m_handle;
 	}
 
-	inline constexpr object::object() noexcept 
-		: m_handle(invalid_handle) {}
+	inline object::object() noexcept 
+		: m_handle(invalid_handle)
+		, m_last_error(boost::winapi::NO_ERROR_) {}
 
 	template <typename other_t>
-	inline object::object(handle<other_t>&& h) 
+	inline object::object(handle<other_t>&& h) noexcept
 		: m_handle(std::move(h)) {}
 
-	inline object::object(object&& other) 
+	inline object::object(object&& other) noexcept
 		: object(std::move(other.m_handle)) {}
 
-	inline object& object::operator =(object&& other)
+	inline object& object::operator =(object&& other) noexcept
 	{
 		m_handle = std::move(other.m_handle);
 		return *this;
 	}
 
-//protected:
+	inline object::operator bool() const noexcept
+	{
+		return this->valid();
+	}
+
 	inline bool object::valid() const noexcept
 	{
 		return m_handle.valid();
-	}
-
-	inline void object::close_object()
-	{
-		m_handle.close();
 	}
 } // end namespace distant::kernel

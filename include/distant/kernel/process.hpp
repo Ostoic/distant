@@ -12,10 +12,9 @@ Distributed under the Apache Software License, Version 2.0.
 #include <limits>
 #include <string>
 
-#include <Windows.h>
 //#include <exception>
 
-#include <distant\kernel\detail\process_base.hpp>
+#include <distant\kernel\process_base.hpp>
 
 #include <distant\utility\type_traits.hpp>
 
@@ -26,14 +25,11 @@ namespace kernel  {
 	
 	/// Representation of an executable program
 	template <access_rights::process access_t>
-	class process : public kernel::detail::process_base
+	class process : public kernel::process_base
 	{
-	public:
-		class memory_status;
-		friend memory_status;
+		friend class memory_status;
 
 	private:
-		using process_base = detail::process_base;
 		using memory_status_t = memory_status;
 
 	public:
@@ -53,7 +49,7 @@ namespace kernel  {
 		//===================//
 		/// Get handle to process
 		/// \return handle<process> to the process
-		const handle<process>& get_handle() const;
+		//const handle<process>& get_handle() const override;
 
 		/// Terminate the process
 		void terminate() const;
@@ -72,14 +68,11 @@ namespace kernel  {
 
 		/// Query the process for memory information 
 		/// \return memory_status object used to query for process information
-		auto memory_status() const;
+		//auto memory_status() const;
 
 		// Return the virtual memory of this process
 		//memory::vm get_vm() const { return memory::vm(*this); }
 
-		//=========================//
-		// Process ctors and dtors //
-		//=========================//
 		/// Default process constructor
 		constexpr process();
 
@@ -90,12 +83,6 @@ namespace kernel  {
 		process& operator =(process&& other); /// move assignable
 
 		explicit process(handle<process>&& handle);
-		
-		// Process destructor: Clean up handles and invalidate interior data.
-		// Call Chain:
-		//		1. ~process()
-		//		2. ~object()
-		//		3. ~handle() <-- calls CloseHandle
 
 		template <access_rights::process T, access_rights::process U>
 		friend bool operator ==(const process<T>&, const process<U>&);
@@ -121,5 +108,4 @@ using kernel::current_process;
 } // end namespace distant
 
 // Implementation 
-#include <distant\kernel\process\memory_status.hpp>
 #include <distant\kernel\detail\process.hxx>

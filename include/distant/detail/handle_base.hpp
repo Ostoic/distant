@@ -1,13 +1,12 @@
 #pragma once
 
-#include <Windows.h>
-
 #include <distant\access_rights.hpp>
 
 #include <distant\detail\attorney.hpp>
 #include <distant\utility\literal.hpp>
 
-#include <boost\detail\winapi\config.hpp>
+#include <boost\winapi\config.hpp>
+#include <boost\winapi\basic_types.hpp>
 
 namespace distant {
 namespace detail  {
@@ -20,11 +19,13 @@ namespace detail  {
 	{
 	public:
 		// Underlying handle type. This is macro'd in Windows to be void* == (HANDLE)
-		using native_type = HANDLE;
+		using native_type = boost::winapi::HANDLE_;
 		using flag_type = access_rights::handle;
 
 	public:
-		/// Only allow native coversion via explicit cast/ctor 
+		/// Construct using native handle.
+		/// \param h the native handle value
+		/// \param flags handle flags 
 		constexpr explicit handle_base(native_type h, flag_type flags = flag_type::inherit) noexcept;
 
 		/// Move copyable
@@ -33,15 +34,14 @@ namespace detail  {
 		/// Move assignable
 		handle_base& operator=(handle_base&&) noexcept;
 
-		// If we allow copy ctor/assignment, then multiple copies
-		// will eventually attempt to close the same handle, which
-		// is not desirable.
+		// If we allow copy ctor/assignment, then multiple copies will eventually attempt 
+		// to close the same handle, which is not desirable.
 		constexpr handle_base(const handle_base&) = delete;
 		handle_base& operator =(const handle_base&) = delete;
 
 		/// Close handle to windows object.
 		/// Handle must be weakly valid in order to close the handle.
-		~handle_base() { this->close(); }
+		~handle_base() noexcept { this->close(); }
 		
 	public:
 		/// Checks the if the native handle is valid
@@ -86,7 +86,7 @@ namespace detail  {
 
 		/// Get the handle's flag type
 		/// \return distant::access_rights::handle flag type
-		flag_type flags()  const noexcept;
+		flag_type flags() const noexcept;
 
 	protected:
 		/// native HANDLE value
