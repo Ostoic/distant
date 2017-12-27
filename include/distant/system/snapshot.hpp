@@ -36,7 +36,7 @@ namespace distant::system {
 		iterator end() const;
 
 	public:
-		snapshot();
+		explicit snapshot();
 
 		// Not copy constructible
 		snapshot(const snapshot&) = delete;

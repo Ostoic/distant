@@ -70,8 +70,8 @@ namespace distant::kernel::detail {
 		//===================//
 		// Process interface //
 		//===================//
-		pid_type pid() const { return m_pid; }
-		flag_type access_rights() const { return m_access; }
+		pid_type id() const { return m_id; }
+		flag_type access_rights() const { return m_access_rights; }
 		
 		//const handle<process_base>& get_handle() const;
 
@@ -119,8 +119,8 @@ namespace distant::kernel::detail {
 		// XXX Consider containing a (lazy) list (view?) of threads inside process (so stack unwind would close thread handles first)
 		// XXX Otherwise provide a function to return a reference to thread handles from this process (but the stack unwind might be problematic)
 		// XXX Is it important to consider the order of closing a thread from a process? (ie close(thread); close(process) compared with the converse).
-		pid_type m_pid;
-		access_rights_t m_access;
+		pid_type m_id;
+		access_rights_t m_access_rights;
 
 		// Process destructor: Clean up handles and invalidate interior data.
 		// Call Chain:

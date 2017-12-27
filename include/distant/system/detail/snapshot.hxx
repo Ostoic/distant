@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdexcept>
+
 #include <distant\system\snapshot.hpp>
 
 namespace distant::system {
@@ -14,6 +16,11 @@ namespace distant::system {
 			"Unable to take system snapshot of nonkernel object");
 
 		this->update_gle();
+		if (m_handle == distant::invalid_handle)
+		{
+			std::error_code error(this->get_error_code(), std::system_category());
+			throw std::system_error(error, "Invalid snapshot handle");
+		}
 	}
 	
 	template <class ObjectType>

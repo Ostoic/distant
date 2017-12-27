@@ -6,33 +6,34 @@ Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
 */
 
-#include <windows.h>
-#include <strsafe.h>
-
-#include <WinError.h>
 #include <string>
+
+#include <boost\winapi\basic_types.hpp>
+#include <boost\winapi\error_handling.hpp>
+#include <boost\winapi\local_memory.hpp>
 
 #include <distant\detail\fwd.hpp>
 
 namespace distant::error {
 
-inline std::string format(DWORD error_code)
+inline std::string format(boost::winapi::DWORD_ error_code)
 {
+	namespace winapi = boost::winapi;
 	// Retrieve the system error message for the last-error code
 	LPSTR messageBuffer = NULL;
 
-	FormatMessageA(
-		FORMAT_MESSAGE_ALLOCATE_BUFFER |
-		FORMAT_MESSAGE_FROM_SYSTEM	   |
-		FORMAT_MESSAGE_IGNORE_INSERTS,
+	winapi::format_message(
+		winapi::FORMAT_MESSAGE_ALLOCATE_BUFFER_ |
+		winapi::FORMAT_MESSAGE_FROM_SYSTEM_	    |
+		winapi::FORMAT_MESSAGE_IGNORE_INSERTS_,
 		NULL,
 		error_code,
-		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		winapi::MAKELANGID_(winapi::LANG_NEUTRAL_, winapi::SUBLANG_DEFAULT_),
 		(LPSTR)&messageBuffer,
 		0, NULL);
 
 	std::string message(messageBuffer);
-	LocalFree(messageBuffer);
+	winapi::LocalFree(messageBuffer);
 	return { message };
 }
 

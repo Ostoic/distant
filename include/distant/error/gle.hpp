@@ -6,13 +6,14 @@ Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
 */
 
-#include <Windows.h>
-
 #include <utility>
 #include <string>
 #include <iostream>
-#include <system_error>
 
+#include <boost\winapi\basic_types.hpp>
+#include <boost\winapi\error_codes.hpp>
+#include <boost\winapi\get_last_error.hpp>
+#include <distant\support\winapi\last_error.hpp>
 
 #include <distant\error\format.hpp>
 
@@ -31,7 +32,7 @@ namespace distant::error {
 	class gle
 	{
 	private:
-		using error_type = DWORD;
+		using error_type = boost::winapi::DWORD_;
 
 	public:
 		// Get the last error code that was recorded
@@ -43,7 +44,7 @@ namespace distant::error {
 		{ return m_error; }
 
 		bool success() const
-		{ return get_error_code() == ERROR_SUCCESS; }
+		{ return get_error_code() == boost::winapi::ERROR_SUCCESS_; }
 
 	public:
 		constexpr gle() : m_error() {}
@@ -61,18 +62,18 @@ namespace distant::error {
 		// The user may call get_last_error after accessing the interface,
 		// to see if any gles were recorded.
 		void update_gle() const 
-		{ m_error = GetLastError(); }
+		{ m_error = boost::winapi::GetLastError(); }
 
 		void update_gle(const gle& other) const 
 		{  m_error = other.get_error_code(); }
 
 		void set_success() const
-		{ this->set_last_error(ERROR_SUCCESS); }
+		{ this->set_last_error(boost::winapi::ERROR_SUCCESS_); }
 
 		void set_last_error(error_type error_code) const 
 		{
 			m_error = error_code; 
-			SetLastError(error_code); 
+			distant::winapi::SetLastError(error_code); 
 		}
 
 		// m_error is mutable so we can still use const member functions

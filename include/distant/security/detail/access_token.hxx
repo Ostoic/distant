@@ -4,6 +4,7 @@
 #include <distant\detail\attorney.hpp>
 
 #include <distant\security\access_token.hpp>
+#include <distant\support\winapi\token.hpp>
 
 namespace distant::security
 {
@@ -66,8 +67,9 @@ namespace distant::security
 	template <access_rights::token A, typename K>
 	inline bool access_token<A, K>::adjust(const security::privilege& p) noexcept
 	{
-		TOKEN_PRIVILEGES temp = p;
-		if (!::AdjustTokenPrivileges(expose::native_handle(m_handle), false, &temp, sizeof(temp), NULL, NULL))
+		winapi::TOKEN_PRIVILEGES_ temp = p;
+
+		if (!winapi::adjust_token_privilege(expose::native_handle(m_handle), false, &temp, sizeof(temp), NULL, NULL))
 		{
 			this->update_gle();
 			return false;
@@ -84,7 +86,7 @@ namespace distant::security
 
 //free:
 	template <access_rights::token access = access_token::token::all_access, typename KernelObject>
-	inline access_token<access, KernelObject> get_token(const KernelObject& object) noexcept
+	inline access_token<access, KernelObject> get_token(const KernelObject& object)
 	{
 		return access_token<access, KernelObject>(object);
 	}

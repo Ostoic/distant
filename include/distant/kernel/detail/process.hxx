@@ -41,6 +41,8 @@ namespace distant::kernel {
 	template <access_rights::process T>
 	inline bool process<T>::is_active() const
 	{
+		using access_rights = access_rights::process;
+
 		// Ensure we have the synchronize access_rights
 		// This is required to call WaitForSingleObject
 		static_assert(

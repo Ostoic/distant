@@ -1,19 +1,21 @@
 #pragma once
 
-#ifdef __cpp_lib_experimental_filesystem 
-#include <experimental/filesystem>
-#elseif defined(__cpp_lib_filesystem)
+#ifdef __cpp_lib_filesystem 
 #include <filesystem>
+#elif defined(__cpp_lib_experimental_filesystem)
+#include <experimental\filesystem>
 #else
-#include <filesystem>
+#include <boost/filesystem.hpp>
 #endif
 
 namespace distant
 {
 #ifdef __cpp_lib_filesystem
 	namespace filesystem = std::filesystem;
-#else
+#elif defined(__cpp_lib_experimental_filesystem)
 	namespace filesystem = std::experimental::filesystem;
+#else
+	namespace filesystem = boost::filesystem;
 #endif
 
 

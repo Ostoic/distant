@@ -3,7 +3,8 @@
 #include <distant\security\luid.hpp>
 #include <distant\config.hpp>
 
-#include <Windows.h>
+#include <distant\support\winapi\privilege.hpp>
+#include <distant\support\winapi\token.hpp>
 
 namespace distant::security {
 
@@ -12,10 +13,10 @@ namespace distant::security {
 	public:
 		enum class attribute
 		{
-			enabled = SE_PRIVILEGE_ENABLED,
-			enabled_by_default = SE_PRIVILEGE_ENABLED_BY_DEFAULT,
-			removed = SE_PRIVILEGE_REMOVED,
-			used_for_access = SE_PRIVILEGE_USED_FOR_ACCESS,
+			enabled = distant::winapi::SE_PRIVILEGE_ENABLED_,
+			enabled_by_default = distant::winapi::SE_PRIVILEGE_ENABLED_BY_DEFAULT_,
+			removed = distant::winapi::SE_PRIVILEGE_REMOVED_,
+			used_for_access = distant::winapi::SE_PRIVILEGE_USED_FOR_ACCESS_,
 		};
 
 	public:
@@ -23,7 +24,7 @@ namespace distant::security {
 
 		explicit privilege(security::luid luid, attribute attrib = attribute::enabled) noexcept;
 
-		operator TOKEN_PRIVILEGES() const noexcept;
+		operator winapi::TOKEN_PRIVILEGES_() const noexcept;
 
 		explicit operator bool() const noexcept;
 

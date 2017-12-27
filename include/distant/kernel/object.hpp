@@ -30,13 +30,13 @@ namespace distant::kernel {
 		/*************************************/
 		/// Bivariant type cast for kernel objects
 		template <typename other_t>
-		const handle<other_t>& get_handle() const;
+		const handle<other_t>& get_handle() const noexcept;
 		
 		/*********************************/
 		/** Windows Object constructors **/
 		/*********************************/
 		/// Invalid handle default constructor
-		constexpr object();
+		constexpr object() noexcept;
 
 		/// Bivarient move constructor
 		template <typename other_t>
@@ -50,7 +50,7 @@ namespace distant::kernel {
  
 	protected:
 		/// Check if the process handle is valid
-		bool valid() const;
+		bool valid() const noexcept;
 
 		/// Close the underlying handle
 		void close_object();

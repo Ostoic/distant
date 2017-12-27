@@ -10,9 +10,11 @@ Distributed under the Apache Software License, Version 2.0.
 
 #include <distant\utility\enum_operators.hpp>
 
-#include <boost\detail\winapi\access_rights.hpp>
-#include <boost\detail\winapi\process.hpp>
-#include <boost\detail\winapi\handle_info.hpp>
+#include <boost\winapi\access_rights.hpp>
+#include <boost\winapi\handle_info.hpp>
+
+#include <distant\support\winapi\process.hpp>
+#include <boost\winapi\process.hpp>
 
 namespace distant {
 
@@ -48,7 +50,7 @@ struct access_rights
 		terminate = boost::winapi::PROCESS_TERMINATE_,
 
 		// boost::winapi doesn't have query_limited_information?
-		query_limited_information = 0x1000,
+		query_limited_information = distant::winapi::PROCESS_QUERY_LIMITED_INFORMATION_,
 		query_information = boost::winapi::PROCESS_QUERY_INFORMATION_,
 
 		synchronize = boost::winapi::SYNCHRONIZE_,

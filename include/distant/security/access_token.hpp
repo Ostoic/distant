@@ -19,10 +19,13 @@ namespace distant::security
 		explicit access_token(handle<access_token>&&);
 
 		// Bivariant move construtible
+		/// Move constructs
+		/// \param other the other access token to move from
 		template <access_rights::token OtherAccess, typename OtherObject>
 		access_token(access_token<OtherAccess, OtherObject>&& other);
 
 		// Bivariant move assignable
+		/// 
 		template <access_rights::token OtherAccess, typename OtherObject>
 		access_token& operator= (access_token<OtherAccess, OtherObject>&& other) noexcept;
 
@@ -32,12 +35,12 @@ namespace distant::security
 		// Not copy assignable
 		access_token& operator=(const access_token&) = delete;
 
+		/// Enable/disable the given privilege in the current access token
+		/// \param p the privilege to change
+		/// \return true if the operation was successful, false otherwise.
 		bool adjust(const security::privilege& p) noexcept;
 
 		explicit operator bool() const noexcept;
-
-	public:
-		class information;
 
 	protected:
 		// Expose implementation to other access token types
@@ -50,7 +53,7 @@ namespace distant::security
 	};
 
 	template <access_rights::token access, typename KernelObject>
-	access_token<access, KernelObject> get_token(const KernelObject&) noexcept;
+	access_token<access, KernelObject> get_token(const KernelObject&);
 }
 
 #include <distant\security\detail\access_token.hxx>

@@ -11,6 +11,8 @@ namespace distant::kernel {
 		: m_process(process)
 		, m_memory_counters()
 	{
+		using access_rights = access_rights::process;
+
 		static_assert(
 			process::check_permission(access_rights::vm_read) &&
 				(process::check_permission(access_rights::query_information) ||
@@ -72,6 +74,8 @@ namespace distant::kernel {
 	template <access_rights::process T>
 	inline std::size_t process<T>::memory_status::handle_count() const
 	{
+		using access_rights = access_rights::process;
+
 		static_assert(
 			check_permission(access_rights::query_information) ||
 			check_permission(access_rights::query_limited_information),

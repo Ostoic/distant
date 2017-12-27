@@ -29,7 +29,7 @@ namespace distant::iterators {
 	public:
 		class snapshot_end {}; // sentinel value
 
-		explicit snapshot_iterator(const snapshot_type& snapshot, snapshot_end)
+		explicit snapshot_iterator(const snapshot_type& snapshot, snapshot_end) noexcept
 			: m_native_snap(expose::native_handle(snapshot.get_handle()))
 			, m_index(0) {}
 
