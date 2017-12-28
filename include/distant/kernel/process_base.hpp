@@ -48,7 +48,7 @@ namespace distant::kernel {
 
 		/// Get the file name of the process executable.
 		/// \return string containing the filename.
-		std::string process_base::filename() const;
+		std::string filename() const;
 
 		/// Get the path to the process executable.
 		/// \return the path.
@@ -75,7 +75,7 @@ namespace distant::kernel {
 		bool valid() const noexcept override;
 
 		/// Empty construct a process
-		constexpr process_base() noexcept;
+		process_base() noexcept;
 
 		/// Open process by id
 		/// \param id the pid (process id) of the process to open.

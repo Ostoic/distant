@@ -1,4 +1,5 @@
 #pragma once
+#include <distant\kernel\process_base.hpp>
 
 /*!
 @copyright 2017 Shaun Ostoic
@@ -7,7 +8,6 @@ Distributed under the Apache Software License, Version 2.0.
 */
 
 // Implementation header of distant::kernel::process
-#include <distant\kernel\process_base.hpp>
 #include <distant\wait.hpp>
 
 #include <distant\support\filesystem.hpp>
@@ -132,7 +132,7 @@ namespace distant::kernel {
 
 	// Empty initialize process
 	FORBID_INLINE 
-	constexpr process_base::process_base() noexcept
+	process_base::process_base() noexcept
 		: base_type()
 		, m_id(std::numeric_limits<pid_type>::infinity())
 		, m_access_rights() {}

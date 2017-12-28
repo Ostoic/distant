@@ -98,7 +98,7 @@ namespace distant::detail {
 			// CompareObjectHandles is only available with the Windows 10
 			// SDK or higher. 
 #if BOOST_USE_WINAPI_VERSION >= BOOST_WINAPI_VERSION_WIN10
-			CompareObjectHandles(lhs.native_handle(), rhs.native_handle()) &&
+			//CompareObjectHandles(lhs.native_handle(), rhs.native_handle()) &&
 #endif
 			lhs.m_native_handle == rhs.m_native_handle;
 

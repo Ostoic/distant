@@ -26,20 +26,20 @@ namespace distant::error {
 		return "windows_error";
 	}
 
-	distant::config::string windows_category::message(int value) const 
+	std::string windows_category::message(int value) const 
 	{
 		using namespace distant::config;
 		namespace winapi = boost::winapi;
 
 		// Retrieve the system error message for the last-error code
-		string_elem errorMessage[boost::winapi::max_path];
+		char errorMessage[boost::winapi::max_path];
 
 		winapi::format_message(
 			winapi::FORMAT_MESSAGE_FROM_SYSTEM_ |
 			winapi::FORMAT_MESSAGE_IGNORE_INSERTS_,
 			NULL, value,
 			winapi::MAKELANGID_(winapi::LANG_NEUTRAL_, winapi::SUBLANG_DEFAULT_),
-			reinterpret_cast<string_elem*>(&errorMessage), sizeof(errorMessage), NULL);
+			reinterpret_cast<LPSTR>(&errorMessage), sizeof(errorMessage), NULL);
 
 		return errorMessage;
 	}

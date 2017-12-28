@@ -25,7 +25,7 @@ namespace distant::security {
 
 		explicit privilege(security::luid luid, attribute attrib = attribute::enabled) noexcept;
 
-		explicit privilege(const std::string& privilegeName, attribute attrib = attribute::enabled) noexcept;
+		explicit privilege(const std::string& privilegeName, attribute attrib = attribute::enabled);
 
 		operator boost::winapi::TOKEN_PRIVILEGES_() const noexcept;
 

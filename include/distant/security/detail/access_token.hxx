@@ -55,7 +55,8 @@ namespace distant::security
 	inline access_token<A, K>::access_token(access_token<OA, OO>&& other)
 		: m_handle(std::move(other.m_handle)) 
 	{
-		if (!m_handle) throw std::invalid_argument("Invalid access token handle");
+		if (!m_handle) 
+			throw std::invalid_argument("Invalid access token handle");
 	}
 
 	// Bivariant move assignment

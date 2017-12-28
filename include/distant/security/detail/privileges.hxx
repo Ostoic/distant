@@ -17,7 +17,7 @@ namespace distant::security {
 		if (!boost::winapi::lookup_privilege_value(NULL, privilegeName.c_str(), &luid))
 			throw std::system_error(error::windows_error(error::gle()), "Invalid privilege value");
 
-		m_luid = std::move(luid);
+		m_luid = luid;
 	}
 
 	inline privilege::operator boost::winapi::TOKEN_PRIVILEGES_() const noexcept
