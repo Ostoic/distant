@@ -36,21 +36,20 @@ namespace distant {
 		class infinite : public distant::utility::Literal<wait> {};
 
 	public:
-		using object_type = kernel::object;
 		using time_type = boost::winapi::DWORD_;
 
 	public:
 		// Wait for synchronizable object for the given amount of time
-		wait::state operator ()(const object_type& obj, time_type time) const
+		wait::state operator ()(const kernel::object& obj, time_type time) const
 		{
-			// Consider making free and including std::lock_guard or something
-			// Or just the usual below 
+			// XX Consider making free and including std::lock_guard or something
+			// XX Or just the usual below 
 			using expose = distant::detail::attorney::to_handle<wait>;
 
-			const auto value = expose::native_handle(obj.get_handle());
-			const auto result = boost::winapi::WaitForSingleObject(value, time);
+			const auto handle = obj.get_handle().native_handle();
+			const auto result = boost::winapi::WaitForSingleObject(handle, time);
 
-			// XXX WaitForSingleObject has a particular gle syntax. Look into this.
+			// XX WaitForSingleObject has a particular gle syntax. Look into this.
 			m_last_error.update();
 
 			return static_cast<state>(result);
@@ -83,7 +82,7 @@ namespace distant {
 		//}
 
 		// Wait on kernel object until the object is done executing
-		wait::state operator ()(const object_type& obj, wait::infinite tag) const
+		wait::state operator ()(const kernel::object& obj, wait::infinite tag) const
 		{ 
 			static_cast<void>(tag);
 			return this->operator()(obj, boost::winapi::INFINITE_); 

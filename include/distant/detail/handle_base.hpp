@@ -64,6 +64,9 @@ namespace detail  {
 		/// Close the handle, if it is valid and its closure wasn't observed
 		void close() noexcept;
 
+		/// Get the value of the native handle
+		/// \return value of the native handle
+		const native_type native_handle() const noexcept;
 
 	protected:
 
@@ -79,10 +82,6 @@ namespace detail  {
 
 		// Allow derived classes to interface with the handle value itself.
 		// This allows us to make API calls at a higher inheritance level.
-
-		/// Get the value of the native handle
-		/// \return value of the native handle
-		native_type native_handle() const noexcept;
 
 		/// Get the handle's flag type
 		/// \return distant::access_rights::handle flag type

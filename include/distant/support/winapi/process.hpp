@@ -21,7 +21,6 @@ BOOST_SYMBOL_IMPORT boost::winapi::BOOL_ WINAPI QueryFullProcessImageNameW(
 
 #endif // end api version check
 
-
 #if BOOST_USE_WINAPI_VERSION >= BOOST_WINAPI_VERSION_WINXP
 BOOST_SYMBOL_IMPORT boost::winapi::DWORD_ WINAPI GetProcessId(
 	boost::winapi::HANDLE_ Process);
@@ -31,6 +30,8 @@ namespace boost::winapi {
 
 	const boost::winapi::DWORD_ PROCESS_QUERY_LIMITED_INFORMATION_ = 0x1000;
 	const boost::winapi::DWORD_ PROCESS_SET_LIMITED_INFORMATION_ = 0x2000;  
+
+	using ::GetProcessId;
 
 #if (BOOST_USE_WINAPI_VERSION >= BOOST_WINAPI_VERSION_WIN6)
 #if !defined(BOOST_NO_ANSI_APIS)
@@ -59,12 +60,6 @@ namespace boost::winapi {
 			dwFlags,
 			lpExeName,
 			lpdwSize);
-	}
-
-	BOOST_FORCEINLINE boost::winapi::DWORD_ get_process_id(
-		boost::winapi::HANDLE_ Process)
-	{
-		return ::GetProcessId(Process);
 	}
 #endif // end api version check
 

@@ -3,6 +3,11 @@
 #include <boost\winapi\basic_types.hpp>
 #include <distant\support\winapi\config.hpp>
 
+#ifndef DISTANT_WINDOWS_INCLUDED
+#include <Windows.h>
+#define DISTANT_WINDOWS_INCLUDED
+#endif
+
 BOOST_SYMBOL_IMPORT boost::winapi::BOOL_ WINAPI K32GetProcessMemoryInfo(
 	boost::winapi::HANDLE_ Process,
 	::PPROCESS_MEMORY_COUNTERS ppsmemCounters,

@@ -1,38 +1,36 @@
 #pragma once
+#include <distant\security\access_token.hpp>
 
 #include <distant\detail\tags.hpp>
 #include <distant\detail\attorney.hpp>
 
-#include <distant\security\access_token.hpp>
 #include <distant\support\winapi\token.hpp>
+#include <distant\kernel\process.hpp>
+
+#include <boost\winapi\basic_types.hpp>
 
 namespace distant::security
 {
 	namespace detail
 	{
-		inline HANDLE get_token_dispatch(distant::detail::process_tag, HANDLE process, DWORD access) noexcept
-		{
-			HANDLE token = NULL;
+		using boost::winapi::DWORD_;
+		using boost::winapi::HANDLE_;
 
-			::OpenProcessToken(process, access, &token);
+		inline HANDLE_ get_token_impl(const kernel::process_base& process, DWORD_ access) noexcept
+		{
+			HANDLE_ token = NULL;
+
+			::OpenProcessToken(process.get_handle().native_handle(), access, &token);
 			return token;
 		}
 
-		inline HANDLE get_token_dispatch(distant::detail::thread_tag, HANDLE process, DWORD access, bool self) noexcept
+		/*inline HANDLE_ get_token_impl(distant::handle<> process, DWORD_ access, bool self) noexcept
 		{
-			HANDLE token = NULL;
+			boost::winapi::HANDLE_ token = NULL;
 
 			::OpenThreadToken(process, access, self, &token);
 			return token;
-		}
-
-		template <typename KernelObject, typename... Ts>
-		inline HANDLE get_token_impl(HANDLE object, DWORD access, Ts&&... ts) noexcept
-		{
-			using dispatch = typename distant::detail::object_dispatcher<KernelObject>::dispatch;
-
-			return get_token_dispatch(dispatch(), object, access, std::forward<Ts>(ts)...);
-		}
+		}*/
 	}
 
 //class access_token
@@ -40,46 +38,38 @@ namespace distant::security
 	template <access_rights::token A, typename K>
 	inline access_token<A, K>::access_token(const K& k)
 		: m_handle(distant::handle<access_token>(
-			detail::get_token_impl<K>(
-				expose::native_handle(k.get_handle()), static_cast<DWORD>(A)))) 
-	{ 
-		if (!m_handle) throw 
-			std::system_error(
-				distant::windows_error(boost::winapi::GetLastError()), 
-				"Invalid access token handle");
-	}
+			detail::get_token_impl(k, static_cast<boost::winapi::DWORD_>(A)))) {}
 
-	// Bivariant move constructor
 	template <access_rights::token A, typename K>
-	template <access_rights::token OA, typename OO>
-	inline access_token<A, K>::access_token(access_token<OA, OO>&& other)
-		: m_handle(std::move(other.m_handle)) 
+	template <access_rights::token OA, typename OK>
+	inline access_token<A, K>::access_token(access_token<OA, OK>&& other) noexcept
+		: access_token(std::move(reinterpret_cast<access_token<A, K>>(other))) {}
+
+
+	template <access_rights::token A, typename K>
+	inline bool access_token<A, K>::check_privilege(const security::privilege& p) const noexcept
 	{
-		if (!m_handle) 
-			throw std::invalid_argument("Invalid access token handle");
-	}
+		boost::winapi::BOOL_ result = false;
+		boost::winapi::PRIVILEGE_SET_ set = p;
 
-	// Bivariant move assignment
-	template <access_rights::token A, typename K>
-	template <access_rights::token OA, typename OO>
-	inline access_token<A, K>& access_token<A, K>::operator=(access_token<OA, OO>&& other) noexcept
-	{
-		m_handle = std::move(other.m_handle);
-		return *this;
+		boost::winapi::privilege_check(m_handle.native_handle(), &set, &result);
+		return result;
 	}
 
 	template <access_rights::token A, typename K>
-	inline bool access_token<A, K>::adjust(const security::privilege& p) noexcept
+	inline void access_token<A, K>::adjust_privilege(const security::privilege& p)
 	{
 		boost::winapi::TOKEN_PRIVILEGES_ temp = p;
 
 		if (!boost::winapi::adjust_token_privilege(expose::native_handle(m_handle), false, &temp, sizeof(temp), NULL, NULL))
 		{
 			m_last_error.update();
-			return false;
-		}
 
-		return true;
+			if (m_last_error.value() == boost::winapi::ERROR_NOT_ALL_ASSIGNED_)
+				throw std::system_error(m_last_error, "The token does not have the specified privilege.");
+			else
+				throw std::system_error(m_last_error, "Unknown error");
+		}
 	}
 
 	template <access_rights::token A, typename K>

@@ -4,6 +4,16 @@
 #include <boost\config\platform\win32.hpp>
 #include <distant\support\winapi\basic_types.hpp>
 
+#ifndef DISTANT_WINDOWS_INCLUDED
+#include <Windows.h>
+#define DISTANT_WINDOWS_INCLUDED
+#endif
+
+BOOST_SYMBOL_IMPORT boost::winapi::BOOL_ WINAPI PrivilegeCheck(
+	boost::winapi::HANDLE_ ClientToken,
+	::PPRIVILEGE_SET RequiredPrivileges,
+	boost::winapi::LPBOOL_ pfResult);
+
 #if !defined(BOOST_NO_ANSI_APIS)
 BOOST_SYMBOL_IMPORT boost::winapi::BOOL_ WINAPI LookupPrivilegeDisplayNameA(
 	boost::winapi::LPCSTR_ lpSystemName,
@@ -63,6 +73,15 @@ namespace boost::winapi {
 	// Privilege Set Control flags
 
 	const boost::winapi::DWORD_ PRIVILEGE_SET_ALL_NECESSARY_ = 1;
+
+
+	BOOST_FORCEINLINE boost::winapi::BOOL_ privilege_check(
+		boost::winapi::HANDLE_ ClientToken,
+		boost::winapi::PPRIVILEGE_SET_ RequiredPrivileges,
+		boost::winapi::LPBOOL_ pfResult)
+	{
+		return ::PrivilegeCheck(ClientToken, reinterpret_cast<PRIVILEGE_SET*>(RequiredPrivileges), pfResult);
+	}
 
 #if BOOST_USE_WINAPI_VERSION >= BOOST_WINAPI_VERSION_WINXP
 

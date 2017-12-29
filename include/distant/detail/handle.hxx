@@ -53,8 +53,8 @@ namespace distant {
 	{
 		// Objects must be compatible.
 		// Example: thread ~/~ process, but process ~ securable
-		static_assert(true,
-			//utility::is_related<T, U>::value, // XXX Revise type check
+		static_assert(
+			utility::is_related<T, U>::value, // XXX Revise type check
 			"Handle equality operator: Object types must be compatible");
 
 		return operator==(

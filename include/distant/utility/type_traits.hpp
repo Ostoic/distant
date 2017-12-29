@@ -18,8 +18,8 @@ namespace utility {
 	template <class A, class B>
 	using is_related = 
 		std::conditional_t<
-			std::is_base_of<A, B>::value ||	// If A is a base of B,
-			std::is_base_of<B, A>::value ||	// or B is a base of A,
+			std::is_convertible<A, B>::value ||	// If A is convertible to B,
+			std::is_convertible<B, A>::value ||	// B is convertible to A,
 			std::is_same<A, detail::force_relation>::value || // or if the user is forcing a relation on the two types
 			std::is_same<B, detail::force_relation>::value,  
 				std::true_type,				// then return true.
@@ -34,7 +34,7 @@ namespace utility {
 	{
 		using result = typename
 			std::conditional_t<
-				std::is_base_of_v<kernel::object, T>, // If T derives from kernel::object,
+				std::is_convertible<kernel::object, T>::value, // If T derives from kernel::object,
 					std::true_type,					  // return true.
 					std::false_type					  // Otherwise return false
 			>;

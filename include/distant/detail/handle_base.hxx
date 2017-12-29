@@ -31,6 +31,7 @@ namespace distant::detail {
 		// Ensure we don't have a handle leak
 		this->close();
 
+		// Move other handle
 		m_closed = other.m_closed;
 		m_flags = other.m_flags;
 		m_native_handle = other.m_native_handle;
@@ -51,13 +52,9 @@ namespace distant::detail {
 	inline bool handle_base::closed() const noexcept
 	{ return m_closed; }
 
-	// Close the handle, if it is weakly valid and its closure wasn't observed
 	inline void handle_base::close() noexcept
 	{
-		// TODO: Query WinAPI for kernel object reference count
-		// If this reference count > 0, then continue.
-		// But if the reference count == 0, the system should destroy
-		// the object regardless?
+		// Close the handle if it is weakly valid and its closure wasn't observed
 		if (!this->close_protected() && !this->closed() && this->valid())
 		{
 			boost::winapi::CloseHandle(m_native_handle);
@@ -79,7 +76,7 @@ namespace distant::detail {
 		m_flags = flag_type::close_protected;
 	}
 
-	inline handle_base::native_type 
+	inline const handle_base::native_type 
 	handle_base::native_handle() const noexcept
 	{ return m_native_handle; }
 

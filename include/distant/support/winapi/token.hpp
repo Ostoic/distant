@@ -5,6 +5,11 @@
 
 #include <distant\support\winapi\basic_types.hpp>
 
+#ifndef DISTANT_WINDOWS_INCLUDED
+#include <Windows.h>
+#define DISTANT_WINDOWS_INCLUDED
+#endif
+
 BOOST_SYMBOL_IMPORT boost::winapi::BOOL_ WINAPI AdjustTokenPrivileges(
 	boost::winapi::HANDLE_ TokenHandle,
 	boost::winapi::BOOL_ DisableAllPrivileges,
@@ -58,6 +63,11 @@ namespace boost::winapi
 		boost::winapi::LUID_AND_ATTRIBUTES_ Privileges[ANYSIZE_ARRAY];
 	} TOKEN_PRIVILEGES_, *PTOKEN_PRIVILEGES_;
 
+	typedef struct _PRIVILEGE_SET_ {
+		boost::winapi::DWORD_ PrivilegeCount;
+		boost::winapi::DWORD_ Control;
+		boost::winapi::LUID_AND_ATTRIBUTES_ Privilege[ANYSIZE_ARRAY];
+	} PRIVILEGE_SET_, *PPRIVILEGE_SET_;
 
 	BOOST_FORCEINLINE boost::winapi::DWORD_ adjust_token_privilege(
 		boost::winapi::HANDLE_ TokenHandle,

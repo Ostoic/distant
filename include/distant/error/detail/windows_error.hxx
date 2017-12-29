@@ -56,12 +56,11 @@ namespace distant::error {
 	windows_error::windows_error() noexcept
 		: windows_error(boost::winapi::NO_ERROR_) {}
 
-	windows_error::windows_error(gle) noexcept
-		: windows_error(boost::winapi::GetLastError()) {}
+	windows_error::windows_error(gle g) noexcept
+		: windows_error(boost::winapi::GetLastError()) { static_cast<void>(g); }
 
 	windows_error::windows_error(boost::winapi::DWORD_ code) noexcept
 		: std::error_code(code, get_windows_category()) {}
-
 
 	void windows_error::update() noexcept
 	{

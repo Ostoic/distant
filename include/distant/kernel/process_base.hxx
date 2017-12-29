@@ -25,37 +25,32 @@ namespace distant::kernel {
 //protected:
 	inline typename process_base::handle_type process_base::open(pid_type pid, access_rights_t access) noexcept
 	{
-		namespace winapi = boost::winapi;
 		using flag_t = std::underlying_type_t<flag_type>;
 
-		auto result = winapi::OpenProcess(static_cast<flag_t>(access), false, pid);
+		auto result = boost::winapi::OpenProcess(static_cast<flag_t>(access), false, pid);
 		return handle_type(result); 
 	}
 
 	inline typename process_base::pid_type process_base::get_pid(const handle_type& h) noexcept
 	{
-		namespace winapi = boost::winapi;
-
 		const auto native_handle = expose::native_handle(h);
-		const auto id = boost::winapi::get_process_id(native_handle);
+		const auto id = boost::winapi::GetProcessId(native_handle);
 		return static_cast<pid_type>(id);
 	}
 
 
 	inline void process_base::terminate() const
 	{
-		namespace winapi = boost::winapi;
-
 		if (!this->valid())
 		{
-			m_last_error.set(winapi::ERROR_INVALID_HANDLE_);
+			m_last_error.set(boost::winapi::ERROR_INVALID_HANDLE_);
 			return;
 		}
 
 		const unsigned int exit_code = 0;
 		auto native_handle = expose::native_handle(m_handle);
 
-		if (!winapi::TerminateProcess(native_handle, exit_code))
+		if (!boost::winapi::TerminateProcess(native_handle, exit_code))
 			m_last_error.update();
 		else
 			m_last_error.set_success();
@@ -63,14 +58,12 @@ namespace distant::kernel {
 		return;
 	}
 
-	inline bool process_base::is_active() const noexcept
+	inline bool process_base::is_active() const
 	{
-		namespace winapi = boost::winapi;
-
 		if (!this->valid())
 		{
-			m_last_error.set(winapi::ERROR_INVALID_HANDLE_);
-			return false;
+			m_last_error.set(boost::winapi::ERROR_INVALID_HANDLE_);
+			throw std::system_error(m_last_error, "process::is_active failed.");
 		}
 
 		wait wait_for;
@@ -89,23 +82,23 @@ namespace distant::kernel {
 
 	inline distant::filesystem::path process_base::file_path() const
 	{
-		namespace winapi = boost::winapi;
-
 		if (!this->valid())
-			//throw std::invalid_argument(this->format_gle());
 		{
-			m_last_error.set(winapi::ERROR_INVALID_HANDLE_);
-			return "";
+			m_last_error.set(boost::winapi::ERROR_INVALID_HANDLE_);
+			throw std::system_error(m_last_error, "process::is_active failed.");
 		}
 
 		const auto native_handle = expose::native_handle(m_handle);
 
-		char out_path[winapi::MAX_PATH_] = "";
-		winapi::DWORD_ max_path = winapi::MAX_PATH_;
+		char out_path[boost::winapi::MAX_PATH_] = "";
+		boost::winapi::DWORD_ max_path = boost::winapi::MAX_PATH_;
 
 		// 0 indicates: The name should use the Win32 path format.
 		if (!boost::winapi::query_full_process_image_name(native_handle, 0, out_path, &max_path))
+		{
 			m_last_error.update();
+			throw std::system_error(m_last_error, "process::is_active failed.");
+		}
 		else
 			m_last_error.set_success();
 
@@ -142,7 +135,12 @@ namespace distant::kernel {
 		: base_type(this->open(id, access))
 		, m_id(id)
 		, m_access_rights(access)
-	{ m_last_error.update(); }
+	{ 
+		if (!this->valid())
+			m_last_error.update();
+		else
+			m_last_error.set_success();
+	}
 
 	// Take possession of process handle. It is ensured to be a convertible process handle
 	// due to encoded type in handle.
@@ -168,11 +166,6 @@ namespace distant::kernel {
 		m_access_rights = other.m_access_rights;
 		m_id = other.m_id;
 		return *this;
-	}
-	
-	process_base::operator bool() const noexcept
-	{
-		return this->valid();
 	}
 
 //free:

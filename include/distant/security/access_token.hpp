@@ -3,7 +3,7 @@
 #include <distant\utility\type_traits.hpp>
 #include <distant\handle.hpp>
 
-#include <distant\security\privileges.hpp>
+#include <distant\security\privilege.hpp>
 
 namespace distant::security 
 {
@@ -15,32 +15,34 @@ namespace distant::security
 
 	public:
 		constexpr access_token() = default;
-		explicit access_token(const KernelObject&);
-		explicit access_token(handle<access_token>&&);
 
-		// Bivariant move construtible
+		explicit access_token(const KernelObject& k);
+
+		access_token(access_token<access, KernelObject>&&) noexcept = default;
+
+			// Move construtible
 		/// Move constructs
 		/// \param other the other access token to move from
 		template <access_rights::token OtherAccess, typename OtherObject>
-		access_token(access_token<OtherAccess, OtherObject>&& other);
+		access_token(access_token<OtherAccess, OtherObject>&& other) noexcept;
 
-		// Bivariant move assignable
-		/// 
+		// Move assignable
 		template <access_rights::token OtherAccess, typename OtherObject>
-		access_token& operator= (access_token<OtherAccess, OtherObject>&& other) noexcept;
+		access_token& operator=(access_token<OtherAccess, OtherObject>&& other) noexcept = default;
+
+		bool check_privilege(const security::privilege& p) const noexcept;
+
+		/// Enable/disable the given privilege in the current access token
+		/// \param p the privilege to change
+		void adjust_privilege(const security::privilege& p);
+
+		explicit operator bool() const noexcept;
 
 		// Not copy constructible
 		access_token(const access_token&) = delete;
 
 		// Not copy assignable
 		access_token& operator=(const access_token&) = delete;
-
-		/// Enable/disable the given privilege in the current access token
-		/// \param p the privilege to change
-		/// \return true if the operation was successful, false otherwise.
-		bool adjust(const security::privilege& p) noexcept;
-
-		explicit operator bool() const noexcept;
 
 	protected:
 		// Expose implementation to other access token types

@@ -29,7 +29,6 @@ namespace error   {
 	class windows_error : public std::error_code
 	{
 	public:
-	
 		/// Construct with the given error code.
 		explicit windows_error(boost::winapi::DWORD_ code) noexcept;
 

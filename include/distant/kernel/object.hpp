@@ -6,6 +6,8 @@ Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
 */
 
+#include <type_traits>
+
 #include <distant\error\windows_error.hpp>
 
 #include <distant\utility\type_traits.hpp>
@@ -23,7 +25,11 @@ namespace distant::kernel {
 
 	public:
 		/// Bivariant type cast for kernel objects
-		virtual const handle<object>& get_handle() const noexcept;
+		template <typename KernelObject,
+			typename = std::enable_if_t<std::is_convertible<KernelObject, object>::value>>
+		const handle<KernelObject>& get_handle() const noexcept;
+
+		const handle<object>& get_handle() const noexcept;
 		
 		/// Invalid handle default constructor
 		object() noexcept;
@@ -33,14 +39,14 @@ namespace distant::kernel {
 		explicit object(handle<other_t>&& h) noexcept;
 
 		/// Move constructible
-		object(object&& other) noexcept;
+		object(object&& other) noexcept = default;
 
 		/// Move assignable
-		object& operator =(object&& other) noexcept;
+		object& operator =(object&& other) noexcept = default;
 
 		/// Test if the object is valid or not
 		/// \return true if the object is valid, false otherwise.
-		virtual operator bool() const noexcept;
+		explicit operator bool() const noexcept;
 
 		/// Check if the process handle is valid
 		virtual bool valid() const noexcept;
@@ -49,7 +55,7 @@ namespace distant::kernel {
 
 	protected:
 		handle_type m_handle;
-		mutable distant::error::windows_error m_last_error;
+		mutable error::windows_error m_last_error;
 	};
 
 } // end namespace distant::kernel

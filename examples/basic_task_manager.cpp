@@ -5,6 +5,7 @@
 
 #include <string_view>
 #include <algorithm>
+#include <iostream>
 
 #include <distant.hpp>
 
@@ -22,7 +23,7 @@ void display_info(const distant::process<T>& p)
 		std::cout << "File Path: " << p.file_path() << '\n';
 
 		// XX Consider memory_status(process) instead of p.memory_status
-		const auto ms = p.memory_status();
+		/*const auto ms = p.memory_status();
 		std::cout << "Private Usage: " << ms.private_usage() << " kb \n";
 		std::cout << "Peak Private Usage: " << ms.peak_private_usage() << " kb \n";
 
@@ -30,13 +31,13 @@ void display_info(const distant::process<T>& p)
 		std::cout << "Peak Working Set: " << ms.peak_working_set() << " kb \n";
 
 		std::cout << "Number of Page Faults: " << ms.page_fault_count() << '\n';
-		std::cout << "Number of Active Handles: " << ms.handle_count() << '\n';
+		std::cout << "Number of Active Handles: " << ms.handle_count() << '\n';*/
 	}
 	else
 		std::cout << "An error occured while opening process " << p.id() << '\n';
 
 	// Output a formatted last error message
-	std::cout << "Last error: " << p.get_last_error() << '\n' << '\n';
+	//std::cout << "Last error: " << p.get_last_error() << '\n' << '\n';
 }
 
 auto find_process(std::string_view name)

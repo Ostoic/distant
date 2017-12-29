@@ -24,14 +24,9 @@ namespace distant {
 namespace kernel  {
 	
 	/// Representation of an executable program
-	template <access_rights::process access_t>
-	class process : public kernel::process_base
+	template <access_rights::process access_flags>
+	class process : public distant::kernel::process_base
 	{
-		friend class memory_status;
-
-	private:
-		using memory_status_t = memory_status;
-
 	public:
 		//===========================//
 		// Static process functions  //
@@ -41,7 +36,7 @@ namespace kernel  {
 		/// \param access_rights::process flag specifying the other access to check against
 		/// \return true if parameter access_rights are allowable with our given access rights, 
 		/// \return and false otherwise
-		static constexpr bool check_permission(flag_type access);
+		static constexpr bool check_permission(flag_type access) noexcept;
 
 	public:
 		//===================//
@@ -52,19 +47,19 @@ namespace kernel  {
 		//const handle<process>& get_handle() const override;
 
 		/// Terminate the process
-		void terminate() const;
+		void terminate() const override;
 
 		/// Query the process handle to see if it is still active
 		/// \return true if the process is active, and false otherwise
-		bool is_active() const;
+		bool is_active() const override;
 
 		/// Get the executable name of the process
 		/// \return std::string containing the executable name of the process
-		std::string filename() const;
+		std::string filename() const override;
 
 		/// \brief Get the file path (in WIN32 format) of the process
 		/// \return std::string containing the file path of the process
-		distant::filesystem::path file_path() const;
+		distant::filesystem::path file_path() const override;
 
 		/// Query the process for memory information 
 		/// \return memory_status object used to query for process information
@@ -74,21 +69,18 @@ namespace kernel  {
 		//memory::vm get_vm() const { return memory::vm(*this); }
 
 		/// Default process constructor
-		constexpr process();
+		constexpr process() noexcept;
 
 		/// Open process by id
-		explicit process(pid_type id);
+		explicit process(pid_type id) noexcept;
 
-		process(process&& other); /// move constructible
-		process& operator =(process&& other); /// move assignable
+		process(process&& other) noexcept; /// move constructible
+		process& operator =(process&& other) noexcept; /// move assignable
 
-		explicit process(handle<process>&& handle);
+		explicit process(handle<process>&& handle) noexcept;
 
-		template <access_rights::process T, access_rights::process U>
-		friend bool operator ==(const process<T>&, const process<U>&);
-
-		template <access_rights::process T, access_rights::process U>
-		friend bool operator !=(const process<T>&, const process<U>&);
+	private:
+		friend class memory_status;
 
 	}; // end class process
 
@@ -99,7 +91,7 @@ namespace kernel  {
 
 	/// Get the current process
 	/// \return distant::process object containing the current process.
-	process<access_rights::process::all_access> current_process();
+	process<> current_process() noexcept;
 
 } // end namespace kernel
 

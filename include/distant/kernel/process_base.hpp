@@ -46,22 +46,22 @@ namespace distant::kernel {
 
 		static pid_type get_pid(const handle_type&) noexcept;
 
+	public:
 		/// Get the file name of the process executable.
 		/// \return string containing the filename.
-		std::string filename() const;
+		virtual std::string filename() const;
 
 		/// Get the path to the process executable.
 		/// \return the path.
-		distant::filesystem::path file_path() const;
+		virtual distant::filesystem::path file_path() const;
 
 		/// Query the process handle to see if it is still active
 		/// \return true if the process is active, false otherwise.
-		bool is_active() const noexcept;
+		virtual bool is_active() const;
 
 		/// Terminate the process
-		void terminate() const;
+		virtual void terminate() const;
 
-	public:
 		/// Retrieve the process id.
 		/// \return the process id.
 		pid_type id() const noexcept  { return m_id; }
@@ -87,10 +87,6 @@ namespace distant::kernel {
 
 		//process_base(const process_base&) = delete; // not copy constructible
 		//process_base& operator =(const process_base&) = delete; // not copy assignable
-
-		/// Check if the process is valid or not
-		/// \return true if the underlying handle is valid, and it has a valid process id
-		operator bool() const noexcept override;
 
 		// TODO:
 		// Return the virtual memory of this process
