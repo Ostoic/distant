@@ -26,7 +26,7 @@ namespace detail  {
 		/// Construct using native handle.
 		/// \param h the native handle value
 		/// \param flags handle flags 
-		constexpr explicit handle_base(native_type h, flag_type flags = flag_type::inherit) noexcept;
+		explicit constexpr handle_base(native_type h, flag_type flags = flag_type::inherit) noexcept;
 
 		/// Move copyable
 		handle_base(handle_base&&) noexcept;
@@ -36,7 +36,7 @@ namespace detail  {
 
 		// If we allow copy ctor/assignment, then multiple copies will eventually attempt 
 		// to close the same handle, which is not desirable.
-		constexpr handle_base(const handle_base&) = delete;
+		handle_base(const handle_base&) = delete;
 		handle_base& operator =(const handle_base&) = delete;
 
 		/// Close handle to windows object.
@@ -66,7 +66,7 @@ namespace detail  {
 
 		/// Get the value of the native handle
 		/// \return value of the native handle
-		const native_type native_handle() const noexcept;
+		native_type native_handle() const noexcept;
 
 	protected:
 

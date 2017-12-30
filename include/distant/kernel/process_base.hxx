@@ -27,7 +27,7 @@ namespace distant::kernel {
 	{
 		using flag_t = std::underlying_type_t<flag_type>;
 
-		auto result = boost::winapi::OpenProcess(static_cast<flag_t>(access), false, pid);
+		const auto result = boost::winapi::OpenProcess(static_cast<flag_t>(access), false, pid);
 		return handle_type(result); 
 	}
 
@@ -45,10 +45,11 @@ namespace distant::kernel {
 		{
 			m_last_error.set(boost::winapi::ERROR_INVALID_HANDLE_);
 			return;
+			//throw std::system_error(m_last_error, "Invalid process handle in process::terminate.");
 		}
 
 		const unsigned int exit_code = 0;
-		auto native_handle = expose::native_handle(m_handle);
+		const auto native_handle = expose::native_handle(m_handle);
 
 		if (!boost::winapi::TerminateProcess(native_handle, exit_code))
 			m_last_error.update();
@@ -63,7 +64,8 @@ namespace distant::kernel {
 		if (!this->valid())
 		{
 			m_last_error.set(boost::winapi::ERROR_INVALID_HANDLE_);
-			throw std::system_error(m_last_error, "process::is_active failed.");
+			return false;
+			//throw std::system_error(m_last_error, "Invalid process handle in process::is_active.");
 		}
 
 		wait wait_for;
@@ -138,19 +140,7 @@ namespace distant::kernel {
 	{ 
 		if (!this->valid())
 			m_last_error.update();
-		else
-			m_last_error.set_success();
 	}
-
-	// Take possession of process handle. It is ensured to be a convertible process handle
-	// due to encoded type in handle.
-	//FORBID_INLINE 
-	//process_base::process_base(handle_type&& handle, access_rights_t access) noexcept
-	//	: base_type(std::move(handle))	// steal handle
-	//	, m_access_rights(access)				
-	//{ m_id = get_pid(get_handle<process_base>()); }	// retrieve process id
-				// This is done after initialization to ensure the operation
-				// is performed after moving handle into our possession.
 
 	FORBID_INLINE 
 	process_base::process_base(process_base&& other) noexcept

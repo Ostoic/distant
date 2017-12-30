@@ -11,7 +11,7 @@ Distributed under the Apache Software License, Version 2.0.
 
 namespace distant {
 
-	/// Type-safe handle for (kernel) objects
+	/// Type-safe handle for windows objects
 	template <typename Object_t> 
 	class handle : public detail::handle_base 
 	{
@@ -50,9 +50,6 @@ namespace distant {
 		// Expose implementation to other handle types
 		template <typename>
 		friend class handle;
-
-		template <typename T, typename U>
-		static constexpr void check_compatibility() noexcept;
 
 	public:
 		template <typename T, typename U>

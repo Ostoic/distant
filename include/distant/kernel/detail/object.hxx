@@ -3,8 +3,7 @@
 namespace distant::kernel {
 
 //public:
-	template <typename KernelObject,
-		typename = std::enable_if_t<std::is_convertible<KernelObject, object>::value>>
+	template <typename KernelObject, typename>
 	inline const handle<KernelObject>& object::get_handle() const noexcept
 	{
 		return reinterpret_cast<const handle<KernelObject>&>(m_handle);

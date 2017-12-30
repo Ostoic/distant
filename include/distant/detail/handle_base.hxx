@@ -76,7 +76,7 @@ namespace distant::detail {
 		m_flags = flag_type::close_protected;
 	}
 
-	inline const handle_base::native_type 
+	inline handle_base::native_type 
 	handle_base::native_handle() const noexcept
 	{ return m_native_handle; }
 

@@ -1,6 +1,8 @@
 #pragma once
 #include <distant\handle.hpp>
 
+#include <distant\utility\asserts.hpp>
+
 /*!
 @copyright 2017 Shaun Ostoic
 Distributed under the Apache Software License, Version 2.0.
@@ -28,15 +30,7 @@ namespace distant {
 	inline handle<T>::handle(handle<other_t>&& other) noexcept
 		: handle_base(std::move(other))
 	{
-		this->check_compatibility<T, other_t>();
-	}
-
-	template <typename T, typename U>
-	inline static constexpr void check_compatibility() noexcept
-	{
-		constexpr bool t = utility::is_biconvertible<T, U>::value;
-		statis_assert(t, 
-			"Handle object types are unrelated.");
+		utility::assert_compatible<T, other_t>();
 	}
 
 	// Move assignment
@@ -44,7 +38,7 @@ namespace distant {
 	template <typename other_t>
 	inline handle<T>& handle<T>::operator=(handle<other_t>&& other) noexcept
 	{
-		this->check_compatibility<T, other_t>();
+		utility::assert_compatible<T, other_t>();
 		handle_base::operator=(std::move(other));
 		return *this;
 	}
@@ -55,7 +49,7 @@ namespace distant {
 	{
 		// Objects must be compatible.
 		// Example: thread ~/~ process, but process ~ securable
-		this->check_compatibility<T, U>();
+		utility::assert_compatible<T, U>();
 
 		return operator==(
 			static_cast<const detail::handle_base&>(lhs),

@@ -116,7 +116,7 @@ namespace distant::kernel {
 	{
 		const auto native_handle = boost::winapi::GetCurrentProcess();
 		const auto pid = boost::winapi::GetProcessId(native_handle);
-		return process<>{ pid };
+		return process<>(pid);
 	}
 
 } // end namespace distant::kernel
