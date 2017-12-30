@@ -13,15 +13,11 @@ Distributed under the Apache Software License, Version 2.0.
 namespace distant {
 namespace utility {
 
-	namespace detail { class force_relation {}; }
-
 	template <class A, class B>
-	using is_related = 
+	using is_biconvertible = 
 		std::conditional_t<
 			std::is_convertible<A, B>::value ||	// If A is convertible to B,
-			std::is_convertible<B, A>::value ||	// B is convertible to A,
-			std::is_same<A, detail::force_relation>::value || // or if the user is forcing a relation on the two types
-			std::is_same<B, detail::force_relation>::value,  
+			std::is_convertible<B, A>::value,	// or if B is convertible to A,
 				std::true_type,				// then return true.
 				std::false_type				// Otherwise return false
 		>;
@@ -34,25 +30,13 @@ namespace utility {
 	{
 		using result = typename
 			std::conditional_t<
-				std::is_convertible<kernel::object, T>::value, // If T derives from kernel::object,
+				std::is_convertible<T, kernel::object>::value, // If T derives from kernel::object,
 					std::true_type,					  // return true.
 					std::false_type					  // Otherwise return false
 			>;
 
 		static constexpr bool value = result::value;
 	};
-
-	template <>
-	struct is_kernel_object<kernel::object> : std::true_type {};
-
-	template <>
-	struct is_kernel_object<kernel::securable> : std::true_type {};
-
-	//template <>
-	//struct is_kernel_object<kernel::detail::process_base> : std::true_type {};
-
-	template <access_rights::process T>
-	struct is_kernel_object<kernel::process<T>> : std::true_type {};
 
 	/// Contains kernel object traits
 	template <class T>

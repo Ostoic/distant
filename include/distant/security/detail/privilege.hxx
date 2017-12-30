@@ -58,10 +58,10 @@ namespace distant::security {
 	inline std::string lookup_name(security::luid luid)
 	{
 		boost::winapi::DWORD_ size = 100;
-		distant::config::string_elem buffer[100];
+		char buffer[100];
 
 		if (!boost::winapi::lookup_privilege_name(NULL, &luid, buffer, &size))
-			throw std::system_error(error::windows_error(), "Privilege name lookup failed.");
+			throw std::system_error(error::windows_error(error::gle()), "Privilege name lookup failed.");
 
 		return std::move(buffer);
 	}

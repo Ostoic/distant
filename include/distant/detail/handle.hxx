@@ -1,12 +1,11 @@
 #pragma once
+#include <distant\handle.hpp>
 
 /*!
 @copyright 2017 Shaun Ostoic
 Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
 */
-
-#include <distant\handle.hpp>
 
 namespace distant {
 
@@ -29,8 +28,14 @@ namespace distant {
 	inline handle<T>::handle(handle<other_t>&& other) noexcept
 		: handle_base(std::move(other))
 	{
-		static_assert(
-			utility::is_related<T, other_t>::value,
+		this->check_compatibility<T, other_t>();
+	}
+
+	template <typename T, typename U>
+	inline static constexpr void check_compatibility() noexcept
+	{
+		constexpr bool t = utility::is_biconvertible<T, U>::value;
+		statis_assert(t, 
 			"Handle object types are unrelated.");
 	}
 
@@ -39,10 +44,7 @@ namespace distant {
 	template <typename other_t>
 	inline handle<T>& handle<T>::operator=(handle<other_t>&& other) noexcept
 	{
-		static_assert(
-			utility::is_related<T, other_t>::value,
-			"Handle object types are unrelated.");
-
+		this->check_compatibility<T, other_t>();
 		handle_base::operator=(std::move(other));
 		return *this;
 	}
@@ -53,9 +55,7 @@ namespace distant {
 	{
 		// Objects must be compatible.
 		// Example: thread ~/~ process, but process ~ securable
-		static_assert(
-			utility::is_related<T, U>::value, // XXX Revise type check
-			"Handle equality operator: Object types must be compatible");
+		this->check_compatibility<T, U>();
 
 		return operator==(
 			static_cast<const detail::handle_base&>(lhs),

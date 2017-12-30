@@ -6,11 +6,6 @@ Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
 */
 
-// For Windows SDK selection
-#include <ntverp.h>
-
-#include <distant\detail\attorney.hpp>
-
 #include <distant\access_rights.hpp>
 #include <distant\detail\handle_base.hpp>
 
@@ -55,6 +50,9 @@ namespace distant {
 		// Expose implementation to other handle types
 		template <typename>
 		friend class handle;
+
+		template <typename T, typename U>
+		static constexpr void check_compatibility() noexcept;
 
 	public:
 		template <typename T, typename U>
