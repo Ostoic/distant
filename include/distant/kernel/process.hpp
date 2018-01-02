@@ -54,11 +54,11 @@ namespace kernel  {
 		bool is_active() const override;
 
 		/// Get the executable name of the process
-		/// \return std::string containing the executable name of the process
-		std::string filename() const override;
+		/// \return std::wstring containing the executable name of the process
+		std::wstring filename() const override;
 
 		/// \brief Get the file path (in WIN32 format) of the process
-		/// \return std::string containing the file path of the process
+		/// \return std::wstring containing the file path of the process
 		distant::filesystem::path file_path() const override;
 
 		/// Query the process for memory information 

@@ -39,7 +39,7 @@ namespace distant::error {
 			winapi::FORMAT_MESSAGE_IGNORE_INSERTS_,
 			NULL, value,
 			winapi::MAKELANGID_(winapi::LANG_NEUTRAL_, winapi::SUBLANG_DEFAULT_),
-			reinterpret_cast<LPSTR>(&errorMessage), sizeof(errorMessage), NULL);
+			reinterpret_cast<boost::winapi::LPSTR_>(&errorMessage), sizeof(errorMessage), NULL);
 
 		return errorMessage;
 	}

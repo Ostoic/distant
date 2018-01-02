@@ -4,14 +4,13 @@
 #include <boost\config\platform\win32.hpp>
 #include <distant\support\winapi\basic_types.hpp>
 
-#ifndef DISTANT_WINDOWS_INCLUDED
-#include <Windows.h>
-#define DISTANT_WINDOWS_INCLUDED
-#endif
+#if !defined (BOOST_USE_WINDOWS_H)
+
+struct PRIVILEGE_SET;
 
 BOOST_SYMBOL_IMPORT boost::winapi::BOOL_ WINAPI PrivilegeCheck(
 	boost::winapi::HANDLE_ ClientToken,
-	::PPRIVILEGE_SET RequiredPrivileges,
+	::PRIVILEGE_SET* RequiredPrivileges,
 	boost::winapi::LPBOOL_ pfResult);
 
 #if !defined(BOOST_NO_ANSI_APIS)
@@ -57,27 +56,60 @@ BOOST_SYMBOL_IMPORT boost::winapi::BOOL_ WINAPI LookupPrivilegeValueW(
 	boost::winapi::LPCWSTR_ lpName,
 	boost::winapi::PLUID_ lpLuid);
 
+#endif // !defined BOOST_USE_WINDOWS_H
+
 namespace boost::winapi {
 
-	const boost::winapi::DWORD_ ANYSIZE_ARRAY_ = 1;
+#if !defined (BOOST_USE_WINDOWS_H)
 
-	const boost::winapi::DWORD_ SE_PRIVILEGE_ENABLED_BY_DEFAULT_ = 0x00000001L;
-	const boost::winapi::DWORD_ SE_PRIVILEGE_ENABLED_ = 0x00000002L;
-	const boost::winapi::DWORD_ SE_PRIVILEGE_REMOVED_ = 0X00000004L;
-	const boost::winapi::DWORD_ SE_PRIVILEGE_USED_FOR_ACCESS_ = 0x80000000L;
+	//
+	//  Privilege Set - This is defined for a privilege set of one.
+	//                  If more than one privilege is needed, then this structure
+	//                  will need to be allocated with more space.
+	//
+	//  Note: don't change this structure without fixing the INITIAL_PRIVILEGE_SET
+	//  structure (defined in se.h)
+	////
 
-	const boost::winapi::DWORD_ SE_PRIVILEGE_VALID_ATTRIBUTES_ =
+	typedef struct _PRIVILEGE_SET_ {
+		DWORD_ PrivilegeCount;
+		DWORD_ Control;
+		LUID_AND_ATTRIBUTES_ Privilege[ANYSIZE_ARRAY_];
+	} PRIVILEGE_SET_, *PPRIVILEGE_SET_;
+
+	constexpr boost::winapi::DWORD_ SE_PRIVILEGE_ENABLED_BY_DEFAULT_ = 0x00000001L;
+	constexpr boost::winapi::DWORD_ SE_PRIVILEGE_ENABLED_ = 0x00000002L;
+	constexpr boost::winapi::DWORD_ SE_PRIVILEGE_REMOVED_ = 0X00000004L;
+	constexpr boost::winapi::DWORD_ SE_PRIVILEGE_USED_FOR_ACCESS_ = 0x80000000L;
+
+	constexpr boost::winapi::DWORD_ SE_PRIVILEGE_VALID_ATTRIBUTES_ =
 		SE_PRIVILEGE_ENABLED_BY_DEFAULT_ | SE_PRIVILEGE_ENABLED_ |
 		SE_PRIVILEGE_REMOVED_ | SE_PRIVILEGE_USED_FOR_ACCESS_;
 
 	// Privilege Set Control flags
 
-	const boost::winapi::DWORD_ PRIVILEGE_SET_ALL_NECESSARY_ = 1;
+	constexpr boost::winapi::DWORD_ PRIVILEGE_SET_ALL_NECESSARY_ = 1;
 
+#else
+	using PRIVILEGE_SET_ = ::PRIVILEGE_SET;
+	using PPRIVILEGE_SET_ = ::PPRIVILEGE_SET;
+
+	constexpr DWORD_ SE_PRIVILEGE_ENABLED_BY_DEFAULT_	= SE_PRIVILEGE_ENABLED_BY_DEFAULT;
+	constexpr DWORD_ SE_PRIVILEGE_ENABLED_				= SE_PRIVILEGE_ENABLED;
+
+	constexpr DWORD_ SE_PRIVILEGE_REMOVED_				= SE_PRIVILEGE_REMOVED;
+	constexpr  DWORD_ SE_PRIVILEGE_USED_FOR_ACCESS_		= SE_PRIVILEGE_USED_FOR_ACCESS;
+	constexpr DWORD_ SE_PRIVILEGE_VALID_ATTRIBUTES_		= SE_PRIVILEGE_VALID_ATTRIBUTES;
+	
+	// Privilege Set Control flags
+
+	constexpr DWORD_ PRIVILEGE_SET_ALL_NECESSARY_ = PRIVILEGE_SET_ALL_NECESSARY;
+
+#endif // !defined BOOST_USE_WINDOWS_H
 
 	BOOST_FORCEINLINE boost::winapi::BOOL_ privilege_check(
 		boost::winapi::HANDLE_ ClientToken,
-		boost::winapi::PPRIVILEGE_SET_ RequiredPrivileges,
+		boost::winapi::PRIVILEGE_SET_* RequiredPrivileges,
 		boost::winapi::LPBOOL_ pfResult)
 	{
 		return ::PrivilegeCheck(ClientToken, reinterpret_cast<PRIVILEGE_SET*>(RequiredPrivileges), pfResult);
@@ -86,36 +118,10 @@ namespace boost::winapi {
 #if BOOST_USE_WINAPI_VERSION >= BOOST_WINAPI_VERSION_WINXP
 
 #if !defined(BOOST_NO_ANSI_APIS)
-	BOOST_FORCEINLINE boost::winapi::DWORD_ lookup_privilege_display_name(
-		boost::winapi::LPCSTR_ lpSystemName,
-		boost::winapi::LPCSTR_ lpName,
-		boost::winapi::LPSTR_ lpDisplayName,
-		boost::winapi::LPDWORD_ cchDisplayName,
-		boost::winapi::LPDWORD_ lpLanguageId)
-	{
-		return ::LookupPrivilegeDisplayNameA(
-			lpSystemName,
-			lpName,
-			lpDisplayName,
-			cchDisplayName,
-			lpLanguageId);
-	}
+	using ::LookupPrivilegeDisplayNameA;
 #endif
 
-	BOOST_FORCEINLINE boost::winapi::DWORD_ lookup_privilege_display_name(
-		boost::winapi::LPCWSTR_ lpSystemName,
-		boost::winapi::LPCWSTR_ lpName,
-		boost::winapi::LPWSTR_ lpDisplayName,
-		boost::winapi::LPDWORD_ cchDisplayName,
-		boost::winapi::LPDWORD_ lpLanguageId)
-	{
-		return ::LookupPrivilegeDisplayNameW(
-			lpSystemName,
-			lpName,
-			lpDisplayName,
-			cchDisplayName,
-			lpLanguageId);
-	}
+	using ::LookupPrivilegeDisplayNameW;
 
 #if !defined(BOOST_NO_ANSI_APIS)
 	BOOST_FORCEINLINE boost::winapi::DWORD_ lookup_privilege_name(
@@ -126,7 +132,7 @@ namespace boost::winapi {
 	{
 		return ::LookupPrivilegeNameA(
 			lpSystemName,
-			reinterpret_cast<LUID*>(lpLuid),
+			reinterpret_cast<LUID_*>(lpLuid),
 			lpName,
 			cchName);
 	}
@@ -140,7 +146,7 @@ namespace boost::winapi {
 	{
 		return ::LookupPrivilegeNameW(
 			lpSystemName,
-			reinterpret_cast<LUID*>(lpLuid),
+			reinterpret_cast<LUID_*>(lpLuid),
 			lpName,
 			cchName);
 	}
@@ -154,7 +160,7 @@ namespace boost::winapi {
 		return ::LookupPrivilegeValueA(
 			lpSystemName,
 			lpName, 
-			reinterpret_cast<LUID*>(lpLuid));
+			reinterpret_cast<LUID_*>(lpLuid));
 	}
 #endif
 	BOOST_FORCEINLINE boost::winapi::DWORD_ lookup_privilege_value(
@@ -165,24 +171,10 @@ namespace boost::winapi {
 		return ::LookupPrivilegeValueW(
 			lpSystemName,
 			lpName,
-			reinterpret_cast<LUID*>(lpLuid));
+			reinterpret_cast<LUID_*>(lpLuid));
 	}
 
 #endif
 
-//
-//  Privilege Set - This is defined for a privilege set of one.
-//                  If more than one privilege is needed, then this structure
-//                  will need to be allocated with more space.
-//
-//  Note: don't change this structure without fixing the INITIAL_PRIVILEGE_SET
-//  structure (defined in se.h)
-////
-
-//typedef struct _PRIVILEGE_SET {
-//	DWORD_ PrivilegeCount;
-//	DWORD_ Control;
-//	LUID_AND_ATTRIBUTES Privilege[ANYSIZE_ARRAY];
-//} PRIVILEGE_SET, *PPRIVILEGE_SET;
 
 } // end namespace boost::winapi

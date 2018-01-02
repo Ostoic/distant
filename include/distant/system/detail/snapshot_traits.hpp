@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Tlhelp32.h>
+#include <distant\support\winapi\toolhelp32.hpp>
 
 #include <distant\detail\tags.hpp>
 
@@ -13,7 +13,7 @@ namespace distant::system::detail {
 	struct snapshot_dispatcher<kernel::process<access>>
 	{
 		using dispatch = distant::detail::process_tag;
-		using entry_type = PROCESSENTRY32;
+		using entry_type = boost::winapi::PROCESSENTRY32_;
 	};
 
 } // end namespace distant::system::detail

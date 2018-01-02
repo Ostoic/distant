@@ -1,20 +1,22 @@
 #pragma once
 
 #include <boost\winapi\basic_types.hpp>
-#include <distant\support\winapi\config.hpp>
 
-#ifndef DISTANT_WINDOWS_INCLUDED
-#include <Windows.h>
-#define DISTANT_WINDOWS_INCLUDED
-#endif
+#if !defined (BOOST_USE_WINDOWS_H)
+
+struct PROCESS_MEMORY_COUNTERS;
 
 BOOST_SYMBOL_IMPORT boost::winapi::BOOL_ WINAPI K32GetProcessMemoryInfo(
 	boost::winapi::HANDLE_ Process,
-	::PPROCESS_MEMORY_COUNTERS ppsmemCounters,
+	::PROCESS_MEMORY_COUNTERS* ppsmemCounters,
 	boost::winapi::DWORD_ cb);
+#endif // !defined BOOST_USE_WINDOWS_H
 
-namespace boost::winapi
-{
+namespace boost  {
+namespace winapi {
+
+#if !defined (BOOST_USE_WINDOWS_H)
+
 	typedef struct _PROCESS_MEMORY_COUNTERS_ {
 		boost::winapi::DWORD_ cb;
 		boost::winapi::DWORD_ PageFaultCount;
@@ -44,7 +46,9 @@ namespace boost::winapi
 		boost::winapi::SIZE_T_ PrivateUsage;
 	} PROCESS_MEMORY_COUNTERS_EX_;
 	typedef PROCESS_MEMORY_COUNTERS_EX_ *PPROCESS_MEMORY_COUNTERS_EX_;
-#endif
+#endif // >= winxpi version check
+
+#endif // !defined BOOST_USE_WINDOWS_H
 
 	BOOST_FORCEINLINE bool get_process_memory_info(
 		boost::winapi::HANDLE_ Process,
@@ -53,9 +57,9 @@ namespace boost::winapi
 	{
 		return ::K32GetProcessMemoryInfo(
 			Process,
-			reinterpret_cast<::PPROCESS_MEMORY_COUNTERS>(ppsmemCounters),
+			reinterpret_cast<::PROCESS_MEMORY_COUNTERS*>(ppsmemCounters),
 			cb);
 	}
 
-}
-
+} // namespace winapi
+} // namespace boost

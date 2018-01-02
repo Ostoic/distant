@@ -8,7 +8,7 @@
 namespace distant::security 
 {
 	template <access_rights::token access, typename KernelObject>
-	class access_token : public error::windows_error
+	class access_token
 	{
 	private:
 		using object_type = typename object_traits<KernelObject>::object_type;

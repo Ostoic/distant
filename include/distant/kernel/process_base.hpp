@@ -49,7 +49,7 @@ namespace distant::kernel {
 	public:
 		/// Get the file name of the process executable.
 		/// \return string containing the filename.
-		virtual std::string filename() const;
+		virtual std::wstring filename() const;
 
 		/// Get the path to the process executable.
 		/// \return the path.

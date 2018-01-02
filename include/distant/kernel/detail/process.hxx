@@ -52,7 +52,7 @@ namespace distant::kernel {
 	}
 
 	template <access_rights::process T>
-	inline std::string process<T>::filename() const
+	inline std::wstring process<T>::filename() const
 	{
 		using access_rights = access_rights::process;
 

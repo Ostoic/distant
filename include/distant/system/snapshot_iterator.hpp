@@ -5,7 +5,7 @@
 
 #include <distant\utility\type_traits.hpp>
 
-#include <distant\system\detail\tool_help.hpp>
+#include <distant\system\detail\dispatch.hpp>
 #include <distant\detail\attorney.hpp>
 
 // Forward declare snapshot

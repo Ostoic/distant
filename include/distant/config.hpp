@@ -2,13 +2,18 @@
 
 #include <string_view>
 
+#if defined (BOOST_USE_WINDOWS_H)
+#include <TlHelp32.h>
+#include <Psapi.h>
+#endif
+
 namespace distant::config {
 #ifdef UNICODE
 	using string = std::wstring;
 	using string_view = std::wstring_view;
 #else
-	using string = std::string;
-	using string_view = std::string_view;
+	using string = std::wstring;
+	using string_view = std::wstring_view;
 #endif
 
 #ifdef __cpp_lib_experimental_filesystem

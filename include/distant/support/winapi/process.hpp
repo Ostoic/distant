@@ -1,7 +1,8 @@
 #pragma once
 
 #include <boost\winapi\basic_types.hpp>
-#include <distant\support\winapi\config.hpp>
+
+#if !defined (BOOST_USE_WINDOWS_H)
 
 #if BOOST_USE_WINAPI_VERSION >= BOOST_WINAPI_VERSION_WIN6
 
@@ -11,7 +12,7 @@ BOOST_SYMBOL_IMPORT boost::winapi::BOOL_ WINAPI QueryFullProcessImageNameA(
 	boost::winapi::DWORD_ dwFlags,
 	_Out_writes_to_(*lpdwSize, *lpdwSize) boost::winapi::LPSTR_ lpExeName,
 	boost::winapi::PDWORD_ lpdwSize);
-#endif // end ansi api check
+#endif // !defined BOOST_NO_ANSI_APIS
 
 BOOST_SYMBOL_IMPORT boost::winapi::BOOL_ WINAPI QueryFullProcessImageNameW(
 	boost::winapi::HANDLE_ hProcess,
@@ -19,17 +20,29 @@ BOOST_SYMBOL_IMPORT boost::winapi::BOOL_ WINAPI QueryFullProcessImageNameW(
 	_Out_writes_to_(*lpdwSize, *lpdwSize) boost::winapi::LPWSTR_ lpExeName,
 	boost::winapi::PDWORD_ lpdwSize);
 
-#endif // end api version check
+#endif // >= win6 version check
 
 #if BOOST_USE_WINAPI_VERSION >= BOOST_WINAPI_VERSION_WINXP
 BOOST_SYMBOL_IMPORT boost::winapi::DWORD_ WINAPI GetProcessId(
 	boost::winapi::HANDLE_ Process);
-#endif // end api version check
+#endif // >= winxp version check
 
-namespace boost::winapi {
 
-	const boost::winapi::DWORD_ PROCESS_QUERY_LIMITED_INFORMATION_ = 0x1000;
-	const boost::winapi::DWORD_ PROCESS_SET_LIMITED_INFORMATION_ = 0x2000;  
+#endif // !defined BOOST_USE_WINDOWS_H
+
+namespace boost  {
+namespace winapi {
+
+#if !defined (BOOST_USE_WINDOWS_H)
+
+	constexpr boost::winapi::DWORD_ PROCESS_QUERY_LIMITED_INFORMATION_ = 0x1000;
+	constexpr boost::winapi::DWORD_ PROCESS_SET_LIMITED_INFORMATION_ = 0x2000;
+
+#else
+	constexpr DWORD_ PROCESS_QUERY_LIMITED_INFORMATION_ = PROCESS_QUERY_LIMITED_INFORMATION;
+	constexpr DWORD_ PROCESS_SET_LIMITED_INFORMATION_ = PROCESS_SET_LIMITED_INFORMATION;
+
+#endif // !defined BOOST_USE_WINDOWS_H
 
 	using ::GetProcessId;
 
@@ -63,4 +76,5 @@ namespace boost::winapi {
 	}
 #endif // end api version check
 
-} // end namespace boost::winapi
+} // end namespace winapi
+} // end namespace boost

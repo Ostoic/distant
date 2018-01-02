@@ -9,8 +9,6 @@ Distributed under the Apache Software License, Version 2.0.
 #include <distant\handle.hpp>
 #include <distant\detail\handle_service.hpp>
 
-#include <distant\system\detail\tool_help.hpp>
-
 #include <distant\system\snapshot_iterator.hpp>
 #include <distant\kernel\object.hpp>
 

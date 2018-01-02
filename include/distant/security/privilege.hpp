@@ -23,9 +23,9 @@ namespace distant::security {
 	public:
 		privilege() noexcept = default;
 
-		explicit privilege(security::luid luid, attribute attrib = attribute::enabled) noexcept;
+		constexpr explicit privilege(security::luid luid, attribute attrib = attribute::enabled) noexcept;
 
-		explicit privilege(const std::string& privilegeName, attribute attrib = attribute::enabled);
+		explicit privilege(const std::wstring& privilegeName, attribute attrib = attribute::enabled);
 
 		operator boost::winapi::TOKEN_PRIVILEGES_() const noexcept;
 
@@ -40,7 +40,7 @@ namespace distant::security {
 
 	// XXX Look into how Windows programmers properly do this
 	// Lookup the name of the given privilege (identified by luid)
-	std::string lookup_name(security::luid luid);
+	std::wstring lookup_name(security::luid luid);
 
 	// Lookup the privilege local UID and attribute given the name.
 	privilege lookup_privilege(distant::config::string_view privilege_name);

@@ -77,9 +77,9 @@ namespace distant::kernel {
 		return result == wait::state::timeout;
 	}
 
-	inline std::string process_base::filename() const
+	inline std::wstring process_base::filename() const
 	{
-		return this->file_path().filename().string();
+		return this->file_path().filename().wstring();
 	}
 
 	inline distant::filesystem::path process_base::file_path() const
@@ -92,7 +92,7 @@ namespace distant::kernel {
 
 		const auto native_handle = expose::native_handle(m_handle);
 
-		char out_path[boost::winapi::MAX_PATH_] = "";
+		wchar_t out_path[boost::winapi::MAX_PATH_];
 		boost::winapi::DWORD_ max_path = boost::winapi::MAX_PATH_;
 
 		// 0 indicates: The name should use the Win32 path format.
