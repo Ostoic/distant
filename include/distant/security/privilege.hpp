@@ -43,7 +43,7 @@ namespace distant::security {
 	std::wstring lookup_name(security::luid luid);
 
 	// Lookup the privilege local UID and attribute given the name.
-	privilege lookup_privilege(distant::config::string_view privilege_name);
+	privilege lookup_privilege(const std::wstring& privilegeName);
 
 } // end namespace distant::security
 

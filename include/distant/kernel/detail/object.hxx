@@ -22,11 +22,6 @@ namespace distant::kernel {
 	inline object::object(handle<other_t>&& h) noexcept
 		: m_handle(std::move(h)) {}
 
-	inline object::operator bool() const noexcept
-	{
-		return this->valid();
-	}
-
 	inline bool object::valid() const noexcept
 	{
 		return m_handle.valid();

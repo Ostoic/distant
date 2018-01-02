@@ -10,18 +10,19 @@ Distributed under the Apache Software License, Version 2.0.
 
 #include <distant\error\windows_error.hpp>
 
-#include <distant\utility\type_traits.hpp>
 #include <distant\handle.hpp>
 #include <distant\detail\handle_service.hpp>
+
+#include <distant\utility\boolean_validator.hpp>
 
 namespace distant::kernel {
 
 	/// Base class for kernel objects
-	class object
+	class object : public utility::boolean_validator<object>
 	{
 	public:
-		using error_type  = object_traits<object>::error_type;
-		using handle_type = object_traits<object>::handle_type;
+		using error_type = distant::windows_error;
+		using handle_type = distant::handle<object>;
 
 	public:
 		/// Bivariant type cast for kernel objects
@@ -44,11 +45,7 @@ namespace distant::kernel {
 		/// Move assignable
 		object& operator =(object&& other) noexcept = default;
 
-		/// Test if the object is valid or not
-		/// \return true if the object is valid, false otherwise.
-		explicit operator bool() const noexcept;
-
-		/// Check if the process handle is valid
+		/// Check if the object handle is valid
 		virtual bool valid() const noexcept;
 
 		virtual ~object() = default;

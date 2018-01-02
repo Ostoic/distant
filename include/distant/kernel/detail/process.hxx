@@ -22,18 +22,11 @@ namespace distant::kernel {
 		using access_rights = access_rights::process;
 
 		static_assert(
-			check_permission(access_rights::terminate),
+			check_permission(T, access_rights::terminate),
 			"Invalid access_rights (process::terminate): "
 			"Process must have terminate access right");
 
 		process_base::terminate();
-	}
-
-	// Check if we have permission to perform the given action
-	template <access_rights::process T>
-	inline constexpr bool process<T>::check_permission(flag_type access) noexcept
-	{ 
-		return (T & access) == access; 
 	}
 
 	template <access_rights::process T>
@@ -44,7 +37,7 @@ namespace distant::kernel {
 		// Ensure we have the synchronize access_rights
 		// This is required to call WaitForSingleObject
 		static_assert(
-			check_permission(access_rights::synchronize),
+			check_permission(T, access_rights::synchronize),
 			"Invalid access rights (process::is_active): "
 			"Process must have synchronize access right");
 
@@ -57,8 +50,8 @@ namespace distant::kernel {
 		using access_rights = access_rights::process;
 
 		static_assert(
-			check_permission(access_rights::query_information) ||
-			check_permission(access_rights::query_limited_information),
+			check_permission(T, access_rights::query_information) ||
+			check_permission(T, access_rights::query_limited_information),
 			"Invalid access rights (process::name): "
 			"Process must have query_information or query_limited_information access rights");
 
@@ -71,8 +64,8 @@ namespace distant::kernel {
 		using access_rights = access_rights::process;
 
 		static_assert(
-			check_permission(access_rights::query_information) ||
-			check_permission(access_rights::query_limited_information),
+			check_permission(T, access_rights::query_information) ||
+			check_permission(T, access_rights::query_limited_information),
 			"Invalid access rights (process::file_path): "
 			"Process must have query_information or query_limited_information access rights");
 		

@@ -19,6 +19,11 @@ namespace distant::system {
 	class snapshot : public kernel::object
 	{
 	public:
+		
+		static_assert(
+			std::is_convertible<ObjectType, kernel::object>::value,
+			"system::snapshot is iterable only for kernel objects."
+		);
 		using object_type = ObjectType;
 		using handle_type = handle<snapshot>;
 		

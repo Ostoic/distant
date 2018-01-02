@@ -8,7 +8,6 @@
 #include <distant\kernel\process.hpp>
 
 #include <boost\winapi\basic_types.hpp>
-
 namespace distant::security
 {
 	namespace detail
@@ -20,7 +19,7 @@ namespace distant::security
 		{
 			HANDLE_ token = NULL;
 
-			::OpenProcessToken(process.get_handle().native_handle(), access, &token);
+			boost::winapi::OpenProcessToken(process.get_handle().native_handle(), access, &token);
 			return token;
 		}
 
@@ -47,7 +46,7 @@ namespace distant::security
 
 
 	template <access_rights::token A, typename K>
-	inline bool access_token<A, K>::check_privilege(const security::privilege& p) const noexcept
+	inline bool access_token<A, K>::has_privilege(const security::privilege& p) const noexcept
 	{
 		boost::winapi::BOOL_ result = false;
 		boost::winapi::PRIVILEGE_SET_ set = p;

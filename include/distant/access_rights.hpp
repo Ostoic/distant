@@ -112,4 +112,17 @@ DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(access_rights::process);
 DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(access_rights::token);
 DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(access_rights::standard);
 
+
+/// Check if we have permission to perform the given action
+constexpr bool check_permission(access_rights::process lhs, access_rights::process rhs) noexcept
+{ return (lhs & rhs) == rhs; }
+
+/// Check if we have permission to perform the given action
+constexpr bool check_permission(access_rights::token lhs, access_rights::token rhs) noexcept
+{ return (lhs & rhs) == rhs; }
+
+/// Check if we have permission to perform the given action
+constexpr bool check_permission(access_rights::standard lhs, access_rights::standard rhs) noexcept
+{ return (lhs & rhs) == rhs; }
+
 } // end namespace distant

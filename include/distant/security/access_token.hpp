@@ -30,7 +30,7 @@ namespace distant::security
 		template <access_rights::token OtherAccess, typename OtherObject>
 		access_token& operator=(access_token<OtherAccess, OtherObject>&& other) noexcept = default;
 
-		bool check_privilege(const security::privilege& p) const noexcept;
+		bool has_privilege(const security::privilege& p) const noexcept;
 
 		/// Enable/disable the given privilege in the current access token
 		/// \param p the privilege to change

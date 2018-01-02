@@ -1,11 +1,9 @@
 #pragma once
 
-
 #include <distant\detail\fwd.hpp>
-#include <distant\support\winapi\psapi.hpp>
 #include <distant\error\windows_error.hpp>
 
-#include <Psapi.h>
+#include <distant\support\winapi\psapi.hpp>
 
 namespace distant::kernel {
 
@@ -20,11 +18,12 @@ namespace distant::kernel {
 	// XXX process.
 
 	// Process memory_status implemented as a nested class
-	template <access_rights::process access_t
+
+
 	class memory_status
 	{
 	public:
-		explicit memory_status(const process<access_t>& process);
+		explicit memory_status(const process_base& process);
 
 		/// Total amount of memory (kb) committed for the process
 		/// \return the amount of memory in kilobytes.

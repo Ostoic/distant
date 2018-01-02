@@ -28,24 +28,6 @@ namespace kernel  {
 	class process : public distant::kernel::process_base
 	{
 	public:
-		//===========================//
-		// Static process functions  //
-		//===========================//
-
-		///Function used to to check if we have permission to perform the given action
-		/// \param access_rights::process flag specifying the other access to check against
-		/// \return true if parameter access_rights are allowable with our given access rights, 
-		/// \return and false otherwise
-		static constexpr bool check_permission(flag_type access) noexcept;
-
-	public:
-		//===================//
-		// Process interface //
-		//===================//
-		/// Get handle to process
-		/// \return handle<process> to the process
-		//const handle<process>& get_handle() const override;
-
 		/// Terminate the process
 		void terminate() const override;
 
