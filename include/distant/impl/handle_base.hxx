@@ -41,7 +41,7 @@ namespace distant::detail {
 	}
 
 	inline bool handle_base::valid() const noexcept
-	{ return m_native_handle != NULL; }
+	{ return m_native_handle != nullptr; }
 
 	inline handle_base::operator bool() const noexcept
 	{ return valid(); }

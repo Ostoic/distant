@@ -52,4 +52,4 @@ using error::windows_error;
 } // end namespace distant
 
 // Implementation:
-#include <distant\error\detail\windows_error.hxx>
+#include <distant\error\impl\windows_error.hxx>

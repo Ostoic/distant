@@ -19,20 +19,6 @@ namespace distant::system {
 		if (m_handle == distant::invalid_handle)
 			throw std::system_error(m_last_error, "Invalid snapshot handle");
 	}
-	
-	template <class ObjectType>
-	inline typename snapshot<ObjectType>::iterator
-	snapshot<ObjectType>::begin()
-	{
-		return iterator(*this);
-	}
-
-	template <class ObjectType>
-	inline typename snapshot<ObjectType>::iterator
-	snapshot<ObjectType>::end()
-	{
-		return iterator(*this, iterator::snapshot_end());
-	}
 
 	template <class ObjectType>
 	inline typename snapshot<ObjectType>::iterator

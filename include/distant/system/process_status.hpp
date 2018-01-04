@@ -37,4 +37,4 @@ namespace distant::system {
 
 } // end namespace distant::system
 
-//#include <distant\system\detail\process_status.hxx>
+//#include <distant\system\impl\process_status.hxx>

@@ -8,7 +8,7 @@
 namespace distant::security 
 {
 	template <access_rights::token access, typename KernelObject>
-	class access_token
+	class access_token : public utility::boolean_validator<access_token<access, KernelObject>>
 	{
 	private:
 		using object_type = typename object_traits<KernelObject>::object_type;
@@ -16,25 +16,15 @@ namespace distant::security
 	public:
 		constexpr access_token() = default;
 
-		explicit access_token(const KernelObject& k);
+		explicit access_token(const KernelObject& k) noexcept;
 
-		access_token(access_token<access, KernelObject>&&) noexcept = default;
+		access_token(access_token&&) noexcept = default;
 
-			// Move construtible
-		/// Move constructs
-		/// \param other the other access token to move from
-		template <access_rights::token OtherAccess, typename OtherObject>
-		access_token(access_token<OtherAccess, OtherObject>&& other) noexcept;
-
-		// Move assignable
-		template <access_rights::token OtherAccess, typename OtherObject>
-		access_token& operator=(access_token<OtherAccess, OtherObject>&& other) noexcept = default;
-
-		bool has_privilege(const security::privilege& p) const noexcept;
+		bool is_enabled(const security::privilege& p) const noexcept;
 
 		/// Enable/disable the given privilege in the current access token
 		/// \param p the privilege to change
-		void adjust_privilege(const security::privilege& p);
+		void set_privilege(const security::privilege& p);
 
 		explicit operator bool() const noexcept;
 
@@ -59,4 +49,4 @@ namespace distant::security
 	access_token<access, KernelObject> get_access_token(const KernelObject&);
 }
 
-#include <distant\security\detail\access_token.hxx>
+#include <distant\security\impl\access_token.hxx>

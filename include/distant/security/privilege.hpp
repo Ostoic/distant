@@ -12,7 +12,7 @@ namespace distant::security {
 	class privilege
 	{
 	public:
-		enum class attribute : long long int
+		enum class attributes : long long int
 		{
 			enabled = boost::winapi::SE_PRIVILEGE_ENABLED_,
 			enabled_by_default = boost::winapi::SE_PRIVILEGE_ENABLED_BY_DEFAULT_,
@@ -20,22 +20,23 @@ namespace distant::security {
 			used_for_access = boost::winapi::SE_PRIVILEGE_USED_FOR_ACCESS_,
 		};
 
-	public:
+	public: // {ctor}
 		privilege() noexcept = default;
 
-		constexpr explicit privilege(security::luid luid, attribute attrib = attribute::enabled) noexcept;
+		constexpr explicit privilege(security::luid luid, attributes attrib = attributes::enabled) noexcept;
 
-		explicit privilege(const std::wstring& privilegeName, attribute attrib = attribute::enabled);
+		explicit privilege(const std::string& privilegeName, attributes attrib = attributes::enabled);
 
+	public: // interface
 		operator boost::winapi::TOKEN_PRIVILEGES_() const noexcept;
 
 		operator boost::winapi::PRIVILEGE_SET_() const noexcept;
 
 		explicit operator bool() const noexcept;
 
-	private:
-		attribute m_attribute = attribute::enabled;
-		security::luid m_luid;
+	public: // data
+		attributes attribute = attributes::enabled;
+		security::luid luid;
 	};
 
 	// XXX Look into how Windows programmers properly do this
@@ -43,9 +44,9 @@ namespace distant::security {
 	std::wstring lookup_name(security::luid luid);
 
 	// Lookup the privilege local UID and attribute given the name.
-	privilege lookup_privilege(const std::wstring& privilegeName);
+	privilege lookup_privilege(const std::string& privilegeName);
 
 } // end namespace distant::security
 
 // Implementation
-#include <distant\security\detail\privilege.hxx>
+#include <distant\security\impl\privilege.hxx>

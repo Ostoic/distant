@@ -4,6 +4,9 @@
 
 #if !defined (BOOST_USE_WINDOWS_H)
 
+BOOST_SYMBOL_IMPORT boost::winapi::DWORD_ WINAPI GetProcessVersion(
+	boost::winapi::DWORD_ ProcessId);
+
 #if BOOST_USE_WINAPI_VERSION >= BOOST_WINAPI_VERSION_WIN6
 
 #if !defined(BOOST_NO_ANSI_APIS)
@@ -45,6 +48,7 @@ namespace winapi {
 #endif // !defined BOOST_USE_WINDOWS_H
 
 	using ::GetProcessId;
+	using ::GetProcessVersion;
 
 #if (BOOST_USE_WINAPI_VERSION >= BOOST_WINAPI_VERSION_WIN6)
 #if !defined(BOOST_NO_ANSI_APIS)

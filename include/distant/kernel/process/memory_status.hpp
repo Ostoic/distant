@@ -5,6 +5,8 @@
 
 #include <distant\support\winapi\psapi.hpp>
 
+#include <distant\kernel\process_base.hpp>
+
 namespace distant::kernel {
 
 	// I've decided to split up process information querying into 
@@ -62,6 +64,13 @@ namespace distant::kernel {
 	template <access_rights::process T>
 	inline auto get_memory_status(const process<T>& p)
 	{
+		using access_rights = distant::access_rights::process;
+		static_assert(
+			check_permission(T, access_rights::vm_read))
+			"Invalid access rights (status::ctor): "
+			"Process must have vm_read access right, and either query_information or query_limited_information access rights"); "
+			
+		);
 		return memory_status<T>(p);
 	}
 

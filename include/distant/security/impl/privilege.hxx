@@ -11,16 +11,16 @@ namespace distant::security {
 
 //class privilege
 //public:
-	inline constexpr privilege::privilege(security::luid luid, attribute attrib) noexcept
-		: m_attribute(attrib), m_luid(luid) {}
+	inline constexpr privilege::privilege(security::luid luid, attributes attrib) noexcept
+		: attribute(attrib), luid(luid) {}
 
-	inline privilege::privilege(const std::wstring& privilegeName, attribute attrib)
+	inline privilege::privilege(const std::string& privilegeName, attributes attrib)
 	{
 		security::luid luid;
 		if (!boost::winapi::lookup_privilege_value(NULL, privilegeName.c_str(), &luid))
 			throw std::system_error(error::windows_error(error::gle()), "Invalid privilege value");
 
-		m_luid = luid;
+		this->luid = luid;
 	}
 
 	inline privilege::operator boost::winapi::TOKEN_PRIVILEGES_() const noexcept
@@ -30,8 +30,8 @@ namespace distant::security {
 		boost::winapi::TOKEN_PRIVILEGES_ temp;
 
 		temp.PrivilegeCount = 1;
-		temp.Privileges[0].Attributes = static_cast<DWORD_>(m_attribute);
-		temp.Privileges[0].Luid = m_luid;
+		temp.Privileges[0].Attributes = static_cast<DWORD_>(this->attribute);
+		temp.Privileges[0].Luid = this->luid;
 		return temp;
 	}
 
@@ -40,8 +40,8 @@ namespace distant::security {
 		using boost::winapi::DWORD_;
 
 		boost::winapi::PRIVILEGE_SET_ temp;
-		temp.Privilege[0].Luid = m_luid;
-		temp.Privilege[0].Attributes = static_cast<DWORD_>(m_attribute);
+		temp.Privilege[0].Luid = this->luid;
+		temp.Privilege[0].Attributes = static_cast<DWORD_>(this->attribute);
 		temp.PrivilegeCount = 1;
 		temp.Control = boost::winapi::PRIVILEGE_SET_ALL_NECESSARY_;
 		return temp;
@@ -49,7 +49,7 @@ namespace distant::security {
 
 	inline privilege::operator bool() const noexcept
 	{
-		return m_luid.LowPart != 0 || m_luid.HighPart != 0;
+		return this->luid.LowPart != 0 || this->luid.HighPart != 0;
 	}
 
 //free:
@@ -68,7 +68,7 @@ namespace distant::security {
 
 	// XXX Input domain should be restricted to SE_XXX_NAME macro types
 	// Lookup the privilege local UID and attribute given the name.
-	inline privilege lookup_privilege(const std::wstring& privilegeName)
+	inline privilege lookup_privilege(const std::string& privilegeName)
 	{
 		security::luid luid;
 		if (!boost::winapi::lookup_privilege_value(NULL, privilegeName.c_str(), &luid))

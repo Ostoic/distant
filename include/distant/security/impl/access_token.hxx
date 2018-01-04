@@ -17,17 +17,17 @@ namespace distant::security
 
 		inline HANDLE_ get_token_impl(const kernel::process_base& process, DWORD_ access) noexcept
 		{
-			HANDLE_ token = NULL;
+			HANDLE_ token = nullptr;
 
 			boost::winapi::OpenProcessToken(process.get_handle().native_handle(), access, &token);
 			return token;
 		}
 
-		/*inline HANDLE_ get_token_impl(distant::handle<> process, DWORD_ access, bool self) noexcept
+		/*inline HANDLE_ get_token_impl(const kernel::thread_base& thread, DWORD_ access, bool self) noexcept
 		{
-			boost::winapi::HANDLE_ token = NULL;
+			boost::winapi::HANDLE_ token = nullptr;
 
-			::OpenThreadToken(process, access, self, &token);
+			boost::winapi::OpenThreadToken(thread, access, self, &token);
 			return token;
 		}*/
 	}
@@ -35,18 +35,12 @@ namespace distant::security
 //class access_token
 //public:
 	template <access_rights::token A, typename K>
-	inline access_token<A, K>::access_token(const K& k)
+	inline access_token<A, K>::access_token(const K& k) noexcept 
 		: m_handle(distant::handle<access_token>(
 			detail::get_token_impl(k, static_cast<boost::winapi::DWORD_>(A)))) {}
 
 	template <access_rights::token A, typename K>
-	template <access_rights::token OA, typename OK>
-	inline access_token<A, K>::access_token(access_token<OA, OK>&& other) noexcept
-		: access_token(std::move(reinterpret_cast<access_token<A, K>>(other))) {}
-
-
-	template <access_rights::token A, typename K>
-	inline bool access_token<A, K>::has_privilege(const security::privilege& p) const noexcept
+	inline bool access_token<A, K>::is_enabled(const security::privilege& p) const noexcept
 	{
 		boost::winapi::BOOL_ result = false;
 		boost::winapi::PRIVILEGE_SET_ set = p;
@@ -55,8 +49,9 @@ namespace distant::security
 		return result;
 	}
 
+
 	template <access_rights::token A, typename K>
-	inline void access_token<A, K>::adjust_privilege(const security::privilege& p)
+	inline void access_token<A, K>::set_privilege(const security::privilege& p)
 	{
 		boost::winapi::TOKEN_PRIVILEGES_ temp = p;
 
@@ -78,7 +73,7 @@ namespace distant::security
 	}
 
 //free:
-	template <access_rights::token access = access_token::token::all_access, typename KernelObject>
+	template <access_rights::token access = access_token::token::adjust_privileges, typename KernelObject>
 	inline access_token<access, KernelObject> get_access_token(const KernelObject& object)
 	{
 		return access_token<access, KernelObject>(object);

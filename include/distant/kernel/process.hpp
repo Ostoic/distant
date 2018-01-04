@@ -9,16 +9,11 @@ Distributed under the Apache Software License, Version 2.0.
 */
 
 #include <cstddef>
-#include <limits>
 #include <string>
-
-//#include <exception>
 
 #include <distant\kernel\process_base.hpp>
 
 #include <distant\utility\type_traits.hpp>
-
-//#include <distant\memory\vm.h>
 
 namespace distant {
 namespace kernel  {
@@ -27,7 +22,7 @@ namespace kernel  {
 	template <access_rights::process access_flags>
 	class process : public distant::kernel::process_base
 	{
-	public:
+	public: // interface
 		/// Terminate the process
 		void terminate() const override;
 
@@ -50,11 +45,12 @@ namespace kernel  {
 		// Return the virtual memory of this process
 		//memory::vm get_vm() const { return memory::vm(*this); }
 
+	public: // {ctor}
 		/// Default process constructor
 		constexpr process() noexcept;
 
 		/// Open process by id
-		explicit process(pid_type id) noexcept;
+		explicit process(std::size_t id) noexcept;
 
 		process(process&& other) noexcept; /// move constructible
 		process& operator =(process&& other) noexcept; /// move assignable
@@ -82,4 +78,4 @@ using kernel::current_process;
 } // end namespace distant
 
 // Implementation 
-#include <distant\kernel\detail\process.hxx>
+#include <distant\kernel\impl\process.hxx>

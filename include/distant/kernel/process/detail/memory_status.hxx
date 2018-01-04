@@ -13,7 +13,7 @@ namespace distant::kernel {
 		using access_rights = access_rights::process;
 
 		static_assert(
-			process<T>::check_permission(access_rights::vm_read) &&
+			check_permission(access_rights::vm_read) &&
 				(process<T>::check_permission(access_rights::query_information) ||
 				 process<T>::check_permission(access_rights::query_limited_information)),
 			"Invalid access rights (memory_status::ctor): "

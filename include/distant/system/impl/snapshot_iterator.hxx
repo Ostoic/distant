@@ -1,0 +1,65 @@
+#pragma once
+#include <distant\system\snapshot_iterator.hpp>
+
+
+namespace distant::system {
+
+// class snapshot_iterator <KernelObject>:
+//public:
+	template <typename K>
+	snapshot_iterator<K>::snapshot_iterator(const snapshot_type& snapshot, snapshot_end) noexcept
+		: m_native_snap(expose::native_handle(snapshot.get_handle()))
+		, m_index(0) {}
+
+	template <typename K>
+	snapshot_iterator<K>::snapshot_iterator(const snapshot_type& snapshot)
+		: m_native_snap(expose::native_handle(snapshot.get_handle()))
+		, m_index(1)
+	{
+		// Bring the snapshot_entry dispatcher function into scope
+		namespace snapshot_entry = system::detail::snapshot_entry;
+
+		m_entry.dwSize = sizeof(entry_type);
+		if (!snapshot_entry::first<K>(m_native_snap, &m_entry))
+			m_index = 0;
+	}
+
+	template <typename K>
+	snapshot_iterator<K>::snapshot_iterator()
+		: m_native_snap(nullptr)
+		, m_index(0) {}
+
+//private:
+
+	template <typename K>
+	void snapshot_iterator<K>::increment()
+	{
+		// Bring the snapshot_entry dispatcher function into scope
+		namespace snapshot_entry = system::detail::snapshot_entry;
+
+		if (m_index)
+		{
+			if (!snapshot_entry::next<K>(m_native_snap, &m_entry))
+				m_index = 0;
+			else
+				m_index++;
+		}
+	}
+
+	template <typename K>
+	K snapshot_iterator<K>::dereference() const
+	{
+		// Bring the snapshot_entry dispatcher function into scope
+		namespace snapshot_entry = system::detail::snapshot_entry;
+
+		const auto pid = snapshot_entry::get_id<K>(m_entry);
+		return K{pid};
+	}
+
+	template <typename K>
+	bool snapshot_iterator<K>::equal(const snapshot_iterator& other) const
+	{
+		return m_index == other.m_index;
+	}
+
+} // end namespace distant::system

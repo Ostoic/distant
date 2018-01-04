@@ -13,6 +13,7 @@ Distributed under the Apache Software License, Version 2.0.
 
 namespace distant {
 	using kernel::process;
+	using system::snapshot;
 }
 
 // Plans:

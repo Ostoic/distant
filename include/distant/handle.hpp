@@ -6,7 +6,6 @@ Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
 */
 
-#include <distant\access_rights.hpp>
 #include <distant\detail\handle_base.hpp>
 
 namespace distant {
@@ -21,7 +20,7 @@ namespace distant {
 	public:
 		using object_type = Object_t;
 
-	public:
+	public: // {ctor}
 		/// \param h the native handle value
 		/// \param flags handle flags 
 		constexpr explicit handle(native_type h, flag_type flags = flag_type::inherit) noexcept;
@@ -42,8 +41,7 @@ namespace distant {
 		
 	private:	
 		/// Allow attorney to expose some implementation details
-		// This is mainly for recreated winapi functions to pass
-		// the underlying handle value into the winapi.
+		// This is mainly for recreated winapi functions to pass the underlying handle value into the winapi.
 		template <typename>
 		friend class distant::detail::attorney::to_handle;
 
@@ -61,4 +59,4 @@ namespace distant {
 
 } // end namespace distant
 
-#include <distant\detail\handle.hxx>
+#include <distant\impl\handle.hxx>

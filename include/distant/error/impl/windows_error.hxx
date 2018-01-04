@@ -31,17 +31,24 @@ namespace distant::error {
 		using namespace distant::config;
 		namespace winapi = boost::winapi;
 
-		// Retrieve the system error message for the last-error code
-		char errorMessage[boost::winapi::max_path];
+		// Retrieve the system error message for the given error code.
+		char* errorMessage;
 
 		winapi::format_message(
 			winapi::FORMAT_MESSAGE_FROM_SYSTEM_ |
-			winapi::FORMAT_MESSAGE_IGNORE_INSERTS_,
-			NULL, value,
+			winapi::FORMAT_MESSAGE_ALLOCATE_BUFFER_,
+			nullptr, value,
 			winapi::MAKELANGID_(winapi::LANG_NEUTRAL_, winapi::SUBLANG_DEFAULT_),
-			reinterpret_cast<boost::winapi::LPSTR_>(&errorMessage), sizeof(errorMessage), NULL);
+			reinterpret_cast<winapi::LPSTR_>(&errorMessage), 0, nullptr);
+		
+		std::string result = errorMessage;
+		LocalFree(errorMessage);
 
-		return errorMessage;
+		const auto pos = result.find("\r\n");
+		if (pos != std::string::npos)
+			result.erase(pos, pos + 2);
+
+		return result;
 	}
 
 	const windows_category& get_windows_category()

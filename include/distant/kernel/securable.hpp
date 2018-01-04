@@ -15,8 +15,7 @@ namespace distant::kernel {
 		// Invalid handle default constructor
 		securable() noexcept = default;
 
-		explicit securable(handle<securable>&& h) : 
-			object(std::move(h)) {}
+		explicit securable(handle<securable>&& h);
 
 		securable(securable&& tmp) noexcept = default;
 

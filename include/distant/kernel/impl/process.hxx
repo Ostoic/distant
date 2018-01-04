@@ -9,6 +9,8 @@ Distributed under the Apache Software License, Version 2.0.
 
 /// \file Implementation header of distant::kernel::process
 
+#include <limits>
+
 #include <distant\wait.hpp>
 
 #include <distant\support\winapi\privilege.hpp>
@@ -82,11 +84,11 @@ namespace distant::kernel {
 
 	// Open process by id
 	template <access_rights::process T>	
-	inline process<T>::process(pid_type id) noexcept
+	inline process<T>::process(std::size_t id) noexcept
 		: process_base(id, T) {}
 
 	// Take possession of process handle. It is ensured to be a convertible process handle
-	// due to encoded type in handle.x
+	// due to encoded type in handle.
 	template <access_rights::process T>
 	inline process<T>::process(handle<process>&& handle) noexcept
 		: process_base(std::move(handle), T){}											

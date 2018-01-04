@@ -37,7 +37,6 @@ private:
 	{
 		return m_address == other.m_address &&
 			   m_vm		 == other.m_vm;
-
 	}
 
 	T dereference() { return m_vm.read<T>(m_address); }

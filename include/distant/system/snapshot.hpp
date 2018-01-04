@@ -7,46 +7,39 @@ Distributed under the Apache Software License, Version 2.0.
 */
 
 #include <distant\handle.hpp>
-#include <distant\detail\handle_service.hpp>
 
 #include <distant\system\snapshot_iterator.hpp>
 #include <distant\kernel\object.hpp>
 
+#include <distant\utility\type_traits.hpp>
+
 namespace distant::system {
 
 	// system::snapshot models the ForwardRange concept
-	template <typename ObjectType>
+	template <typename KernelObject>
 	class snapshot : public kernel::object
 	{
 	public:
-		
 		static_assert(
-			std::is_convertible<ObjectType, kernel::object>::value,
+			distant::is_kernel_object<KernelObject>::value,
 			"system::snapshot is iterable only for kernel objects."
 		);
-		using object_type = ObjectType;
+
+		using object_type = KernelObject;
 		using handle_type = handle<snapshot>;
 		
-		using iterator = iterators::snapshot_iterator<ObjectType>;
-		using const_iterator = iterators::snapshot_iterator<ObjectType>;
+		using iterator = snapshot_iterator<KernelObject>;
+		using const_iterator = snapshot_iterator<KernelObject>;
 
-	public:
-		iterator begin();
-		iterator end();
-
+	public: // interface
+		// Iterate over the snapshot range via the range-based for loop:
 		iterator begin() const;
 		iterator end() const;
 
-	public:
+	public: // {ctor}
 		explicit snapshot();
-
-		// Not copy constructible
-		snapshot(const snapshot&) = delete;
-
-		// Not copy assignable
-		snapshot& operator=(const snapshot&) = delete;
 	};
 
 } // end namespace distant::system
 
-#include <distant\system\detail\snapshot.hxx>
+#include <distant\system\impl\snapshot.hxx>

@@ -14,13 +14,13 @@ namespace distant::kernel {
 		return m_handle;
 	}
 
+	object::object(handle_type&& handle) noexcept
+		: m_handle(std::move(handle)) 
+		, m_last_error() {}
+
 	inline object::object() noexcept 
 		: m_handle(invalid_handle)
 		, m_last_error() {}
-
-	template <typename other_t>
-	inline object::object(handle<other_t>&& h) noexcept
-		: m_handle(std::move(h)) {}
 
 	inline bool object::valid() const noexcept
 	{

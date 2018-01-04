@@ -55,9 +55,9 @@ namespace detail  {
 		/// \return true if the handle cannot be closed, false otherwise
 		bool close_protected() const noexcept;
 
-		/// Check if handle's closure has been observed
 		// Note: This function is public since handles occasionally need to be closed before the
-		// stack unwind (I think).
+		// stack unwind.
+		/// Check if handle's closure has been observed
 		/// \return true if the handle's closure was observed, and false otherwise
 		bool closed() const noexcept;
 
@@ -79,9 +79,6 @@ namespace detail  {
 
 		/// Protect the handle from being closed
 		void protect() noexcept;
-
-		// Allow derived classes to interface with the handle value itself.
-		// This allows us to make API calls at a higher inheritance level.
 
 		/// Get the handle's flag type
 		/// \return distant::access_rights::handle flag type
@@ -124,7 +121,7 @@ using detail::invalid_handle;
 
 } // end namespace distant
 
-#include <distant\detail\handle_base.hxx>
+#include <distant\impl\handle_base.hxx>
 
   // Remarks:
   //		Process-local handle table starts at entry 4, hence the null ( == 0) 
