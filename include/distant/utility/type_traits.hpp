@@ -47,7 +47,7 @@ namespace utility {
 			"Type must derive from kernel::object");*/
 
 		using handle_type = handle<T>;
-		using error_type  = error::windows_error;
+		using error_type  = error::windows_error_code;
 		using object_type = T;
 	};
 

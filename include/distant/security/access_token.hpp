@@ -42,7 +42,7 @@ namespace distant::security
 		using expose = distant::detail::attorney::to_handle<access_token>;
 
 		handle<access_token> m_handle;
-		mutable error::windows_error m_last_error;
+		mutable error::windows_error_code m_last_error;
 	};
 
 	template <access_rights::token access, typename KernelObject>

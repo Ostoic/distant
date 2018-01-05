@@ -17,7 +17,7 @@ Distributed under the Apache Software License, Version 2.0.
 namespace distant {
 namespace error   {
 
-class windows_error;
+class windows_error_code;
 
 } // end namespace error
 	 

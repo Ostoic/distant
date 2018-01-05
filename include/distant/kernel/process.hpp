@@ -24,19 +24,25 @@ namespace kernel  {
 	{
 	public: // interface
 		/// Terminate the process
-		void terminate() const override;
+		void kill() override;
 
 		/// Query the process handle to see if it is still active
 		/// \return true if the process is active, and false otherwise
 		bool is_active() const override;
 
+		/// Test if the process is running under the WOW64 emulator.
+		/// If the process has been compiled to run on 32-bit system and
+		/// is being run on a 64-bit system, it will be emulated.
+		/// \return true if the process is being emulated, and false if not.
+		bool is_emulated() const override;
+		
 		/// Get the executable name of the process
 		/// \return std::wstring containing the executable name of the process
 		std::wstring filename() const override;
 
 		/// \brief Get the file path (in WIN32 format) of the process
 		/// \return std::wstring containing the file path of the process
-		distant::filesystem::path file_path() const override;
+		filesystem::path file_path() const override;
 
 		/// Query the process for memory information 
 		/// \return memory_status object used to query for process information

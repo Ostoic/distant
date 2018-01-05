@@ -42,12 +42,12 @@ namespace distant::kernel {
 	{
 		if (!this->valid())
 		{
-			m_last_error.set(boost::winapi::ERROR_INVALID_HANDLE_);
-			throw std::system_error(m_last_error, message);
+			m_error.set(boost::winapi::ERROR_INVALID_HANDLE_);
+			throw std::system_error(m_error, message);
 		}
 	}
 
-	inline void process_base::terminate() const
+	inline void process_base::kill()
 	{
 		this->throw_if_invalid("[process_base::terminate] invalid process");
 
@@ -55,9 +55,9 @@ namespace distant::kernel {
 		const auto native_handle = expose::native_handle(m_handle);
 
 		if (!boost::winapi::TerminateProcess(native_handle, exit_code))
-			m_last_error.update();
+			m_error.get_last();
 		else
-			m_last_error.set_success();
+			m_error.set_success();
 
 		return;
 	}
@@ -70,21 +70,36 @@ namespace distant::kernel {
 
 		// Return immediately
 		const auto result = wait_for(*this, 0);
-		m_last_error.update();
+		m_error.get_last();
 
 		return result == wait::state::timeout;
 	}
 
-	inline bool process_base::is_emulated() const noexcept
+	inline bool process_base::is_emulated() const
 	{
-		this->throw_if_invalid("[process_base::is_active] invalid process");
+		this->throw_if_invalid("[process_base::is_emulated] invalid process");
 
-		bool result = false;
+		// Note: Using bool here on some systems can corrupt the stack since
+		// sizeof(bool) != sizeof(BOOL).
+		boost::winapi::BOOL_ result = false;
 
-		if (!IsWow64Process(this->m_handle.native_handle(), reinterpret_cast<PBOOL>(&result)))
-			m_last_error.update();
+		if (!IsWow64Process(m_handle.native_handle(), reinterpret_cast<boost::winapi::PBOOL_>(&result)))
+			m_error.get_last();
 		else
-			m_last_error.set_success();
+			m_error.set_success();
+
+		return result;
+	}
+
+	inline bool process_base::is_being_debugged() const
+	{
+		this->throw_if_invalid("[process_base::is_being_debugged] invalid process");
+
+		boost::winapi::BOOL_ result = false;
+		if (!CheckRemoteDebuggerPresent(m_handle.native_handle(), &result))
+			m_error.get_last();
+		else
+			m_error.set_success();
 
 		return result;
 	}
@@ -100,18 +115,25 @@ namespace distant::kernel {
 
 		const auto native_handle = expose::native_handle(m_handle);
 
-		wchar_t out_path[boost::winapi::MAX_PATH_];
-		boost::winapi::DWORD_ max_path = boost::winapi::MAX_PATH_;
+		static filesystem::path outPath;
 
-		if (!boost::winapi::query_full_process_image_name(native_handle, 0, out_path, &max_path))
+		if (outPath.empty())
 		{
-			m_last_error.update();
-			throw std::system_error(m_last_error, "[process_base::file_path] query_full_process_image_name failed");
-		}
-		else
-			m_last_error.set_success();
+			wchar_t pathBuffer[boost::winapi::MAX_PATH_];
+			boost::winapi::DWORD_ max_path = boost::winapi::MAX_PATH_;
 
-		return { out_path };
+			if (!boost::winapi::query_full_process_image_name(native_handle, 0, pathBuffer, &max_path))
+			{
+				m_error.get_last();
+				throw std::system_error(m_error, "[process_base::file_path] query_full_process_image_name failed");
+			}
+			else
+				m_error.set_success();
+
+			outPath = pathBuffer;
+		}
+
+		return outPath;
 	}
 
 //public:
@@ -155,7 +177,7 @@ namespace distant::kernel {
 		, m_access_rights(access)
 	{ 
 		if (!this->valid())
-			m_last_error.update();
+			m_error.get_last();
 	}
 
 	FORBID_INLINE 

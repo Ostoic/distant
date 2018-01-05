@@ -62,10 +62,14 @@ namespace distant::kernel {
 		/// If the process has been compiled to run on 32-bit system and
 		/// is being run on a 64-bit system, it will be emulated.
 		/// \return true if the process is being emulated, and false if not.
-		virtual bool is_emulated() const noexcept;
+		virtual bool is_emulated() const;
+
+		/// Test if the process is being debugged by another process.
+		/// \return true if the process is being debugged, and false if it is not.
+		bool is_being_debugged() const;
 
 		/// Terminate the process
-		virtual void terminate() const;
+		virtual void kill();
 
 		/// Retrieve the process id.
 		/// \return the process id.

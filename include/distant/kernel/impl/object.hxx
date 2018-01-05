@@ -16,11 +16,11 @@ namespace distant::kernel {
 
 	object::object(handle_type&& handle) noexcept
 		: m_handle(std::move(handle)) 
-		, m_last_error() {}
+		, m_error() {}
 
 	inline object::object() noexcept 
 		: m_handle(invalid_handle)
-		, m_last_error() {}
+		, m_error() {}
 
 	inline bool object::valid() const noexcept
 	{

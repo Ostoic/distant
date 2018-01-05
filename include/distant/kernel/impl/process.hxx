@@ -19,16 +19,17 @@ namespace distant::kernel {
 
 //public:
 	template <access_rights::process T>
-	inline void process<T>::terminate() const
+	inline void process<T>::kill()
 	{
 		using access_rights = access_rights::process;
 
+		// The TerminateProcess API call requires the following access rights.
 		static_assert(
 			check_permission(T, access_rights::terminate),
 			"Invalid access_rights (process::terminate): "
 			"Process must have terminate access right");
 
-		process_base::terminate();
+		process_base::kill();
 	}
 
 	template <access_rights::process T>
@@ -36,8 +37,7 @@ namespace distant::kernel {
 	{
 		using access_rights = access_rights::process;
 
-		// Ensure we have the synchronize access_rights
-		// This is required to call WaitForSingleObject
+		// The WaitForSingleObject API call requires the following access rights.
 		static_assert(
 			check_permission(T, access_rights::synchronize),
 			"Invalid access rights (process::is_active): "
@@ -45,26 +45,43 @@ namespace distant::kernel {
 
 		return process_base::is_active();
 	}
+	
+	template <access_rights::process T>
+	inline bool process<T>::is_emulated() const
+	{
+		using access_rights = access_rights::process;
+
+		// The IsWow64Process API call requires the following access rights.
+		static_assert(
+			check_permission(T, access_rights::query_information) ||
+			check_permission(T, access_rights::query_limited_information),
+			"Invalid access rights (process::filename): "
+			"Process must have query_information or query_limited_information access rights");
+
+		return process_base::is_emulated();
+	}
 
 	template <access_rights::process T>
 	inline std::wstring process<T>::filename() const
 	{
 		using access_rights = access_rights::process;
 
+		// The QueryFullProcessImageName API call requires the following access rights.
 		static_assert(
 			check_permission(T, access_rights::query_information) ||
 			check_permission(T, access_rights::query_limited_information),
-			"Invalid access rights (process::name): "
+			"Invalid access rights (process::filename): "
 			"Process must have query_information or query_limited_information access rights");
 
 		return process_base::filename();
 	}
 
 	template <access_rights::process T>
-	inline distant::filesystem::path process<T>::file_path() const
+	inline filesystem::path process<T>::file_path() const
 	{
 		using access_rights = access_rights::process;
 
+		// The QueryFullProcessImageName API call requires the following access rights.
 		static_assert(
 			check_permission(T, access_rights::query_information) ||
 			check_permission(T, access_rights::query_limited_information),
@@ -93,7 +110,6 @@ namespace distant::kernel {
 	inline process<T>::process(handle<process>&& handle) noexcept
 		: process_base(std::move(handle), T){}											
 
-	// XXX Choose weakest access rights or produce error about incompatible access rights
 	template <access_rights::process T>
 	inline process<T>::process(process<T>&& other) noexcept
 		: process_base(std::move(other)) {} 

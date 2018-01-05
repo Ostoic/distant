@@ -26,28 +26,31 @@ namespace error   {
 	struct gle {};
 
 	/// Windows error code
-	class windows_error : public std::error_code
+	class windows_error_code : public std::error_code
 	{
 	public:
-		/// Construct with the given error code.
-		explicit windows_error(boost::winapi::DWORD_ code) noexcept;
+		/// Construct an error code with the given code.
+		explicit windows_error_code(boost::winapi::DWORD_ code) noexcept;
 
-		/// GetLastError constructor
-		explicit windows_error(gle) noexcept;
+		/// Construct an error code with the code obtained from ::GetLastError.
+		windows_error_code(gle) noexcept;
 
-		/// Default constructor: no error.
-		explicit windows_error() noexcept;
+		/// Construct an error code with no error.
+		explicit windows_error_code() noexcept;
 
-		void update() noexcept;
+		/// Update the error code
+		void get_last() noexcept;
 
 		void set_success() noexcept;
 
 		void set(boost::winapi::DWORD_ code) noexcept;
 	};
 
+	const windows_error_code last_error;
+
 } // end namespace error 
 
-using error::windows_error;
+using windows_error = error::windows_error_code;
 
 } // end namespace distant
 

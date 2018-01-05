@@ -18,7 +18,7 @@ namespace distant::security {
 	{
 		security::luid luid;
 		if (!boost::winapi::lookup_privilege_value(NULL, privilegeName.c_str(), &luid))
-			throw std::system_error(error::windows_error(error::gle()), "Invalid privilege value");
+			throw std::system_error(error::windows_error_code(error::gle()), "Invalid privilege value");
 
 		this->luid = luid;
 	}
@@ -61,7 +61,7 @@ namespace distant::security {
 		wchar_t buffer[100];
 
 		if (!boost::winapi::lookup_privilege_name(NULL, &luid, buffer, &size))
-			throw std::system_error(error::windows_error(error::gle()), "Privilege name lookup failed.");
+			throw std::system_error(error::windows_error_code(error::gle()), "Privilege name lookup failed.");
 
 		return std::move(buffer);
 	}

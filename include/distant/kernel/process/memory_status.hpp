@@ -19,9 +19,6 @@ namespace distant::kernel {
 	// XXX This could possibly be done through function-local class definition in
 	// XXX process.
 
-	// Process memory_status implemented as a nested class
-
-
 	class memory_status
 	{
 	public:
@@ -77,4 +74,4 @@ namespace distant::kernel {
 } // end namespace distant::kernel
 
 // Implementation:
-#include <distant\kernel\process\detail\memory_status.hxx>
+#include <distant\kernel\process\impl\memory_status.hxx>

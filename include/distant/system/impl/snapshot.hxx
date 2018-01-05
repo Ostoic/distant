@@ -6,8 +6,8 @@
 
 namespace distant::system {
 
-	template <class ObjectType>
-	inline snapshot<ObjectType>::snapshot() 
+	template <class O, class C>
+	inline snapshot<O, C>::snapshot() 
 		: object(system::detail::get_snapshot<object_type, snapshot>())
 	{
 		static_assert(
@@ -20,18 +20,33 @@ namespace distant::system {
 			throw std::system_error(m_last_error, "Invalid snapshot handle");
 	}
 
-	template <class ObjectType>
-	inline typename snapshot<ObjectType>::iterator
-	snapshot<ObjectType>::begin() const
+	template <class O, class C>
+	inline typename snapshot<O, C>::iterator
+	snapshot<O, C>::begin() const
 	{
 		return iterator(*this);
 	}
 
-	template <class ObjectType>
-	inline typename snapshot<ObjectType>::iterator
-	snapshot<ObjectType>::end() const
+	template <class O, class C>
+	inline typename snapshot<O, C>::iterator
+	snapshot<O, C>::end() const
 	{
 		return iterator(*this, iterator::snapshot_end());
 	}
+
+	template <class O, class C>
+	typename snapshot<O, C>::output_type snapshot<O, C>::get() const
+	{
+		output_type output;
+		std::copy(this->begin(), this->end(), std::back_inserter(output));
+		return output;
+	}
+
+	template <class O, class C>
+	operator typename snapshot<O, C>::output_type() const
+	{
+		return this->get();
+	}
+
 
 } // end namespace distant::system

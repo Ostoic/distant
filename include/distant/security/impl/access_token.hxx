@@ -57,7 +57,7 @@ namespace distant::security
 
 		if (!boost::winapi::adjust_token_privilege(expose::native_handle(m_handle), false, &temp, sizeof(temp), NULL, NULL))
 		{
-			m_last_error.update();
+			m_last_error.get_last();
 
 			if (m_last_error.value() == boost::winapi::ERROR_NOT_ALL_ASSIGNED_)
 				throw std::system_error(m_last_error, "The token does not have the specified privilege.");

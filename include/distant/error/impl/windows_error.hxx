@@ -11,6 +11,7 @@ Distributed under the Apache Software License, Version 2.0.
 #include <boost\winapi\error_codes.hpp>
 #include <boost\winapi\error_handling.hpp>
 #include <boost\winapi\get_last_error.hpp>
+#include <boost\winapi\local_memory.hpp>
 #include <boost\winapi\limits.hpp>
 
 #include <distant\config.hpp>
@@ -32,23 +33,23 @@ namespace distant::error {
 		namespace winapi = boost::winapi;
 
 		// Retrieve the system error message for the given error code.
-		char* errorMessage;
+		char* errorBuffer;
 
 		winapi::format_message(
 			winapi::FORMAT_MESSAGE_FROM_SYSTEM_ |
 			winapi::FORMAT_MESSAGE_ALLOCATE_BUFFER_,
 			nullptr, value,
 			winapi::MAKELANGID_(winapi::LANG_NEUTRAL_, winapi::SUBLANG_DEFAULT_),
-			reinterpret_cast<winapi::LPSTR_>(&errorMessage), 0, nullptr);
+			reinterpret_cast<winapi::LPSTR_>(&errorBuffer), 0, nullptr);
 		
-		std::string result = errorMessage;
-		LocalFree(errorMessage);
+		std::string errorMessage = errorBuffer;
+		boost::winapi::LocalFree(errorBuffer);
 
-		const auto pos = result.find("\r\n");
+		const auto pos = errorMessage.find("\r\n");
 		if (pos != std::string::npos)
-			result.erase(pos, pos + 2);
+			errorMessage.erase(pos, pos + 2);
 
-		return result;
+		return errorMessage;
 	}
 
 	const windows_category& get_windows_category()
@@ -60,26 +61,26 @@ namespace distant::error {
 /****************/
 //windows_error:
 /****************/
-	windows_error::windows_error() noexcept
-		: windows_error(boost::winapi::NO_ERROR_) {}
+	windows_error_code::windows_error_code() noexcept
+		: windows_error_code(boost::winapi::NO_ERROR_) {}
 
-	windows_error::windows_error(gle g) noexcept
-		: windows_error(boost::winapi::GetLastError()) { static_cast<void>(g); }
+	windows_error_code::windows_error_code(error::gle g) noexcept
+		: windows_error_code(boost::winapi::GetLastError()) { static_cast<void>(g); }
 
-	windows_error::windows_error(boost::winapi::DWORD_ code) noexcept
+	windows_error_code::windows_error_code(boost::winapi::DWORD_ code) noexcept
 		: std::error_code(code, get_windows_category()) {}
 
-	void windows_error::update() noexcept
+	void windows_error_code::get_last() noexcept
 	{
 		this->set(boost::winapi::GetLastError());
 	}
 
-	void windows_error::set_success() noexcept
+	void windows_error_code::set_success() noexcept
 	{
 		this->set(boost::winapi::NO_ERROR_);
 	}
 
-	void windows_error::set(boost::winapi::DWORD_ code) noexcept
+	void windows_error_code::set(boost::winapi::DWORD_ code) noexcept
 	{
 		boost::winapi::SetLastError(code);
 		this->assign(code, this->category());

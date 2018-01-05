@@ -9,24 +9,27 @@ Distributed under the Apache Software License, Version 2.0.
 #include <distant\handle.hpp>
 
 #include <distant\system\snapshot_iterator.hpp>
-#include <distant\kernel\object.hpp>
 
 #include <distant\utility\type_traits.hpp>
+#include <distant\utility\boolean_validator.hpp>
 
-namespace distant::system {
+#include <vector>
+
+namespace distant {
+namespace system  {
 
 	// system::snapshot models the ForwardRange concept
-	template <typename KernelObject>
-	class snapshot : public kernel::object
+	template <typename KernelObject, typename OutputContainer = std::vector<KernelObject>>
+	class snapshot : public utility::boolean_validator<snapshot<KernelObject, OutputContainer>>
 	{
 	public:
 		static_assert(
-			distant::is_kernel_object<KernelObject>::value,
-			"system::snapshot is iterable only for kernel objects."
-		);
+			is_kernel_object<KernelObject>::value,
+			"system::snapshot is iterable only for kernel objects.");
 
 		using object_type = KernelObject;
 		using handle_type = handle<snapshot>;
+		using output_type = OutputContainer;
 		
 		using iterator = snapshot_iterator<KernelObject>;
 		using const_iterator = snapshot_iterator<KernelObject>;
@@ -36,10 +39,19 @@ namespace distant::system {
 		iterator begin() const;
 		iterator end() const;
 
+		output_type get() const;
+
+		operator output_type() const;
+
 	public: // {ctor}
-		explicit snapshot();
+		snapshot();
+
+	protected:
+		handle<snapshot> m_handle;
+		mutable error::windows_error_code m_last_error;
 	};
 
-} // end namespace distant::system
+} // end namespace system
+} // end namespace distant
 
 #include <distant\system\impl\snapshot.hxx>

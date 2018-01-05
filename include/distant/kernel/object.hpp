@@ -29,9 +29,12 @@ namespace distant::kernel {
 			typename = std::enable_if_t<std::is_convertible<KernelObject, object>::value>>
 		const handle<KernelObject>& get_handle() const noexcept;
 
+		/// Get a handle to the object.
+		/// \return a type-safe handle to the object.
 		const handle<object>& get_handle() const noexcept;
 
-		/// Check if the object handle is valid
+		/// Check if the object is valid
+		/// \return true if the object is valid.
 		virtual bool valid() const noexcept;
 
 		/// Declare the destructor virtual to prevent slicing.
@@ -51,7 +54,7 @@ namespace distant::kernel {
 
 	protected:
 		handle_type m_handle;
-		mutable error::windows_error m_last_error;
+		mutable windows_error m_error;
 	};
 
 } // end namespace distant::kernel

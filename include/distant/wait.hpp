@@ -50,7 +50,7 @@ namespace distant {
 			const auto result = boost::winapi::WaitForSingleObject(handle, time);
 
 			// XX WaitForSingleObject has a particular gle syntax. Look into this.
-			m_last_error.update();
+			m_last_error.get_last();
 
 			return static_cast<state>(result);
 		}
@@ -90,7 +90,7 @@ namespace distant {
 
 		//wait::state operator()
 	private:
-		mutable error::windows_error m_last_error;
+		mutable error::windows_error_code m_last_error;
 	};
 
 } // end namespace distant
