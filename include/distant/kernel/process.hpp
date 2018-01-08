@@ -20,29 +20,41 @@ namespace kernel  {
 	
 	/// Representation of an executable program
 	template <access_rights::process access_flags>
-	class process : public distant::kernel::process_base
+	class process : private distant::kernel::process_base
 	{
 	public: // interface
+		// Import process_base interface independent of access flags.
+		using process_base::operator bool;
+		using process_base::is_being_debugged;
+		using process_base::access_rights;
+		using process_base::get_handle;
+		using process_base::valid;
+		using process_base::id;
+
 		/// Terminate the process
-		void kill() override;
+		void kill();
 
 		/// Query the process handle to see if it is still active
 		/// \return true if the process is active, and false otherwise
-		bool is_active() const override;
+		bool is_active() const;
 
 		/// Test if the process is running under the WOW64 emulator.
 		/// If the process has been compiled to run on 32-bit system and
 		/// is being run on a 64-bit system, it will be emulated.
 		/// \return true if the process is being emulated, and false if not.
-		bool is_emulated() const override;
+		bool is_32bit() const;
 		
 		/// Get the executable name of the process
 		/// \return std::wstring containing the executable name of the process
-		std::wstring filename() const override;
+		std::wstring filename() const;
 
 		/// \brief Get the file path (in WIN32 format) of the process
 		/// \return std::wstring containing the file path of the process
-		filesystem::path file_path() const override;
+		const filesystem::path& file_path() const;
+
+		template <access_rights::process Other_Flag, 
+			typename = std::enable_if_t<check_permission(access_flags, Other_Flag)>>
+		operator const process<Other_Flag>&() const noexcept;
 
 		/// Query the process for memory information 
 		/// \return memory_status object used to query for process information
@@ -73,9 +85,10 @@ namespace kernel  {
 	template <access_rights::process access_flag>
 	process<access_flag> launch();
 
-	/// Get the current process
-	/// \return distant::process object containing the current process.
-	process<> current_process() noexcept;
+	/// Get the current process.
+	/// \return distant::process_base object containing the current process.
+	template <access_rights::process T>
+	process<T> current_process() noexcept;
 
 } // end namespace kernel
 

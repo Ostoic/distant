@@ -17,19 +17,19 @@ Distributed under the Apache Software License, Version 2.0.
 #include <distant\config.hpp>
 #include <distant\support\winapi\last_error.hpp>
 
-namespace distant::error {
+namespace distant {
+namespace error   {
 
 /******************/
 //windows_category:
 /******************/
-	const char* windows_category::name() const noexcept
+	inline const char* windows_category::name() const noexcept
 	{
 		return "windows_error";
 	}
 
-	std::string windows_category::message(int value) const 
+	inline std::string windows_category::message(int value) const
 	{
-		using namespace distant::config;
 		namespace winapi = boost::winapi;
 
 		// Retrieve the system error message for the given error code.
@@ -52,7 +52,7 @@ namespace distant::error {
 		return errorMessage;
 	}
 
-	const windows_category& get_windows_category()
+	inline const windows_category& get_windows_category()
 	{
 		static windows_category error_category;
 		return error_category;
@@ -61,29 +61,34 @@ namespace distant::error {
 /****************/
 //windows_error:
 /****************/
-	windows_error_code::windows_error_code() noexcept
+	inline windows_error_code::windows_error_code() noexcept
 		: windows_error_code(boost::winapi::NO_ERROR_) {}
 
-	windows_error_code::windows_error_code(error::gle g) noexcept
+	inline windows_error_code::windows_error_code(error::gle g) noexcept
 		: windows_error_code(boost::winapi::GetLastError()) { static_cast<void>(g); }
 
-	windows_error_code::windows_error_code(boost::winapi::DWORD_ code) noexcept
+	inline windows_error_code::windows_error_code(boost::winapi::DWORD_ code) noexcept
 		: std::error_code(code, get_windows_category()) {}
 
-	void windows_error_code::get_last() noexcept
+	inline void windows_error_code::get_last() noexcept
 	{
 		this->set(boost::winapi::GetLastError());
 	}
 
-	void windows_error_code::set_success() noexcept
+	inline void windows_error_code::set_success() noexcept
 	{
 		this->set(boost::winapi::NO_ERROR_);
 	}
 
-	void windows_error_code::set(boost::winapi::DWORD_ code) noexcept
+	inline void windows_error_code::set(boost::winapi::DWORD_ code) noexcept
 	{
 		boost::winapi::SetLastError(code);
 		this->assign(code, this->category());
 	}
 
-} // end namespace distant::error 
+	inline windows_error_code last_error() noexcept
+	{ return windows_error_code(gle()); }
+
+
+} // namespace error 
+} // namespace distant

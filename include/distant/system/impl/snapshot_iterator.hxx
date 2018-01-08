@@ -7,13 +7,13 @@ namespace distant::system {
 // class snapshot_iterator <KernelObject>:
 //public:
 	template <typename K>
-	snapshot_iterator<K>::snapshot_iterator(const snapshot_type& snapshot, snapshot_end) noexcept
-		: m_native_snap(expose::native_handle(snapshot.get_handle()))
+	inline snapshot_iterator<K>::snapshot_iterator(const snapshot_type& snapshot, snapshot_end) noexcept
+		: m_native_snap(snapshot.m_handle.native_handle())
 		, m_index(0) {}
 
 	template <typename K>
-	snapshot_iterator<K>::snapshot_iterator(const snapshot_type& snapshot)
-		: m_native_snap(expose::native_handle(snapshot.get_handle()))
+	inline snapshot_iterator<K>::snapshot_iterator(const snapshot_type& snapshot)
+		: m_native_snap(snapshot.m_handle.native_handle())
 		, m_index(1)
 	{
 		// Bring the snapshot_entry dispatcher function into scope
@@ -25,14 +25,14 @@ namespace distant::system {
 	}
 
 	template <typename K>
-	snapshot_iterator<K>::snapshot_iterator()
+	inline snapshot_iterator<K>::snapshot_iterator()
 		: m_native_snap(nullptr)
 		, m_index(0) {}
 
 //private:
 
 	template <typename K>
-	void snapshot_iterator<K>::increment()
+	inline void snapshot_iterator<K>::increment()
 	{
 		// Bring the snapshot_entry dispatcher function into scope
 		namespace snapshot_entry = system::detail::snapshot_entry;
@@ -47,7 +47,7 @@ namespace distant::system {
 	}
 
 	template <typename K>
-	K snapshot_iterator<K>::dereference() const
+	inline K snapshot_iterator<K>::dereference() const
 	{
 		// Bring the snapshot_entry dispatcher function into scope
 		namespace snapshot_entry = system::detail::snapshot_entry;
@@ -57,7 +57,7 @@ namespace distant::system {
 	}
 
 	template <typename K>
-	bool snapshot_iterator<K>::equal(const snapshot_iterator& other) const
+	inline bool snapshot_iterator<K>::equal(const snapshot_iterator& other) const
 	{
 		return m_index == other.m_index;
 	}

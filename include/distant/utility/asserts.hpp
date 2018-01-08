@@ -7,7 +7,7 @@ namespace distant::utility
 	template <typename T, typename U>
 	constexpr void assert_compatible() noexcept
 	{
-		static_assert(utility::is_biconvertible<T, U>::value,
-			"Object types are not convertible.");
+		static_assert(utility::is_quasiconvertible<T, U>::value,
+			"Object types are not either direction converitble.");
 	}
 }

@@ -49,9 +49,6 @@ namespace distant {
 			const auto handle = obj.get_handle().native_handle();
 			const auto result = boost::winapi::WaitForSingleObject(handle, time);
 
-			// XX WaitForSingleObject has a particular gle syntax. Look into this.
-			m_last_error.get_last();
-
 			return static_cast<state>(result);
 		}
 

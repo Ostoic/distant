@@ -47,7 +47,7 @@ namespace distant::kernel {
 	}
 	
 	template <access_rights::process T>
-	inline bool process<T>::is_emulated() const
+	inline bool process<T>::is_32bit() const
 	{
 		using access_rights = access_rights::process;
 
@@ -58,7 +58,7 @@ namespace distant::kernel {
 			"Invalid access rights (process::filename): "
 			"Process must have query_information or query_limited_information access rights");
 
-		return process_base::is_emulated();
+		return process_base::is_32bit();
 	}
 
 	template <access_rights::process T>
@@ -77,7 +77,7 @@ namespace distant::kernel {
 	}
 
 	template <access_rights::process T>
-	inline filesystem::path process<T>::file_path() const
+	inline const filesystem::path& process<T>::file_path() const
 	{
 		using access_rights = access_rights::process;
 
@@ -89,6 +89,13 @@ namespace distant::kernel {
 			"Process must have query_information or query_limited_information access rights");
 		
 		return process_base::file_path();
+	}
+
+	template <access_rights::process T>
+	template <access_rights::process Other_Flag, typename>
+	inline process<T>::operator const process<Other_Flag>&() const noexcept
+	{
+		return reinterpret_cast<const process<Other_Flag>&>(*this);
 	}
 
 	//=========================//
@@ -122,12 +129,11 @@ namespace distant::kernel {
 	}
 
 //free:
-	inline process<access_rights::process::all_access> 
-	current_process() noexcept
+	template <access_rights::process T = access_rights::process::all_access>
+	process<T> current_process() noexcept
 	{
-		const auto native_handle = boost::winapi::GetCurrentProcess();
-		const auto pid = boost::winapi::GetProcessId(native_handle);
-		return process<>(pid);
+		return reinterpret_cast<process<T>&&>(current_process());
 	}
+
 
 } // end namespace distant::kernel

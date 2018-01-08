@@ -46,10 +46,11 @@ namespace error   {
 		void set(boost::winapi::DWORD_ code) noexcept;
 	};
 
-	const windows_error_code last_error;
+	windows_error_code last_error() noexcept;
 
 } // end namespace error 
 
+using error::last_error;
 using windows_error = error::windows_error_code;
 
 } // end namespace distant

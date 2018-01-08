@@ -22,10 +22,10 @@ namespace system  {
 	template <typename KernelObject, typename OutputContainer = std::vector<KernelObject>>
 	class snapshot : public utility::boolean_validator<snapshot<KernelObject, OutputContainer>>
 	{
-	public:
+	public:/*
 		static_assert(
 			is_kernel_object<KernelObject>::value,
-			"system::snapshot is iterable only for kernel objects.");
+			"system::snapshot is iterable only for kernel objects.");*/
 
 		using object_type = KernelObject;
 		using handle_type = handle<snapshot>;
@@ -41,14 +41,15 @@ namespace system  {
 
 		output_type get() const;
 
-		operator output_type() const;
+		//operator output_type() const;
 
 	public: // {ctor}
 		snapshot();
 
 	protected:
+		friend class iterator;
+
 		handle<snapshot> m_handle;
-		mutable error::windows_error_code m_last_error;
 	};
 
 } // end namespace system

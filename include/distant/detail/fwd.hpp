@@ -19,7 +19,7 @@ namespace error   {
 
 class windows_error_code;
 
-} // end namespace error
+} // namespace error
 	 
 template <typename>
 class handle;
@@ -35,5 +35,13 @@ class securable;
 template <access_rights::process access_t = access_rights::process::all_access>
 class process;
 
-} // end namespace kernel
-} // end namespace distant
+} // namespace kernel
+
+namespace system {
+
+	template <typename, typename>
+	class snapshot;
+
+} // namespace system
+
+} // namespace distant

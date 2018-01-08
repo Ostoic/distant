@@ -1,52 +1,50 @@
 #pragma once
+#include <distant\system\snapshot.hpp>
 
 #include <stdexcept>
 
-#include <distant\system\snapshot.hpp>
-
 namespace distant::system {
 
-	template <class O, class C>
+	template <typename O, typename C>
 	inline snapshot<O, C>::snapshot() 
-		: object(system::detail::get_snapshot<object_type, snapshot>())
+		: m_handle(system::detail::get_snapshot_handle<object_type, snapshot>())
 	{
 		static_assert(
-			is_kernel_object<ObjectType>::value,
+			is_kernel_object<O>::value,
 			"Invalid template parameter (snapshot::ctor): "
 			"Unable to take system snapshot of nonkernel object");
 
-		m_last_error.update();
 		if (m_handle == distant::invalid_handle)
-			throw std::system_error(m_last_error, "Invalid snapshot handle");
+			throw std::system_error(error::last_error(), "[snapshot::{ctor}] invalid handle");
 	}
 
-	template <class O, class C>
+	template <typename O, typename C>
 	inline typename snapshot<O, C>::iterator
 	snapshot<O, C>::begin() const
 	{
 		return iterator(*this);
 	}
 
-	template <class O, class C>
+	template <typename O, typename C>
 	inline typename snapshot<O, C>::iterator
 	snapshot<O, C>::end() const
 	{
 		return iterator(*this, iterator::snapshot_end());
 	}
 
-	template <class O, class C>
-	typename snapshot<O, C>::output_type snapshot<O, C>::get() const
+	template <typename O, typename C>
+	typename snapshot<O, C>::output_type 
+	snapshot<O, C>::get() const
 	{
 		output_type output;
 		std::copy(this->begin(), this->end(), std::back_inserter(output));
 		return output;
 	}
-
+/*
 	template <class O, class C>
 	operator typename snapshot<O, C>::output_type() const
 	{
 		return this->get();
-	}
-
+	}*/
 
 } // end namespace distant::system

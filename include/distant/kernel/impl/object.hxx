@@ -14,7 +14,7 @@ namespace distant::kernel {
 		return m_handle;
 	}
 
-	object::object(handle_type&& handle) noexcept
+	inline object::object(handle_type&& handle) noexcept
 		: m_handle(std::move(handle)) 
 		, m_error() {}
 

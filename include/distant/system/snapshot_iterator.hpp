@@ -7,11 +7,9 @@
 
 #include <distant\system\detail\dispatch.hpp>
 #include <distant\detail\attorney.hpp>
+#include <distant\detail\fwd.hpp>
 
 namespace distant::system {
-
-	// Forward declare snapshot
-	template <class> class snapshot;
 
 	// snapshot_iterator models the ForwardIterator concept
 	template <typename KernelObject>
@@ -24,7 +22,7 @@ namespace distant::system {
 		>	// The rest is use_default
 	{
 	private: // subtypes
-		using snapshot_type = system::snapshot<KernelObject>;
+		using snapshot_type = system::snapshot<KernelObject, std::vector<KernelObject>>;
 		using entry_type = typename system::detail::snapshot_dispatcher<KernelObject>::entry_type;
 
 	public: // interface

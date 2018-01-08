@@ -14,7 +14,7 @@ namespace distant {
 namespace utility {
 
 	template <class A, class B>
-	using is_biconvertible = 
+	using is_quasiconvertible = 
 		std::conditional_t<
 			std::is_convertible<A, B>::value ||	// If A is convertible to B,
 			std::is_convertible<B, A>::value,	// or if B is convertible to A,

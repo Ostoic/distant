@@ -12,6 +12,8 @@ Distributed under the Apache Software License, Version 2.0.
 
 #include <distant\support\filesystem.hpp>
 #include <distant\support\winapi\process.hpp>
+#include <distant\support\winapi\debug.hpp>
+#include <distant\support\winapi\wow64.hpp>
 
 #include <boost\winapi\process.hpp>
 #include <boost\winapi\error_codes.hpp>
@@ -27,7 +29,10 @@ namespace distant::kernel {
 	{
 		using flag_t = std::underlying_type_t<flag_type>;
 
+#pragma warning(push)
+#pragma warning(disable:4267)
 		const auto result = boost::winapi::OpenProcess(static_cast<flag_t>(access), false, pid);
+#pragma warning(pop)
 		return handle_type(result); 
 	}
 
@@ -41,10 +46,7 @@ namespace distant::kernel {
 	void process_base::throw_if_invalid(const char* message) const
 	{
 		if (!this->valid())
-		{
-			m_error.set(boost::winapi::ERROR_INVALID_HANDLE_);
-			throw std::system_error(m_error, message);
-		}
+			throw std::system_error(last_error(), message);
 	}
 
 	inline void process_base::kill()
@@ -75,7 +77,7 @@ namespace distant::kernel {
 		return result == wait::state::timeout;
 	}
 
-	inline bool process_base::is_emulated() const
+	inline bool process_base::is_32bit() const
 	{
 		this->throw_if_invalid("[process_base::is_emulated] invalid process");
 
@@ -83,7 +85,7 @@ namespace distant::kernel {
 		// sizeof(bool) != sizeof(BOOL).
 		boost::winapi::BOOL_ result = false;
 
-		if (!IsWow64Process(m_handle.native_handle(), reinterpret_cast<boost::winapi::PBOOL_>(&result)))
+		if (!boost::winapi::IsWow64Process(m_handle.native_handle(), reinterpret_cast<boost::winapi::PBOOL_>(&result)))
 			m_error.get_last();
 		else
 			m_error.set_success();
@@ -93,10 +95,15 @@ namespace distant::kernel {
 
 	inline bool process_base::is_being_debugged() const
 	{
+		// If we are considering the current process, use IsDebuggerPresent.
+		if (this->m_id == boost::winapi::GetCurrentProcessId())
+			return boost::winapi::IsDebuggerPresent();
+
 		this->throw_if_invalid("[process_base::is_being_debugged] invalid process");
 
+		// Otherwise use CheckRemoteDebuggerPresent.
 		boost::winapi::BOOL_ result = false;
-		if (!CheckRemoteDebuggerPresent(m_handle.native_handle(), &result))
+		if (!boost::winapi::CheckRemoteDebuggerPresent(m_handle.native_handle(), &result))
 			m_error.get_last();
 		else
 			m_error.set_success();
@@ -109,7 +116,7 @@ namespace distant::kernel {
 		return this->file_path().filename().wstring();
 	}
 
-	inline filesystem::path process_base::file_path() const
+	inline const filesystem::path& process_base::file_path() const
 	{
 		this->throw_if_invalid("[process_base::file_path] invalid process");
 
@@ -123,10 +130,7 @@ namespace distant::kernel {
 			boost::winapi::DWORD_ max_path = boost::winapi::MAX_PATH_;
 
 			if (!boost::winapi::query_full_process_image_name(native_handle, 0, pathBuffer, &max_path))
-			{
-				m_error.get_last();
-				throw std::system_error(m_error, "[process_base::file_path] query_full_process_image_name failed");
-			}
+				throw std::system_error(last_error(), "[process_base::file_path] query_full_process_image_name failed");
 			else
 				m_error.set_success();
 
@@ -146,10 +150,14 @@ namespace distant::kernel {
 		** id, which seemed to be consistent with processes on the manager. Indeed, the process handles I was
 		** getting coincided with those from using the standard ToolHelp functions.
 		*/
+
+#pragma warning(push)
+#pragma warning(disable:4267)
 		return
 			base_type::valid() && 
-			boost::winapi::GetProcessVersion(m_id) && 
+			boost::winapi::GetProcessVersion(m_id) > 0 && 
 			m_id != std::numeric_limits<std::size_t>::infinity();
+#pragma warning(pop)
 	}
 
 	//=========================//
@@ -165,13 +173,13 @@ namespace distant::kernel {
 
 	// Empty initialize process
 	FORBID_INLINE 
-	process_base::process_base() noexcept
+	inline process_base::process_base() noexcept
 		: base_type()
 		, m_id(std::numeric_limits<std::size_t>::infinity())
 		, m_access_rights() {}
 
 	FORBID_INLINE 
-	process_base::process_base(std::size_t id, access_rights_t access) noexcept
+	inline process_base::process_base(std::size_t id, access_rights_t access) noexcept
 		: base_type(this->open(id, access))
 		, m_id(id)
 		, m_access_rights(access)
@@ -181,14 +189,18 @@ namespace distant::kernel {
 	}
 
 	FORBID_INLINE 
-	process_base::process_base(process_base&& other) noexcept
+	inline process_base::process_base(process_base&& other) noexcept
 		: base_type(std::move(other))
 		, m_id(std::move(other.m_id))
 		, m_access_rights(std::move(other.m_access_rights)) {} 
 	// XXX Choose weakest access rights or produce error about incompatible access rights
 
+	inline process_base::process_base(handle<process_base>&& h) noexcept
+		: object(std::move(reinterpret_cast<handle<object>&>(h)))
+		, m_id(boost::winapi::GetProcessId(m_handle.native_handle())) {}
+
 	FORBID_INLINE 
-	process_base& process_base::operator=(process_base&& other) noexcept
+	inline process_base& process_base::operator=(process_base&& other) noexcept
 	{
 		base_type::operator=(std::move(other));
 		m_access_rights = other.m_access_rights;
@@ -197,16 +209,23 @@ namespace distant::kernel {
 	}
 
 //free:
-	FORBID_INLINE bool operator ==(const process_base& lhs, const process_base& rhs) noexcept
+	inline FORBID_INLINE bool operator ==(const process_base& lhs, const process_base& rhs) noexcept
 	{
 		return /*lhs.m_handle == rhs.m_handle &&*/
 			lhs.m_id == rhs.m_id;
 		//lhs.m_access == rhs.m_access;
 	}
 
-	FORBID_INLINE bool operator !=(const process_base& lhs, const process_base& rhs) noexcept
+	inline FORBID_INLINE bool operator !=(const process_base& lhs, const process_base& rhs) noexcept
 	{
 		return !operator==(lhs, rhs);
+	}
+
+	inline process_base
+	current_process() noexcept
+	{
+		const auto currentHandle = boost::winapi::GetCurrentProcess();
+		return process_base(handle<process_base>(currentHandle, access_rights::handle::close_protected));
 	}
 
 } // end namespace distant::kernel::detail

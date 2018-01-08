@@ -21,7 +21,8 @@ Distributed under the Apache Software License, Version 2.0.
 
 //#include <distant\memory\vm.h>
 
-namespace distant::kernel {
+namespace distant {
+namespace kernel  {
 
 	/// Base type of distant::process
 	/// This version does not have static access_rights checking
@@ -48,28 +49,28 @@ namespace distant::kernel {
 	public: // interface
 		/// Get the file name of the process executable.
 		/// \return string containing the filename.
-		virtual std::wstring filename() const;
+		std::wstring filename() const;
 
 		/// Get the path to the process executable.
 		/// \return the path.
-		virtual filesystem::path file_path() const;
+		const filesystem::path& file_path() const;
 
 		/// Query the process handle to see if it is still active
 		/// \return true if the process is active, false otherwise.
-		virtual bool is_active() const;
+		bool is_active() const;
 
 		/// Test if the process is running under the WOW64 emulator.
 		/// If the process has been compiled to run on 32-bit system and
 		/// is being run on a 64-bit system, it will be emulated.
 		/// \return true if the process is being emulated, and false if not.
-		virtual bool is_emulated() const;
+		bool is_32bit() const;
 
 		/// Test if the process is being debugged by another process.
 		/// \return true if the process is being debugged, and false if it is not.
 		bool is_being_debugged() const;
 
 		/// Terminate the process
-		virtual void kill();
+		void kill();
 
 		/// Retrieve the process id.
 		/// \return the process id.
@@ -96,6 +97,8 @@ namespace distant::kernel {
 		process_base(process_base&& other) noexcept; // move constructible
 		process_base& operator =(process_base&& other) noexcept; // move assignable
 
+		explicit process_base(handle<process_base>&& handle) noexcept;
+
 	private:
 		using expose = distant::detail::attorney::to_handle<process_base>;
 
@@ -111,6 +114,11 @@ namespace distant::kernel {
 		access_rights_t m_access_rights;
 	}; // end class process
 
-} // end namespace distant::kernel::detail
+	/// Get the current process.
+	/// \return distant::process_base object containing the current process.
+	process_base current_process() noexcept;
+
+} // namespace kernel
+} // namespace distant
 
 #include <distant\kernel\impl\process_base.hxx>
