@@ -50,7 +50,7 @@ namespace kernel  {
 
 		/// \brief Get the file path (in WIN32 format) of the process
 		/// \return std::wstring containing the file path of the process
-		const filesystem::path& file_path() const;
+		filesystem::path file_path() const;
 
 		template <access_rights::process Other_Flag, 
 			typename = std::enable_if_t<check_permission(access_flags, Other_Flag)>>

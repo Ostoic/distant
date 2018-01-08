@@ -77,7 +77,7 @@ namespace distant::kernel {
 	}
 
 	template <access_rights::process T>
-	inline const filesystem::path& process<T>::file_path() const
+	inline filesystem::path process<T>::file_path() const
 	{
 		using access_rights = access_rights::process;
 

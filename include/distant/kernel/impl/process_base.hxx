@@ -116,28 +116,21 @@ namespace distant::kernel {
 		return this->file_path().filename().wstring();
 	}
 
-	inline const filesystem::path& process_base::file_path() const
+	inline filesystem::path process_base::file_path() const
 	{
 		this->throw_if_invalid("[process_base::file_path] invalid process");
 
 		const auto native_handle = expose::native_handle(m_handle);
 
-		static filesystem::path outPath;
+		wchar_t pathBuffer[boost::winapi::MAX_PATH_];
+		boost::winapi::DWORD_ max_path = boost::winapi::MAX_PATH_;
 
-		if (outPath.empty())
-		{
-			wchar_t pathBuffer[boost::winapi::MAX_PATH_];
-			boost::winapi::DWORD_ max_path = boost::winapi::MAX_PATH_;
+		if (!boost::winapi::query_full_process_image_name(native_handle, 0, pathBuffer, &max_path))
+			throw std::system_error(last_error(), "[process_base::file_path] query_full_process_image_name failed");
+		else
+			m_error.set_success();
 
-			if (!boost::winapi::query_full_process_image_name(native_handle, 0, pathBuffer, &max_path))
-				throw std::system_error(last_error(), "[process_base::file_path] query_full_process_image_name failed");
-			else
-				m_error.set_success();
-
-			outPath = pathBuffer;
-		}
-
-		return outPath;
+		return {pathBuffer};
 	}
 
 //public:

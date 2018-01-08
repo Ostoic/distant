@@ -53,7 +53,7 @@ namespace kernel  {
 
 		/// Get the path to the process executable.
 		/// \return the path.
-		const filesystem::path& file_path() const;
+		filesystem::path file_path() const;
 
 		/// Query the process handle to see if it is still active
 		/// \return true if the process is active, false otherwise.

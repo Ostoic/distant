@@ -9,9 +9,9 @@ namespace system  {
 
 	const filesystem::path& windows_path();
 
-	const std::wstring& computer_name();
+	std::wstring computer_name();
 
-	const std::wstring& username();
+	std::wstring username();
 
 	std::size_t processor_type() noexcept;
 

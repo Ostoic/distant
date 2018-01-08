@@ -23,40 +23,26 @@ namespace distant::system {
 		return windowsPath;
 	}
 
-	inline const std::wstring& computer_name()
+	inline std::wstring computer_name()
 	{
-		static std::wstring computerName;
+		boost::winapi::DWORD_ size = boost::winapi::MAX_COMPUTERNAME_LENGTH_ + 1;
+		boost::winapi::WCHAR_ buffer[boost::winapi::MAX_COMPUTERNAME_LENGTH_ + 1];
 
-		if (computerName.empty())
-		{
-			boost::winapi::DWORD_ size = boost::winapi::MAX_COMPUTERNAME_LENGTH_ + 1;
-			boost::winapi::WCHAR_ buffer[boost::winapi::MAX_COMPUTERNAME_LENGTH_ + 1];
+		if (!boost::winapi::GetComputerNameW(reinterpret_cast<LPWSTR>(buffer), reinterpret_cast<boost::winapi::LPDWORD_>(&size)))
+			throw std::system_error(error::last_error(), "[system::computer_name] Unable to get computer name");
 
-			if (!boost::winapi::GetComputerNameW(reinterpret_cast<LPWSTR>(buffer), reinterpret_cast<boost::winapi::LPDWORD_>(&size)))
-				throw std::system_error(error::last_error(), "[system::computer_name] Unable to get computer name");
-
-			computerName = buffer;
-		}
-
-		return computerName;
+		return {buffer};
 	}
 
-	inline const std::wstring& username()
+	inline std::wstring username()
 	{
-		static std::wstring userName;
+		boost::winapi::DWORD_ size = boost::winapi::UNLEN_+ 1;
+		boost::winapi::WCHAR_ buffer[boost::winapi::UNLEN_ + 1];
 
-		if (userName.empty())
-		{
-			boost::winapi::DWORD_ size = boost::winapi::UNLEN_+ 1;
-			boost::winapi::WCHAR_ buffer[boost::winapi::UNLEN_ + 1];
+		if (!boost::winapi::GetUserNameW(reinterpret_cast<LPWSTR>(buffer), reinterpret_cast<boost::winapi::LPDWORD_>(&size)))
+			throw std::system_error(error::last_error(), "[system::username] Unable to get username");
 
-			if (!boost::winapi::GetUserNameW(reinterpret_cast<LPWSTR>(buffer), reinterpret_cast<boost::winapi::LPDWORD_>(&size)))
-				throw std::system_error(error::last_error(), "[system::username] Unable to get username");
-
-			userName = buffer;
-		}
-
-		return userName;
+		return {buffer};
 	}
 
 	namespace detail 
