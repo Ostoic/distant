@@ -34,10 +34,26 @@ namespace distant::system {
 
 	template <typename O, typename C>
 	typename snapshot<O, C>::output_type 
-	snapshot<O, C>::get() const
+		snapshot<O, C>::get() const
 	{
 		output_type output;
-		std::copy(this->begin(), this->end(), std::back_inserter(output));
+		std::copy_if(this->begin(), this->end(), std::back_inserter(output), [](const auto& element)
+		{
+			return element;
+		});
+		return output;
+	}
+
+	template <typename O, typename C>
+	template <typename Predicate>
+	typename snapshot<O, C>::output_type
+	snapshot<O, C>:: get(Predicate predicate) const
+	{
+		output_type output;
+		for (auto&& element : *this)
+			if (element && predicate(element))
+				output.push_back(std::move(element));
+
 		return output;
 	}
 /*

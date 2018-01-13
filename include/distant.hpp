@@ -6,6 +6,10 @@ Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
 */
 
+#ifndef BOOST_USE_WINDOWS_H
+#define BOOST_USE_WINDOWS_H
+#endif
+
 #include <distant\config.hpp>
 #include <distant\handle.hpp>
 #include <distant\kernel\process.hpp>

@@ -43,7 +43,7 @@ namespace distant::kernel {
 		return static_cast<std::size_t>(id);
 	}
 
-	void process_base::throw_if_invalid(const char* message) const
+	inline void process_base::throw_if_invalid(const char* message) const
 	{
 		if (!this->valid())
 			throw std::system_error(last_error(), message);

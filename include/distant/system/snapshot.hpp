@@ -41,6 +41,9 @@ namespace system  {
 
 		output_type get() const;
 
+		template <typename Predicate>
+		output_type get(Predicate) const;
+
 		//operator output_type() const;
 
 	public: // {ctor}

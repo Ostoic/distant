@@ -1,3 +1,4 @@
+#pragma once
 #include <distant\kernel\object.hpp>
 
 namespace distant::kernel {

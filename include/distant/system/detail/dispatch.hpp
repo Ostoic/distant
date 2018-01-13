@@ -7,6 +7,8 @@
 
 #include <distant\system\detail\snapshot_traits.hpp>
 
+#include <distant\support\winapi\toolhelp32.hpp>
+
 namespace distant::system::detail {
 
 	// get_snapshot process tag implementation
@@ -16,8 +18,8 @@ namespace distant::system::detail {
 		static_cast<void>(tag);
 
 		// Create a snapshot of all processes that we are allowed to see
-		const auto native_handle = boost::winapi::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-		if (native_handle == INVALID_HANDLE_VALUE)
+		const auto native_handle = boost::winapi::CreateToolhelp32Snapshot(boost::winapi::TH32CS_SNAPPROCESS_, 0);
+		if (native_handle == boost::winapi::INVALID_HANDLE_VALUE_)
 			return invalid_handle;
 
 		return handle<Snapshot_t>{ native_handle };

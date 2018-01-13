@@ -21,7 +21,7 @@ namespace boost::winapi
 	typedef LUID_AND_ATTRIBUTES_ARRAY_ *PLUID_AND_ATTRIBUTES_ARRAY_;
 
 #else
-	const boost::winapi::DWORD_ ANYSIZE_ARRAY_ = ANYSIZE_ARRAY;
+	constexpr DWORD_ ANYSIZE_ARRAY_ = ANYSIZE_ARRAY;
 
 	using _LUID_ = ::_LUID;
 	using LUID_  = ::LUID;
