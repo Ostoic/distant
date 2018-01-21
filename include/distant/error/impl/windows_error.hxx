@@ -89,6 +89,13 @@ namespace error   {
 	inline windows_error_code last_error() noexcept
 	{ return windows_error_code(gle()); }
 
+//free:
+	inline std::ostream& operator <<(std::ostream& stream, const windows_error_code& error)
+	{
+		stream << error.category().name() << " (" << error.value() << "): " << error.category().message(error.value());
+		return stream;
+	}
+
 
 } // namespace error 
 } // namespace distant

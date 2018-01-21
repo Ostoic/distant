@@ -7,6 +7,7 @@ Distributed under the Apache Software License, Version 2.0.
 */
 
 #include <string>
+#include <ostream>
 #include <system_error>
 
 #include <boost\winapi\basic_types.hpp>
@@ -46,7 +47,15 @@ namespace error   {
 		void set(boost::winapi::DWORD_ code) noexcept;
 	};
 
+	/// Return the last error local to the executing thread.
+	/// \return the last error code that was set.
 	windows_error_code last_error() noexcept;
+
+	/// Write a windows error to an output stream.
+	/// \param stream the output stream.
+	/// \param error the windows error to write.
+	/// \return the modified output stream.
+	std::ostream& operator <<(std::ostream& stream, const windows_error_code& error);
 
 } // end namespace error 
 

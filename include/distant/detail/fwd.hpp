@@ -39,7 +39,7 @@ class process;
 
 namespace system {
 
-	template <typename, typename>
+	template <typename>
 	class snapshot;
 
 } // namespace system

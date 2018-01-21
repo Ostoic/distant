@@ -3,10 +3,12 @@
 #include <distant\access_rights.hpp>
 
 #include <distant\detail\attorney.hpp>
-#include <distant\utility\literal.hpp>
+#include <distant\utility\boolean_validator.hpp>
 
 #include <boost\winapi\config.hpp>
 #include <boost\winapi\basic_types.hpp>
+
+#include <bitset>
 
 namespace distant {
 namespace detail  {
@@ -15,7 +17,7 @@ namespace detail  {
 	class invalid_t;
 
 	// Implements the interface of handle
-	class handle_base
+	class handle_base : public utility::boolean_validator<handle_base>
 	{
 	public:
 		// Underlying handle type. This is macro'd in Windows to be void* == (HANDLE)
@@ -26,7 +28,16 @@ namespace detail  {
 		/// Construct using native handle.
 		/// \param h the native handle value
 		/// \param flags handle flags 
-		explicit constexpr handle_base(native_type h, flag_type flags = flag_type::inherit) noexcept;
+		explicit constexpr handle_base(native_type h, flag_type flags = flag_type::inherit, bool closed = false) noexcept;
+
+		/// Construct an invalid handle.
+		/// This allows handles to be comparable with nullptr.
+		/// \param h the nullptr.
+		constexpr handle_base(nullptr_t h) noexcept;
+
+		/// Construct invalid handle.
+		/// This calls the nullptr constructor.
+		constexpr handle_base() noexcept;
 
 		/// Move copyable
 		handle_base(handle_base&&) noexcept;
@@ -48,9 +59,6 @@ namespace detail  {
 		/// \return true if the native_handle is not NULL, and false otherwise
 		bool valid() const noexcept;
 
-		/// Explicit bool operator wrapper for valid()
-		explicit operator bool() const noexcept;
-
 		/// Check if the handle is close protected
 		/// \return true if the handle cannot be closed, false otherwise
 		bool close_protected() const noexcept;
@@ -69,7 +77,6 @@ namespace detail  {
 		native_type native_handle() const noexcept;
 
 	protected:
-
 		// According to "Windows Via C\C++" by Jeffrey Richter,
 		// setting the handle to null is preferable to invalid_handle
 		// after closing the handle. This is probably because some API
@@ -88,37 +95,17 @@ namespace detail  {
 		/// native HANDLE value
 		native_type m_native_handle;
 
-		/// Handle close protection flags
-		flag_type m_flags;
-
 		// If we somehow attempt to call CloseHandle multiple times,
 		// this will help prevent further unnecessary calls.
 		/// Switch to check if closure was observed 
-		bool m_closed = false;
-
+		std::bitset<3> m_flags;
+		
 	public:
-		friend 
-#if BOOST_USE_WINAPI_VERSION < BOOST_WINAPI_VERSION_WIN10
-			constexpr
-#endif
-		bool operator ==(const handle_base&, const handle_base&) noexcept;
-
-		friend
-#if BOOST_USE_WINAPI_VERSION < BOOST_WINAPI_VERSION_WIN10
-			constexpr
-#endif	
-		bool operator !=(const handle_base&, const handle_base&) noexcept;
+		friend constexpr bool operator ==(const handle_base&, const handle_base&) noexcept;
+		friend constexpr bool operator !=(const handle_base&, const handle_base&) noexcept;
 	};
 
-	class invalid_t : public utility::Literal<invalid_t> {};
-
-	/// Type-safe handle literal
-	constexpr typename detail::invalid_t invalid_handle;
-
 } // end namespace detail
-
-using detail::invalid_handle;
-
 } // end namespace distant
 
 #include <distant\impl\handle_base.hxx>

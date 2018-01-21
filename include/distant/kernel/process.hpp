@@ -12,6 +12,7 @@ Distributed under the Apache Software License, Version 2.0.
 #include <string>
 
 #include <distant\kernel\process_base.hpp>
+#include <distant\kernel\current_process.hpp>
 
 #include <distant\utility\type_traits.hpp>
 
@@ -28,6 +29,7 @@ namespace kernel  {
 		using process_base::is_being_debugged;
 		using process_base::access_rights;
 		using process_base::get_handle;
+		using process_base::is_zombie;
 		using process_base::valid;
 		using process_base::id;
 
@@ -43,7 +45,11 @@ namespace kernel  {
 		/// is being run on a 64-bit system, it will be emulated.
 		/// \return true if the process is being emulated, and false if not.
 		bool is_32bit() const;
-		
+
+		/// Test if the process is being run in 64bit.
+		/// \return true if the process is being run in 64bit mode, and false if not.
+		bool is_64bit() const;
+
 		/// Get the executable name of the process
 		/// \return std::wstring containing the executable name of the process
 		std::wstring filename() const;

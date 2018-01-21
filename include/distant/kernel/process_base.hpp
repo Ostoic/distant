@@ -65,16 +65,26 @@ namespace kernel  {
 		/// \return true if the process is being emulated, and false if not.
 		bool is_32bit() const;
 
+		/// Test if the process is being run in 64bit.
+		/// \return true if the process is being run in 64bit mode, and false if not.
+		bool is_64bit() const;
+
 		/// Test if the process is being debugged by another process.
 		/// \return true if the process is being debugged, and false if it is not.
 		bool is_being_debugged() const;
+
+		/// Test if the process is a "zombie" process.
+		/// A zombie process in this case is one that is not listed upon process list enumeration,
+		/// but still has an active handle in the operating system.
+		/// \return true if the process is a zombie.
+		bool is_zombie() const;
 
 		/// Terminate the process
 		void kill();
 
 		/// Retrieve the process id.
 		/// \return the process id.
-		std::size_t id() const noexcept  { return m_id; }
+		std::size_t id() const noexcept { return m_id; }
 
 		/// Get the access rights that were used to open the current process
 		/// \return process access_rights indicating the level of access we have to the process.
@@ -92,7 +102,7 @@ namespace kernel  {
 		/// Open process by id
 		/// \param id the pid (process id) of the process to open.
 		/// \access the requested access rights to open the process with.
-		explicit process_base(std::size_t id, access_rights_t access) noexcept;
+		explicit process_base(std::size_t id, access_rights_t access = access_rights_t::all_access) noexcept;
 
 		process_base(process_base&& other) noexcept; // move constructible
 		process_base& operator =(process_base&& other) noexcept; // move assignable

@@ -21,22 +21,30 @@ namespace distant::security {
 		};
 
 	public: // {ctor}
-		privilege() noexcept = default;
+		/// Constructs an invalid privilege object.
+		constexpr privilege() noexcept;
 
-		constexpr explicit privilege(security::luid luid, attributes attrib = attributes::enabled) noexcept;
-
-		explicit privilege(const std::string& privilegeName, attributes attrib = attributes::enabled);
+		/// Constexpr constructor allowing the privilege's data to be loaded on demand.
+		explicit constexpr privilege(const wchar_t* privilegeName) noexcept;
 
 	public: // interface
+		/// Implicility convertible to the TOKEN_PRIVILEGES_ struct.
+		/// \return an instance of TOKEN_PRIVILEGES_ filled with the current privilege's data.
 		operator boost::winapi::TOKEN_PRIVILEGES_() const noexcept;
 
+		/// Implicitly convertible to a PRIVILEGE_SET_ object.
+		/// \return an instance of PRIVILEGE_SET_ filled with the current privilege's data.
 		operator boost::winapi::PRIVILEGE_SET_() const noexcept;
+
+		/// Get the Locally Unique Identifier associated with the given privilege.
+		/// \return the luid returned by the operating system for the privilege.
+		security::luid luid() const noexcept;
 
 		explicit operator bool() const noexcept;
 
-	public: // data
-		attributes attribute = attributes::enabled;
-		security::luid luid;
+	private:
+		const wchar_t* name_;
+		mutable security::luid luid_;
 	};
 
 	// XXX Look into how Windows programmers properly do this
@@ -44,7 +52,7 @@ namespace distant::security {
 	std::wstring lookup_name(security::luid luid);
 
 	// Lookup the privilege local UID and attribute given the name.
-	privilege lookup_privilege(const std::string& privilegeName);
+	privilege lookup_privilege(const std::wstring& privilegeName);
 
 } // end namespace distant::security
 

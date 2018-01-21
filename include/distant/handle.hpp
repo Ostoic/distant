@@ -21,15 +21,18 @@ namespace distant {
 		using object_type = Object_t;
 
 	public: // {ctor}
-		/// \param h the native handle value
-		/// \param flags handle flags 
-		constexpr explicit handle(native_type h, flag_type flags = flag_type::inherit) noexcept;
+		/// \param h the native handle value.
+		/// \param flags handle flags .
+		/// \param closed whether or not the handle is closed.
+		explicit constexpr handle(native_type h, flag_type flags = flag_type::inherit, bool closed = false) noexcept;
+
+		/// Construct an invalid handle.
+		/// This allows handles to be comparable with nullptr.
+		/// \param h the nullptr.
+		constexpr handle(nullptr_t h) noexcept;
 
 		/// Invalid handle literal constructor
 		constexpr handle() noexcept;
-
-		/// Invalid handle literal constructor
-		constexpr handle(detail::invalid_t) noexcept;
 
 		/// Bivariant move constructor
 		template <typename other_t>

@@ -5,23 +5,17 @@
 #include <distant\error\windows_error.hpp>
 
 #include <string>
-#include <string_view>
 
 namespace distant::security {
 
 //class privilege
 //public:
-	inline constexpr privilege::privilege(security::luid luid, attributes attrib) noexcept
-		: attribute(attrib), luid(luid) {}
+	inline constexpr privilege::privilege() noexcept
+		: privilege(nullptr) {}
 
-	inline privilege::privilege(const std::string& privilegeName, attributes attrib)
-	{
-		security::luid luid;
-		if (!boost::winapi::lookup_privilege_value(NULL, privilegeName.c_str(), &luid))
-			throw std::system_error(error::windows_error_code(error::gle()), "Invalid privilege value");
-
-		this->luid = luid;
-	}
+	inline constexpr privilege::privilege(const wchar_t* privilegeName) noexcept
+		: name_(privilegeName)
+		, luid_({ 0 }) {}
 
 	inline privilege::operator boost::winapi::TOKEN_PRIVILEGES_() const noexcept
 	{
@@ -30,8 +24,8 @@ namespace distant::security {
 		boost::winapi::TOKEN_PRIVILEGES_ temp;
 
 		temp.PrivilegeCount = 1;
-		temp.Privileges[0].Attributes = static_cast<DWORD_>(this->attribute);
-		temp.Privileges[0].Luid = this->luid;
+		temp.Privileges[0].Attributes = static_cast<DWORD_>(attributes::enabled);
+		temp.Privileges[0].Luid = this->luid();
 		return temp;
 	}
 
@@ -40,16 +34,33 @@ namespace distant::security {
 		using boost::winapi::DWORD_;
 
 		boost::winapi::PRIVILEGE_SET_ temp;
-		temp.Privilege[0].Luid = this->luid;
-		temp.Privilege[0].Attributes = static_cast<DWORD_>(this->attribute);
+		temp.Privilege[0].Luid = this->luid();
+		temp.Privilege[0].Attributes = static_cast<DWORD_>(attributes::enabled);
 		temp.PrivilegeCount = 1;
 		temp.Control = boost::winapi::PRIVILEGE_SET_ALL_NECESSARY_;
 		return temp;
 	}
 
-	inline privilege::operator bool() const noexcept
+	security::luid privilege::luid() const noexcept
 	{
-		return this->luid.LowPart != 0 || this->luid.HighPart != 0;
+		if (this->luid_.LowPart == 0 && this->luid_.HighPart == 0)
+		{
+			// Lookup LUID given the privilege name.
+			if (!boost::winapi::lookup_privilege_value(nullptr, this->name_, &this->luid_))
+			{
+				// Failed, set invalid luid.
+				this->luid_.LowPart = 0;
+				this->luid_.HighPart = 0;
+			}
+		}
+
+		return this->luid_;
+	}
+
+	privilege::operator bool() const noexcept
+	{
+		this->luid();
+		return this->luid_.LowPart != 0 || this->luid_.HighPart != 0;
 	}
 
 //free:
@@ -60,21 +71,17 @@ namespace distant::security {
 		boost::winapi::DWORD_ size = 100;
 		wchar_t buffer[100];
 
-		if (!boost::winapi::lookup_privilege_name(NULL, &luid, buffer, &size))
-			throw std::system_error(error::windows_error_code(error::gle()), "Privilege name lookup failed.");
+		if (!boost::winapi::lookup_privilege_name(nullptr, &luid, buffer, &size))
+			throw std::system_error(distant::last_error(), "Privilege name lookup failed.");
 
 		return std::move(buffer);
 	}
 
 	// XXX Input domain should be restricted to SE_XXX_NAME macro types
 	// Lookup the privilege local UID and attribute given the name.
-	inline privilege lookup_privilege(const std::string& privilegeName)
+	inline privilege lookup_privilege(const std::wstring& privilegeName)
 	{
-		security::luid luid;
-		if (!boost::winapi::lookup_privilege_value(NULL, privilegeName.c_str(), &luid))
-			return {};
-
-		return privilege(luid);
+		return privilege{privilegeName.c_str()};
 	}
 
 } // end namespace distant::security

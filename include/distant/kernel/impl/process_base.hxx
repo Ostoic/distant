@@ -79,7 +79,7 @@ namespace distant::kernel {
 
 	inline bool process_base::is_32bit() const
 	{
-		this->throw_if_invalid("[process_base::is_emulated] invalid process");
+		this->throw_if_invalid("[process_base::is_32bit] invalid process");
 
 		// Note: Using bool here on some systems can corrupt the stack since
 		// sizeof(bool) != sizeof(BOOL).
@@ -91,6 +91,11 @@ namespace distant::kernel {
 			m_error.set_success();
 
 		return result;
+	}
+
+	inline bool process_base::is_64bit() const
+	{
+		return !this->is_32bit();
 	}
 
 	inline bool process_base::is_being_debugged() const
@@ -109,6 +114,14 @@ namespace distant::kernel {
 			m_error.set_success();
 
 		return result;
+	}
+
+	inline bool process_base::is_zombie() const
+	{
+#pragma warning(push)
+#pragma warning(disable:4267)
+		return this->get_handle() != nullptr && boost::winapi::GetProcessVersion(m_id) == 0;
+#pragma warning(pop)
 	}
 
 	inline std::wstring process_base::filename() const
@@ -144,13 +157,10 @@ namespace distant::kernel {
 		** getting coincided with those from using the standard ToolHelp functions.
 		*/
 
-#pragma warning(push)
-#pragma warning(disable:4267)
 		return
 			base_type::valid() && 
-			boost::winapi::GetProcessVersion(m_id) > 0 && 
+			!this->is_zombie() && 
 			m_id != std::numeric_limits<std::size_t>::infinity();
-#pragma warning(pop)
 	}
 
 	//=========================//

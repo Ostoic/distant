@@ -20,7 +20,7 @@ namespace distant::kernel {
 		, m_error() {}
 
 	inline object::object() noexcept 
-		: m_handle(invalid_handle)
+		: m_handle(nullptr)
 		, m_error() {}
 
 	inline bool object::valid() const noexcept

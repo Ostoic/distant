@@ -13,16 +13,16 @@ namespace distant {
 
 //public:
 	template <typename T>
-	inline constexpr handle<T>::handle(native_type h, flag_type flags) noexcept
-		: handle_base(h, flags) {}
+	inline constexpr handle<T>::handle(native_type h, flag_type flags, bool closed) noexcept
+		: handle_base(h, flags, closed) {}
+
+	template <typename T>
+	constexpr handle<T>::handle(nullptr_t) noexcept
+		: handle() {}
 
 	template <typename T>
 	inline constexpr handle<T>::handle() noexcept
-		: handle(NULL, flag_type::close_protected) {}
-
-	template <typename T>
-	inline constexpr handle<T>::handle(detail::invalid_t t) noexcept
-		: handle() {}
+		: handle(nullptr, flag_type::close_protected, true) {}
 
 	// Move constructor
 	template <typename T>

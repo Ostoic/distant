@@ -22,7 +22,7 @@ namespace distant::system {
 		>	// The rest is use_default
 	{
 	private: // subtypes
-		using snapshot_type = system::snapshot<KernelObject, std::vector<KernelObject>>;
+		using snapshot_type = system::snapshot<KernelObject>;
 		using entry_type = typename system::detail::snapshot_dispatcher<KernelObject>::entry_type;
 
 	public: // interface
@@ -44,13 +44,13 @@ namespace distant::system {
 
 		bool equal(const snapshot_iterator& other) const;
 
-	private: 
+	private: // data
 		using expose = distant::detail::attorney::to_handle<snapshot_iterator>;
 
 		std::size_t m_index;
 		boost::winapi::HANDLE_ m_native_snap;
 
-		/// ToolHelp 
+		/// ToolHelp entry type
 		entry_type m_entry;
 	};
 

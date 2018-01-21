@@ -20,9 +20,9 @@ namespace distant::system::detail {
 		// Create a snapshot of all processes that we are allowed to see
 		const auto native_handle = boost::winapi::CreateToolhelp32Snapshot(boost::winapi::TH32CS_SNAPPROCESS_, 0);
 		if (native_handle == boost::winapi::INVALID_HANDLE_VALUE_)
-			return invalid_handle;
+			return nullptr;
 
-		return handle<Snapshot_t>{ native_handle };
+		return handle<Snapshot_t>{native_handle};
 	}
 	
 	// get_snapshot main tag dispatcher

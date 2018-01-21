@@ -1,7 +1,6 @@
 #pragma once
 #include <distant\system\snapshot_iterator.hpp>
 
-
 namespace distant::system {
 
 // class snapshot_iterator <KernelObject>:
@@ -42,7 +41,7 @@ namespace distant::system {
 			if (!snapshot_entry::next<K>(m_native_snap, &m_entry))
 				m_index = 0;
 			else
-				m_index++;
+				++m_index;
 		}
 	}
 
@@ -52,8 +51,8 @@ namespace distant::system {
 		// Bring the snapshot_entry dispatcher function into scope
 		namespace snapshot_entry = system::detail::snapshot_entry;
 
-		const auto pid = snapshot_entry::get_id<K>(m_entry);
-		return K{pid};
+		const auto id = snapshot_entry::get_id<K>(m_entry);
+		return K{id};
 	}
 
 	template <typename K>

@@ -90,7 +90,81 @@ namespace boost::winapi {
 
 	constexpr boost::winapi::DWORD_ PRIVILEGE_SET_ALL_NECESSARY_ = 1;
 
+	// Privilege names
+	constexpr auto SE_CREATE_TOKEN_NAME_              = TEXT("SeCreateTokenPrivilege");
+	constexpr auto SE_ASSIGNPRIMARYTOKEN_NAME_        = TEXT("SeAssignPrimaryTokenPrivilege");
+	constexpr auto SE_LOCK_MEMORY_NAME_               = TEXT("SeLockMemoryPrivilege");
+	constexpr auto SE_INCREASE_QUOTA_NAME_            = TEXT("SeIncreaseQuotaPrivilege");
+	constexpr auto SE_UNSOLICITED_INPUT_NAME_         = TEXT("SeUnsolicitedInputPrivilege");
+	constexpr auto SE_MACHINE_ACCOUNT_NAME_           = TEXT("SeMachineAccountPrivilege");
+	constexpr auto SE_TCB_NAME_                       = TEXT("SeTcbPrivilege");
+	constexpr auto SE_SECURITY_NAME_                  = TEXT("SeSecurityPrivilege");
+	constexpr auto SE_TAKE_OWNERSHIP_NAME_            = TEXT("SeTakeOwnershipPrivilege");
+	constexpr auto SE_LOAD_DRIVER_NAME_               = TEXT("SeLoadDriverPrivilege");
+	constexpr auto SE_SYSTEM_PROFILE_NAME_            = TEXT("SeSystemProfilePrivilege");
+	constexpr auto SE_SYSTEMTIME_NAME_                = TEXT("SeSystemtimePrivilege");
+	constexpr auto SE_PROF_SINGLE_PROCESS_NAME_       = TEXT("SeProfileSingleProcessPrivilege");
+	constexpr auto SE_INC_BASE_PRIORITY_NAME_         = TEXT("SeIncreaseBasePriorityPrivilege");
+	constexpr auto SE_CREATE_PAGEFILE_NAME_           = TEXT("SeCreatePagefilePrivilege");
+	constexpr auto SE_CREATE_PERMANENT_NAME_          = TEXT("SeCreatePermanentPrivilege");
+	constexpr auto SE_BACKUP_NAME_                    = TEXT("SeBackupPrivilege");
+	constexpr auto SE_RESTORE_NAME_                   = TEXT("SeRestorePrivilege");
+	constexpr auto SE_SHUTDOWN_NAME_                  = TEXT("SeShutdownPrivilege");
+	constexpr auto SE_DEBUG_NAME_                     = TEXT("SeDebugPrivilege");
+	constexpr auto SE_AUDIT_NAME_                     = TEXT("SeAuditPrivilege");
+	constexpr auto SE_SYSTEM_ENVIRONMENT_NAME_        = TEXT("SeSystemEnvironmentPrivilege");
+	constexpr auto SE_CHANGE_NOTIFY_NAME_             = TEXT("SeChangeNotifyPrivilege");
+	constexpr auto SE_REMOTE_SHUTDOWN_NAME_           = TEXT("SeRemoteShutdownPrivilege");
+	constexpr auto SE_UNDOCK_NAME_                    = TEXT("SeUndockPrivilege");
+	constexpr auto SE_SYNC_AGENT_NAME_                = TEXT("SeSyncAgentPrivilege");
+	constexpr auto SE_ENABLE_DELEGATION_NAME_         = TEXT("SeEnableDelegationPrivilege");
+	constexpr auto SE_MANAGE_VOLUME_NAME_             = TEXT("SeManageVolumePrivilege");
+	constexpr auto SE_IMPERSONATE_NAME_               = TEXT("SeImpersonatePrivilege");
+	constexpr auto SE_CREATE_GLOBAL_NAME_             = TEXT("SeCreateGlobalPrivilege");
+	constexpr auto SE_TRUSTED_CREDMAN_ACCESS_NAME_    = TEXT("SeTrustedCredManAccessPrivilege");
+	constexpr auto SE_RELABEL_NAME_                   = TEXT("SeRelabelPrivilege");
+	constexpr auto SE_INC_WORKING_SET_NAME_           = TEXT("SeIncreaseWorkingSetPrivilege");
+	constexpr auto SE_TIME_ZONE_NAME_                 = TEXT("SeTimeZonePrivilege");
+	constexpr auto SE_CREATE_SYMBOLIC_LINK_NAME_      = TEXT("SeCreateSymbolicLinkPrivilege");
+
 #else
+	// Privilege names
+	constexpr auto SE_CREATE_TOKEN_NAME_              = SE_CREATE_TOKEN_NAME;
+	constexpr auto SE_ASSIGNPRIMARYTOKEN_NAME_        = SE_ASSIGNPRIMARYTOKEN_NAME;
+	constexpr auto SE_LOCK_MEMORY_NAME_               = SE_LOCK_MEMORY_NAME;
+	constexpr auto SE_INCREASE_QUOTA_NAME_            = SE_INCREASE_QUOTA_NAME;
+	constexpr auto SE_UNSOLICITED_INPUT_NAME_         = SE_UNSOLICITED_INPUT_NAME;
+	constexpr auto SE_MACHINE_ACCOUNT_NAME_           = SE_MACHINE_ACCOUNT_NAME;
+	constexpr auto SE_TCB_NAME_                       = SE_TCB_NAME;
+	constexpr auto SE_SECURITY_NAME_                  = SE_SECURITY_NAME;
+	constexpr auto SE_TAKE_OWNERSHIP_NAME_            = SE_TAKE_OWNERSHIP_NAME;
+	constexpr auto SE_LOAD_DRIVER_NAME_               = SE_LOAD_DRIVER_NAME;
+	constexpr auto SE_SYSTEM_PROFILE_NAME_            = SE_SYSTEM_PROFILE_NAME;
+	constexpr auto SE_SYSTEMTIME_NAME_                = SE_SYSTEMTIME_NAME;
+	constexpr auto SE_PROF_SINGLE_PROCESS_NAME_       = SE_PROF_SINGLE_PROCESS_NAME;
+	constexpr auto SE_INC_BASE_PRIORITY_NAME_         = SE_INC_BASE_PRIORITY_NAME;
+	constexpr auto SE_CREATE_PAGEFILE_NAME_           = SE_CREATE_PAGEFILE_NAME;
+	constexpr auto SE_CREATE_PERMANENT_NAME_          = SE_CREATE_PERMANENT_NAME;
+	constexpr auto SE_BACKUP_NAME_                    = SE_BACKUP_NAME;
+	constexpr auto SE_RESTORE_NAME_                   = SE_RESTORE_NAME;
+	constexpr auto SE_SHUTDOWN_NAME_                  = SE_SHUTDOWN_NAME;
+	constexpr auto SE_DEBUG_NAME_                     = SE_DEBUG_NAME;
+	constexpr auto SE_AUDIT_NAME_                     = SE_AUDIT_NAME;
+	constexpr auto SE_SYSTEM_ENVIRONMENT_NAME_        = SE_SYSTEM_ENVIRONMENT_NAME;
+	constexpr auto SE_CHANGE_NOTIFY_NAME_             = SE_CHANGE_NOTIFY_NAME;
+	constexpr auto SE_REMOTE_SHUTDOWN_NAME_           = SE_REMOTE_SHUTDOWN_NAME;
+	constexpr auto SE_UNDOCK_NAME_                    = SE_UNDOCK_NAME;
+	constexpr auto SE_SYNC_AGENT_NAME_                = SE_SYNC_AGENT_NAME;
+	constexpr auto SE_ENABLE_DELEGATION_NAME_         = SE_ENABLE_DELEGATION_NAME;
+	constexpr auto SE_MANAGE_VOLUME_NAME_             = SE_MANAGE_VOLUME_NAME;
+	constexpr auto SE_IMPERSONATE_NAME_               = SE_IMPERSONATE_NAME;
+	constexpr auto SE_CREATE_GLOBAL_NAME_             = SE_CREATE_GLOBAL_NAME;
+	constexpr auto SE_TRUSTED_CREDMAN_ACCESS_NAME_    = SE_TRUSTED_CREDMAN_ACCESS_NAME;
+	constexpr auto SE_RELABEL_NAME_                   = SE_RELABEL_NAME;
+	constexpr auto SE_INC_WORKING_SET_NAME_           = SE_INC_WORKING_SET_NAME;
+	constexpr auto SE_TIME_ZONE_NAME_                 = SE_TIME_ZONE_NAME;
+	constexpr auto SE_CREATE_SYMBOLIC_LINK_NAME_      = SE_CREATE_SYMBOLIC_LINK_NAME;
+
 	using PRIVILEGE_SET_ = ::PRIVILEGE_SET;
 	using PPRIVILEGE_SET_ = ::PPRIVILEGE_SET;
 

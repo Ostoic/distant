@@ -40,12 +40,12 @@ namespace distant::kernel {
 		// The WaitForSingleObject API call requires the following access rights.
 		static_assert(
 			check_permission(T, access_rights::synchronize),
-			"Invalid access rights (process::is_active): "
+			"[process::is_active] Invalid access rights: "
 			"Process must have synchronize access right");
 
 		return process_base::is_active();
 	}
-	
+
 	template <access_rights::process T>
 	inline bool process<T>::is_32bit() const
 	{
@@ -55,10 +55,25 @@ namespace distant::kernel {
 		static_assert(
 			check_permission(T, access_rights::query_information) ||
 			check_permission(T, access_rights::query_limited_information),
-			"Invalid access rights (process::filename): "
+			"[process::is_32bit] Invalid access rights: "
 			"Process must have query_information or query_limited_information access rights");
 
 		return process_base::is_32bit();
+	}
+
+	template <access_rights::process T>
+	inline bool process<T>::is_64bit() const
+	{
+		using access_rights = access_rights::process;
+
+		// The IsWow64Process API call requires the following access rights.
+		static_assert(
+			check_permission(T, access_rights::query_information) ||
+			check_permission(T, access_rights::query_limited_information),
+			"[process::is_64bit] Invalid access rights: "
+			"Process must have query_information or query_limited_information access rights");
+
+		return process_base::is_64bit();
 	}
 
 	template <access_rights::process T>

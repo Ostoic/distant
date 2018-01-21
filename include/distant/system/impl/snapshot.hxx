@@ -5,51 +5,49 @@
 
 namespace distant::system {
 
-	template <typename O, typename C>
-	inline snapshot<O, C>::snapshot() 
+	template <typename O>
+	inline snapshot<O>::snapshot() 
 		: m_handle(system::detail::get_snapshot_handle<object_type, snapshot>())
 	{
 		static_assert(
 			is_kernel_object<O>::value,
-			"Invalid template parameter (snapshot::ctor): "
-			"Unable to take system snapshot of nonkernel object");
+			"[snapshot::{ctor}] Unable to take system snapshot of nonkernel object");
 
-		if (m_handle == distant::invalid_handle)
-			throw std::system_error(error::last_error(), "[snapshot::{ctor}] invalid handle");
+		if (m_handle == nullptr)
+			throw std::system_error(error::last_error(), "[snapshot::{ctor}] Invalid handle");
 	}
 
-	template <typename O, typename C>
-	inline typename snapshot<O, C>::iterator
-	snapshot<O, C>::begin() const
+	template <typename O>
+	inline typename snapshot<O>::iterator
+	snapshot<O>::begin() const
 	{
-		return iterator(*this);
+		return iterator{*this};
 	}
 
-	template <typename O, typename C>
-	inline typename snapshot<O, C>::iterator
-	snapshot<O, C>::end() const
+	template <typename O>
+	inline typename snapshot<O>::iterator
+	snapshot<O>::end() const
 	{
-		return iterator(*this, iterator::snapshot_end());
+		return iterator{*this, iterator::snapshot_end()};
 	}
 
-	template <typename O, typename C>
-	typename snapshot<O, C>::output_type 
-		snapshot<O, C>::get() const
+	template <typename O>
+	template <typename OutContainer>
+	OutContainer snapshot<O>::get() const
 	{
-		output_type output;
-		std::copy_if(this->begin(), this->end(), std::back_inserter(output), [](const auto& element)
+		OutContainer output;
+		std::copy_if(this->begin(), this->end(), std::back_inserter(output), [](auto&& element)
 		{
-			return element;
+			return std::move(element);
 		});
 		return output;
 	}
 
-	template <typename O, typename C>
-	template <typename Predicate>
-	typename snapshot<O, C>::output_type
-	snapshot<O, C>:: get(Predicate predicate) const
+	template <typename O>
+	template <typename Predicate, typename OutContainer>
+	OutContainer snapshot<O>:: get(Predicate predicate) const
 	{
-		output_type output;
+		OutContainer output;
 		for (auto&& element : *this)
 			if (element && predicate(element))
 				output.push_back(std::move(element));
@@ -58,7 +56,7 @@ namespace distant::system {
 	}
 /*
 	template <class O, class C>
-	operator typename snapshot<O, C>::output_type() const
+	operator typename snapshot<O>::output_type() const
 	{
 		return this->get();
 	}*/

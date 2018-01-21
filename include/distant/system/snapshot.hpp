@@ -19,8 +19,8 @@ namespace distant {
 namespace system  {
 
 	// system::snapshot models the ForwardRange concept
-	template <typename KernelObject, typename OutputContainer = std::vector<KernelObject>>
-	class snapshot : public utility::boolean_validator<snapshot<KernelObject, OutputContainer>>
+	template <typename KernelObject>
+	class snapshot : public utility::boolean_validator<snapshot<KernelObject>>
 	{
 	public:/*
 		static_assert(
@@ -29,7 +29,6 @@ namespace system  {
 
 		using object_type = KernelObject;
 		using handle_type = handle<snapshot>;
-		using output_type = OutputContainer;
 		
 		using iterator = snapshot_iterator<KernelObject>;
 		using const_iterator = snapshot_iterator<KernelObject>;
@@ -39,10 +38,11 @@ namespace system  {
 		iterator begin() const;
 		iterator end() const;
 
-		output_type get() const;
+		template <typename OutContainer = std::vector<KernelObject>>
+		OutContainer get() const;
 
-		template <typename Predicate>
-		output_type get(Predicate) const;
+		template <typename Predicate, typename OutContainer = std::vector<KernelObject>>
+		OutContainer get(Predicate) const;
 
 		//operator output_type() const;
 
