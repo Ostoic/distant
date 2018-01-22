@@ -108,6 +108,13 @@ namespace distant::kernel {
 
 	template <access_rights::process T>
 	template <access_rights::process Other_Flag, typename>
+	inline process<T>::operator process<Other_Flag>&() noexcept
+	{
+		return reinterpret_cast<process<Other_Flag>&>(*this);
+	}
+
+	template <access_rights::process T>
+	template <access_rights::process Other_Flag, typename>
 	inline process<T>::operator const process<Other_Flag>&() const noexcept
 	{
 		return reinterpret_cast<const process<Other_Flag>&>(*this);

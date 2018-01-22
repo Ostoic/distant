@@ -45,7 +45,4 @@ namespace distant::security::privileges {
 	constexpr security::privilege time_zone				{ boost::winapi::SE_TIME_ZONE_NAME_ };
 	constexpr security::privilege create_symbolic_link	{ boost::winapi::SE_CREATE_SYMBOLIC_LINK_NAME_ };
 
-}
-
-/*
-*/
+} //namespace distant::security::privileges

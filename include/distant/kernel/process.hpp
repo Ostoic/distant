@@ -24,7 +24,7 @@ namespace kernel  {
 	class process : private distant::kernel::process_base
 	{
 	public: // interface
-		// Import process_base interface independent of access flags.
+		// Import the process_base interface.
 		using process_base::operator bool;
 		using process_base::is_being_debugged;
 		using process_base::access_rights;
@@ -57,6 +57,10 @@ namespace kernel  {
 		/// \brief Get the file path (in WIN32 format) of the process
 		/// \return std::wstring containing the file path of the process
 		filesystem::path file_path() const;
+
+		template <access_rights::process Other_Flag, 
+			typename = std::enable_if_t<check_permission(access_flags, Other_Flag)>>
+		operator process<Other_Flag>&() noexcept;
 
 		template <access_rights::process Other_Flag, 
 			typename = std::enable_if_t<check_permission(access_flags, Other_Flag)>>

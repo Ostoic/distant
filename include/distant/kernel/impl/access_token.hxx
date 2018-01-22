@@ -1,7 +1,6 @@
 #pragma once
 #include <distant\kernel\access_token.hpp>
 
-#include <distant\detail\tags.hpp>
 #include <distant\detail\attorney.hpp>
 
 #include <distant\support\winapi\token.hpp>
@@ -17,6 +16,14 @@ namespace distant::kernel
 		using boost::winapi::HANDLE_;
 
 		inline HANDLE_ get_token_impl(const kernel::process_base& process, DWORD_ access) noexcept
+		{
+			HANDLE_ token = nullptr;
+
+			boost::winapi::OpenProcessToken(process.get_handle().native_handle(), access, &token);
+			return token;
+		}
+
+		inline HANDLE_ get_token_impl(const kernel::process<access_rights::process::query_information>& process, DWORD_ access) noexcept
 		{
 			HANDLE_ token = nullptr;
 
@@ -44,6 +51,7 @@ namespace distant::kernel
 	inline bool access_token<A, K>::has_privilege(const security::privilege& p) const noexcept
 	{
 		if (!p) return false;
+
 		boost::winapi::BOOL_ result = false;
 		boost::winapi::PRIVILEGE_SET_ set = p;
 
@@ -61,13 +69,12 @@ namespace distant::kernel
 
 		if (boost::winapi::adjust_token_privilege(this->get_handle().native_handle(), false, &temp, sizeof(temp), nullptr, nullptr))
 		{
+			// If the privilege was set return success.
 			if (distant::last_error().value() != boost::winapi::ERROR_NOT_ALL_ASSIGNED_)
 				return true;
-				//throw std::system_error(error, "[access_token::set_privilege] The token does not have the specified privilege.");
-			//else
-				//throw std::system_error(error, "Unknown error");
 		}
 
+		// Otherwise an error has occured.
 		return false;
 	}
 
@@ -85,8 +92,8 @@ namespace distant::kernel
 	}
 
 	template <typename KernelObject>
-	inline access_token<access_rights::token::adjust_privileges, KernelObject> get_access_token(const KernelObject& object) noexcept
+	inline access_token<access_rights::token::adjust_privileges | access_rights::token::query, KernelObject> get_access_token(const KernelObject& object) noexcept
 	{
-		return get_access_token<access_rights::token::adjust_privileges>(object);
+		return get_access_token<access_rights::token::adjust_privileges | access_rights::token::query>(object);
 	}
 }

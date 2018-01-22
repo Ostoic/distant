@@ -53,7 +53,8 @@ namespace kernel  {
 	/// \return the primary access token if the kernel object is a process,
 	/// or it returns an impersonation access token if the kernel object is a thread.
 	template <typename KernelObject>
-	access_token<access_rights::token::adjust_privileges, KernelObject> get_access_token(const KernelObject&) noexcept;
+	access_token<access_rights::token::adjust_privileges | access_rights::token::query, KernelObject> 
+	get_access_token(const KernelObject&) noexcept;
 
 } // namespace kernel
 
