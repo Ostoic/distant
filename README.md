@@ -16,7 +16,7 @@ The following code would suffice in this request:
 
 ```c++
 constexpr auto access = access_rights::query_information;
-auto current = distant::process<access>::get_current();
+auto current = distant::current_process<access>();
 ```
 
 If we would later like to check that the process is running, or perform a windows::wait operation
@@ -28,7 +28,7 @@ if (current.is_active()) {...}
 ```
 will produce a compiler error of the form:
 ```
-Invalid access rights (distant::process::is_active): Process must have synchronize access right
+[distant::process::is_active] Invalid access rights: Process must have synchronize access right
 ```
 If we do not statically check the access rights associated with a process, then errors such as the above 
 one will be produced at run-time regardless. It is much easier to detect bugs through the compiler, instead of
@@ -41,79 +41,77 @@ at runtime, where simply forgetting the correct access rights for an API call ca
 
 #include <distant.hpp>
 
-template <distant::access_rights::process T>
-void display_info(const distant::process<T>& p)
+constexpr auto information_access =
+	distant::process_rights::query_limited_information |
+	distant::process_rights::synchronize |
+	distant::process_rights::vm_read;
+
+void display_info(const distant::process<information_access>& p)
 {
-	// distant::process is explicitly convertible to bool
-	if (p)
-	{
-		std::string active_string = (p.is_active()) ? "Active" : "Inactive";
-		// Process information
-		std::cout << "Process " << p.pid() << '\n';
-		std::cout << "State: " << active_string << '\n';
-		std::cout << "Name: " << p.name() << '\n';
-
-		auto ms = p.memory_status();
-		std::cout << "Private Usage: " << ms.private_usage() << " kb \n";
-		std::cout << "Peak Private Usage: " << ms.peak_private_usage() << " kb \n";
-
-		std::cout << "Working Set: " << ms.working_set() << " kb \n";
-		std::cout << "Peak Working Set: " << ms.peak_working_set() << " kb \n";
-
-		std::cout << "Number of Page Faults: " << ms.page_fault_count() << '\n';
-		std::cout << "Number of Active Handles: " << ms.handle_count() << '\n';
-	}
-	else
-		std::cout << "An error occured while opening process " << p.pid() << '\n';
-
-	// Output a formatted last error message
-	std::cout << "Last error: " << p.get_last_error() << '\n' << '\n';
+	// Process information
+	std::wcout
+		<< "Process (" << p.id() << ") " << p.filename() << '\n'
+		<< "Opened with access rights: " << p.access_rights() << '\n'
+		<< "Active: " << p.is_active() << '\n'
+		<< "File path: " << p.file_path() << '\n'
+		<< "Is 32bit: " << p.is_32bit() << '\n'
+		<< "Is 64bit: " << p.is_64bit() << '\n'
+		<< "Being debugged: " << p.is_being_debugged() << "\n\n";
 }
 
 int main()
 {
-	// Contains access rights for various windows objects
-	using access_rights = distant::access_rights::process;
-	using process = distant::process<>;
+	std::wcout << std::boolalpha;
+
+	// Open the current process with all_access (default template parameter is all_access), 
+	// then display some information.
+	display_info(distant::current_process<information_access>());
+
+	// Open one of the chrome processes.
+	distant::process<information_access> chrome{15412};
+
+	if (chrome)
+		display_info(chrome);
+	else
+		std::cout << distant::last_error() << '\n';
+
+	// Attempt to open a system process with the above process access rights.
+	distant::process<information_access> system{4};
 	
-	// Request the following process access rights
-	constexpr auto access = 
-		access_rights::query_limited_information |
-		access_rights::synchronize		 |
-		access_rights::vm_read;
-
-	// Open a system process (which has for example, process id 9148),
-	// with the above process access rights.
-	distant::process<access> system_proc(9148);
-	
-	// Open the current process with all_access (default template parameter is all_access).
-	auto current = process::get_current();
-
-	std::cout << "Current Process:" << std::endl;
-	display_info(current);
-
-	std::cout << "System Process:" << std::endl;
-	display_info(system_proc);
+	if (!system)
+	{
+		std::cout << "Failed to open system process with pid 4.\n";
+		std::cout << distant::last_error() << '\n';
+	}
 	return 0;
 }
 
 ```
 
-Note that the number of handles actively owned by the current process above will vary. Moreover, 
-access to process with pid 9148 will not always return a valid process object.
+Note that the information displayed above will vary. It is important to check that the constructed process 
+object is valid before performing any further operations with it.
 An example of output of the above program is:
 
 ```
-Current Process:
-Process 9640
-State: Active
-Active Handles: 13
-File path: C:\Users\Owner\Documents\Visual Studio 2017\Projects\distant dev\Release\distant dev.exe
-Last error: The operation completed successfully.
+Process (14428) distant dev.exe
+Opened with access rights: all_access
+Active: true
+File path: C:\Users\Owner\Documents\Visual Studio 2017\Projects\distant dev\x64\Debug\distant dev.exe
+Is 32bit: false
+Is 64bit: true
+Being debugged: true
 
-System Process:
-An error occured while opening process 9148
-Last Error: Access is denied.
+Process (15412) chrome.exe
+Opened with access rights: vm_read | query_limited_information | synchronize
+Active: true
+File path: C:\Program Files (x86)\Google\Chrome\Application\chrome.exe
+Is 32bit: false
+Is 64bit: true
+Being debugged: false
+
+Failed to open system process with pid 4.
+windows_error (5): Access is denied.
+Press any key to continue . . .
 ```
 # System Snapshots
 
@@ -129,61 +127,59 @@ range.
 // When iterating through each process, attempt to open the process with access_rights::all_access.
 using process = distant::process<>;
 
-// Create a system snapshot of all currently active processes
-distant::system::snapshot<process> snapshot;
-
-if (snapshot)
+try
 {
+	// Create a system snapshot of all currently active processes
+	distant::snapshot<process> snapshot;
+
 	// Display information about each proccess
 	// Note: display_info is as defined as in the first example above
-	// display_info also performs the correct error handling
-	for (auto proc : snapshot)
+	for (const auto proc : snapshot)
 		display_info(proc);
 }
-else
-{
-	std::cout << "Unable to create system::snapshot: " << snapshot.get_last_error() << std::endl;
-	return;
+catch (std::system_error& e)
+{ 
+	// distant::snapshot will throw distant::last_error() when construction fails.
+	std::cout << e.what() << " " << e.code() << '\n';
 }
 	
 ```
 # Search By Executable Name
 
 ```c++
-
 auto find_process(const std::string& name)
 {
 	using process = distant::process<>;
-	distant::system::snapshot<process> snapshot;
+	distant::snapshot<process> snapshot;
 
-	if (snapshot)
+	auto it = std::find_if(snapshot.begin(), snapshot.end(), [&](const auto& p)
 	{
-		auto it = std::find_if(snapshot.begin(), snapshot.end(), [&](const auto& p)
-		{
-			return p.name() == name;
-		});
+		return p.name() == name;
+	});
 
-		if (it != snapshot.end()) return *it;
-	}
+	if (it != snapshot.end()) return *it;
 
 	return process{};
 }
 
-int main()
+try
 {
-	auto found = find_process("Explorer.exe");
+	const auto found = find_process("Explorer.exe");
 	
 	if (found)
 	{
 		std::cout << "Explorer.exe found!\n";
 		display_info(found);
 	}
+	
 	else
 		std::cout << "Unable to find process with that name\n";
-		
-	return 0;
 }
-
+catch (std::system_error& e)
+{
+	// distant::snapshot will throw distant::last_error() when construction fails.
+	std::cout << e.what() << " " << e.code() << '\n';
+}
 ```
 
 
