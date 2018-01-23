@@ -192,23 +192,40 @@ the access token functions work as expected.
 ```c++
 std::cout << "Process count before debug privileges = " << distant::snapshot<process<>>{}.get().size() << '\n';
 
-// Get the primary access token of the current process.
-auto token = distant::get_access_token();
-
-// Determine if the current process has debug privileges
-if (!token.has_privilege(distant::privileges::debug))
 {
-	// If not, then attempt to enable them
-	if (token.set_privilege(distant::privileges::debug))
-		std::cout << "Debug privileges successfully granted!\n";
-	else // Failure
-		std::cerr 
-			<< "Unable to acquire debug privileges.\n"
-			<< distant::last_error() << '\n';
+	// Get the primary access token of the current process.
+	auto token = distant::get_access_token();
+
+	// Determine if the current process has debug privileges
+	if (!token.has_privilege(distant::privileges::debug))
+	{
+		// If not, then attempt to enable them
+		if (token.set_privilege(distant::privileges::debug))
+			std::cout << "Debug privileges successfully granted!\n";
+		else // Failure
+			std::cerr 
+				<< "Unable to acquire debug privileges.\n"
+				<< distant::last_error() << '\n';
+	}
 }
 
 std::cout << "Process count after enabling debug privileges = " << distant::snapshot<process<>>{}.get().size() << '\n';
 ```
+
+```c++
+// find_process is as defined above.
+const auto taskmgr = find_process("Taskmgr.exe");
+
+// Check if we were denied access to taskmgr.
+if (taskmgr)
+{
+	// Display whether or not taskmgr has debug privileges enabled.
+	auto token = distant::get_access_token(taskmgr);
+	std::cout << "Process " << taskmgr.filename() << " debug privileges: " << token.has_privilege(distant::privileges::debug);
+}
+```
+
+Usually taskmgr.exe does indeed have debug privileges enabled, so assuming a handle was obtained to taskmgr, token.has_privilege(distant::privileges::debug) would evaluate to true.
 
 # On Potential Code Bloat of distant::process<uint>
 
