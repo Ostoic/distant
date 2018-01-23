@@ -221,7 +221,9 @@ if (taskmgr)
 {
 	// Display whether or not taskmgr has debug privileges enabled.
 	auto token = distant::get_access_token(taskmgr);
-	std::cout << "Process " << taskmgr.filename() << " debug privileges: " << token.has_privilege(distant::privileges::debug);
+	std::cout 
+		<< "Process " << taskmgr.filename() 
+		<< " debug privileges: " << token.has_privilege(distant::privileges::debug);
 }
 ```
 
