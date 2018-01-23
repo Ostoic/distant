@@ -106,7 +106,7 @@ namespace kernel  {
 		process_base(process_base&& other) noexcept; // move constructible
 		process_base& operator =(process_base&& other) noexcept; // move assignable
 
-		explicit process_base(handle<process_base>&& handle) noexcept;
+		explicit process_base(handle<process_base>&& handle, access_rights_t) noexcept;
 
 	private:
 		using expose = distant::detail::attorney::to_handle<process_base>;

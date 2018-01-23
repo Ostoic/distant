@@ -54,11 +54,5 @@ namespace distant::system {
 
 		return output;
 	}
-/*
-	template <class O, class C>
-	operator typename snapshot<O>::output_type() const
-	{
-		return this->get();
-	}*/
 
 } // end namespace distant::system

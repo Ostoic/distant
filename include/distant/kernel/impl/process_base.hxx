@@ -195,9 +195,10 @@ namespace distant::kernel {
 		, m_access_rights(std::move(other.m_access_rights)) {} 
 	// XXX Choose weakest access rights or produce error about incompatible access rights
 
-	inline process_base::process_base(handle<process_base>&& h) noexcept
+	inline process_base::process_base(handle<process_base>&& h, access_rights_t access) noexcept
 		: object(std::move(reinterpret_cast<handle<object>&>(h)))
-		, m_id(boost::winapi::GetProcessId(m_handle.native_handle())) {}
+		, m_id(boost::winapi::GetProcessId(m_handle.native_handle())) 
+		, m_access_rights(access) {}
 
 	inline process_base& process_base::operator=(process_base&& other) noexcept
 	{
@@ -223,7 +224,7 @@ namespace distant::kernel {
 	inline process_base current_process() noexcept
 	{
 		// TODO: Static?
-		return process_base{handle<process_base>{boost::winapi::GetCurrentProcess(), access_rights::handle::close_protected}};
+		return process_base{handle<process_base>{boost::winapi::GetCurrentProcess(), access_rights::handle::close_protected}, access_rights::process::all_access};
 	}
 
 } // end namespace distant::kernel::detail
