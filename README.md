@@ -184,7 +184,7 @@ catch (std::system_error& e)
 
 # Access Tokens and Privileges
 
-TODO: Explanation
+TODO: Explanation and output
 
 Displaying the number of processes we have full access to after each access token modification shows whether or not our modification has been successful or not. This is a verification that 
 the access token functions work as expected.
