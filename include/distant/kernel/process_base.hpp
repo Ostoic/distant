@@ -10,12 +10,11 @@ Distributed under the Apache Software License, Version 2.0.
 #include <limits>
 
 #include <string>
-#include <string_view>
 
 //#include <exception>
 
 #include <distant\kernel\object.hpp>
-#include <distant\utility\type_traits.hpp>
+#include <distant\type_traits.hpp>
 
 #include <distant\support\filesystem.hpp>
 

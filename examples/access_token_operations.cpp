@@ -72,6 +72,16 @@ int main()
 	enable_debug_privileges();
 	std::cout << "Process count after enabling debug privileges = " << distant::snapshot<process>{}.get().size() << '\n';
 	remove_debug_privileges();
-	std::cout << "Process count after removing debug privileges = " << distant::snapshot<process>{}.get().size() << '\n';
+	std::cout << "Process count after removing debug privileges = " << distant::snapshot<process>{}.get().size() << "\n\n";
+
+
+	std::cout << "Processes that have debug privileges:\n";
+
+	for (const auto p : distant::snapshot<process>{})
+	{
+		std::wcout
+			<< "Process " << p.id() << ": " << p.filename() << '\n'
+			<< "Has debug privileges: " << distant::get_access_token(p).has_privilege(distant::privileges::debug) << "\n\n";
+	}
 	return 0;
 }

@@ -8,12 +8,7 @@ Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
 */
 
-#include <cstddef>
-#include <string>
-
 #include <distant\kernel\process_base.hpp>
-
-#include <distant\utility\type_traits.hpp>
 
 namespace distant {
 namespace kernel  {

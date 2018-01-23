@@ -11,7 +11,6 @@ Distributed under the Apache Software License, Version 2.0.
 #include <distant\detail\fwd.hpp>
 
 namespace distant {
-namespace utility {
 
 	template <class A, class B>
 	using is_quasiconvertible = 
@@ -21,8 +20,6 @@ namespace utility {
 				std::true_type,				// then return true.
 				std::false_type				// Otherwise return false
 		>;
-
-} // end namespace utility
 
 	// Metafunction for detecting whether a type is a kernel::object
 	template <class T>
@@ -49,6 +46,15 @@ namespace utility {
 		using handle_type = handle<T>;
 		using error_type  = error::windows_error_code;
 		using object_type = T;
+	};
+
+	template <typename Object>
+	struct get_access_rights {};
+
+	template <access_rights::process A>
+	struct get_access_rights<kernel::process<A>>
+	{
+		static constexpr access_rights::process value = A;
 	};
 
 } // end namespace distant

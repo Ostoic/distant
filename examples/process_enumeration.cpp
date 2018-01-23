@@ -20,8 +20,7 @@ int test_distant()
 	int count = 0;
 
 	for (const auto process : processList)
-		if (process)
-			count++;
+		count++;
 
 	return count;
 }

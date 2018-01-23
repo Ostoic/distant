@@ -1,6 +1,6 @@
 #pragma once
 
-#include <distant\utility\type_traits.hpp>
+#include <distant\type_traits.hpp>
 #include <distant\handle.hpp>
 
 #include <distant\security\privilege.hpp>

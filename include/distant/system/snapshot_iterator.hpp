@@ -3,8 +3,6 @@
 #include <boost\iterator\iterator_facade.hpp>
 #include <boost\winapi\basic_types.hpp>
 
-#include <distant\utility\type_traits.hpp>
-
 #include <distant\system\detail\dispatch.hpp>
 #include <distant\detail\attorney.hpp>
 #include <distant\detail\fwd.hpp>
@@ -38,6 +36,11 @@ namespace distant::system {
 	private:
 		friend class boost::iterator_core_access;
 
+		bool current_valid();
+
+		bool next();
+
+		// interface for boost::iterator_facade
 		void increment();
 
 		KernelObject dereference() const;
@@ -45,9 +48,7 @@ namespace distant::system {
 		bool equal(const snapshot_iterator& other) const;
 
 	private: // data
-		using expose = distant::detail::attorney::to_handle<snapshot_iterator>;
-
-		std::size_t m_index;
+		boost::winapi::HANDLE_ m_object_handle;
 		boost::winapi::HANDLE_ m_native_snap;
 
 		/// ToolHelp entry type
