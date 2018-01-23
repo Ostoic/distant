@@ -182,6 +182,33 @@ catch (std::system_error& e)
 }
 ```
 
+# Access Tokens and Privileges
+
+TODO: Explanation
+
+Displaying the number of processes we have full access to after each access token modification shows whether or not our modification has been successful or not. This is a verification that 
+the access token functions work as expected.
+
+```c++
+std::cout << "Process count before debug privileges = " << distant::snapshot<process<>>{}.get().size() << '\n';
+
+// Get the primary access token of the current process.
+auto token = distant::get_access_token();
+
+// Determine if the current process has debug privileges
+if (!token.has_privilege(distant::privileges::debug))
+{
+	// If not, then attempt to enable them
+	if (token.set_privilege(distant::privileges::debug))
+		std::cout << "Debug privileges successfully granted!\n";
+	else // Failure
+		std::cerr 
+			<< "Unable to acquire debug privileges.\n"
+			<< distant::last_error() << '\n';
+}
+
+std::cout << "Process count after enabling debug privileges = " << distant::snapshot<process<>>{}.get().size() << '\n';
+```
 
 # On Potential Code Bloat of distant::process<uint>
 
