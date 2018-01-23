@@ -118,6 +118,14 @@ namespace distant::kernel {
 
 	inline bool process_base::is_zombie() const
 	{
+		/* Use of GetProcessVersion:
+		** I ran into a bug where OpenProcess would return a "valid" handle that did not refer to any process.
+		** It was apparent that no such process existed because under task manager/procmon, no such id was
+		** listed. I noticed that GetProcessVersion would perform some sort of integrity check on the process
+		** id, which seemed to be consistent with processes on the manager. Indeed, the process handles I was
+		** getting coincided with those from using the standard ToolHelp functions.
+		*/
+
 #pragma warning(push)
 #pragma warning(disable:4267)
 		return this->get_handle() != nullptr && boost::winapi::GetProcessVersion(m_id) == 0;
@@ -149,14 +157,6 @@ namespace distant::kernel {
 //public:
 	inline bool process_base::valid() const noexcept
 	{
-		/* Use of GetProcessVersion:
-		** I ran into a bug where OpenProcess would return a "valid" handle that did not refer to any process.
-		** It was apparent that no such process existed because under task manager/procmon, no such id was
-		** listed. I noticed that GetProcessVersion would perform some sort of integrity check on the process
-		** id, which seemed to be consistent with processes on the manager. Indeed, the process handles I was
-		** getting coincided with those from using the standard ToolHelp functions.
-		*/
-
 		return
 			base_type::valid() && 
 			!this->is_zombie() && 
@@ -167,21 +167,19 @@ namespace distant::kernel {
 	// Process ctors and dtor  //
 	//=========================//
 
-	// Note: We forbid the compiler from inlining the ctors to reduce code bloat
+	// Note: We consider forbidding the compiler from inlining the ctors to reduce code bloat
 	// Upon compiling in release mode with the Visual Studio 2017 compiler,
-	// the process_base::ctor would get inlined, but the compiler would create copies
+	// the process_base::{ctor} would get inlined, but the compiler would create copies
 	// of the same ctor kernel::process code. When we forbid inlining for the process_base,
 	// we observe only calls to process_base::ctor, meaning the kernel::process ctors are 
 	// completely optimized out.
 
 	// Empty initialize process
-	FORBID_INLINE 
 	inline process_base::process_base() noexcept
 		: base_type()
 		, m_id(std::numeric_limits<std::size_t>::infinity())
 		, m_access_rights() {}
 
-	FORBID_INLINE 
 	inline process_base::process_base(std::size_t id, access_rights_t access) noexcept
 		: base_type(this->open(id, access))
 		, m_id(id)
@@ -191,7 +189,6 @@ namespace distant::kernel {
 			m_error.get_last();
 	}
 
-	FORBID_INLINE 
 	inline process_base::process_base(process_base&& other) noexcept
 		: base_type(std::move(other))
 		, m_id(std::move(other.m_id))
@@ -202,7 +199,6 @@ namespace distant::kernel {
 		: object(std::move(reinterpret_cast<handle<object>&>(h)))
 		, m_id(boost::winapi::GetProcessId(m_handle.native_handle())) {}
 
-	FORBID_INLINE 
 	inline process_base& process_base::operator=(process_base&& other) noexcept
 	{
 		base_type::operator=(std::move(other));
@@ -212,23 +208,22 @@ namespace distant::kernel {
 	}
 
 //free:
-	inline FORBID_INLINE bool operator ==(const process_base& lhs, const process_base& rhs) noexcept
+	inline bool operator ==(const process_base& lhs, const process_base& rhs) noexcept
 	{
 		return /*lhs.m_handle == rhs.m_handle &&*/
 			lhs.m_id == rhs.m_id;
 		//lhs.m_access == rhs.m_access;
 	}
 
-	inline FORBID_INLINE bool operator !=(const process_base& lhs, const process_base& rhs) noexcept
+	inline bool operator !=(const process_base& lhs, const process_base& rhs) noexcept
 	{
 		return !operator==(lhs, rhs);
 	}
 
-	inline process_base
-	current_process() noexcept
+	inline process_base current_process() noexcept
 	{
-		const auto currentHandle = boost::winapi::GetCurrentProcess();
-		return process_base(handle<process_base>(currentHandle, access_rights::handle::close_protected));
+		// TODO: Static?
+		return process_base{handle<process_base>{boost::winapi::GetCurrentProcess(), access_rights::handle::close_protected}};
 	}
 
 } // end namespace distant::kernel::detail

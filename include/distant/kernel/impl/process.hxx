@@ -154,7 +154,7 @@ namespace distant::kernel {
 	template <access_rights::process T = access_rights::process::all_access>
 	process<T> current_process() noexcept
 	{
-		return reinterpret_cast<process<T>&&>(current_process());
+		return std::move(reinterpret_cast<process<T>&>(kernel::current_process()));
 	}
 
 

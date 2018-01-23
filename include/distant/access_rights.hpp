@@ -125,4 +125,7 @@ constexpr bool check_permission(access_rights::token given, access_rights::token
 constexpr bool check_permission(access_rights::standard given, access_rights::standard check) noexcept
 { return (given & check) == check; }
 
+using process_rights = access_rights::process;
+using token_rights = access_rights::token;
+
 } // end namespace distant

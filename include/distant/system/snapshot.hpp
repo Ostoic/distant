@@ -56,6 +56,9 @@ namespace system  {
 	};
 
 } // end namespace system
+
+using system::snapshot;
+
 } // end namespace distant
 
 #include <distant\system\impl\snapshot.hxx>

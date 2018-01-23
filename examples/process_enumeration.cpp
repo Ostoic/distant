@@ -1,5 +1,4 @@
 // distance dev.cpp : Defines the entry point for the console application.
-#include "targetver.h"
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -10,33 +9,9 @@
 #define NOMINMAX
 
 #include <distant.hpp>
-#include <distant\kernel\securable.hpp>
-#include <distant\security\access_token.hpp>
-
-#include <Stopwatch.hpp>
 
 using access_rights = distant::access_rights::process;
 using token_rights = distant::access_rights::token;
-
-//void request_debug_privileges(const distant::kernel::process_base& process)
-//{
-//	auto token = distant::security::get_access_token<token_rights::adjust_privileges>(process);
-//
-//	if (token)
-//	{
-//		distant::security::privilege debug("SeDebugPrivilege");
-//		debug.attribute = distant::security::privilege::attributes::enabled;
-//
-//		token.set_privilege(debug);
-//
-//		if (token.is_enabled(debug))
-//			std::wcout << "Debug privileges granted.\n";
-//		else
-//			std::cout << "Debug privilege was not enabled\n";
-//	}
-//	else
-//		std::cout << "Unable to adjust privileges for the given process.\n";
-//}
 
 int test_distant()
 {
@@ -120,8 +95,6 @@ int main()
 {
 	using distant::process;
 
-	const auto current = distant::current_process();
-	std::cout << current.is_emulated() << '\n';
 	std::cout << std::boolalpha;
 
 	try
@@ -155,30 +128,10 @@ int main()
 	{
 		std::cerr << e.what() << " (" << e.code() << ")\n";
 	}
+	catch (std::exception& e)
+	{
+		std::cout << e.what() << '\n';
+	}
 
-	//for (auto process : processList)
-	//{
-	//	// Ensure we attached with sufficient access rights.
-	//	if (process)
-	//	{
-	//		std::cout << "Process " << process.id() << '\n';
-	//		std::wcout << "Name: " << process.filename() << '\n';
-	//		std::wcout << "File Path: " << process.file_path() << '\n';
-	//		std::cout << "Active: " << process.is_active() << '\n';
-
-	//		std::cout << "Requesting debug privileges...\n";
-	//		try
-	//		{
-	//			request_debug_privileges(process);
-	//		}
-	//		catch (std::system_error& e)
-	//		{
-	//			std::cout << "Error requesting debug privileges: " << e.what() << "(" << e.code() << ")\n";
-	//		}
-
-	//		std::cout << '\n';
-	//	}
-	//}
-	//std::cin.get();
 	return 0;
 }

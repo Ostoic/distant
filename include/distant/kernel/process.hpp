@@ -12,7 +12,6 @@ Distributed under the Apache Software License, Version 2.0.
 #include <string>
 
 #include <distant\kernel\process_base.hpp>
-#include <distant\kernel\current_process.hpp>
 
 #include <distant\utility\type_traits.hpp>
 
@@ -102,6 +101,7 @@ namespace kernel  {
 
 } // end namespace kernel
 
+using kernel::process;
 using kernel::current_process;
 
 } // end namespace distant

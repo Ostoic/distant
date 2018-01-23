@@ -17,6 +17,7 @@ Distributed under the Apache Software License, Version 2.0.
 
 namespace distant {
 
+	// TODO: Revise heavily
 	// XX Consider moving into distant::handle as a member/free function.
 	// XX Look at injectory's wait interface.
 	class wait
