@@ -1,6 +1,7 @@
 #pragma once
 
 #include <distant\support\filesystem.hpp>
+#include <distant\system\architectures.hpp>
 
 #include <string>
 
@@ -21,7 +22,7 @@ namespace system  {
 
 	std::size_t number_of_processors() noexcept;
 
-	std::size_t oem_id() noexcept;
+	processor_architecture architecture() noexcept;
 
 #if BOOST_USE_WINAPI_VERSION >= BOOST_WINAPI_VERSION_WIN8
 	bool is_virtual_machine() noexcept;

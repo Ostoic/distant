@@ -70,8 +70,8 @@ namespace distant::system {
 	inline std::size_t number_of_processors() noexcept
 	{ return detail::get_system_info_impl().dwNumberOfProcessors; }
 
-	inline std::size_t oem_id() noexcept
-	{ return detail::get_system_info_impl().dwOemId; }
+	inline processor_architecture architecture() noexcept
+	{ return static_cast<processor_architecture>(detail::get_system_info_impl().wProcessorArchitecture); }
 
 	inline bool is_virtual_machine() noexcept
 	{

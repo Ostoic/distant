@@ -11,12 +11,15 @@ Distributed under the Apache Software License, Version 2.0.
 #endif
 
 #include <distant\config.hpp>
+#include <distant\types.hpp>
 #include <distant\handle.hpp>
-#include <distant\detail\to_string.hpp>
 #include <distant\kernel\process.hpp>
 #include <distant\kernel\access_token.hpp>
 #include <distant\system\snapshot.hpp>
 #include <distant\system\information.hpp>
+
+#include <distant\memory\address.hpp>
+#include <distant\detail\to_string.hpp>
 
 // Plans:
 //		- Implement "virtual" memory allocator that models the standard Allocator concept properly.

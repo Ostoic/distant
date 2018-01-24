@@ -10,11 +10,11 @@ int main()
 		<< "User Name: "	 << distant::system::username() << '\n'
 		<< "Windows path: "  << distant::system::windows_path() << '\n';
 
-	std::cout
+	std::wcout
 		<< "\nHardware info:\n"
 		<< "Page size: "			  << distant::system::page_size() << '\n'
 		<< "Allocation granularity: " << distant::system::allocation_granularity() << '\n'
 		<< "Number of Processors: "   << distant::system::number_of_processors() << '\n'
-		<< "Oem Id: "				  << distant::system::oem_id() << '\n'
+		<< "Processor Architecture: " << distant::system::architecture() << '\n'
 		<< "Processor type: "		  << distant::system::processor_type() << '\n';
 }
