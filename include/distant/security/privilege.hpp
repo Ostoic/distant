@@ -29,15 +29,15 @@ namespace distant::security {
 
 	public: // interface
 		/// Implicility convertible to the TOKEN_PRIVILEGES_ struct.
-		/// \return an instance of TOKEN_PRIVILEGES_ filled with the current privilege's data.
+		/// @return an instance of TOKEN_PRIVILEGES_ filled with the current privilege's data.
 		operator boost::winapi::TOKEN_PRIVILEGES_() const noexcept;
 
 		/// Implicitly convertible to a PRIVILEGE_SET_ object.
-		/// \return an instance of PRIVILEGE_SET_ filled with the current privilege's data.
+		/// @return an instance of PRIVILEGE_SET_ filled with the current privilege's data.
 		operator boost::winapi::PRIVILEGE_SET_() const noexcept;
 
 		/// Get the Locally Unique Identifier associated with the given privilege.
-		/// \return the luid returned by the operating system for the privilege.
+		/// @return the luid returned by the operating system for the privilege.
 		security::luid luid() const noexcept;
 
 		explicit operator bool() const noexcept;

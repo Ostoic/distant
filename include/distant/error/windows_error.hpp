@@ -48,13 +48,13 @@ namespace error   {
 	};
 
 	/// Return the last error local to the executing thread.
-	/// \return the last error code that was set.
+	/// @return the last error code that was set.
 	windows_error_code last_error() noexcept;
 
 	/// Write a windows error to an output stream.
-	/// \param stream the output stream.
-	/// \param error the windows error to write.
-	/// \return the modified output stream.
+	/// @param stream the output stream.
+	/// @param error the windows error to write.
+	/// @return the modified output stream.
 	std::ostream& operator <<(std::ostream& stream, const windows_error_code& error);
 
 } // end namespace error 

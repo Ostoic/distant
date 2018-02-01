@@ -30,11 +30,11 @@ namespace distant::kernel {
 		const handle<KernelObject>& get_handle() const noexcept;
 
 		/// Get a handle to the object.
-		/// \return a type-safe handle to the object.
+		/// @return a type-safe handle to the object.
 		const handle<object>& get_handle() const noexcept;
 
 		/// Check if the object is valid
-		/// \return true if the object is valid.
+		/// @return true if the object is valid.
 		virtual bool valid() const noexcept;
 
 		/// Declare the destructor virtual to prevent slicing.

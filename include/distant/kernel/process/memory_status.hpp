@@ -25,28 +25,28 @@ namespace distant::kernel {
 		explicit memory_status(const process_base& process);
 
 		/// Total amount of memory (kb) committed for the process
-		/// \return the amount of memory in kilobytes.
+		/// @return the amount of memory in kilobytes.
 		std::size_t private_usage() const noexcept;
 
 		/// Largest private usage (kb) over the course its execution
-		/// \return the amount of memory in kilobytes.
+		/// @return the amount of memory in kilobytes.
 		std::size_t peak_private_usage() const noexcept;
 
 		/// The size of memory (kb) occupied by the process in RAM. 
 		/// See: https://en.wikipedia.org/wiki/Resident_set_size
-		/// \return the amount of memory in kilobytes.
+		/// @return the amount of memory in kilobytes.
 		std::size_t working_set() const noexcept;
 
 		/// Largest working set over the course its execution
-		/// \return the amount of memory in KB.
+		/// @return the amount of memory in KB.
 		std::size_t peak_working_set() const noexcept;
 
 		/// Number of page fault errors that have occurred over the course of its execution
-		/// \return the number of page faults.
+		/// @return the number of page faults.
 		std::size_t page_fault_count() const noexcept;
 
 		/// Get number of handles opened in the process
-		/// \return the number of handles
+		/// @return the number of handles
 		std::size_t handle_count() const;
 		
 	private:

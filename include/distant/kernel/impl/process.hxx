@@ -7,7 +7,7 @@ Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
 */
 
-/// \file Implementation header of distant::kernel::process
+/// @file Implementation header of distant::kernel::process
 
 #include <limits>
 

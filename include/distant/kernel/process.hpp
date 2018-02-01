@@ -31,25 +31,25 @@ namespace kernel  {
 		void kill();
 
 		/// Query the process handle to see if it is still active
-		/// \return true if the process is active, and false otherwise
+		/// @return true if the process is active, and false otherwise
 		bool is_active() const;
 
 		/// Test if the process is running under the WOW64 emulator.
 		/// If the process has been compiled to run on 32-bit system and
 		/// is being run on a 64-bit system, it will be emulated.
-		/// \return true if the process is being emulated, and false if not.
+		/// @return true if the process is being emulated, and false if not.
 		bool is_32bit() const;
 
 		/// Test if the process is being run in 64bit.
-		/// \return true if the process is being run in 64bit mode, and false if not.
+		/// @return true if the process is being run in 64bit mode, and false if not.
 		bool is_64bit() const;
 
 		/// Get the executable name of the process
-		/// \return std::wstring containing the executable name of the process
+		/// @return std::wstring containing the executable name of the process
 		std::wstring filename() const;
 
-		/// \brief Get the file path (in WIN32 format) of the process
-		/// \return std::wstring containing the file path of the process
+		/// @brief Get the file path (in WIN32 format) of the process
+		/// @return std::wstring containing the file path of the process
 		filesystem::path file_path() const;
 
 		template <access_rights::process Other_Flag, 
@@ -61,7 +61,7 @@ namespace kernel  {
 		operator const process<Other_Flag>&() const noexcept;
 
 		/// Query the process for memory information 
-		/// \return memory_status object used to query for process information
+		/// @return memory_status object used to query for process information
 		//auto memory_status() const;
 
 		// Return the virtual memory of this process
@@ -90,7 +90,7 @@ namespace kernel  {
 	process<access_flag> launch();
 
 	/// Get the current process.
-	/// \return distant::process_base object containing the current process.
+	/// @return distant::process_base object containing the current process.
 	template <access_rights::process T>
 	process<T> current_process() noexcept;
 

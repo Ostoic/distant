@@ -5,6 +5,7 @@
 namespace distant
 {
 	using dword = boost::winapi::DWORD_;
+	using qword = long long;
 	using uint = unsigned int;
-	using byte = char;
+	using byte = unsigned char;
 }

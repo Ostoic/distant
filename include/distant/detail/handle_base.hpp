@@ -26,13 +26,13 @@ namespace detail  {
 
 	public:
 		/// Construct using native handle.
-		/// \param h the native handle value
-		/// \param flags handle flags 
+		/// @param h the native handle value
+		/// @param flags handle flags 
 		explicit constexpr handle_base(native_type h, flag_type flags = flag_type::inherit, bool closed = false) noexcept;
 
 		/// Construct an invalid handle.
 		/// This allows handles to be comparable with nullptr.
-		/// \param h the nullptr.
+		/// @param h the nullptr.
 		constexpr handle_base(nullptr_t h) noexcept;
 
 		/// Construct invalid handle.
@@ -56,24 +56,24 @@ namespace detail  {
 		
 	public:
 		/// Checks the if the native handle is valid
-		/// \return true if the native_handle is not NULL, and false otherwise
+		/// @return true if the native_handle is not NULL, and false otherwise
 		bool valid() const noexcept;
 
 		/// Check if the handle is close protected
-		/// \return true if the handle cannot be closed, false otherwise
+		/// @return true if the handle cannot be closed, false otherwise
 		bool close_protected() const noexcept;
 
 		// Note: This function is public since handles occasionally need to be closed before the
 		// stack unwind.
 		/// Check if handle's closure has been observed
-		/// \return true if the handle's closure was observed, and false otherwise
+		/// @return true if the handle's closure was observed, and false otherwise
 		bool closed() const noexcept;
 
 		/// Close the handle, if it is valid and its closure wasn't observed
 		void close() noexcept;
 
 		/// Get the value of the native handle
-		/// \return value of the native handle
+		/// @return value of the native handle
 		native_type native_handle() const noexcept;
 
 	protected:
@@ -88,7 +88,7 @@ namespace detail  {
 		void protect() noexcept;
 
 		/// Get the handle's flag type
-		/// \return distant::access_rights::handle flag type
+		/// @return distant::access_rights::handle flag type
 		flag_type flags() const noexcept;
 
 	protected:

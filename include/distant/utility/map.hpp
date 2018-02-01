@@ -25,7 +25,7 @@ namespace meta
 
 		constexpr bool empty() const noexcept;
 
-		constexpr const auto& operator[](const key_type& key) const;
+		constexpr const value_type& operator[](const key_type& key) const;
 
 		constexpr std::size_t count(const key_type& key) const noexcept;
 

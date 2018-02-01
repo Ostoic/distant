@@ -47,50 +47,50 @@ namespace kernel  {
 
 	public: // interface
 		/// Get the file name of the process executable.
-		/// \return string containing the filename.
+		/// @return string containing the filename.
 		std::wstring filename() const;
 
 		/// Get the path to the process executable.
-		/// \return the path.
+		/// @return the path.
 		filesystem::path file_path() const;
 
 		/// Query the process handle to see if it is still active
-		/// \return true if the process is active, false otherwise.
+		/// @return true if the process is active, false otherwise.
 		bool is_active() const;
 
 		/// Test if the process is running under the WOW64 emulator.
 		/// If the process has been compiled to run on 32-bit system and
 		/// is being run on a 64-bit system, it will be emulated.
-		/// \return true if the process is being emulated, and false if not.
+		/// @return true if the process is being emulated, and false if not.
 		bool is_32bit() const;
 
 		/// Test if the process is being run in 64bit.
-		/// \return true if the process is being run in 64bit mode, and false if not.
+		/// @return true if the process is being run in 64bit mode, and false if not.
 		bool is_64bit() const;
 
 		/// Test if the process is being debugged by another process.
-		/// \return true if the process is being debugged, and false if it is not.
+		/// @return true if the process is being debugged, and false if it is not.
 		bool is_being_debugged() const;
 
 		/// Test if the process is a "zombie" process.
 		/// A zombie process in this case is one that is not listed upon process list enumeration,
 		/// but still has an active handle in the operating system.
-		/// \return true if the process is a zombie.
+		/// @return true if the process is a zombie.
 		bool is_zombie() const;
 
 		/// Terminate the process
 		void kill();
 
 		/// Retrieve the process id.
-		/// \return the process id.
+		/// @return the process id.
 		std::size_t id() const noexcept { return m_id; }
 
 		/// Get the access rights that were used to open the current process
-		/// \return process access_rights indicating the level of access we have to the process.
+		/// @return process access_rights indicating the level of access we have to the process.
 		flag_type access_rights() const noexcept { return m_access_rights; }
 		
 		/// Test if the process object is valid
-		/// \return true if the process is valid, false otherwise.
+		/// @return true if the process is valid, false otherwise.
 		bool valid() const noexcept override;
 
 
@@ -99,8 +99,8 @@ namespace kernel  {
 		process_base() noexcept;
 
 		/// Open process by id
-		/// \param id the pid (process id) of the process to open.
-		/// \access the requested access rights to open the process with.
+		/// @param id the pid (process id) of the process to open.
+		/// @param access the requested access rights to open the process with.
 		explicit process_base(std::size_t id, access_rights_t access = access_rights_t::all_access) noexcept;
 
 		process_base(process_base&& other) noexcept; // move constructible
@@ -115,7 +115,7 @@ namespace kernel  {
 		friend bool operator !=(const process_base&, const process_base&) noexcept;
 
 		/// Throw a system_error with the given message if the process is not in a valid state.
-		/// \param message the exception message to pass to system_error.
+		/// @param message the exception message to pass to system_error.
 		void throw_if_invalid(const char* message) const;
 			
 	protected:
@@ -124,7 +124,7 @@ namespace kernel  {
 	}; // end class process
 
 	/// Get the current process.
-	/// \return distant::process_base object containing the current process.
+	/// @return distant::process_base object containing the current process.
 	process_base current_process() noexcept;
 
 } // namespace kernel

@@ -60,7 +60,8 @@ namespace meta
 	}
 
 	template <typename K, typename V, std::size_t N = 5>
-	inline constexpr const auto& map<K, V, N>::operator[](const key_type& key) const
+	inline constexpr const typename map<K, V, N>::value_type& 
+	map<K, V, N>::operator[](const key_type& key) const
 	{
 		return (*this->find(key)).second;
 	}

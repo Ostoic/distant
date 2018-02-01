@@ -1,6 +1,10 @@
 #pragma once
 #include <distant\detail\to_string.hpp>
 
+#include <distant\utility\streams.hpp>
+
+#include <iomanip>
+
 namespace distant::detail
 {
 	using arp = distant::access_rights::process;
@@ -21,6 +25,16 @@ namespace distant::detail
 		std::make_pair(arp::synchronize, "synchronize")
 	);
 
+	using ops = memory::opcode;
+	constexpr auto op_names = meta::make_map(
+		std::make_pair(ops::call_32bit, "call"),
+		std::make_pair(ops::jmp, "jmp"),
+		std::make_pair(ops::nop, "nop"),
+		std::make_pair(ops::push, "push"),
+		std::make_pair(ops::pushad, "pushad")
+		// TODO: Do the rest
+	);
+
 	using archs = distant::system::processor_architecture;
 	constexpr auto arch_names = meta::make_map(
 		std::make_pair(archs::amd64, "amd64"),
@@ -31,13 +45,14 @@ namespace distant::detail
 	);
 }
 
-inline std::ostream& operator<<(std::ostream& stream, distant::access_rights::process access)
+inline std::ostream& operator<<(std::ostream& stream, distant::process_rights access)
 {
 	if (distant::detail::access_rights_names.count(access))
 		stream << distant::detail::access_rights_names[access];
 
 	else
 	{
+		// Loop through the map and check if each access right is set in the given access.
 		for (std::size_t i = 0; i < distant::detail::access_rights_names.size(); ++i)
 		{
 			const auto pair = *(distant::detail::access_rights_names.begin() + i);
@@ -53,7 +68,7 @@ inline std::ostream& operator<<(std::ostream& stream, distant::access_rights::pr
 	return stream;
 }
 
-inline std::wostream& operator<<(std::wostream& stream, distant::access_rights::process access)
+inline std::wostream& operator<<(std::wostream& stream, distant::process_rights access)
 {
 	using ar = distant::access_rights::process;
 
@@ -62,6 +77,7 @@ inline std::wostream& operator<<(std::wostream& stream, distant::access_rights::
 
 	else
 	{
+		// Loop through the map and check if each access right is set in the given access.
 		for (std::size_t i = 0; i < distant::detail::access_rights_names.size(); ++i)
 		{
 			const auto pair = *(distant::detail::access_rights_names.begin() + i);
@@ -90,22 +106,78 @@ inline std::wostream& operator<<(std::wostream& stream, distant::system::process
 	return stream;
 }
 
-inline std::ostream& operator<<(std::ostream& stream, distant::memory::address address)
+inline std::ostream& operator<<(std::ostream& stream, distant::address address)
 {
-	std::ios::fmtflags oldFlags{stream.flags()};
-	stream << std::hex << std::uppercase;
-	stream << "0x" << static_cast<distant::dword>(address);
-	stream << std::dec;
+	const auto oldFlags = stream.flags();
+	stream 
+		<< std::hex << std::uppercase << std::showbase
+		<< std::setfill('0') << std::setw(2 * sizeof(distant::address))
+		<< static_cast<distant::address::address_type>(address)
+		<< std::dec;
+
 	stream.flags(oldFlags);
 	return stream;
 }
 
-inline std::wostream& operator<<(std::wostream& stream, distant::memory::address address)
+inline std::wostream& operator<<(std::wostream& stream, distant::address address)
 {
-	std::ios::fmtflags oldFlags{stream.flags()};
-	stream << std::hex << std::uppercase;
-	stream << "0x" << static_cast<distant::dword>(address);
-	stream << std::dec;
+	const auto oldFlags = stream.flags();
+	stream
+		<< std::hex << std::uppercase << std::showbase
+		<< std::setfill(L'0') << std::setw(2 * sizeof(distant::address))
+		<< static_cast<distant::address::address_type>(address)
+		<< std::dec;
+
+	stream.flags(oldFlags);
+	return stream;
+}
+
+template <std::size_t S, std::size_t C>
+std::ostream& operator<<(std::ostream& stream, const distant::memory::instruction<S, C>& instr)
+{
+	using opcode = distant::memory::opcode;
+	using distant::detail::op_names;
+
+	const auto oldFlags = stream.flags();
+	if (!distant::utility::is_hex(stream))
+	{
+		const opcode op = static_cast<opcode>(instr[0]);
+
+		std::size_t i = (op_names.count(op) > 0) ? 1 : 0;
+
+		if (i > 0)
+			stream << op_names[op];
+
+		for (; i < instr.size(); ++i)
+		{
+			stream << ' ';
+			stream 
+				<< std::hex << "0x" << std::setfill('0') << std::setw(2)
+				<< static_cast<unsigned int>(instr[i]);
+		}
+	}
+	else
+	{
+		for (std::size_t i = 0; i < instr.size(); ++i)
+			stream
+				<< std::showbase << std::setfill('0') << std::setw(2)
+				<< static_cast<unsigned int>(instr[i]) << ' ';
+	}
+
+	stream.flags(oldFlags);
+	return stream;
+}
+
+template <std::size_t S, std::size_t C>
+std::wostream& operator<<(std::wostream& stream, const distant::memory::instruction<S, C>& instr)
+{
+	const auto oldFlags = stream.flags();
+	
+	for (std::size_t i = 0; i < instr.size(); ++i)
+		stream 
+			<< std::showbase << std::hex << std::setfill('0') << std::setw(2)
+			<< static_cast<unsigned int>(instr[i]) << ' ';
+
 	stream.flags(oldFlags);
 	return stream;
 }

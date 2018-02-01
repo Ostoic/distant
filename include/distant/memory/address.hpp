@@ -5,12 +5,20 @@
 #include <type_traits>
 #include <iostream>
 
-namespace distant::memory
-{
+namespace distant{
+namespace memory {
+
+	template <typename Address_t>
 	class address
 	{
+	private:
+		using underlying_type = std::uintptr_t;
+
+	public:
+		using address_type = Address_t;
+
 	public: // interface
-		constexpr explicit operator distant::dword() const noexcept;
+		constexpr explicit operator address_type() const noexcept;
 
 	public: // operators
 		friend constexpr bool operator==(address, address) noexcept;
@@ -25,18 +33,27 @@ namespace distant::memory
 		constexpr address() noexcept;
 		constexpr address(nullptr_t) noexcept;
 
-		template <typename T = std::enable_if_t<std::is_arithmetic<T>::value>>
-		constexpr address(T) noexcept;
+		template <typename T>
+		constexpr address(T x) noexcept;
 
 	private:
-		void* address_;
+		underlying_type address_;
 	};
-}
+
+	template <std::size_t N, typename A>
+	constexpr distant::byte get(address<A>) noexcept;
+
+
+} // namespace memory
+
+using address = memory::address<distant::dword>;
+
+} // namespace distant
 
 namespace std
 {
-	template <>
-	struct hash<distant::memory::address>;
+	template <typename A>
+	struct hash<distant::memory::address<A>>;
 }
 
 // Implementation:
