@@ -17,22 +17,20 @@ namespace distant::memory
 	class instruction;
 }
 
-std::ostream& operator<<(std::ostream& stream, distant::access_rights::process access);
-std::wostream& operator<<(std::wostream& stream, distant::access_rights::process access);
+template <typename Stream = std::enable_if_t<utility::is_output_stream<Stream>, Stream>>
+Stream& operator<<(Stream& stream, distant::access_rights::process access);
 
-std::ostream& operator<<(std::ostream& stream, distant::system::processor_architecture arch);
-std::wostream& operator<<(std::wostream& stream, distant::system::processor_architecture arch);
+template <typename Stream = std::enable_if_t<utility::is_output_stream<Stream>, Stream>>
+Stream& operator<<(std::ostream& stream, distant::system::processor_architecture arch);
 
-std::ostream& operator<<(std::ostream& stream, distant::address);
-std::wostream& operator<<(std::wostream& stream, distant::address);
-
+template <typename Stream = std::enable_if_t<utility::is_output_stream<Stream>, Stream>>
+Stream& operator<<(Stream& stream, distant::address);
 
 /******** Assembler instruction section ********/
-template <std::size_t S, std::size_t C>
-std::ostream& operator<<(std::ostream& stream, const distant::memory::instruction<S, C>& instr);
-
-template <std::size_t S, std::size_t C>
-std::wostream& operator<<(std::wostream& stream, const distant::memory::instruction<S, C>& instr);
+template <typename Stream = std::enable_if_t<utility::is_output_stream<Stream>, Stream>,
+	std::size_t S, std::size_t C
+>
+Stream& operator<<(Stream& stream, const distant::memory::instruction<S, C>& instr);
 
 // TODO: opcode stream output 
 // TODO: Perhaps input as well for all of the above

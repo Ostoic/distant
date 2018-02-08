@@ -22,7 +22,21 @@ namespace memory {
 
 	public: // operators
 		friend constexpr bool operator==(address, address) noexcept;
+		friend constexpr bool operator!=(address, address) noexcept;
 		friend constexpr bool operator>(address, address) noexcept;
+		friend constexpr bool operator>=(address, address) noexcept;
+		friend constexpr bool operator<(address, address) noexcept;
+		friend constexpr bool operator<=(address, address) noexcept;
+
+		friend constexpr bool operator&(address, address) noexcept;
+		friend constexpr bool operator|(address, address) noexcept;
+		friend constexpr bool operator^(address, address) noexcept;
+		friend constexpr bool operator<<(address, address) noexcept;
+		friend constexpr bool operator>>(address, address) noexcept;
+		friend constexpr bool operator+(address, address) noexcept;
+		friend constexpr bool operator-(address, address) noexcept;
+		friend constexpr bool operator*(address, address) noexcept;
+		friend constexpr bool operator/(address, address) noexcept;
 
 		constexpr address& operator +=(address) noexcept;
 		constexpr address& operator -=(address) noexcept;
@@ -34,7 +48,7 @@ namespace memory {
 		constexpr address(nullptr_t) noexcept;
 
 		template <typename T>
-		constexpr address(T x) noexcept;
+		/*explicit*/ constexpr address(T x) noexcept;
 
 	private:
 		underlying_type address_;
@@ -42,7 +56,6 @@ namespace memory {
 
 	template <std::size_t N, typename A>
 	constexpr distant::byte get(address<A>) noexcept;
-
 
 } // namespace memory
 

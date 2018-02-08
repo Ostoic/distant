@@ -4,11 +4,21 @@
 
 namespace distant::utility
 {
-	bool is_hex(const std::ostream&) noexcept;
-	bool is_hex(const std::istream&) noexcept;
+	template <typename Stream>
+	inline constexpr bool is_output_stream = std::is_base_of<std::ostream, Stream>::value || std::is_base_of_v<std::wostream, Stream>::value;
 
-	bool is_dec(const std::ostream&) noexcept;
-	bool is_dec(const std::istream&) noexcept; // TODO
+	template <typename Stream>
+	inline constexpr bool is_input_stream = std::is_base_of<std::istream, Stream>::value || std::is_base_of<std::wistream, Stream>::value;
+
+	template <typename Stream>
+	inline constexpr bool is_stream = std::is_base_of<std::ios_base, Stream>::value;
+
+	template <typename Stream = std::enable_if_t<is_stream<Stream>, Stream>>
+	bool is_hex(const Stream&) noexcept;
+
+	template <typename Stream = std::enable_if_t<is_stream<Stream>, Stream>>
+	bool is_dec(const Stream&) noexcept;
+
 } // namespace distant::utility
 
 // Implementation:

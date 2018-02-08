@@ -5,7 +5,7 @@
 
 #include <iomanip>
 
-namespace distant::detail
+namespace distant::detail::string_maps
 {
 	using arp = distant::access_rights::process;
 	constexpr auto access_rights_names = meta::make_map(
@@ -25,13 +25,64 @@ namespace distant::detail
 		std::make_pair(arp::synchronize, "synchronize")
 	);
 
-	using ops = memory::opcode;
+	using ops = distant::memory::opcode;
 	constexpr auto op_names = meta::make_map(
-		std::make_pair(ops::call_32bit, "call"),
-		std::make_pair(ops::jmp, "jmp"),
+		std::make_pair(ops::call_32bit, "cal"),
+		std::make_pair(ops::call_eax, "call eax"),
+		std::make_pair(ops::call_ebp, "call ebp"),
+		std::make_pair(ops::call_ebx, "call ebx"),
+		std::make_pair(ops::call_ecx, "call ecx"),
+		std::make_pair(ops::call_edi, "call edi"),
+		std::make_pair(ops::call_edx, "call edx"),
+		std::make_pair(ops::call_esi, "call esi"),
+		std::make_pair(ops::call_esp, "call esp"),
+		std::make_pair(ops::jmp_32bit, "jmp"),
+
+		// Move opcodes
+		std::make_pair(ops::mov_eax, "mov eax,"),
+		std::make_pair(ops::mov_ebp, "mov ebp,"),
+		std::make_pair(ops::mov_ebx, "mov ebx,"),
+		std::make_pair(ops::mov_ecx, "mov ecx,"),
+		std::make_pair(ops::mov_edi, "mov edi,"),
+		std::make_pair(ops::mov_edx, "mov edx,"),
+		std::make_pair(ops::mov_esi, "mov esi,"),
+		std::make_pair(ops::mov_esp, "mov esp,"),
+		std::make_pair(ops::mov_eax_ptr, "mov eax, dword ptr:"),
+		std::make_pair(ops::mov_ebp_ptr, "mov ebp, dword ptr:"),
+		std::make_pair(ops::mov_ebx_ptr, "mov ebx, dword ptr:"),
+		std::make_pair(ops::mov_ecx_ptr, "mov ecx, dword ptr:"),
+		std::make_pair(ops::mov_edi_ptr, "mov edi, dword ptr:"),
+		std::make_pair(ops::mov_edx_ptr, "mov edx, dword ptr:"),
+		std::make_pair(ops::mov_esi_ptr, "mov esi, dword ptr:"),
+		std::make_pair(ops::mov_esp_ptr, "mov esp, dword ptr:"),
+
+		// No operation
 		std::make_pair(ops::nop, "nop"),
+
+		// Push opcodes
 		std::make_pair(ops::push, "push"),
-		std::make_pair(ops::pushad, "pushad")
+		std::make_pair(ops::push_eax, "push eax"),
+		std::make_pair(ops::push_ebp, "push ebp"),
+		std::make_pair(ops::push_ebx, "push ebx"),
+		std::make_pair(ops::push_ecx, "push ecx"),
+		std::make_pair(ops::push_edi, "push edi"),
+		std::make_pair(ops::push_edx, "push edx"),
+		std::make_pair(ops::push_esi, "push esi"),
+		std::make_pair(ops::push_esp, "push esp"),
+		std::make_pair(ops::pushad, "pushad"),
+		std::make_pair(ops::pushfd, "pushfd"),
+
+		// Pop opcodes
+		std::make_pair(ops::pop_eax, "pop eax"),
+		std::make_pair(ops::pop_ebp, "pop ebp"),
+		std::make_pair(ops::pop_ebx, "pop ebx"),
+		std::make_pair(ops::pop_ecx, "pop ecx"),
+		std::make_pair(ops::pop_edi, "pop edi"),
+		std::make_pair(ops::pop_edx, "pop edx"),
+		std::make_pair(ops::pop_esi, "pop esi"),
+		std::make_pair(ops::pop_esp, "pop esp"),
+		std::make_pair(ops::popad, "popad"),
+		std::make_pair(ops::popfd, "popfd")
 		// TODO: Do the rest
 	);
 
@@ -45,47 +96,26 @@ namespace distant::detail
 	);
 }
 
-inline std::ostream& operator<<(std::ostream& stream, distant::process_rights access)
+template <typename Stream>
+inline Stream& operator<<(Stream& stream, distant::process_rights access)
 {
-	if (distant::detail::access_rights_names.count(access))
-		stream << distant::detail::access_rights_names[access];
-
-	else
-	{
-		// Loop through the map and check if each access right is set in the given access.
-		for (std::size_t i = 0; i < distant::detail::access_rights_names.size(); ++i)
-		{
-			const auto pair = *(distant::detail::access_rights_names.begin() + i);
-
-			if (distant::check_permission(access, pair.first))
-			{
-				if (i != distant::detail::access_rights_names.size() - 1)
-					stream << " | ";
-			}
-		}
-	}
-
-	return stream;
-}
-
-inline std::wostream& operator<<(std::wostream& stream, distant::process_rights access)
-{
+	using distant::detail::string_maps::access_rights_names;
 	using ar = distant::access_rights::process;
 
-	if (distant::detail::access_rights_names.count(access))
-		stream << distant::detail::access_rights_names[access];
+	if (access_rights_names.count(access))
+		stream << access_rights_names[access];
 
 	else
 	{
 		// Loop through the map and check if each access right is set in the given access.
-		for (std::size_t i = 0; i < distant::detail::access_rights_names.size(); ++i)
+		for (std::size_t i = 0; i < access_rights_names.size(); ++i)
 		{
-			const auto pair = *(distant::detail::access_rights_names.begin() + i);
+			const auto pair = *(access_rights_names.begin() + i);
 
 			if (distant::check_permission(access, pair.first))
 			{
 				stream << pair.second;
-				if (i != distant::detail::access_rights_names.size() - 1)
+				if (i != access_rights_names.size() - 1)
 					stream << L" | ";
 			}
 		}
@@ -94,89 +124,93 @@ inline std::wostream& operator<<(std::wostream& stream, distant::process_rights 
 	return stream;
 }
 
-inline std::ostream& operator<<(std::ostream& stream, distant::system::processor_architecture arch)
+template <typename Stream>
+inline Stream& operator<<(Stream& stream, distant::system::processor_architecture arch)
 {
-	stream << distant::detail::arch_names[arch];
+	using distant::detail::string_maps::arch_names;
+	stream << arch_names[arch];
 	return stream;
 }
 
-inline std::wostream& operator<<(std::wostream& stream, distant::system::processor_architecture arch)
+template <typename Stream>
+inline Stream& operator<<(Stream& stream, distant::address address)
 {
-	stream << distant::detail::arch_names[arch];
-	return stream;
-}
-
-inline std::ostream& operator<<(std::ostream& stream, distant::address address)
-{
+	using char_t = typename Stream::char_type;
 	const auto oldFlags = stream.flags();
-	stream 
-		<< std::hex << std::uppercase << std::showbase
-		<< std::setfill('0') << std::setw(2 * sizeof(distant::address))
-		<< static_cast<distant::address::address_type>(address)
-		<< std::dec;
 
-	stream.flags(oldFlags);
-	return stream;
-}
-
-inline std::wostream& operator<<(std::wostream& stream, distant::address address)
-{
-	const auto oldFlags = stream.flags();
 	stream
-		<< std::hex << std::uppercase << std::showbase
-		<< std::setfill(L'0') << std::setw(2 * sizeof(distant::address))
-		<< static_cast<distant::address::address_type>(address)
-		<< std::dec;
+		<< std::hex << "0x"
+		<< std::setfill(char_t{'0'}) << std::setw(2 * sizeof(distant::address))
+		<< static_cast<distant::address::address_type>(address);
 
 	stream.flags(oldFlags);
 	return stream;
 }
 
-template <std::size_t S, std::size_t C>
-std::ostream& operator<<(std::ostream& stream, const distant::memory::instruction<S, C>& instr)
+template <typename Stream, std::size_t S, std::size_t C>
+Stream& operator<<(Stream& stream, const distant::memory::instruction<S, C>& instr)
 {
+	using char_t = typename Stream::char_type;
+	static_assert(S >= 2, "[operator<<(instruction)] Invalid instruction length");
+
 	using opcode = distant::memory::opcode;
-	using distant::detail::op_names;
+	using distant::detail::string_maps::op_names;
+
+	const auto write_byte = [&stream](const auto&& byte)
+	{
+		stream << "0x" << std::setw(2) << std::setfill(char_t{'0'})
+			   << static_cast<unsigned int>(byte) << ' ';
+	};
 
 	const auto oldFlags = stream.flags();
-	if (!distant::utility::is_hex(stream))
+
+	std::size_t i = 0;
+
+	// Combine the first two bytes of the instruction to get the opcode.
+	const opcode op = static_cast<opcode>(
+		distant::make_word(instr[0], instr[1])
+	);
+
+	// Test if the opcode is a valid entry among the opcode->name map
+	if (op_names.count(op) != 0)
 	{
-		const opcode op = static_cast<opcode>(instr[0]);
-
-		std::size_t i = (op_names.count(op) > 0) ? 1 : 0;
-
-		if (i > 0)
-			stream << op_names[op];
-
-		for (; i < instr.size(); ++i)
+		// Write the name of the opcode.
+		if (!distant::utility::is_hex(stream))
 		{
-			stream << ' ';
-			stream 
-				<< std::hex << "0x" << std::setfill('0') << std::setw(2)
-				<< static_cast<unsigned int>(instr[i]);
+			stream << op_names[op] << ' ';
+			i = 2;
+		}
+		else if (instr[1] == 0)
+		{
+			write_byte(instr[0]);
+			i = 2;
+		}
+
+		// Write the address as a distant::address to the stream. 
+		const auto write_dword = [&i, &op, &instr](Stream& stream)
+		{
+			stream << distant::address(distant::make_dword(instr[i], instr[i + 1], instr[i + 2], instr[i + 3]));
+			i += 4;
+		};
+		
+		// If the opcode accepts a dword, then the next sizeof(distant::dword) bytes constitute a dword.
+		if (distant::memory::ops::parameter_is_dword(op) && i + 3 < instr.size())
+		{
+			if (distant::memory::ops::is_deref_instruction(op)) {
+				stream << "["; write_dword(stream); stream << "]";
+			}
+			else {
+				write_dword(stream); stream << ' ';
+			}
 		}
 	}
-	else
-	{
-		for (std::size_t i = 0; i < instr.size(); ++i)
-			stream
-				<< std::showbase << std::setfill('0') << std::setw(2)
-				<< static_cast<unsigned int>(instr[i]) << ' ';
-	}
 
-	stream.flags(oldFlags);
-	return stream;
-}
+	// Numbers will be written in hexadecimal.
+	stream << std::hex;
 
-template <std::size_t S, std::size_t C>
-std::wostream& operator<<(std::wostream& stream, const distant::memory::instruction<S, C>& instr)
-{
-	const auto oldFlags = stream.flags();
-	
-	for (std::size_t i = 0; i < instr.size(); ++i)
-		stream 
-			<< std::showbase << std::hex << std::setfill('0') << std::setw(2)
-			<< static_cast<unsigned int>(instr[i]) << ' ';
+	// Write the rest of the bytes to the stream.
+	for (; i < instr.size(); ++i)
+		write_byte(instr[i]);
 
 	stream.flags(oldFlags);
 	return stream;

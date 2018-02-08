@@ -8,7 +8,7 @@
 
 namespace distant::memory
 {
-	constexpr std::size_t address_length = sizeof(distant::address);
+	constexpr std::size_t address_size = sizeof(distant::address);
 
 	template <std::size_t Size = 0, std::size_t InstrCount = 0>
 	class assembler
@@ -68,7 +68,18 @@ namespace distant::memory
 
 	constexpr auto make_instruction(opcode op) noexcept;
 
-	//constexpr auto make_instruction(opcode op) noexcept;
+	/**********************************************************************************************//**
+	 * @brief Access the nth instruction of the given assembler.
+	 *
+	 * @tparam N The index of the assembler to access.   
+	 * @tparam Size The size of the assembler.
+	 * @tparam InstrCount The number of instructions that the assembler can hold.
+	 * @param a An assembler of the given size and instruction count.
+	 *
+	 * @return An instruction of the corresponding size.
+	 **************************************************************************************************/
+	template <std::size_t N, std::size_t Size, std::size_t InstrCount>
+	constexpr auto get(const assembler<Size, InstrCount>& a) noexcept;
 }
 
 // Implementation:

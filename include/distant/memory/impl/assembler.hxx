@@ -1,6 +1,8 @@
 #pragma once
 #include <distant\memory\assembler.hpp>
 
+#include <distant\types.hpp>
+
 namespace distant::memory
 {
 //class assembler:
@@ -41,15 +43,22 @@ namespace distant::memory
 	template <typename... Bytes, typename>
 	constexpr auto make_instruction(opcode op, Bytes&&... bytes) noexcept
 	{
+		using under = std::underlying_type_t<opcode>;
 		using index = std::size_t;
 		using length = std::size_t;
+		using distant::get;
 
-		return assembler<sizeof...(Bytes)+1, 1>{
-			std::array<distant::byte, sizeof...(Bytes)+1>
-				{static_cast<distant::byte>(op), static_cast<distant::byte>(bytes)...},
+		// The opcode can be represented by a byte
+		return assembler<sizeof...(Bytes) + sizeof(opcode), 1> {
+			std::array<distant::byte, sizeof...(Bytes) + 2> {
+				get<0>(static_cast<under>(op)),
+				get<1>(static_cast<under>(op)),
+				static_cast<distant::byte>(bytes)...
+			},
 
-			std::array<std::pair<index, length>, 1>
-				{std::make_pair(0, sizeof...(Bytes)+1)}
+			std::array<std::pair<index, length>, 1> {
+				std::make_pair(0, sizeof...(Bytes) + 2)
+			}
 		};
 	}
 
@@ -57,14 +66,24 @@ namespace distant::memory
 	{
 		using index = std::size_t;
 		using length = std::size_t;
+		using under = std::underlying_type_t<opcode>;
+		using distant::get;
 
-		return assembler<1, 1> {
-			std::array<distant::byte, 1>
-				{static_cast<distant::byte>(op)},
+		return assembler<sizeof(opcode), 1> {
+			std::array<distant::byte, 2> {
+				static_cast<distant::byte>(get<0>(static_cast<under>(op))),
+				static_cast<distant::byte>(get<1>(static_cast<under>(op)))
+			},
 
-			std::array<std::pair<index, length>, 1>
-				{std::make_pair(0, 1)}
+			std::array<std::pair<index, length>, 1> {
+				std::make_pair(0, 2)
+			}
 		};
 	}
 
+	template <std::size_t N, std::size_t Size, std::size_t InstrCount>
+	constexpr auto get(const assembler<Size, InstrCount>& a) noexcept
+	{
+		return *(a.begin() + N);
+	}
 }

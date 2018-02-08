@@ -47,7 +47,7 @@ namespace distant::memory
 //{ctor}
 	template <typename A>
 	inline constexpr address<A>::address() noexcept 
-		: address_(static_cast<underlying_type>(nullptr)) {}
+		: address_(static_cast<underlying_type>(0)) {}
 
 	template <typename A>
 	inline constexpr address<A>::address(nullptr_t) noexcept  
@@ -126,7 +126,7 @@ namespace distant::memory
 	inline constexpr distant::byte get(address<A> addr) noexcept
 	{
 		if constexpr (N >= sizeof(address<A>))
-			static_assert(false, "[distant::get] Byte index out of range");
+			static_assert(false, "[distant::get<address>] Byte index out of range");
 
 		const auto bytes = static_cast<A>(addr);
 		return (bytes >> (8 * N)) & 0xff;
