@@ -1,7 +1,7 @@
 #pragma once
 
 #include <distant\types.hpp>
-#include <distant\utility\constexpr_algorithms.hpp>
+#include <distant\utility\meta\algorithm.hpp>
 
 #include <distant\memory\instruction.hpp>
 #include <distant\memory\assembler_iterator.hpp>

@@ -5,6 +5,18 @@
 
 #include <iomanip>
 
+#define MAKE_NAME_OPCODE_REG(op, reg) std::make_pair(ops::##op##_##reg##, #op " " #reg)
+
+#define MAKE_NAME_OPCODE_ALL(op) MAKE_NAME_OPCODE_REG(op, eax),\
+							   MAKE_NAME_OPCODE_REG(op, ecx),\
+							   MAKE_NAME_OPCODE_REG(op, edx),\
+							   MAKE_NAME_OPCODE_REG(op, ebx),\
+							   MAKE_NAME_OPCODE_REG(op, esp),\
+							   MAKE_NAME_OPCODE_REG(op, ebp),\
+							   MAKE_NAME_OPCODE_REG(op, esi),\
+							   MAKE_NAME_OPCODE_REG(op, edi)
+
+
 namespace distant::detail::string_maps
 {
 	using arp = distant::access_rights::process;
@@ -27,26 +39,14 @@ namespace distant::detail::string_maps
 
 	using ops = distant::memory::opcode;
 	constexpr auto op_names = meta::make_map(
-		std::make_pair(ops::call_32bit, "cal"),
-		std::make_pair(ops::call_eax, "call eax"),
-		std::make_pair(ops::call_ebp, "call ebp"),
-		std::make_pair(ops::call_ebx, "call ebx"),
-		std::make_pair(ops::call_ecx, "call ecx"),
-		std::make_pair(ops::call_edi, "call edi"),
-		std::make_pair(ops::call_edx, "call edx"),
-		std::make_pair(ops::call_esi, "call esi"),
-		std::make_pair(ops::call_esp, "call esp"),
-		std::make_pair(ops::jmp_32bit, "jmp"),
+		std::make_pair(ops::call, "call"),
+		MAKE_NAME_OPCODE_ALL(call),
+
+		std::make_pair(ops::jmp, "jmp"),
+		MAKE_NAME_OPCODE_ALL(jmp),
 
 		// Move opcodes
-		std::make_pair(ops::mov_eax, "mov eax,"),
-		std::make_pair(ops::mov_ebp, "mov ebp,"),
-		std::make_pair(ops::mov_ebx, "mov ebx,"),
-		std::make_pair(ops::mov_ecx, "mov ecx,"),
-		std::make_pair(ops::mov_edi, "mov edi,"),
-		std::make_pair(ops::mov_edx, "mov edx,"),
-		std::make_pair(ops::mov_esi, "mov esi,"),
-		std::make_pair(ops::mov_esp, "mov esp,"),
+		MAKE_NAME_OPCODE_ALL(mov),
 		std::make_pair(ops::mov_eax_ptr, "mov eax, dword ptr:"),
 		std::make_pair(ops::mov_ebp_ptr, "mov ebp, dword ptr:"),
 		std::make_pair(ops::mov_ebx_ptr, "mov ebx, dword ptr:"),
@@ -61,26 +61,12 @@ namespace distant::detail::string_maps
 
 		// Push opcodes
 		std::make_pair(ops::push, "push"),
-		std::make_pair(ops::push_eax, "push eax"),
-		std::make_pair(ops::push_ebp, "push ebp"),
-		std::make_pair(ops::push_ebx, "push ebx"),
-		std::make_pair(ops::push_ecx, "push ecx"),
-		std::make_pair(ops::push_edi, "push edi"),
-		std::make_pair(ops::push_edx, "push edx"),
-		std::make_pair(ops::push_esi, "push esi"),
-		std::make_pair(ops::push_esp, "push esp"),
+		MAKE_NAME_OPCODE_ALL(push),
 		std::make_pair(ops::pushad, "pushad"),
 		std::make_pair(ops::pushfd, "pushfd"),
 
 		// Pop opcodes
-		std::make_pair(ops::pop_eax, "pop eax"),
-		std::make_pair(ops::pop_ebp, "pop ebp"),
-		std::make_pair(ops::pop_ebx, "pop ebx"),
-		std::make_pair(ops::pop_ecx, "pop ecx"),
-		std::make_pair(ops::pop_edi, "pop edi"),
-		std::make_pair(ops::pop_edx, "pop edx"),
-		std::make_pair(ops::pop_esi, "pop esi"),
-		std::make_pair(ops::pop_esp, "pop esp"),
+		MAKE_NAME_OPCODE_ALL(pop),
 		std::make_pair(ops::popad, "popad"),
 		std::make_pair(ops::popfd, "popfd")
 		// TODO: Do the rest

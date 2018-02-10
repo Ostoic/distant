@@ -14,7 +14,7 @@ namespace distant::memory
 		jmp_ebp,
 		jmp_esi,
 		jmp_edi,
-		jmp_32bit = 0xE8,
+		jmp = 0xE8,
 
 		call_eax = 0xFFD0,
 		call_ecx,
@@ -24,7 +24,7 @@ namespace distant::memory
 		call_ebp,
 		call_esi,
 		call_edi,
-		call_32bit = 0xE9,
+		call = 0xE9,
 
 		// mov register, dword
 		mov_eax = 0xB8,
@@ -154,6 +154,4 @@ namespace distant::memory
 
 		nop = 0x90,
 	};
-
-	constexpr std::size_t opcode_size = sizeof(opcode);
 }

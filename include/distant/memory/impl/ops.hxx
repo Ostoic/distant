@@ -3,7 +3,7 @@
 
 #include <distant\memory\opcode.hpp>
 
-#include <distant\utility\map.hpp>
+#include <distant\utility\meta\map.hpp>
 
 #define MAKE_REGISTER_PAIR(op, reg) std::make_pair(x86_register::##reg##, opcode::##op##_##reg##)
 
@@ -45,7 +45,7 @@ namespace distant::memory::ops
 	call(distant::address address) noexcept
 	{
 		using distant::memory::get;
-		return make_instruction(opcode::call_32bit, get<0>(address), get<1>(address), get<2>(address), get<3>(address));
+		return make_instruction(opcode::call, get<0>(address), get<1>(address), get<2>(address), get<3>(address));
 	}
 	
 	constexpr assembler<sizeof(opcode), 1>
@@ -66,7 +66,7 @@ namespace distant::memory::ops
 	{
 		using distant::memory::get;
 
-		return make_instruction(opcode::jmp_32bit, get<0>(address), get<1>(address), get<2>(address), get<3>(address));
+		return make_instruction(opcode::jmp, get<0>(address), get<1>(address), get<2>(address), get<3>(address));
 	}
 	
 	constexpr assembler<sizeof(opcode), 1>
@@ -190,8 +190,8 @@ namespace distant::memory::ops
 	constexpr bool accepts_address(opcode op) noexcept
 	{
 		return is_deref_instruction(op) || (
-			op == opcode::call_32bit ||
-			op == opcode::jmp_32bit
+			op == opcode::call ||
+			op == opcode::jmp
 		);
 	}
 

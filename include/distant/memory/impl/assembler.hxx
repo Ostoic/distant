@@ -35,8 +35,8 @@ namespace distant::memory
 	constexpr assembler<F + S, FI + 1> operator+(const assembler<F, FI>& first, const assembler<S, 1>& second) noexcept
 	{
 		return {
-			utility::append(first.bytes_, second.bytes_),
-			utility::append(first.instruction_ptrs_, utility::make_array(std::make_pair(F, S)))
+			meta::append(first.bytes_, second.bytes_),
+			meta::append(first.instruction_ptrs_, meta::make_array(std::make_pair(F, S)))
 		};
 	}
 

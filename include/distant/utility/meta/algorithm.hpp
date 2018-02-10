@@ -2,7 +2,7 @@
 
 #include <array>
 
-namespace distant::utility
+namespace meta
 {
 	template <typename... Ts>
 	constexpr auto make_array(Ts&&... ts) noexcept;
@@ -17,4 +17,4 @@ namespace distant::utility
 	constexpr std::array<T, Size - 1> truncate(const std::array<T, Size>& array);
 }
 
-#include <distant\utility\impl\constexpr_algorithms.hxx>
+#include "impl\algorithm.hxx"

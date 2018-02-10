@@ -51,7 +51,7 @@ namespace distant
 			static_assert(false, "[distant::make_word] Type of bytes must be convertible to distant::byte");
 
 		return detail::make_impl<distant::word>(
-			utility::make_array((static_cast<distant::byte>(std::forward<Bytes>(bytes)))...)
+			meta::make_array((static_cast<distant::byte>(std::forward<Bytes>(bytes)))...)
 		);
 	}
 
@@ -63,7 +63,7 @@ namespace distant
 			static_assert(false, "[distant::make_dword] Type of bytes must be convertible to distant::byte");
 
 		return detail::make_impl<result_t>(
-			utility::make_array((static_cast<distant::byte>(std::forward<Bytes>(bytes)))...)
+			meta::make_array((static_cast<distant::byte>(std::forward<Bytes>(bytes)))...)
 		);
 	}
 
@@ -75,7 +75,7 @@ namespace distant
 			static_assert(false, "[distant::make_qword] Type of bytes must be convertible to distant::byte");
 
 		return detail::make_impl<result_t>(
-			utility::make_array((static_cast<distant::byte>(std::forward<Bytes>(bytes)))...)
+			meta::make_array((static_cast<distant::byte>(std::forward<Bytes>(bytes)))...)
 		);
 	}
 }
