@@ -1,7 +1,7 @@
 #pragma once
-#include <distant\detail\to_string.hpp>
+#include <distant/detail/to_string.hpp>
 
-#include <distant\utility\streams.hpp>
+#include <distant/utility/streams.hpp>
 
 #include <iomanip>
 
@@ -19,7 +19,7 @@
 
 namespace distant::detail::string_maps
 {
-	using arp = distant::access_rights::process;
+	using arp = access_rights::process;
 	constexpr auto access_rights_names = meta::make_map(
 		std::make_pair(arp::all_access, "all_access"),
 		std::make_pair(arp::set_information, "set_information"),
@@ -37,7 +37,7 @@ namespace distant::detail::string_maps
 		std::make_pair(arp::synchronize, "synchronize")
 	);
 
-	using ops = distant::memory::opcode;
+	using ops = memory::opcode;
 	constexpr auto op_names = meta::make_map(
 		std::make_pair(ops::call, "call"),
 		MAKE_NAME_OPCODE_ALL(call),
@@ -72,7 +72,7 @@ namespace distant::detail::string_maps
 		// TODO: Do the rest
 	);
 
-	using archs = distant::system::processor_architecture;
+	using archs = system::processor_architecture;
 	constexpr auto arch_names = meta::make_map(
 		std::make_pair(archs::amd64, "amd64"),
 		std::make_pair(archs::arm, "arm"),
@@ -83,7 +83,7 @@ namespace distant::detail::string_maps
 }
 
 template <typename Stream>
-inline Stream& operator<<(Stream& stream, distant::process_rights access)
+Stream& operator<<(Stream& stream, distant::process_rights access)
 {
 	using distant::detail::string_maps::access_rights_names;
 	using ar = distant::access_rights::process;
@@ -98,7 +98,7 @@ inline Stream& operator<<(Stream& stream, distant::process_rights access)
 		{
 			const auto pair = *(access_rights_names.begin() + i);
 
-			if (distant::check_permission(access, pair.first))
+			if (check_permission(access, pair.first))
 			{
 				stream << pair.second;
 				if (i != access_rights_names.size() - 1)
@@ -111,7 +111,7 @@ inline Stream& operator<<(Stream& stream, distant::process_rights access)
 }
 
 template <typename Stream>
-inline Stream& operator<<(Stream& stream, distant::system::processor_architecture arch)
+Stream& operator<<(Stream& stream, distant::system::processor_architecture arch)
 {
 	using distant::detail::string_maps::arch_names;
 	stream << arch_names[arch];
@@ -119,22 +119,22 @@ inline Stream& operator<<(Stream& stream, distant::system::processor_architectur
 }
 
 template <typename Stream>
-inline Stream& operator<<(Stream& stream, distant::address address)
+Stream& operator<<(Stream& stream, distant::address address)
 {
 	using char_t = typename Stream::char_type;
-	const auto oldFlags = stream.flags();
+	const auto old_flags = stream.flags();
 
 	stream
 		<< std::hex << "0x"
 		<< std::setfill(char_t{'0'}) << std::setw(2 * sizeof(distant::address))
 		<< static_cast<distant::address::address_type>(address);
 
-	stream.flags(oldFlags);
+	stream.flags(old_flags);
 	return stream;
 }
 
 template <typename Stream, std::size_t S, std::size_t C>
-Stream& operator<<(Stream& stream, const distant::memory::instruction<S, C>& instr)
+Stream& operator<<(Stream& stream, const distant::memory::static_instruction<S, C>& instr)
 {
 	using char_t = typename Stream::char_type;
 	static_assert(S >= 2, "[operator<<(instruction)] Invalid instruction length");
@@ -145,15 +145,15 @@ Stream& operator<<(Stream& stream, const distant::memory::instruction<S, C>& ins
 	const auto write_byte = [&stream](const auto&& byte)
 	{
 		stream << "0x" << std::setw(2) << std::setfill(char_t{'0'})
-			   << static_cast<unsigned int>(byte) << ' ';
+			<< static_cast<unsigned int>(byte) << ' ';
 	};
 
-	const auto oldFlags = stream.flags();
+	const auto old_flags = stream.flags();
 
 	std::size_t i = 0;
 
 	// Combine the first two bytes of the instruction to get the opcode.
-	const opcode op = static_cast<opcode>(
+	const auto op = static_cast<opcode>(
 		distant::make_word(instr[0], instr[1])
 	);
 
@@ -178,15 +178,20 @@ Stream& operator<<(Stream& stream, const distant::memory::instruction<S, C>& ins
 			stream << distant::address(distant::make_dword(instr[i], instr[i + 1], instr[i + 2], instr[i + 3]));
 			i += 4;
 		};
-		
+
 		// If the opcode accepts a dword, then the next sizeof(distant::dword) bytes constitute a dword.
 		if (distant::memory::ops::parameter_is_dword(op) && i + 3 < instr.size())
 		{
-			if (distant::memory::ops::is_deref_instruction(op)) {
-				stream << "["; write_dword(stream); stream << "]";
+			if (distant::memory::ops::is_deref_instruction(op))
+			{
+				stream << "[";
+				write_dword(stream);
+				stream << "]";
 			}
-			else {
-				write_dword(stream); stream << ' ';
+			else
+			{
+				write_dword(stream);
+				stream << ' ';
 			}
 		}
 	}
@@ -198,6 +203,6 @@ Stream& operator<<(Stream& stream, const distant::memory::instruction<S, C>& ins
 	for (; i < instr.size(); ++i)
 		write_byte(instr[i]);
 
-	stream.flags(oldFlags);
+	stream.flags(old_flags);
 	return stream;
 }

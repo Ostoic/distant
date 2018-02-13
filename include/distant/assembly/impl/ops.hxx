@@ -1,9 +1,9 @@
 #pragma once
-#include <distant\memory\ops.hpp>
+#include <distant/assembly/ops.hpp>
 
-#include <distant\memory\opcode.hpp>
+#include <distant/assembly/opcode.hpp>
 
-#include <distant\utility\meta\map.hpp>
+#include <distant/utility/meta/map.hpp>
 
 #define MAKE_REGISTER_PAIR(op, reg) std::make_pair(x86_register::##reg##, opcode::##op##_##reg##)
 
@@ -41,14 +41,14 @@ namespace distant::memory::ops
 		return dword_ptr_t<x86_register>{reg};
 	}
 
-	constexpr assembler<sizeof(opcode) + sizeof(distant::address), 1> 
+	constexpr static_assembler<sizeof(opcode) + sizeof(distant::address), 1> 
 	call(distant::address address) noexcept
 	{
 		using distant::memory::get;
 		return make_instruction(opcode::call, get<0>(address), get<1>(address), get<2>(address), get<3>(address));
 	}
 	
-	constexpr assembler<sizeof(opcode), 1>
+	constexpr static_assembler<sizeof(opcode), 1>
 	call(const x86_register r)
 	{
 		constexpr auto map = meta::make_map(
@@ -61,7 +61,7 @@ namespace distant::memory::ops
 		return make_instruction(map[r]);
 	}
 
-	constexpr assembler<sizeof(opcode) + sizeof(distant::address), 1> 
+	constexpr static_assembler<sizeof(opcode) + sizeof(distant::address), 1> 
 	jmp(distant::address address) noexcept
 	{
 		using distant::memory::get;
@@ -69,7 +69,7 @@ namespace distant::memory::ops
 		return make_instruction(opcode::jmp, get<0>(address), get<1>(address), get<2>(address), get<3>(address));
 	}
 	
-	constexpr assembler<sizeof(opcode), 1>
+	constexpr static_assembler<sizeof(opcode), 1>
 	jmp(x86_register r) noexcept
 	{
 		constexpr auto map = meta::make_map(
@@ -79,7 +79,7 @@ namespace distant::memory::ops
 		return make_instruction(map[r]);
 	}
 
-	constexpr assembler<sizeof(opcode) + sizeof(distant::address), 1>
+	constexpr static_assembler<sizeof(opcode) + sizeof(distant::address), 1>
 	mov(x86_register r, distant::address a) noexcept
 	{
 		using memory::get;
@@ -90,7 +90,7 @@ namespace distant::memory::ops
 		return make_instruction(map[r], get<0>(a), get<1>(a), get<2>(a), get<3>(a));
 	}
 
-	constexpr assembler<sizeof(opcode) + sizeof(distant::address), 1>
+	constexpr static_assembler<sizeof(opcode) + sizeof(distant::address), 1>
 	mov(x86_register r, distant::dword param) noexcept
 	{
 		using distant::get;
@@ -101,7 +101,7 @@ namespace distant::memory::ops
 		return make_instruction(map[r], get<0>(param), get<1>(param), get<2>(param), get<3>(param));
 	}
 
-	constexpr assembler<sizeof(opcode) + sizeof(distant::dword), 1> 
+	constexpr static_assembler<sizeof(opcode) + sizeof(distant::dword), 1> 
 	mov(x86_register r, dword_ptr_t<distant::address> add_ptr)
 	{
 		using distant::get;
@@ -116,11 +116,11 @@ namespace distant::memory::ops
 			std::make_pair(x86_register::esi, opcode::mov_esi_ptr)
 		);
 
-		const auto address = add_ptr.data_;
+		const auto address = add_ptr.data;
 		return make_instruction(map[r], get<0>(address), get<1>(address), get<2>(address), get<3>(address));
 	}
 
-	constexpr assembler<sizeof(opcode), 1> 
+	constexpr static_assembler<sizeof(opcode), 1> 
 	mov(x86_register r, dword_ptr_t<x86_register> reg)
 	{
 		using distant::get;
@@ -135,24 +135,24 @@ namespace distant::memory::ops
 			MAKE_REGISTER_PTR_ALL(edi)
 		);
 
-		const auto pair = std::make_pair(r, reg.data_);
+		const auto pair = std::make_pair(r, reg.data);
 		return make_instruction(map[pair]);
 	}
 
-	constexpr assembler<sizeof(opcode) + sizeof(byte), 1>
+	constexpr static_assembler<sizeof(opcode) + sizeof(byte), 1>
 	push(distant::byte argument) noexcept
 	{
 		return make_instruction(opcode::push, argument);
 	}
 
-	constexpr assembler<sizeof(opcode), 1>
+	constexpr static_assembler<sizeof(opcode), 1>
 	pushad() noexcept
 	{
 		return make_instruction(opcode::pushad);
 	}
 
 	// Pop off the stack into the given register
-	constexpr assembler<sizeof(opcode), 1>
+	constexpr static_assembler<sizeof(opcode), 1>
 	pop(x86_register r) noexcept
 	{
 		constexpr auto map = meta::make_map(
@@ -169,13 +169,13 @@ namespace distant::memory::ops
 		return make_instruction(map[r]);
 	}
 
-	constexpr assembler<sizeof(opcode), 1>
+	constexpr static_assembler<sizeof(opcode), 1>
 	popad() noexcept
 	{
 		return make_instruction(opcode::popad);
 	}
 
-	constexpr assembler<sizeof(opcode), 1>
+	constexpr static_assembler<sizeof(opcode), 1>
 	nop() noexcept
 	{
 		return make_instruction(opcode::nop);

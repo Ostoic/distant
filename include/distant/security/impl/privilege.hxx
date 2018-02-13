@@ -41,7 +41,7 @@ namespace distant::security {
 		return temp;
 	}
 
-	security::luid privilege::luid() const noexcept
+	inline security::luid privilege::luid() const noexcept
 	{
 		if (this->luid_.LowPart == 0 && this->luid_.HighPart == 0)
 		{
@@ -57,7 +57,7 @@ namespace distant::security {
 		return this->luid_;
 	}
 
-	privilege::operator bool() const noexcept
+	inline privilege::operator bool() const noexcept
 	{
 		this->luid();
 		return this->luid_.LowPart != 0 || this->luid_.HighPart != 0;

@@ -1,19 +1,19 @@
 #pragma once
 
-#include <distant\memory\assembler.hpp>
-#include <distant\memory\address.hpp>
-#include <distant\memory\dword_ptr.hpp>
-#include <distant\memory\x86_register.hpp>
+#include <distant/assembly/static_assembler.hpp>
+#include <distant/memory/address.hpp>
+#include <distant/assembly/dword_ptr.hpp>
+#include <distant/assembly/x86_register.hpp>
 
 namespace distant::memory::ops
 {
 	constexpr dword_ptr_t<distant::address> dword_ptr(distant::address) noexcept;
 	constexpr dword_ptr_t<x86_register> dword_ptr(x86_register) noexcept;
 
-	constexpr assembler<sizeof(opcode) + sizeof(distant::address), 1> 
+	constexpr static_assembler<sizeof(opcode) + sizeof(distant::address), 1>
 	call(distant::address) noexcept;
 
-	/**********************************************************************************************//**
+	/**********************************************************************************************/ /**
 	 * @fn constexpr assembler<sizeof(opcode), 1> call(x86_register);
 	 *
 	 * @brief Generate a call assembly instruction that calls the address contained in the given resister.
@@ -22,13 +22,13 @@ namespace distant::memory::ops
 	 * @param r the x86_register call.
 	 * @return An assembler with the given call instruction.
 	 **************************************************************************************************/
-	constexpr assembler<sizeof(opcode), 1>
+	constexpr static_assembler<sizeof(opcode), 1>
 	call(x86_register r);
 
-	constexpr assembler<sizeof(opcode) + sizeof(distant::address), 1>
+	constexpr static_assembler<sizeof(opcode) + sizeof(distant::address), 1>
 	jmp(distant::address a) noexcept;
 
-	/**********************************************************************************************//**
+	/**********************************************************************************************/ /**
 	 * @fn constexpr assembler<sizeof(opcode), 1> jmp(x86_register r) noexcept;
 	 *
 	 * @brief Generate a jmp assembly instruction that jumps to the address contained in 
@@ -38,40 +38,40 @@ namespace distant::memory::ops
 	 *
 	 * @return An assembler with the given jmp instruction.
 	 **************************************************************************************************/
-	constexpr assembler<sizeof(opcode), 1>
+	constexpr static_assembler<sizeof(opcode), 1>
 	jmp(x86_register r) noexcept;
 
-	constexpr assembler<sizeof(opcode) + sizeof(distant::address), 1>
+	constexpr static_assembler<sizeof(opcode) + sizeof(distant::address), 1>
 	mov(x86_register r, distant::address address) noexcept;
 
-	constexpr assembler<sizeof(opcode) + sizeof(distant::dword), 1> 
-	mov(x86_register r, distant::dword param) noexcept;
+	constexpr static_assembler<sizeof(opcode) + sizeof(dword), 1>
+	mov(x86_register r, dword param) noexcept;
 
-	constexpr assembler<sizeof(opcode) + sizeof(distant::dword), 1> 
+	constexpr static_assembler<sizeof(opcode) + sizeof(dword), 1>
 	mov(x86_register r, dword_ptr_t<distant::address> address);
 
-	constexpr assembler<sizeof(opcode), 1> 
+	constexpr static_assembler<sizeof(opcode), 1>
 	mov(x86_register r, dword_ptr_t<x86_register> rptr);
 
-	constexpr assembler<sizeof(opcode) + sizeof(byte), 1> 
-	push(distant::byte b) noexcept;
+	constexpr static_assembler<sizeof(opcode) + sizeof(byte), 1>
+	push(byte b) noexcept;
 
 	// TODO: Should dispatch to corresponding opcode based on the given register.
 	// Push from the given register onto the stack.
-	constexpr assembler<sizeof(opcode), 1> 
+	constexpr static_assembler<sizeof(opcode), 1>
 	push(x86_register r) noexcept;
 
-	constexpr assembler<sizeof(opcode), 1> 
+	constexpr static_assembler<sizeof(opcode), 1>
 	pushad() noexcept;
 
 	// Pop off the stack into the given register
-	constexpr assembler<sizeof(opcode), 1>
+	constexpr static_assembler<sizeof(opcode), 1>
 	pop(x86_register r) noexcept;
 
-	constexpr assembler<sizeof(opcode), 1> 
+	constexpr static_assembler<sizeof(opcode), 1>
 	popad() noexcept;
 
-	constexpr assembler<sizeof(opcode), 1>
+	constexpr static_assembler<sizeof(opcode), 1>
 	nop() noexcept;
 
 	constexpr bool is_deref_instruction(opcode) noexcept;
@@ -81,4 +81,4 @@ namespace distant::memory::ops
 	constexpr bool parameter_is_dword(opcode op) noexcept;
 }
 
-#include <distant\memory\impl\ops.hxx>
+#include <distant/assembly/impl/ops.hxx>

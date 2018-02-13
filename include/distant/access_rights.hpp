@@ -112,7 +112,6 @@ DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(access_rights::process);
 DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(access_rights::token);
 DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(access_rights::standard);
 
-
 /// Check if we have permission to perform the given action
 constexpr bool check_permission(access_rights::process given, access_rights::process check) noexcept
 { return (given & check) == check; }
