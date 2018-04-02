@@ -90,7 +90,7 @@ namespace distant
 
 		/// @brief Get the current process.
 		/// @return distant::process_base object containing the current process.
-		template <access_rights::process T>
+		template <access_rights::process T = access_rights::process::all_access>
 		process<T> current_process() noexcept;
 	} // end namespace kernel
 

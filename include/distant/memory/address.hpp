@@ -47,6 +47,9 @@ namespace distant
 		public: // {ctor}
 			constexpr address() noexcept;
 			constexpr address(nullptr_t) noexcept;
+
+			template <typename T>
+			constexpr address(T* x) noexcept;
 			constexpr address(address_type x) noexcept;
 
 		private:

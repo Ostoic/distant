@@ -3,6 +3,7 @@
 #include <distant/kernel/fwd.hpp>
 
 #include <distant/process.hpp>
+#include <distant/memory/address.hpp>
 
 namespace distant::memory
 {
@@ -19,7 +20,14 @@ namespace distant::memory
 	private:
 		const process<required_access>* process_;
 	};
-}
+
+	template <typename T, typename AddressT = dword>
+	void write(const process<process_rights::vm_write | process_rights::vm_operation>& proc, address<AddressT> address, T x);
+
+	template <typename T, typename AddressT = dword>
+	T read(const process<process_rights::vm_read>& proc, address<AddressT> address);
+
+} // namespace distant::memory
 
 // Implementation:
 #include <distant/memory/impl/virtual_memory.hxx>

@@ -84,6 +84,13 @@ namespace distant::memory
 		: address() 
 	{}
 
+	template <typename A>
+	template <typename T>
+	constexpr address<A>::address(T* x) noexcept
+		: address(reinterpret_cast<address_type>(x))
+	{}
+
+
 #pragma warning(push)
 #pragma warning(disable:4312)
 	template <typename A>
