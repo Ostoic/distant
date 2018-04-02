@@ -5,7 +5,7 @@
 namespace distant::memory
 {
 	template <typename Signature>
-	class function
+	class virtual_function
 	{
 		
 	};
