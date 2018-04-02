@@ -6,9 +6,9 @@ Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
 */
 
-#include <distant\detail\fwd.hpp>
+#include <distant/detail/fwd.hpp>
 
-#include <boost\winapi\basic_types.hpp>
+#include <boost/winapi/basic_types.hpp>
 
 namespace distant::detail::attorney  {
 

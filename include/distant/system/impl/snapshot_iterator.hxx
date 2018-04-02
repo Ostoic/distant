@@ -1,64 +1,64 @@
 #pragma once
-#include <distant\system\snapshot_iterator.hpp>
+#include <distant/system/snapshot_iterator.hpp>
 
-#include <distant\type_traits.hpp>
+#include <distant/type_traits.hpp>
 
-namespace distant::system {
-
+namespace distant::system
+{
 // class snapshot_iterator <KernelObject>:
 //public:
 	template <typename K>
-	inline snapshot_iterator<K>::snapshot_iterator(const snapshot_type& snapshot, snapshot_end) noexcept
-		: m_native_snap(snapshot.m_handle.native_handle())
-		, m_object_handle(nullptr) {}
+	snapshot_iterator<K>::snapshot_iterator(const snapshot_type& snapshot, snapshot_end) noexcept
+		: native_snap_(snapshot.handle_.native_handle())
+		, object_handle_(nullptr) {}
 
 	template <typename K>
-	inline snapshot_iterator<K>::snapshot_iterator(const snapshot_type& snapshot)
-		: m_native_snap(snapshot.m_handle.native_handle())
-		, m_object_handle(nullptr)
+	snapshot_iterator<K>::snapshot_iterator(const snapshot_type& snapshot)
+		: native_snap_(snapshot.handle_.native_handle())
+		, object_handle_(nullptr)
 	{
 		// Bring the snapshot_entry dispatcher functions into scope
-		namespace snapshot_entry = system::detail::snapshot_entry;
+		namespace snapshot_entry = detail::snapshot_entry;
 
-		m_entry.dwSize = sizeof(entry_type);
-		if (!snapshot_entry::first<K>(m_native_snap, &m_entry))
-			m_object_handle = nullptr;
+		this->entry_.dwSize = sizeof(entry_type);
+		if (!snapshot_entry::first<K>(this->native_snap_, &this->entry_))
+			this->object_handle_ = nullptr;
 
 		if (!this->current_valid())
 			if (!this->next())
-				m_object_handle = nullptr;
+				this->object_handle_ = nullptr;
 	}
 
 	template <typename K>
-	inline snapshot_iterator<K>::snapshot_iterator()
-		: m_native_snap(nullptr)
-		, m_object_handle(nullptr) {}
+	snapshot_iterator<K>::snapshot_iterator()
+		: native_snap_(nullptr)
+		, object_handle_(nullptr) {}
 
 //private:
 	template <typename K>
-	inline bool snapshot_iterator<K>::current_valid()
+	bool snapshot_iterator<K>::current_valid()
 	{
-		namespace snapshot_entry = system::detail::snapshot_entry;
+		namespace snapshot_entry = detail::snapshot_entry;
 
 		// Open a handle to the kernel object
-		m_object_handle = snapshot_entry::open_object<K>(
-			snapshot_entry::get_id<K>(m_entry), 
+		this->object_handle_ = snapshot_entry::open_object<K>(
+			snapshot_entry::get_id<K>(this->entry_),
 			static_cast<boost::winapi::DWORD_>(
 				get_access_rights<process<>>::value));
 
-		CloseHandle(m_object_handle);
+		CloseHandle(this->object_handle_);
 
-		return m_object_handle != nullptr;
+		return this->object_handle_ != nullptr;
 	}
 
 	template <typename K>
-	inline bool snapshot_iterator<K>::next()
+	bool snapshot_iterator<K>::next()
 	{
 		// Bring the snapshot_entry dispatcher function into scope
-		namespace snapshot_entry = system::detail::snapshot_entry;
+		namespace snapshot_entry = detail::snapshot_entry;
 
 		// Continue iterating until we obtain a valid object handle, or until the API call fails.
-		while (snapshot_entry::next<K>(m_native_snap, &m_entry))
+		while (snapshot_entry::next<K>(this->native_snap_, &this->entry_))
 		{
 			// Check if we received a valid handle
 			if (this->current_valid())
@@ -69,26 +69,25 @@ namespace distant::system {
 	}
 
 	template <typename K>
-	inline void snapshot_iterator<K>::increment()
+	void snapshot_iterator<K>::increment()
 	{
 		if (!this->next())
-			this->m_object_handle = nullptr;
+			this->object_handle_ = nullptr;
 	}
 
 	template <typename K>
-	inline K snapshot_iterator<K>::dereference() const
+	K snapshot_iterator<K>::dereference() const
 	{
 		// Bring the snapshot_entry dispatcher function into scope
-		namespace snapshot_entry = system::detail::snapshot_entry;
+		namespace snapshot_entry = detail::snapshot_entry;
 
-		const auto id = snapshot_entry::get_id<K>(m_entry);
+		const auto id = snapshot_entry::get_id<K>(this->entry_);
 		return K{id};
 	}
 
 	template <typename K>
-	inline bool snapshot_iterator<K>::equal(const snapshot_iterator& other) const
+	bool snapshot_iterator<K>::equal(const snapshot_iterator& other) const
 	{
-		return m_object_handle == other.m_object_handle;
+		return this->object_handle_ == other.object_handle_;
 	}
-
 } // end namespace distant::system

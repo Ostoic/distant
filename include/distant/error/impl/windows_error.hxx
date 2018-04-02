@@ -1,5 +1,5 @@
 #pragma once
-#include <distant\error\windows_error.hpp>
+#include <distant/error/windows_error.hpp>
 
 /*!
 @copyright 2017 Shaun Ostoic
@@ -7,15 +7,15 @@ Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
 */
 
-#include <boost\winapi\basic_types.hpp>
-#include <boost\winapi\error_codes.hpp>
-#include <boost\winapi\error_handling.hpp>
-#include <boost\winapi\get_last_error.hpp>
-#include <boost\winapi\local_memory.hpp>
-#include <boost\winapi\limits.hpp>
+#include <boost/winapi/basic_types.hpp>
+#include <boost/winapi/error_codes.hpp>
+#include <boost/winapi/error_handling.hpp>
+#include <boost/winapi/get_last_error.hpp>
+#include <boost/winapi/local_memory.hpp>
+#include <boost/winapi/limits.hpp>
 
-#include <distant\config.hpp>
-#include <distant\support\winapi\last_error.hpp>
+#include <distant/config.hpp>
+#include <distant/support/winapi/last_error.hpp>
 
 namespace distant {
 namespace error   {

@@ -10,7 +10,7 @@ Distributed under the Apache Software License, Version 2.0.
 #include <ostream>
 #include <system_error>
 
-#include <boost\winapi\basic_types.hpp>
+#include <boost/winapi/basic_types.hpp>
 
 namespace distant {
 namespace error   {
@@ -65,4 +65,4 @@ using windows_error = error::windows_error_code;
 } // end namespace distant
 
 // Implementation:
-#include <distant\error\impl\windows_error.hxx>
+#include <distant/error/impl/windows_error.hxx>

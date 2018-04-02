@@ -1,8 +1,8 @@
 #pragma once
-#include <distant\system\information.hpp>
+#include <distant/system/information.hpp>
 
-#include <distant\support\winapi\sysinfo.hpp>
-#include <distant\error\windows_error.hpp>
+#include <distant/support/winapi/sysinfo.hpp>
+#include <distant/error/windows_error.hpp>
 
 namespace distant::system {
 
@@ -28,7 +28,7 @@ namespace distant::system {
 		boost::winapi::DWORD_ size = boost::winapi::MAX_COMPUTERNAME_LENGTH_ + 1;
 		boost::winapi::WCHAR_ buffer[boost::winapi::MAX_COMPUTERNAME_LENGTH_ + 1];
 
-		if (!boost::winapi::GetComputerNameW(reinterpret_cast<LPWSTR>(buffer), reinterpret_cast<boost::winapi::LPDWORD_>(&size)))
+		if (!boost::winapi::GetComputerNameW(reinterpret_cast<boost::winapi::LPWSTR_>(buffer), reinterpret_cast<boost::winapi::LPDWORD_>(&size)))
 			throw std::system_error(error::last_error(), "[system::computer_name] Unable to get computer name");
 
 		return {buffer};

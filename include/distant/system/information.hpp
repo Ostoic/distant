@@ -1,12 +1,11 @@
 #pragma once
 
-#include <distant\support\filesystem.hpp>
-#include <distant\system\architectures.hpp>
+#include <distant/support/filesystem.hpp>
+#include <distant/system/architectures.hpp>
 
 #include <string>
 
-namespace distant {
-namespace system  {
+namespace distant::system {
 
 	const filesystem::path& windows_path();
 
@@ -27,9 +26,7 @@ namespace system  {
 #if BOOST_USE_WINAPI_VERSION >= BOOST_WINAPI_VERSION_WIN8
 	bool is_virtual_machine() noexcept;
 #endif // win8 version check
-
-} // end namespace system
-} // end namespace distant
+} // end namespace distant::system
 
 // Implementation:
-#include <distant\system\impl\information.hxx>
+#include <distant/system/impl/information.hxx>

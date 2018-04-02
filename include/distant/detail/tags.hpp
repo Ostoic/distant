@@ -1,6 +1,6 @@
 #pragma once
 
-#include <distant\detail\fwd.hpp>
+#include <distant/detail/fwd.hpp>
 
 namespace distant::detail
 {

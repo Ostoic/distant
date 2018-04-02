@@ -1,30 +1,31 @@
 #pragma once
-#include <distant\kernel\object.hpp>
+#include <distant/kernel/object.hpp>
 
-namespace distant::kernel {
-
+namespace distant::kernel
+{
+//class object
 //public:
 	template <typename KernelObject, typename>
-	inline const handle<KernelObject>& object::get_handle() const noexcept
+	const handle<KernelObject>& object::get_handle() const noexcept
 	{
-		return reinterpret_cast<const handle<KernelObject>&>(m_handle);
+		return reinterpret_cast<const handle<KernelObject>&>(handle_);
 	}
 
 	inline const handle<object>& object::get_handle() const noexcept
 	{
-		return m_handle;
+		return handle_;
 	}
 
 	inline object::object(handle_type&& handle) noexcept
-		: m_handle(std::move(handle)) 
-		, m_error() {}
+		: handle_(std::move(handle))
+		/*, error_()*/ {}
 
-	inline object::object() noexcept 
-		: m_handle(nullptr)
-		, m_error() {}
+	inline object::object() noexcept
+		: handle_(nullptr)
+		/*, error_()*/ {}
 
 	inline bool object::valid() const noexcept
 	{
-		return m_handle.valid();
+		return handle_.valid();
 	}
 } // end namespace distant::kernel

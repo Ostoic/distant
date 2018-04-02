@@ -1,6 +1,6 @@
 #pragma once
 
-#include <distant\types.hpp>
+#include <distant/types.hpp>
 
 namespace distant::memory
 {

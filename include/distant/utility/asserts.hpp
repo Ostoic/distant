@@ -1,6 +1,6 @@
 #pragma once
 
-#include <distant\type_traits.hpp>
+#include <distant/type_traits.hpp>
 
 namespace distant::utility
 {

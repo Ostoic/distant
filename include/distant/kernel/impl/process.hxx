@@ -1,5 +1,5 @@
 #pragma once
-#include <distant\kernel\process.hpp>
+#include <distant/kernel/process.hpp>
 
 /*!
 @copyright 2017 Shaun Ostoic
@@ -11,15 +11,16 @@ Distributed under the Apache Software License, Version 2.0.
 
 #include <limits>
 
-#include <distant\wait.hpp>
+#include <distant/wait.hpp>
 
-#include <distant\support\winapi\privilege.hpp>
+#include <distant/support/winapi/privilege.hpp>
 
-namespace distant::kernel {
-
+namespace distant::kernel
+{
+//class process
 //public:
 	template <access_rights::process T>
-	inline void process<T>::kill()
+	void process<T>::kill()
 	{
 		using access_rights = access_rights::process;
 
@@ -33,7 +34,7 @@ namespace distant::kernel {
 	}
 
 	template <access_rights::process T>
-	inline bool process<T>::is_active() const 
+	bool process<T>::is_active() const
 	{
 		using access_rights = access_rights::process;
 
@@ -47,7 +48,7 @@ namespace distant::kernel {
 	}
 
 	template <access_rights::process T>
-	inline bool process<T>::is_32bit() const
+	bool process<T>::is_32bit() const
 	{
 		using access_rights = access_rights::process;
 
@@ -62,7 +63,7 @@ namespace distant::kernel {
 	}
 
 	template <access_rights::process T>
-	inline bool process<T>::is_64bit() const
+	bool process<T>::is_64bit() const
 	{
 		using access_rights = access_rights::process;
 
@@ -77,7 +78,7 @@ namespace distant::kernel {
 	}
 
 	template <access_rights::process T>
-	inline std::wstring process<T>::filename() const
+	std::wstring process<T>::filename() const
 	{
 		using access_rights = access_rights::process;
 
@@ -92,7 +93,7 @@ namespace distant::kernel {
 	}
 
 	template <access_rights::process T>
-	inline filesystem::path process<T>::file_path() const
+	filesystem::path process<T>::file_path() const
 	{
 		using access_rights = access_rights::process;
 
@@ -102,20 +103,20 @@ namespace distant::kernel {
 			check_permission(T, access_rights::query_limited_information),
 			"Invalid access rights (process::file_path): "
 			"Process must have query_information or query_limited_information access rights");
-		
+
 		return process_base::file_path();
 	}
 
 	template <access_rights::process T>
 	template <access_rights::process Other_Flag, typename>
-	inline process<T>::operator process<Other_Flag>&() noexcept
+	process<T>::operator process<Other_Flag>&() noexcept
 	{
 		return reinterpret_cast<process<Other_Flag>&>(*this);
 	}
 
 	template <access_rights::process T>
 	template <access_rights::process Other_Flag, typename>
-	inline process<T>::operator const process<Other_Flag>&() const noexcept
+	process<T>::operator const process<Other_Flag>&() const noexcept
 	{
 		return reinterpret_cast<const process<Other_Flag>&>(*this);
 	}
@@ -125,37 +126,43 @@ namespace distant::kernel {
 	//=========================//
 	// Empty initialize process
 	template <access_rights::process T>
-	inline constexpr process<T>::process() noexcept
-		: process_base() {}
+	constexpr process<T>::process() noexcept
+		: process_base()
+	{
+	}
 
 	// Open process by id
-	template <access_rights::process T>	
-	inline process<T>::process(std::size_t id) noexcept
-		: process_base(id, T) {}
+	template <access_rights::process T>
+	process<T>::process(std::size_t id) noexcept
+		: process_base(id, T)
+	{
+	}
 
 	// Take possession of process handle. It is ensured to be a convertible process handle
 	// due to encoded type in handle.
 	template <access_rights::process T>
-	inline process<T>::process(handle<process>&& handle) noexcept
-		: process_base(std::move(handle), T){}											
+	process<T>::process(handle<process>&& handle) noexcept
+		: process_base(std::move(handle), T)
+	{
+	}
 
 	template <access_rights::process T>
-	inline process<T>::process(process<T>&& other) noexcept
-		: process_base(std::move(other)) {} 
-	
+	process<T>::process(process<T>&& other) noexcept
+		: process_base(std::move(other))
+	{
+	}
+
 	template <access_rights::process T>
-	inline process<T>& process<T>::operator=(process<T>&& other) noexcept
+	process<T>& process<T>::operator=(process<T>&& other) noexcept
 	{
 		process_base::operator=(std::move(other));
 		return *this;
 	}
 
-//free:
+	//free:
 	template <access_rights::process T = access_rights::process::all_access>
 	process<T> current_process() noexcept
 	{
-		return std::move(reinterpret_cast<process<T>&>(kernel::current_process()));
+		return std::move(reinterpret_cast<process<T>&>(current_process()));
 	}
-
-
 } // end namespace distant::kernel

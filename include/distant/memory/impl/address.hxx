@@ -1,10 +1,11 @@
-#include <distant\memory\address.hpp>
+#pragma once
+#include "../address.hpp"
 
 namespace distant::memory
 {
 //interface:
 	template <typename A>
-	inline constexpr address<A>::operator address_type() const noexcept
+	constexpr address<A>::operator address_type() const noexcept
 	{
 #pragma warning(push)
 #pragma warning(push)
@@ -17,128 +18,157 @@ namespace distant::memory
 
 //operators:
 	template <typename A>
-	inline constexpr address<A>& address<A>::operator +=(address other) noexcept
+	constexpr address<A>& address<A>::operator +=(const address other) noexcept
 	{
 		*this = (static_cast<address_type>(*this) + static_cast<address_type>(other));
 		return *this;
 	}
 
 	template <typename A>
-	inline constexpr address<A>& address<A>::operator -=(address<A> other) noexcept
+	constexpr address<A>& address<A>::operator -=(const address<A> other) noexcept
 	{
 		*this = (static_cast<address_type>(*this) - static_cast<address_type>(other));
 		return *this;
 	}
 
 	template <typename A>
-	inline constexpr address<A>& address<A>::operator *=(address<A> other) noexcept
+	constexpr address<A>& address<A>::operator *=(const address<A> other) noexcept
 	{
 		*this = (static_cast<address_type>(*this) * static_cast<address_type>(other));
 		return *this;
 	}
 
 	template <typename A>
-	inline constexpr address<A>& address<A>::operator /=(address<A> other) noexcept
+	constexpr address<A>& address<A>::operator /=(const address<A> other) noexcept
 	{
 		*this = (static_cast<address_type>(*this) / static_cast<address_type>(other));
 		return *this;
 	}
 
-//{ctor}
 	template <typename A>
-	inline constexpr address<A>::address() noexcept 
-		: address_(static_cast<underlying_type>(0)) {}
+	constexpr address<A>& address<A>::operator &=(const address<A> other) noexcept
+	{
+		*this = (static_cast<address_type>(*this) & static_cast<address_type>(other));
+		return *this;
+	}
 
 	template <typename A>
-	inline constexpr address<A>::address(nullptr_t) noexcept  
-		: address() {}
+	constexpr address<A>& address<A>::operator ^=(const address<A> other) noexcept
+	{
+		*this = (static_cast<address_type>(*this) ^ static_cast<address_type>(other));
+		return *this;
+	}
+
+	template <typename A>
+	constexpr address<A>& address<A>::operator |=(const address<A> other) noexcept
+	{
+		*this = (static_cast<address_type>(*this) | static_cast<address_type>(other));
+		return *this;
+	}
+
+	/*template <typename A>
+	constexpr address<A>& address<A>::operator=(underlying_type x) noexcept
+	{
+		this->address_ = static_cast<underlying_type>(x);
+		return *this;
+	}*/
+
+//{ctor}
+	template <typename A>
+	constexpr address<A>::address() noexcept 
+		: address_(static_cast<address_type>(0))
+	{}
+
+	template <typename A>
+	constexpr address<A>::address(nullptr_t) noexcept  
+		: address() 
+	{}
 
 #pragma warning(push)
 #pragma warning(disable:4312)
 	template <typename A>
-	template <typename T>
-	inline constexpr address<A>::address(T x) noexcept 
-		: address_(static_cast<underlying_type>(x)) {}
+	constexpr address<A>::address(address_type x) noexcept
+		: address_(x) 
+	{}
 #pragma warning(pop)
 
 //free:
-	template <typename A>
-	inline constexpr bool operator==(address<A> lhs, address<A> rhs) noexcept
-	{ return lhs.address_ == rhs.address_; }
+	/*template <typename A>
+	constexpr bool operator==(const address<A> lhs, const address<A> rhs) noexcept
+	{ return static_cast<A>(lhs) == static_cast<A>(rhs); }
 
 	template <typename A>
-	inline constexpr bool operator>(address<A> lhs, address<A> rhs) noexcept
-	{ return lhs.address_ > rhs.address_; }
+	constexpr bool operator<(const address<A> lhs, const address<A> rhs) noexcept
+	{ return static_cast<A>(lhs) < static_cast<A>(rhs); }
 
 	template <typename A>
-	inline constexpr bool operator!=(address<A> lhs, address<A> rhs) noexcept
+	constexpr bool operator!=(const address<A> lhs, const address<A> rhs) noexcept
 	{ return !operator==(lhs, rhs); }
 
 	template <typename A>
-	inline constexpr bool operator<(address<A> lhs, address<A> rhs) noexcept
-	{ return !operator>(lhs, rhs) && !operator==(lhs, rhs); }
+	constexpr bool operator>(const address<A> lhs, const address<A> rhs) noexcept
+	{ return !operator<(lhs, rhs) && !operator==(lhs, rhs); }
 
 	template <typename A>
-	inline constexpr bool operator>=(address<A> lhs, address<A> rhs) noexcept
+	constexpr bool operator>=(const address<A> lhs, const address<A> rhs) noexcept
 	{ return !operator>(lhs, rhs); }
 
 	template <typename A>
-	inline constexpr bool operator<=(address<A> lhs, address<A> rhs) noexcept
+	constexpr bool operator<=(const address<A> lhs, const address<A> rhs) noexcept
 	{ return !operator>(lhs, rhs); }
 
 	template <typename A>
-	inline constexpr address<A> operator&(address<A> lhs, address<A> rhs) noexcept
+	constexpr address<A> operator&(const address<A> lhs, const address<A> rhs) noexcept
 	{ return static_cast<A>(lhs) & static_cast<A>(rhs); }
 
 	template <typename A>
-	inline constexpr address<A> operator|(address<A> lhs, address<A> rhs) noexcept
+	constexpr address<A> operator|(const address<A> lhs, const address<A> rhs) noexcept
 	{ return static_cast<A>(lhs) | static_cast<A>(rhs); }
 
 	template <typename A>
-	inline constexpr address<A> operator^(address<A> lhs, address<A> rhs) noexcept
+	constexpr address<A> operator^(const address<A> lhs, const address<A> rhs) noexcept
 	{ return static_cast<A>(lhs) ^ static_cast<A>(rhs); }
 
 	template <typename A>
-	inline constexpr address<A> operator<<(address<A> lhs, address<A> rhs) noexcept
+	constexpr address<A> operator<<(const address<A> lhs, const address<A> rhs) noexcept
 	{ return static_cast<A>(lhs) << static_cast<A>(rhs); }
 
 	template <typename A>
-	inline constexpr address<A> operator>>(address<A> lhs, address<A> rhs) noexcept
+	constexpr address<A> operator>>(const address<A> lhs, const address<A> rhs) noexcept
 	{ return static_cast<A>(lhs) >> static_cast<A>(rhs); }
 
 	template <typename A>
-	inline constexpr address<A> operator+(address<A> lhs, address<A> rhs) noexcept
+	constexpr address<A> operator+(const address<A> lhs, const address<A> rhs) noexcept
 	{ return static_cast<A>(lhs) + static_cast<A>(rhs); }
 
 	template <typename A>
-	inline constexpr address<A> operator-(address<A> lhs, address<A> rhs) noexcept
+	constexpr address<A> operator-(const address<A> lhs, const address<A> rhs) noexcept
 	{ return static_cast<A>(lhs) - static_cast<A>(rhs); }
 
 	template <typename A>
-	inline constexpr address<A> operator*(address<A> lhs, address<A> rhs) noexcept
-	{ return static_cast<address>(lhs) * static_cast<A>(rhs); }
+	constexpr address<A> operator*(const address<A> lhs, const address<A> rhs) noexcept
+	{ return static_cast<A>(lhs) * static_cast<A>(rhs); }
 
 	template <typename A>
-	inline constexpr address<A> operator/(address<A> lhs, address<A> rhs) noexcept
-	{ return static_cast<A>(lhs) / static_cast<A>(rhs); }
+	constexpr address<A> operator/(const address<A> lhs, const address<A> rhs) noexcept
+	{ return static_cast<A>(lhs) / static_cast<A>(rhs); }*/
 
 	template <std::size_t N, typename A>
-	inline constexpr distant::byte get(address<A> addr) noexcept
+	constexpr distant::byte get(const address<A> addr) noexcept
 	{
-		if constexpr (N >= sizeof(address<A>))
-			static_assert(false, "[distant::get<address>] Byte index out of range");
+		static_assert(N < sizeof(address<A>), "[distant::get<address>] Byte index out of range");
 
 		const auto bytes = static_cast<A>(addr);
 		return (bytes >> (8 * N)) & 0xff;
 	}
-}
+} // namespace distant::memory
 
 namespace std
 {
 	template <typename A>
 	struct hash<distant::memory::address<A>>
 	{
-		using argument_type = distant::memory::address;
+		using argument_type = distant::memory::address<A>;
 		using result_type = std::size_t;
 
 		result_type operator()(const argument_type& address) const noexcept

@@ -1,5 +1,5 @@
 #pragma once
-#include <distant\kernel\process_base.hpp>
+#include <distant/kernel/process_base.hpp>
 
 /*!
 @copyright 2017 Shaun Ostoic
@@ -8,38 +8,35 @@ Distributed under the Apache Software License, Version 2.0.
 */
 
 // Implementation header of distant::kernel::process
-#include <distant\wait.hpp>
+#include <distant/wait.hpp>
 
-#include <distant\support\filesystem.hpp>
-#include <distant\support\winapi\process.hpp>
-#include <distant\support\winapi\debug.hpp>
-#include <distant\support\winapi\wow64.hpp>
+#include <distant/support/filesystem.hpp>
+#include <distant/support/winapi/process.hpp>
+#include <distant/support/winapi/debug.hpp>
+#include <distant/support/winapi/wow64.hpp>
 
-#include <boost\winapi\process.hpp>
-#include <boost\winapi\error_codes.hpp>
-#include <boost\winapi\limits.hpp>
-#include <boost\winapi\get_current_process_id.hpp>
+#include <boost/winapi/limits.hpp>
 
 #define FORBID_INLINE __declspec(noinline)
 
-namespace distant::kernel {
-
-//protected:
-	inline typename process_base::handle_type process_base::open(std::size_t pid, access_rights_t access) noexcept
+namespace distant::kernel
+{
+	//protected:
+	inline process_base::handle_type process_base::open(const std::size_t pid, access_rights_t access) noexcept
 	{
 		using flag_t = std::underlying_type_t<flag_type>;
 
 #pragma warning(push)
 #pragma warning(disable:4267)
-		const auto result = boost::winapi::OpenProcess(static_cast<flag_t>(access), false, pid);
+		const auto result = OpenProcess(static_cast<flag_t>(access), false, pid);
 #pragma warning(pop)
-		return handle_type(result); 
+		return handle_type(result);
 	}
 
 	inline std::size_t process_base::get_pid(const handle_type& h) noexcept
 	{
 		const auto native_handle = expose::native_handle(h);
-		const auto id = boost::winapi::GetProcessId(native_handle);
+		const auto id = GetProcessId(native_handle);
 		return static_cast<std::size_t>(id);
 	}
 
@@ -54,25 +51,20 @@ namespace distant::kernel {
 		this->throw_if_invalid("[process_base::terminate] invalid process");
 
 		const unsigned int exit_code = 0;
-		const auto native_handle = expose::native_handle(m_handle);
+		const auto native_handle = expose::native_handle(handle_);
 
-		if (!boost::winapi::TerminateProcess(native_handle, exit_code))
-			m_error.get_last();
-		else
-			m_error.set_success();
-
-		return;
+		TerminateProcess(native_handle, exit_code);
 	}
 
 	inline bool process_base::is_active() const
 	{
 		this->throw_if_invalid("[process_base::is_active] invalid process");
 
-		wait wait_for;
+		const wait wait_for;
 
 		// Return immediately
 		const auto result = wait_for(*this, 0);
-		m_error.get_last();
+		//error_.get_last();
 
 		return result == wait::state::timeout;
 	}
@@ -84,11 +76,12 @@ namespace distant::kernel {
 		// Note: Using bool here on some systems can corrupt the stack since
 		// sizeof(bool) != sizeof(BOOL).
 		boost::winapi::BOOL_ result = false;
+		boost::winapi::IsWow64Process(handle_.native_handle(), reinterpret_cast<boost::winapi::PBOOL_>(&result));
 
-		if (!boost::winapi::IsWow64Process(m_handle.native_handle(), reinterpret_cast<boost::winapi::PBOOL_>(&result)))
-			m_error.get_last();
+		///*if (!*/))
+		/*	error_.get_last();
 		else
-			m_error.set_success();
+			error_.set_success();*/
 
 		return result;
 	}
@@ -101,17 +94,18 @@ namespace distant::kernel {
 	inline bool process_base::is_being_debugged() const
 	{
 		// If we are considering the current process, use IsDebuggerPresent.
-		if (this->m_id == boost::winapi::GetCurrentProcessId())
-			return boost::winapi::IsDebuggerPresent();
+		if (this->id_ == GetCurrentProcessId())
+			return IsDebuggerPresent();
 
 		this->throw_if_invalid("[process_base::is_being_debugged] invalid process");
 
 		// Otherwise use CheckRemoteDebuggerPresent.
 		boost::winapi::BOOL_ result = false;
-		if (!boost::winapi::CheckRemoteDebuggerPresent(m_handle.native_handle(), &result))
-			m_error.get_last();
-		else
-			m_error.set_success();
+		CheckRemoteDebuggerPresent(handle_.native_handle(), &result);
+		//if (!)
+			//error_.get_last();
+		//else
+			//error_.set_success();
 
 		return result;
 	}
@@ -128,7 +122,7 @@ namespace distant::kernel {
 
 #pragma warning(push)
 #pragma warning(disable:4267)
-		return this->get_handle() != nullptr && boost::winapi::GetProcessVersion(m_id) == 0;
+		return this->get_handle() != nullptr && GetProcessVersion(id_) == 0;
 #pragma warning(pop)
 	}
 
@@ -141,26 +135,25 @@ namespace distant::kernel {
 	{
 		this->throw_if_invalid("[process_base::file_path] invalid process");
 
-		const auto native_handle = expose::native_handle(m_handle);
+		const auto native_handle = expose::native_handle(handle_);
 
 		wchar_t pathBuffer[boost::winapi::MAX_PATH_];
 		boost::winapi::DWORD_ max_path = boost::winapi::MAX_PATH_;
 
 		if (!boost::winapi::query_full_process_image_name(native_handle, 0, pathBuffer, &max_path))
 			throw std::system_error(last_error(), "[process_base::file_path] query_full_process_image_name failed");
-		else
-			m_error.set_success();
+		//error_.set_success();
 
 		return {pathBuffer};
 	}
 
-//public:
+	//public:
 	inline bool process_base::valid() const noexcept
 	{
 		return
-			base_type::valid() && 
-			!this->is_zombie() && 
-			m_id != std::numeric_limits<std::size_t>::infinity();
+			base_type::valid() &&
+			!this->is_zombie() &&
+			id_ != std::numeric_limits<std::size_t>::infinity();
 	}
 
 	//=========================//
@@ -177,42 +170,43 @@ namespace distant::kernel {
 	// Empty initialize process
 	inline process_base::process_base() noexcept
 		: base_type()
-		, m_id(std::numeric_limits<std::size_t>::infinity())
-		, m_access_rights() {}
+		  , id_(std::numeric_limits<std::size_t>::infinity())
+		  , access_rights_()
+	{}
 
-	inline process_base::process_base(std::size_t id, access_rights_t access) noexcept
+	inline process_base::process_base(const std::size_t id, const access_rights_t access) noexcept
 		: base_type(this->open(id, access))
-		, m_id(id)
-		, m_access_rights(access)
-	{ 
-		if (!this->valid())
-			m_error.get_last();
-	}
+		  , id_(id)
+		  , access_rights_(access)
+	{}
 
 	inline process_base::process_base(process_base&& other) noexcept
 		: base_type(std::move(other))
-		, m_id(std::move(other.m_id))
-		, m_access_rights(std::move(other.m_access_rights)) {} 
+		  , id_(std::move(other.id_))
+		  , access_rights_(std::move(other.access_rights_))
+	{}
+
 	// XXX Choose weakest access rights or produce error about incompatible access rights
 
-	inline process_base::process_base(handle<process_base>&& h, access_rights_t access) noexcept
+	inline process_base::process_base(handle<process_base>&& h, const access_rights_t access) noexcept
 		: object(std::move(reinterpret_cast<handle<object>&>(h)))
-		, m_id(boost::winapi::GetProcessId(m_handle.native_handle())) 
-		, m_access_rights(access) {}
+		  , id_(GetProcessId(handle_.native_handle()))
+		  , access_rights_(access)
+	{}
 
 	inline process_base& process_base::operator=(process_base&& other) noexcept
 	{
+		this->access_rights_ = other.access_rights_;
+		this->id_ = other.id_;
 		base_type::operator=(std::move(other));
-		m_access_rights = other.m_access_rights;
-		m_id = other.m_id;
 		return *this;
 	}
 
-//free:
+	//free:
 	inline bool operator ==(const process_base& lhs, const process_base& rhs) noexcept
 	{
-		return /*lhs.m_handle == rhs.m_handle &&*/
-			lhs.m_id == rhs.m_id;
+		return /*lhs.handle_ == rhs.handle_ &&*/
+			lhs.id_ == rhs.id_;
 		//lhs.m_access == rhs.m_access;
 	}
 
@@ -223,8 +217,8 @@ namespace distant::kernel {
 
 	inline process_base current_process() noexcept
 	{
-		// TODO: Static?
-		return process_base{handle<process_base>{boost::winapi::GetCurrentProcess(), access_rights::handle::close_protected}, access_rights::process::all_access};
+		return process_base{
+			handle<process_base>{GetCurrentProcess(), access_rights::handle::close_protected}, access_rights::process::all_access
+		};
 	}
-
 } // end namespace distant::kernel::detail

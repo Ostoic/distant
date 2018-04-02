@@ -1,8 +1,8 @@
 #pragma once
-#include <distant\security\privilege.hpp>
+#include <distant/security/privilege.hpp>
 
-#include <distant\support\winapi\privilege.hpp>
-#include <distant\error\windows_error.hpp>
+#include <distant/support/winapi/privilege.hpp>
+#include <distant/error/windows_error.hpp>
 
 #include <string>
 

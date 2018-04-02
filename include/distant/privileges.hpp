@@ -1,12 +1,9 @@
 #pragma once
 
-#include <distant\security\privileges.hpp>
+#include <distant/config.hpp>
+#include <distant/security/privileges.hpp>
 
 namespace distant
 {
-	namespace privileges = distant::security::privileges;
-	bool request_debug_privileges() noexcept;
+	namespace privileges = security::privileges;
 }
-
-// Implementation:
-#include <distant\impl\privileges.hxx>

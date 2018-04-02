@@ -1,11 +1,11 @@
 #pragma once
 
-#include <distant\access_rights.hpp>
-#include <distant\system\architectures.hpp>
-#include <distant\memory\address.hpp>
-#include <distant\assembly\opcode.hpp>
+#include <distant/access_rights.hpp>
+#include <distant/system/architectures.hpp>
+#include <distant/memory/address.hpp>
+#include <distant/assembly/opcode.hpp>
 
-#include <distant\utility\meta\map.hpp>
+#include <distant/utility/meta/map.hpp>
 
 // forward delcarations
 namespace distant::memory
@@ -29,4 +29,5 @@ template <typename Stream = std::enable_if_t<utility::is_output_stream<Stream>, 
 >
 Stream& operator<<(Stream& stream, const distant::memory::static_instruction<S, C>& instr);
 
-#include <distant\detail\impl\to_string.hxx>
+// Implementation:
+#include <distant/detail/impl/to_string.hxx>

@@ -6,48 +6,49 @@
 namespace distant::system {
 
 	template <typename O>
-	inline snapshot<O>::snapshot() 
-		: m_handle(system::detail::get_snapshot_handle<object_type, snapshot>())
+	snapshot<O>::snapshot() 
+		: handle_(system::detail::get_snapshot_handle<object_type, snapshot>())
 	{
 		static_assert(
 			is_kernel_object<O>::value,
 			"[snapshot::{ctor}] Unable to take system snapshot of nonkernel object");
 
-		if (m_handle == nullptr)
+		if (handle_ == nullptr)
 			throw std::system_error(error::last_error(), "[snapshot::{ctor}] Invalid handle");
 	}
 
 	template <typename O>
-	inline typename snapshot<O>::iterator
+	typename snapshot<O>::iterator
 	snapshot<O>::begin() const
 	{
 		return iterator{*this};
 	}
 
 	template <typename O>
-	inline typename snapshot<O>::iterator
+	typename snapshot<O>::iterator
 	snapshot<O>::end() const
 	{
 		return iterator{*this, iterator::snapshot_end()};
 	}
 
 	template <typename O>
-	template <typename OutContainer>
-	OutContainer snapshot<O>::get() const
+	template <template <typename, typename> class OutContainer>
+	OutContainer<O, std::allocator<O>> snapshot<O>::as() const
 	{
-		OutContainer output;
+		OutContainer<O, std::allocator<O>> output;
 		std::copy_if(this->begin(), this->end(), std::back_inserter(output), [](auto&& element)
 		{
-			return std::move(element);
+			return element.valid();
 		});
+
 		return output;
 	}
 
 	template <typename O>
-	template <typename Predicate, typename OutContainer>
-	OutContainer snapshot<O>:: get(Predicate predicate) const
+	template <template <typename, typename> class OutContainer, typename Predicate>
+	OutContainer<O, std::allocator<O>> snapshot<O>::as(Predicate predicate) const
 	{
-		OutContainer output;
+		OutContainer<O, std::allocator<O>> output;
 		for (auto&& element : *this)
 			if (element && predicate(element))
 				output.push_back(std::move(element));
@@ -58,7 +59,7 @@ namespace distant::system {
 	template <class O, class C>
 	operator typename snapshot<O>::output_type() const
 	{
-		return this->get();
+		return this->as();
 	}*/
 
 } // end namespace distant::system

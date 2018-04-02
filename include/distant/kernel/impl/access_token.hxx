@@ -1,10 +1,10 @@
 #pragma once
-#include <distant\kernel\access_token.hpp>
+#include <distant/kernel/access_token.hpp>
 
-#include <distant\detail\tags.hpp>
-#include <distant\detail\attorney.hpp>
+#include <distant/detail/tags.hpp>
+#include <distant/detail/attorney.hpp>
 
-#include <distant\support\winapi\token.hpp>
+#include <distant/support/winapi/token.hpp>
 
 namespace distant::kernel
 {
@@ -18,23 +18,28 @@ namespace distant::kernel
 
 		template <access_rights::process A>
 		struct dispatcher<process<A>>
-		{ using dispatch = distant::detail::process_tag; };
+		{
+			using dispatch = distant::detail::process_tag;
+		};
 
 		template <>
 		struct dispatcher<process_base>
-		{ using dispatch = distant::detail::process_base_tag; };
+		{
+			using dispatch = distant::detail::process_base_tag;
+		};
 
-		inline HANDLE_ get_token_impl(const kernel::process_base& process, DWORD_ access, const distant::detail::process_base_tag tag) noexcept
+		inline HANDLE_ get_token_impl(const process_base& process, DWORD_ access,
+		                              const distant::detail::process_base_tag tag) noexcept
 		{
 			static_cast<void>(tag);
 			HANDLE_ token = nullptr;
 
-			boost::winapi::OpenProcessToken(process.get_handle().native_handle(), access, &token);
+			OpenProcessToken(process.get_handle().native_handle(), access, &token);
 			return token;
 		}
 
 		template <access_rights::process A>
-		inline HANDLE_ get_token_impl(const kernel::process<A>& process, DWORD_ access, const distant::detail::process_tag tag) noexcept
+		HANDLE_ get_token_impl(const process<A>& process, DWORD_ access, const distant::detail::process_tag tag) noexcept
 		{
 			using access_rights = access_rights::process;
 
@@ -57,17 +62,17 @@ namespace distant::kernel
 		}*/
 	}
 
-//class access_token
-//public:
+	//class access_token
+	//public:
 	template <access_rights::token A, typename K>
-	inline access_token<A, K>::access_token(const K& k) noexcept 
+	access_token<A, K>::access_token(const K& k) noexcept
 		: Base(
 			distant::handle<access_token>{
 				detail::get_token_impl(k, static_cast<boost::winapi::DWORD_>(A), detail::dispatcher<K>::dispatch{})
-		}) {}
+			}) {}
 
 	template <access_rights::token A, typename K>
-	inline bool access_token<A, K>::has_privilege(const security::privilege& p) const noexcept
+	bool access_token<A, K>::has_privilege(const security::privilege& p) const noexcept
 	{
 		if (!p) return false;
 
@@ -79,17 +84,19 @@ namespace distant::kernel
 	}
 
 	template <access_rights::token A, typename K>
-	inline bool access_token<A, K>::set_privilege(const security::privilege& p, security::privilege::attributes attribute) noexcept
+	bool access_token<A, K>::set_privilege(const security::privilege& p,
+	                                       security::privilege::attributes attribute) noexcept
 	{
 		if (!p) return false;
 
 		boost::winapi::TOKEN_PRIVILEGES_ temp = p;
 		temp.Privileges[0].Attributes = static_cast<boost::winapi::DWORD_>(attribute);
 
-		if (boost::winapi::adjust_token_privilege(this->get_handle().native_handle(), false, &temp, sizeof(temp), nullptr, nullptr))
+		if (boost::winapi::adjust_token_privilege(this->get_handle().native_handle(), false, &temp, sizeof(temp), nullptr,
+		                                          nullptr))
 		{
 			// If the privilege was set return success.
-			if (distant::last_error().value() != boost::winapi::ERROR_NOT_ALL_ASSIGNED_)
+			if (last_error().value() != boost::winapi::ERROR_NOT_ALL_ASSIGNED_)
 				return true;
 		}
 
@@ -98,35 +105,34 @@ namespace distant::kernel
 	}
 
 	template <access_rights::token A, typename K>
-	inline bool access_token<A, K>::remove_privilege(const security::privilege& p) noexcept
+	bool access_token<A, K>::remove_privilege(const security::privilege& p) noexcept
 	{
 		return this->set_privilege(p, security::privilege::attributes::removed);
 	}
 
-//free:
-	template <access_rights::token access, typename KernelObject>
-	inline access_token<access, KernelObject> 
+	//free:
+	template <access_rights::token Access, typename KernelObject>
+	access_token<Access, KernelObject>
 	get_access_token(const KernelObject& object) noexcept
 	{
-		return access_token<access, KernelObject>{object};
+		return access_token<Access, KernelObject>{object};
 	}
 
 	template <typename KernelObject>
-	inline access_token<access_rights::token::adjust_privileges | access_rights::token::query, KernelObject> 
+	access_token<access_rights::token::adjust_privileges | access_rights::token::query, KernelObject>
 	get_access_token(const KernelObject& object) noexcept
 	{
 		return get_access_token<access_rights::token::adjust_privileges | access_rights::token::query>(object);
 	}
 
-	inline access_token<access_rights::token::all_access, kernel::process<>>
+	inline access_token<access_rights::token::all_access, process<>>
 	get_access_token() noexcept
 	{
-		using Token = access_token<access_rights::token::all_access, kernel::process<>>;
+		using Token = access_token<access_rights::token::all_access, process<>>;
 		return std::move(
 			reinterpret_cast<Token&>(
 				get_access_token(kernel::current_process<>())
 			)
 		);
 	}
-
 } // namespace distant::kernel

@@ -6,10 +6,10 @@ Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
 */ 
 
-#include <distant\kernel\object.hpp>
-#include <distant\utility\literal.hpp>
+#include <distant/kernel/object.hpp>
+#include <distant/utility/literal.hpp>
 
-#include <boost\winapi\wait.hpp>
+#include <boost/winapi/wait.hpp>
 
 #include <limits>
 #include <chrono>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <boost\winapi\limits.hpp>
+#include <boost/winapi/limits.hpp>
 
 #if !defined (BOOST_USE_WINDOWS_H)
 

@@ -1,11 +1,11 @@
 #pragma once
 
 #include <string>
-#include <distant\security\luid.hpp>
-#include <distant\config.hpp>
+#include <distant/security/luid.hpp>
+#include <distant/config.hpp>
 
-#include <distant\support\winapi\privilege.hpp>
-#include <distant\support\winapi\token.hpp>
+#include <distant/support/winapi/privilege.hpp>
+#include <distant/support/winapi/token.hpp>
 
 namespace distant::security {
 
@@ -57,4 +57,4 @@ namespace distant::security {
 } // end namespace distant::security
 
 // Implementation
-#include <distant\security\impl\privilege.hxx>
+#include <distant/security/impl/privilege.hxx>

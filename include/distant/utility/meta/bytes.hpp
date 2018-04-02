@@ -3,7 +3,7 @@
 #include <type_traits>
 #include <array>
 
-namespace meta
+namespace distant::utility::meta
 {
 	template <typename Return, std::size_t S>
 	constexpr auto compose_bytes(const std::array<unsigned char, S>& array) noexcept;
@@ -13,6 +13,6 @@ namespace meta
 
 	template <std::size_t N, typename T>
 	constexpr unsigned char get(const T& bytes) noexcept;
-}
+} // namespace distant::utility::meta
 
-#include "impl\bytes.hxx"
+#include "impl/bytes.hxx"

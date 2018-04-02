@@ -1,11 +1,11 @@
 #pragma once
 
-#include <distant\detail\fwd.hpp>
-#include <distant\error\windows_error.hpp>
+#include <distant/detail/fwd.hpp>
+#include <distant/error/windows_error.hpp>
 
-#include <distant\support\winapi\psapi.hpp>
+#include <distant/support/winapi/psapi.hpp>
 
-#include <distant\kernel\process_base.hpp>
+#include <distant/kernel/process_base.hpp>
 
 namespace distant::kernel {
 
@@ -74,4 +74,4 @@ namespace distant::kernel {
 } // end namespace distant::kernel
 
 // Implementation:
-#include <distant\kernel\process\impl\memory_status.hxx>
+#include <distant/kernel/process/impl/memory_status.hxx>

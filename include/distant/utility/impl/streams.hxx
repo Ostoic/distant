@@ -1,5 +1,5 @@
 #pragma once
-#include <distant\utility\streams.hpp>
+#include <distant/utility/streams.hpp>
 
 namespace distant::utility
 {

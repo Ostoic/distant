@@ -1,6 +1,6 @@
 #pragma once
 
-#include <boost\winapi\basic_types.hpp>
+#include <boost/winapi/basic_types.hpp>
 
 namespace boost::winapi 
 {

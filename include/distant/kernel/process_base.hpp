@@ -7,16 +7,15 @@ Distributed under the Apache Software License, Version 2.0.
 */
 
 #include <cstddef>
-#include <limits>
 
 #include <string>
 
 //#include <exception>
 
-#include <distant\kernel\object.hpp>
-#include <distant\type_traits.hpp>
+#include <distant/kernel/object.hpp>
+#include <distant/type_traits.hpp>
 
-#include <distant\support\filesystem.hpp>
+#include <distant/support/filesystem.hpp>
 
 //#include <distant\memory\vm.h>
 
@@ -31,8 +30,8 @@ namespace kernel  {
 		// Object type information
 		using base_type = kernel::object;
 
-		using error_type = typename object_traits<process_base>::error_type;
-		using handle_type = typename object_traits<process_base>::handle_type;
+		using error_type = object_traits<process_base>::error_type;
+		using handle_type = object_traits<process_base>::handle_type;
 		using access_rights_t = access_rights::process;
 
 		using exit_code_type = std::size_t;
@@ -83,11 +82,11 @@ namespace kernel  {
 
 		/// Retrieve the process id.
 		/// @return the process id.
-		std::size_t id() const noexcept { return m_id; }
+		std::size_t id() const noexcept { return id_; }
 
 		/// Get the access rights that were used to open the current process
 		/// @return process access_rights indicating the level of access we have to the process.
-		flag_type access_rights() const noexcept { return m_access_rights; }
+		flag_type access_rights() const noexcept { return access_rights_; }
 		
 		/// Test if the process object is valid
 		/// @return true if the process is valid, false otherwise.
@@ -104,7 +103,7 @@ namespace kernel  {
 		explicit process_base(std::size_t id, access_rights_t access = access_rights_t::all_access) noexcept;
 
 		process_base(process_base&& other) noexcept; // move constructible
-		process_base& operator =(process_base&& other) noexcept; // move assignable
+		process_base& operator=(process_base&& other) noexcept; // move assignable
 
 		explicit process_base(handle<process_base>&& handle, access_rights_t) noexcept;
 
@@ -119,8 +118,8 @@ namespace kernel  {
 		void throw_if_invalid(const char* message) const;
 			
 	protected:
-		std::size_t m_id;
-		access_rights_t m_access_rights;
+		std::size_t id_;
+		access_rights_t access_rights_;
 	}; // end class process
 
 	/// Get the current process.
@@ -130,4 +129,4 @@ namespace kernel  {
 } // namespace kernel
 } // namespace distant
 
-#include <distant\kernel\impl\process_base.hxx>
+#include <distant/kernel/impl/process_base.hxx>

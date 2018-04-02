@@ -1,8 +1,8 @@
 #pragma once
 
-#include <boost\winapi\access_rights.hpp>
+#include <boost/winapi/access_rights.hpp>
 
-#include <distant\support\winapi\basic_types.hpp>
+#include <distant/support/winapi/basic_types.hpp>
 
 #if !defined (BOOST_USE_WINDOWS_H)
 

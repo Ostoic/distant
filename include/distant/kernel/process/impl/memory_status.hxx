@@ -1,7 +1,7 @@
 #pragma once
 
-#include <distant\kernel\process\memory_status.hpp>
-#include <distant\detail\attorney.hpp>
+#include <distant/kernel/process/memory_status.hpp>
+#include <distant/detail/attorney.hpp>
 
 namespace distant::kernel {
 

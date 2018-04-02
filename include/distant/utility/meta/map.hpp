@@ -5,7 +5,7 @@
 
 #include "hash.hpp"
 
-namespace meta
+namespace distant::utility::meta
 {
 	// Compile-time "map" with O(n) lookup.
 	template <typename Key, typename Value, std::size_t Capacity = 5>
@@ -55,6 +55,8 @@ namespace meta
 
 	template <typename... Ts>
 	constexpr auto make_map(Ts&&... ts) noexcept;
-}
+
+} // namespace distant::utility::meta
+
 // Implementation:
-#include "impl\map.hxx"
+#include "impl/map.hxx"

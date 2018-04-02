@@ -7,7 +7,7 @@
 */
 
 
-#include <boost\winapi\basic_types.hpp>
+#include <boost/winapi/basic_types.hpp>
 
 #if !defined (BOOST_USE_WINDOWS_H)
 

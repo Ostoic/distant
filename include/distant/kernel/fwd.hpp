@@ -1,6 +1,6 @@
 #pragma once
 
-#include <distant\access_rights.hpp>
+#include <distant/access_rights.hpp>
 
 namespace distant::kernel
 {

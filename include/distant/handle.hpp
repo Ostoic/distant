@@ -6,19 +6,19 @@ Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
 */
 
-#include <distant\detail\handle_base.hpp>
+#include <distant/detail/handle_base.hpp>
 
-namespace distant {
-
+namespace distant
+{		
 	/// Type-safe handle for windows objects
-	template <typename Object_t> 
-	class handle : public detail::handle_base 
+	template <typename ObjectT>
+	class handle : public detail::handle_base
 	{
 	private:
-		using handle_base = detail::handle_base;
+		using handle_base = handle_base;
 
 	public:
-		using object_type = Object_t;
+		using object_type = ObjectT;
 
 	public: // {ctor}
 		/// @param h the native handle value.
@@ -37,16 +37,16 @@ namespace distant {
 		/// Bivariant move constructor
 		template <typename other_t>
 		handle(handle<other_t>&& other) noexcept;
-		
+
 		/// Bivariant move assignment
 		template <typename other_t>
-		handle& operator =(handle<other_t>&& other) noexcept;
-		
-	private:	
+		handle& operator=(handle<other_t>&& other) noexcept;
+
+	private:
 		/// Allow attorney to expose some implementation details
 		// This is mainly for recreated winapi functions to pass the underlying handle value into the winapi.
 		template <typename>
-		friend class distant::detail::attorney::to_handle;
+		friend class detail::attorney::to_handle;
 
 		// Expose implementation to other handle types
 		template <typename>
@@ -59,7 +59,6 @@ namespace distant {
 		template <typename T, typename U>
 		friend constexpr bool operator !=(const handle<T>&, const handle<U>&) noexcept;
 	};
-
 } // end namespace distant
 
-#include <distant\impl\handle.hxx>
+#include <distant/impl/handle.hxx>

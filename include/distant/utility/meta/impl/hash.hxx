@@ -1,7 +1,7 @@
 #pragma once
-#include "..\hash.hpp"
+#include "../hash.hpp"
 
-namespace meta
+namespace distant::utility::meta
 {
 	namespace detail
 	{
@@ -14,7 +14,7 @@ namespace meta
 		 * @return A std::size_t containing the resulting hash.
 		 **************************************************************************************************/
 		template <std::size_t S>
-		inline constexpr std::size_t hash_bytes(const std::array<unsigned char, S>& bytes) noexcept
+		constexpr std::size_t hash_bytes(const std::array<unsigned char, S>& bytes) noexcept
 		{
 			// This is just an implementation of the Fowler–Noll–Vo (FNV) hash,
 			// using Visual Studio's primes and basis taken from _Hash_Bytes.
@@ -40,8 +40,8 @@ namespace meta
 	}
 
 	template <typename T>
-	inline constexpr std::size_t hash<T>::operator()(const T& key) const noexcept
+	constexpr std::size_t hash<T>::operator()(const T& key) const noexcept
 	{
 		return detail::hash_bytes(meta::byte_array_from(key));
 	}
-}
+} // namespace distant::utility::meta

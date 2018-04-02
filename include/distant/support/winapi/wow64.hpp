@@ -1,6 +1,6 @@
 #pragma once
 
-#include <boost\winapi\basic_types.hpp>
+#include <boost/winapi/basic_types.hpp>
 
 #if !defined (BOOST_USE_WINDOWS_H)
 #if BOOST_USE_WINAPI_VERSION >= BOOST_WINAPI_VERSION_WINXP

@@ -11,7 +11,6 @@
 							   MAKE_NAME_OPCODE_REG(op, ecx),\
 							   MAKE_NAME_OPCODE_REG(op, edx),\
 							   MAKE_NAME_OPCODE_REG(op, ebx),\
-							   MAKE_NAME_OPCODE_REG(op, esp),\
 							   MAKE_NAME_OPCODE_REG(op, ebp),\
 							   MAKE_NAME_OPCODE_REG(op, esi),\
 							   MAKE_NAME_OPCODE_REG(op, edi)
@@ -20,7 +19,7 @@
 namespace distant::detail::string_maps
 {
 	using arp = access_rights::process;
-	constexpr auto access_rights_names = meta::make_map(
+	constexpr auto access_rights_names = utility::meta::make_map(
 		std::make_pair(arp::all_access, "all_access"),
 		std::make_pair(arp::set_information, "set_information"),
 		std::make_pair(arp::set_quota, "set_quota"),
@@ -38,7 +37,7 @@ namespace distant::detail::string_maps
 	);
 
 	using ops = memory::opcode;
-	constexpr auto op_names = meta::make_map(
+	constexpr auto op_names = utility::meta::make_map(
 		std::make_pair(ops::call, "call"),
 		MAKE_NAME_OPCODE_ALL(call),
 
@@ -73,7 +72,7 @@ namespace distant::detail::string_maps
 	);
 
 	using archs = system::processor_architecture;
-	constexpr auto arch_names = meta::make_map(
+	constexpr auto arch_names = utility::meta::make_map(
 		std::make_pair(archs::amd64, "amd64"),
 		std::make_pair(archs::arm, "arm"),
 		std::make_pair(archs::ia64, "ia64"),
@@ -83,7 +82,7 @@ namespace distant::detail::string_maps
 }
 
 template <typename Stream>
-Stream& operator<<(Stream& stream, distant::process_rights access)
+Stream& operator<<(Stream& stream, const distant::process_rights access)
 {
 	using distant::detail::string_maps::access_rights_names;
 	using ar = distant::access_rights::process;
@@ -119,7 +118,7 @@ Stream& operator<<(Stream& stream, distant::system::processor_architecture arch)
 }
 
 template <typename Stream>
-Stream& operator<<(Stream& stream, distant::address address)
+Stream& operator<<(Stream& stream, const distant::address address)
 {
 	using char_t = typename Stream::char_type;
 	const auto old_flags = stream.flags();

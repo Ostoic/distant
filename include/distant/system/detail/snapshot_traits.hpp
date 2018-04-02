@@ -1,8 +1,8 @@
 #pragma once
 
-#include <distant\support\winapi\toolhelp32.hpp>
+#include <distant/support/winapi/toolhelp32.hpp>
 
-#include <distant\detail\tags.hpp>
+#include <distant/detail/tags.hpp>
 
 namespace distant::system::detail {
 	

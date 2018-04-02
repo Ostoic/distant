@@ -8,7 +8,7 @@ Distributed under the Apache Software License, Version 2.0.
 
 #include <type_traits>
 
-#include <distant\detail\fwd.hpp>
+#include <distant/detail/fwd.hpp>
 
 namespace distant {
 

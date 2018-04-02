@@ -1,12 +1,12 @@
 #pragma once
 
-#include <distant\access_rights.hpp>
+#include <distant/access_rights.hpp>
 
-#include <distant\detail\attorney.hpp>
-#include <distant\utility\boolean_validator.hpp>
+#include <distant/detail/attorney.hpp>
+#include <distant/utility/boolean_validator.hpp>
 
-#include <boost\winapi\config.hpp>
-#include <boost\winapi\basic_types.hpp>
+#include <boost/winapi/config.hpp>
+#include <boost/winapi/basic_types.hpp>
 
 #include <bitset>
 
@@ -93,12 +93,12 @@ namespace detail  {
 
 	protected:
 		/// native HANDLE value
-		native_type m_native_handle;
+		native_type native_handle_;
 
 		// If we somehow attempt to call CloseHandle multiple times,
 		// this will help prevent further unnecessary calls.
 		/// Switch to check if closure was observed 
-		std::bitset<3> m_flags;
+		std::bitset<3> flags_;
 		
 	public:
 		friend constexpr bool operator ==(const handle_base&, const handle_base&) noexcept;
@@ -108,7 +108,7 @@ namespace detail  {
 } // end namespace detail
 } // end namespace distant
 
-#include <distant\impl\handle_base.hxx>
+#include <distant/impl/handle_base.hxx>
 
   // Remarks:
   //		Process-local handle table starts at entry 4, hence the null ( == 0) 

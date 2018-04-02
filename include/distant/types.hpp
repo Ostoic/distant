@@ -1,6 +1,8 @@
 #pragma once
 
-#include <boost\winapi\basic_types.hpp>
+#include <boost/winapi/basic_types.hpp>
+
+#include <cstddef>
 
 namespace distant
 {
@@ -9,6 +11,9 @@ namespace distant
 	using qword = long long;
 
 	using uint = unsigned int;
+
+	// Todo: C++17 std::byte version
+	//enum class byte : unsigned char {};
 	using byte = unsigned char;
 
 	template <std::size_t N>
@@ -28,6 +33,10 @@ namespace distant
 
 	template <typename... Bytes, typename = std::enable_if_t<sizeof...(Bytes) <= sizeof(distant::qword)>>
 	constexpr distant::qword make_qword(Bytes&&... bytes) noexcept;
+
+	template <typename Integer, typename... Bytes>
+	constexpr Integer make_integer(Bytes&&... bytes) noexcept;
+
 }
 
-#include <distant\impl\types.hxx>
+#include <distant/impl/types.hxx>

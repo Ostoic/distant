@@ -1,30 +1,32 @@
 #pragma once
-#include <distant\types.hpp>
+#include <distant/types.hpp>
+
+#include <distant/utility/meta/algorithm.hpp>
 
 namespace distant
 {
 	template <std::size_t N>
-	inline constexpr distant::byte get(distant::word bytes) noexcept
+	constexpr byte get(const word bytes) noexcept
 	{
-		if constexpr (N >= sizeof(distant::word))
+		if constexpr (N >= sizeof(word))
 			static_assert(false, "[distant::get<word>] Byte index out of range");
 
 		return (bytes >> (8 * N)) & 0xff;
 	}
 
 	template <std::size_t N>
-	inline constexpr distant::byte get(distant::dword bytes) noexcept
+	constexpr byte get(const dword bytes) noexcept
 	{
-		if constexpr (N >= sizeof(distant::dword))
+		if constexpr (N >= sizeof(dword))
 			static_assert(false, "[distant::get<dword>] Byte index out of range");
 
 		return (bytes >> (8 * N)) & 0xff;
 	}
 
 	template <std::size_t N>
-	inline constexpr distant::byte get(distant::qword bytes) noexcept
+	constexpr byte get(const qword bytes) noexcept
 	{
-		if constexpr (N >= sizeof(distant::qword))
+		if constexpr (N >= sizeof(qword))
 			static_assert(false, "[distant::get<qword>] Byte index out of range");
 
 		return (bytes >> (8 * N)) & 0xff;
@@ -33,7 +35,7 @@ namespace distant
 	namespace detail
 	{
 		template <typename Return, std::size_t S>
-		inline constexpr auto make_impl(const std::array<distant::byte, S>& array) noexcept
+		constexpr auto make_impl(const std::array<byte, S>& array) noexcept
 		{
 			Return result = array[0];
 			for (std::size_t i = 1; i < S; ++i)
@@ -44,38 +46,62 @@ namespace distant
 	}
 
 	template <typename... Bytes, typename>
-	inline constexpr distant::word make_word(Bytes&&... bytes) noexcept
+	constexpr word make_word(Bytes&&... bytes) noexcept
 	{
-		using result_t = distant::word;
-		if constexpr (!std::is_convertible<std::common_type_t<Bytes...>, distant::byte>::value)
-			static_assert(false, "[distant::make_word] Type of bytes must be convertible to distant::byte");
+		static_assert(
+			std::is_convertible<std::common_type_t<Bytes...>, byte>::value, 
+			"[distant::make_word] Type of bytes must be convertible to distant::byte"
+		);
 
-		return detail::make_impl<distant::word>(
-			meta::make_array((static_cast<distant::byte>(std::forward<Bytes>(bytes)))...)
+		using result_t = word;
+
+		return detail::make_impl<word>(
+			utility::meta::make_array(static_cast<byte>(std::forward<Bytes>(bytes))...)
 		);
 	}
 
 	template <typename... Bytes, typename>
-	inline constexpr distant::dword make_dword(Bytes&&... bytes) noexcept
+	constexpr dword make_dword(Bytes&&... bytes) noexcept
 	{
-		using result_t = distant::dword;
-		if constexpr (!std::is_convertible<std::common_type_t<Bytes...>, distant::byte>::value)
-			static_assert(false, "[distant::make_dword] Type of bytes must be convertible to distant::byte");
+		static_assert(
+			std::is_convertible<std::common_type_t<Bytes...>, byte>::value, 
+			"[distant::make_dword] Type of bytes must be convertible to distant::byte"
+		);
+
+		using result_t = dword;
 
 		return detail::make_impl<result_t>(
-			meta::make_array((static_cast<distant::byte>(std::forward<Bytes>(bytes)))...)
+			meta::make_array(static_cast<byte>(std::forward<Bytes>(bytes))...)
 		);
 	}
 
 	template <typename... Bytes, typename>
-	inline constexpr distant::qword make_qword(Bytes&&... bytes) noexcept
+	constexpr qword make_qword(Bytes&&... bytes) noexcept
 	{
-		using result_t = distant::qword;
-		if constexpr (!std::is_convertible<std::common_type_t<Bytes...>, distant::byte>::value)
-			static_assert(false, "[distant::make_qword] Type of bytes must be convertible to distant::byte");
+		static_assert(
+			std::is_convertible<std::common_type_t<Bytes...>, byte>::value, 
+			"[distant::make_qword] Type of bytes must be convertible to distant::byte"
+		);
+
+		using result_t = qword;
 
 		return detail::make_impl<result_t>(
-			meta::make_array((static_cast<distant::byte>(std::forward<Bytes>(bytes)))...)
+			utility::meta::make_array(static_cast<byte>(std::forward<Bytes>(bytes))...)
+		);
+	}
+
+	template <typename Integer, typename... Bytes>
+	constexpr Integer make_integer(Bytes&&... bytes) noexcept
+	{
+		static_assert(
+			std::is_convertible<std::common_type_t<Bytes...>, Integer>::value, 
+			"[distant::make_qword] Type of bytes must be convertible to distant::byte"
+		);
+
+		using result_t = Integer;
+
+		return detail::make_impl<result_t>(
+			utility::meta::make_array(static_cast<byte>(std::forward<Bytes>(bytes))...)
 		);
 	}
 }
