@@ -1,4 +1,5 @@
-// distance dev.cpp : Defines the entry point for the console application.
+// An "Antiafk" program that prevents the character from timing out in-game.
+// For WoW 3.3.5 123450
 
 #include <iostream>
 #include <thread>
