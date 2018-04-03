@@ -9,6 +9,8 @@ namespace distant
 { 
 	namespace memory 
 	{
+
+		// Todo: Consider checking the memory for read/write access and throwing on failure.
 		template <typename Element, process_rights Access, typename AddressT = dword>
 		class virtual_ptr : public
 			boost::iterator_facade<

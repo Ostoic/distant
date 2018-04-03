@@ -69,6 +69,14 @@ namespace distant
 
 		}; // class virtual_reference
 
+		template <typename Element, process_rights Access, typename AddressT>
+		auto make_virtual_reference(const process<Access>& process, const address<AddressT> address = nullptr)
+		{ return *make_virtual_ptr(process, address);}
+
+		template <typename Element, process_rights Access>
+		auto make_virtual_reference(const process<Access>& process, const address<dword> address = nullptr)
+		{ return *make_virtual_ptr(process, address);}
+
 	} // namespace memory
 
 	/*template <typename Element, typename AddressT = dword>
@@ -77,8 +85,8 @@ namespace distant
 	template <typename Element, typename AddressT = dword>
 	using const_virtual_reference = memory::virtual_reference<Element, vm_read, AddressT>;*/
 
-
 	using memory::virtual_reference;
+	using memory::make_virtual_reference;
 
 } // namespace distant
 
