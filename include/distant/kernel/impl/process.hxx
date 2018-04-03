@@ -108,17 +108,27 @@ namespace distant::kernel
 	}
 
 	template <access_rights::process T>
-	template <access_rights::process Other_Flag, typename>
-	process<T>::operator process<Other_Flag>&() noexcept
+	template <access_rights::process OtherFlag, typename>
+	process<T>::operator process<OtherFlag>&() noexcept
 	{
-		return reinterpret_cast<process<Other_Flag>&>(*this);
+		static_assert(
+			check_permission(T, OtherFlag),
+			"[process::operator process] Process access rights are not compatible"
+		);
+
+		return reinterpret_cast<process<OtherFlag>&>(*this);
 	}
 
 	template <access_rights::process T>
-	template <access_rights::process Other_Flag, typename>
-	process<T>::operator const process<Other_Flag>&() const noexcept
+	template <access_rights::process OtherFlag, typename>
+	process<T>::operator const process<OtherFlag>&() const noexcept
 	{
-		return reinterpret_cast<const process<Other_Flag>&>(*this);
+		static_assert(
+			check_permission(T, OtherFlag),
+			"[process::operator const process] Process access rights are not compatible"
+		);
+
+		return reinterpret_cast<const process<OtherFlag>&>(*this);
 	}
 
 	//=========================//

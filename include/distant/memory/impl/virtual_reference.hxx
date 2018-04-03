@@ -21,15 +21,6 @@ namespace distant::memory
 		);
 	}
 
-
-	template <typename E, process_rights A, typename T>
-	virtual_reference<E, A, T>& virtual_reference<E, A, T>::operator=(const virtual_reference& other)
-	{
-		value_type temp = other;
-		*this = temp;
-		return *this;
-	}
-
 	template <typename E, process_rights A, typename T>
 	template <typename OE, process_rights OA, typename OT>
 	virtual_reference<E, A, T>& virtual_reference<E, A, T>::operator=(const virtual_reference<OE, OA, OT>& other)
@@ -46,6 +37,11 @@ namespace distant::memory
 	template <typename E, process_rights A, typename T>
 	virtual_reference<E, A, T>& virtual_reference<E, A, T>::operator=(const value_type& x)
 	{
+		static_assert(
+			!std::is_const<E>::value,
+			"[virtual_reference::operator=] Cannot assign to constant value"
+		);
+
 		memory::write<value_type, T>(*this->ptr_.process_, this->ptr_.address_, x);
 		return *this;
 	}
@@ -60,7 +56,7 @@ namespace distant::memory
 	template <typename E, process_rights A, typename T>
 	virtual_reference<E, A, T>::operator value_type() const
 	{
-		return memory::read<value_type>(*this->ptr_.process_, this->ptr_.address_);
+		return memory::read<std::remove_cv_t<value_type>>(*this->ptr_.process_, this->ptr_.address_);
 	}
 
 	template <typename E, process_rights A, typename T>
@@ -95,7 +91,7 @@ namespace distant::memory
 	{
 		value_type temp = *this;
 		temp += rhs;
-		*this = temp
+		*this = temp;
 		return *this;
 	}
 

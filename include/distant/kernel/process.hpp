@@ -53,20 +53,17 @@ namespace distant
 			/// @return std::wstring containing the file path of the process
 			filesystem::path file_path() const;
 
-			template <access_rights::process Other_Flag,
-			          typename = std::enable_if_t<check_permission(access_flags, Other_Flag)>>
-			operator process<Other_Flag>&() noexcept;
+			template <access_rights::process OtherFlag,
+			          typename = std::enable_if_t<check_permission(access_flags, OtherFlag)>>
+			operator process<OtherFlag>&() noexcept;
 
-			template <access_rights::process Other_Flag,
-			          typename = std::enable_if_t<check_permission(access_flags, Other_Flag)>>
-			operator const process<Other_Flag>&() const noexcept;
+			template <access_rights::process OtherFlag,
+			          typename = std::enable_if_t<check_permission(access_flags, OtherFlag)>>
+			operator const process<OtherFlag>&() const noexcept;
 
 			/// @brief Query the process for memory information 
 			/// @return memory_status object used to query for process information
 			//auto memory_status() const;
-
-			// @brief Return the virtual memory of this process
-			//memory::vm get_vm() const { return memory::vm(*this); }
 
 		public: // {ctor}
 			/// Default process constructor
@@ -85,8 +82,8 @@ namespace distant
 		}; // end class process
 
 		/// @brief Create a new process
-		template <access_rights::process access_flag>
-		process<access_flag> launch();
+		template <access_rights::process Access>
+		process<Access> launch();
 
 		/// @brief Get the current process.
 		/// @return distant::process_base object containing the current process.

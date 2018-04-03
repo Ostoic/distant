@@ -1,33 +1,59 @@
 #pragma once
 
-#include <distant/kernel/fwd.hpp>
-
 #include <distant/process.hpp>
 #include <distant/memory/address.hpp>
+#include <distant/memory/virtual_ptr.hpp>
 
-namespace distant::memory
+namespace distant
 {
-	class virtual_memory
+	namespace memory
 	{
-	public:
-		static constexpr auto required_access = process_rights::vm_operation | process_rights::vm_read | process_rights::vm_write;
+		template <typename T, typename AddressT, process_rights Access>
+		void write(const process<Access>& proc, address<AddressT> address, T x);
 
-	public:
-		virtual_memory() = default;
+		template <typename T, process_rights Access>
+		void write(const process<Access>& proc, address<dword> address, T x);
 
-		explicit virtual_memory(const process<required_access>& process) noexcept;
+		template <typename T, typename AddressT, process_rights Access>
+		T read(const process<Access>& proc, address<AddressT> address);
 
-	private:
-		const process<required_access>* process_;
-	};
+		template <typename T, process_rights Access>
+		T read(const process<Access>& proc, address<dword> address);
 
-	template <typename T, typename AddressT = dword>
-	void write(const process<process_rights::vm_write | process_rights::vm_operation>& proc, address<AddressT> address, T x);
+		template <page_protection Protection, process_rights Access, typename AddressT>
+		page_protection virtual_protect(const process<Access>& process, address<AddressT> address, std::size_t size);
 
-	template <typename T, typename AddressT = dword>
-	T read(const process<process_rights::vm_read>& proc, address<AddressT> address);
+		template <page_protection Protection, process_rights Access>
+		page_protection virtual_protect(const process<Access>& process, address<dword> address, std::size_t size);
 
-} // namespace distant::memory
+		template <typename T, page_protection Protection = page_protection::execute_readwrite, typename AddressT, process_rights Access>
+		virtual_ptr<T, Access, AddressT> virtual_malloc(const process<Access>& process, std::size_t n = sizeof(T));
+
+		template <typename T, page_protection Protection = page_protection::execute_readwrite, process_rights Access>
+		virtual_ptr<T, Access, dword> virtual_malloc(const process<Access>& process, std::size_t n = sizeof(T));
+
+		template <typename T, process_rights Access>
+		void virtual_free(const process<Access>& process, virtual_ptr<T, Access, dword> pointer) noexcept;
+
+		template <typename T, typename AddressT, process_rights Access>
+		void virtual_free(const process<Access>& process, virtual_ptr<T, Access, AddressT> pointer) noexcept;
+
+		//void 
+
+		/***
+	MEMORY_BASIC_INFORMATION info;
+	
+	VirtualQueryEx(WoW::handle, (LPVOID)address, &info, sizeof(info));
+	return info.State == MEM_COMMIT;
+		 */
+
+	} // namespace memory
+
+	using memory::virtual_free;
+	using memory::virtual_malloc;
+	using memory::virtual_protect;
+
+} // namespace memory
 
 // Implementation:
 #include <distant/memory/impl/virtual_memory.hxx>

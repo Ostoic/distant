@@ -14,6 +14,7 @@ Distributed under the Apache Software License, Version 2.0.
 #include <distant/support/winapi/process.hpp>
 #include <distant/support/winapi/token.hpp>
 #include <boost/winapi/process.hpp>
+#include <boost/winapi/page_protection_flags.hpp>
 
 namespace distant
 {
@@ -82,7 +83,7 @@ namespace distant
 			adjust_default = boost::winapi::TOKEN_ADJUST_DEFAULT_,
 
 			// Required to adjust the session ID of an access token. The SE_TCB_NAME privilege is required.
-			adjust_sessionId = boost::winapi::TOKEN_ADJUST_SESSIONID_,
+			adjust_session_id = boost::winapi::TOKEN_ADJUST_SESSIONID_,
 
 			// XX ???
 			trust_constraint_mask = boost::winapi::TOKEN_TRUST_CONSTRAINT_MASK_,
@@ -100,10 +101,27 @@ namespace distant
 			all_access = boost::winapi::TOKEN_ALL_ACCESS_,
 		};
 
+		enum class page_protection
+		{
+			noaccess = boost::winapi::PAGE_NOACCESS_,
+			readonly = boost::winapi::PAGE_READONLY_,
+			writecopy = boost::winapi::PAGE_WRITECOPY_,
+			guard = boost::winapi::PAGE_GUARD_,
+			nocache = boost::winapi::PAGE_NOCACHE_,
+			writecombine = boost::winapi::PAGE_WRITECOMBINE_,
+
+			execute = boost::winapi::PAGE_EXECUTE_,
+			execute_read = boost::winapi::PAGE_EXECUTE_READ_,
+			execute_readwrite = boost::winapi::PAGE_EXECUTE_READWRITE_,
+			execute_writecopy = boost::winapi::PAGE_EXECUTE_WRITECOPY_
+		};
+
+
 		enum class handle
 		{
 			inherit = boost::winapi::HANDLE_FLAG_INHERIT_,
 			// Child process will inherit object handle
+
 			close_protected = boost::winapi::HANDLE_FLAG_PROTECT_FROM_CLOSE_,
 			// Prevent CloseHandle from closing handle
 		};
@@ -113,6 +131,7 @@ namespace distant
 	DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(access_rights::process);
 	DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(access_rights::token);
 	DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(access_rights::standard);
+	DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(access_rights::page_protection);
 
 	/// Check if we have permission to perform the given action
 	constexpr bool check_permission(const access_rights::process given, const access_rights::process check) noexcept
@@ -132,6 +151,16 @@ namespace distant
 		return (given & check) == check;
 	}
 
+	/// @brief Shortcut for defining vm_read | vm_write | vm_operation process_rights.
+	constexpr auto vm_rw_op = access_rights::process::vm_read | access_rights::process::vm_write | access_rights::process::vm_operation;
+
+	/// @brief Shortcut for defining vm_read | vm_operation process_rights.
+	constexpr auto vm_r_op = access_rights::process::vm_read | access_rights::process::vm_operation;
+
+	/// @brief Shortcut for defining vm_read process_rights.
+	constexpr auto vm_read = access_rights::process::vm_read | access_rights::process::vm_operation;
+
 	using process_rights = access_rights::process;
 	using token_rights = access_rights::token;
-} // end namespace distant
+	using page_protection = access_rights::page_protection;
+} // namespace distant

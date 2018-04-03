@@ -14,11 +14,5 @@ Distributed under the Apache Software License, Version 2.0.
 #include <distant/system/snapshot.hpp>
 #include <distant/system/information.hpp>
 
-#include <distant/memory/address.hpp>
+#include <distant/virtual_memory.hpp>
 #include <distant/detail/to_string.hpp>
-
-// Plans:
-//		- Implement "virtual" memory allocator that models the standard Allocator concept properly.
-//		  Consider Alexandrescu's composable allocator design.
-//		- Finish system::snapshot for threads, heaps, modules
-//		- Fix up memory::vm to work with the new versions of distant::process and distant::handle

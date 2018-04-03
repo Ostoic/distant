@@ -8,19 +8,19 @@ namespace distant::system {
 
 	inline const filesystem::path& windows_path()
 	{
-		static filesystem::path windowsPath;
+		static filesystem::path path;
 		
-		if (windowsPath.empty())
+		if (path.empty())
 		{
 			boost::winapi::WCHAR_ buffer[boost::winapi::max_path];
 
 			if (boost::winapi::GetWindowsDirectoryW(reinterpret_cast<boost::winapi::LPWSTR_>(&buffer), boost::winapi::max_path) == 0)
 				throw std::system_error(error::last_error(), "[system::windows_path] Unable to get windows directory");
 
-			windowsPath = buffer;
+			path = buffer;
 		}
 
-		return windowsPath;
+		return path;
 	}
 
 	inline std::wstring computer_name()
@@ -39,7 +39,7 @@ namespace distant::system {
 		boost::winapi::DWORD_ size = boost::winapi::UNLEN_+ 1;
 		boost::winapi::WCHAR_ buffer[boost::winapi::UNLEN_ + 1];
 
-		if (!boost::winapi::GetUserNameW(reinterpret_cast<LPWSTR>(buffer), reinterpret_cast<boost::winapi::LPDWORD_>(&size)))
+		if (!boost::winapi::GetUserNameW(reinterpret_cast<boost::winapi::LPWSTR_>(buffer), reinterpret_cast<boost::winapi::LPDWORD_>(&size)))
 			throw std::system_error(error::last_error(), "[system::username] Unable to get username");
 
 		return {buffer};
@@ -49,12 +49,12 @@ namespace distant::system {
 	{
 		inline const SYSTEM_INFO& get_system_info_impl() noexcept
 		{
-			static SYSTEM_INFO sysInfo = { 0 };
+			static SYSTEM_INFO sys_info = {0};
 
-			if (sysInfo.dwActiveProcessorMask == 0)
-				GetSystemInfo(&sysInfo);
+			if (sys_info.dwActiveProcessorMask == 0)
+				GetSystemInfo(&sys_info);
 
-			return sysInfo;
+			return sys_info;
 		}
 	}
 
