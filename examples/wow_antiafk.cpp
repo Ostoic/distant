@@ -27,10 +27,10 @@ int main()
 	constexpr distant::address last_action_address = 0x00B499A4;
 	constexpr distant::address timestamp_address = 0x00B1D618;
 
-	// Get a pointer to the last time we moved the mouse in-game
+	// Get a reference to the last time we moved the mouse in-game
 	auto& last_action = distant::make_virtual_reference<int>(wow, last_action_address);
 
-	// Get a pointer to the current wow time
+	// Get a reference to the current wow time
 	const auto& timestamp = distant::make_virtual_reference<int>(wow, timestamp_address);
 
 	try
