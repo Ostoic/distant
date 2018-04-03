@@ -14,7 +14,7 @@ int main()
 
 	// Open the process with pid 137016.
 	// For simplicity, this is assumed to be the target wow.exe, version 3.3.5 123450.
-	const distant::process<distant::vm_r_op> wow(137016); 
+	const distant::process<distant::vm_rw_op> wow(137016); 
 
 	if (!wow)
 	{
