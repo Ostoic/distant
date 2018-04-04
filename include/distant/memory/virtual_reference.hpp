@@ -71,11 +71,11 @@ namespace distant
 
 		template <typename Element, process_rights Access, typename AddressT>
 		auto make_virtual_reference(const process<Access>& process, const address<AddressT> address = nullptr)
-		{ return *make_virtual_ptr(process, address);}
+		{ return *make_virtual_ptr<Element, Access, AddressT>(process, address);}
 
 		template <typename Element, process_rights Access>
 		auto make_virtual_reference(const process<Access>& process, const address<dword> address = nullptr)
-		{ return *make_virtual_ptr(process, address);}
+		{ return *make_virtual_ptr<Element, Access>(process, address);}
 
 	} // namespace memory
 
