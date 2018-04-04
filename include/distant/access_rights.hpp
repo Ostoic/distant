@@ -139,6 +139,12 @@ namespace distant
 		return (given & check) == check;
 	}
 
+	///Check if our permission is at most \a max permission
+	constexpr bool constrain_permission(const access_rights::process given, const access_rights::process max) noexcept
+	{
+		return check_permission(max, given);
+	}
+
 	/// Check if we have permission to perform the given action
 	constexpr bool check_permission(const access_rights::token given, const access_rights::token check) noexcept
 	{
@@ -151,14 +157,24 @@ namespace distant
 		return (given & check) == check;
 	}
 
-	/// @brief Shortcut for defining vm_read | vm_write | vm_operation process_rights.
-	constexpr auto vm_rw_op = access_rights::process::vm_read | access_rights::process::vm_write | access_rights::process::vm_operation;
-
-	/// @brief Shortcut for defining vm_read | vm_operation process_rights.
-	constexpr auto vm_r_op = access_rights::process::vm_read | access_rights::process::vm_operation;
+	
+	/// @brief Shortcut for defining vm_operation process_rights.
+	constexpr auto vm_op = access_rights::process::vm_operation;
 
 	/// @brief Shortcut for defining vm_read process_rights.
-	constexpr auto vm_read = access_rights::process::vm_read | access_rights::process::vm_operation;
+	constexpr auto vm_read = access_rights::process::vm_read;
+
+	/// @brief Shortcut for defining vm_write process_rights.
+	constexpr auto vm_write = access_rights::process::vm_write;
+
+	/// @brief Shortcut for defining vm_read | vm_operation process_rights.
+	constexpr auto vm_r_op = vm_read | vm_op;
+
+	/// @brief Shortcut for defining vm_write | vm_operation process_rights.
+	constexpr auto vm_w_op = vm_write | vm_op;
+
+	/// @brief Shortcut for defining vm_read | vm_write | vm_operation process_rights.
+	constexpr auto vm_rw_op = vm_r_op | vm_write;
 
 	using process_rights = access_rights::process;
 	using token_rights = access_rights::token;

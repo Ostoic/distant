@@ -13,10 +13,10 @@ namespace distant
 		{
 		public:
 			using value_type	  = T;
-			using pointer		  = virtual_ptr<T, Access, AddressT>;
-			using const_pointer	  = virtual_ptr<const T, Access, AddressT>;
-			using reference		  = virtual_reference<T, Access, AddressT>;
-			using const_reference = virtual_reference<const T, Access, AddressT>;
+			using pointer		  = virtual_ptr<T, AddressT>;
+			using const_pointer	  = virtual_ptr<const T, AddressT>;
+			using reference		  = virtual_reference<T, AddressT>;
+			using const_reference = virtual_reference<const T, AddressT>;
 			using size_type		  = std::size_t;
 			using difference_type = address<AddressT>;
 

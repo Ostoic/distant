@@ -5,10 +5,10 @@
 
 namespace distant::memory
 {
-	template <typename Element, process_rights Access, typename AddressT>
+	template <typename Element, typename AddressT>
 	class virtual_ptr;
 
-	template <typename Element, process_rights Access, typename AddressT>
+	template <typename Element, typename AddressT>
 	class virtual_reference;
 
 }

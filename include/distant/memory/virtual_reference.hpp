@@ -6,20 +6,27 @@ namespace distant
 {
 	namespace memory
 	{
-		template <typename Element, process_rights Access, typename AddressT = dword>
+		template <typename Element, typename AddressT = dword>
 		class virtual_reference
 		{
 		public:
-			using pointer    = typename std::pointer_traits<virtual_ptr<Element, Access, AddressT>>::pointer;
-			using value_type = typename std::pointer_traits<virtual_ptr<Element, Access, AddressT>>::element_type;
+			using pointer    = typename std::pointer_traits<virtual_ptr<Element, AddressT>>::pointer;
+			using value_type = typename std::pointer_traits<virtual_ptr<Element, AddressT>>::element_type;
+
+			static constexpr auto vm_access = virtual_traits<virtual_reference>::vm_access;
+
+		public:
+			explicit virtual_reference(pointer ptr);
 			
-			explicit virtual_reference(const pointer& ptr);
+			template <
+				typename OtherElement = std::enable_if_t<detail::required_vm_access<OtherElement> == vm_access, OtherElement>,
+				typename OtherAddressT>
+			virtual_reference(virtual_reference<OtherElement, OtherAddressT> other);
 
-			template <typename OtherElement, process_rights OtherAccess, typename OtherAddressT>
-			virtual_reference(const virtual_reference<OtherElement, OtherAccess, OtherAddressT>& other);
-
-			template <typename OtherElement, process_rights OtherAccess, typename OtherAddressT>
-			virtual_reference& operator=(const virtual_reference<OtherElement, OtherAccess, OtherAddressT>& other);
+			template <
+				typename OtherElement = std::enable_if_t<detail::required_vm_access<OtherElement> == vm_access, OtherElement>,
+				typename OtherAddressT>
+			virtual_reference& operator=(virtual_reference<OtherElement, OtherAddressT> other);
 
 			virtual_reference& operator=(const value_type& x);
 
@@ -59,23 +66,32 @@ namespace distant
 			virtual_reference& operator^=(const value_type& rhs);
 
 		private:
-			template <typename OtherElement, process_rights OtherAccess, typename OtherAddressT>
+			template <typename E, typename Ad>
 			friend class virtual_reference;
 
-			template <typename OtherElement, process_rights OtherAccess, typename OtherAddressT>
+			template <typename E, typename Ad>
 			friend class virtual_ptr;
 
 			const pointer ptr_;
 
 		}; // class virtual_reference
 
-		template <typename Element, process_rights Access, typename AddressT>
+		template <typename Element, typename AddressT, process_rights Access,
+			typename = std::enable_if_t<check_permission(Access, detail::required_vm_access<Element>)>
+		>
 		auto make_virtual_reference(const process<Access>& process, const address<AddressT> address = nullptr)
-		{ return *make_virtual_ptr<Element, Access, AddressT>(process, address);}
+		{ return *make_virtual_ptr<Element, AddressT>(process, address);}
 
-		template <typename Element, process_rights Access>
+		template <typename Element, process_rights Access,
+			typename = std::enable_if_t<check_permission(Access, detail::required_vm_access<Element>)>
+		>
 		auto make_virtual_reference(const process<Access>& process, const address<dword> address = nullptr)
-		{ return *make_virtual_ptr<Element, Access>(process, address);}
+		{ return *make_virtual_ptr<Element>(process, address);}
+
+		template <typename Element, typename AddressT>
+		struct virtual_traits<virtual_reference<Element, AddressT>>
+			 : virtual_traits<virtual_ptr<Element, AddressT>>
+		{};
 
 	} // namespace memory
 
