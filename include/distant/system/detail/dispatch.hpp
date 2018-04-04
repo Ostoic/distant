@@ -39,7 +39,7 @@ namespace distant::system::detail {
 		using boost::winapi::HANDLE_;
 
 		// snapshot first process tag implementation
-		inline bool first(boost::winapi::HANDLE_ snapshot_handle, boost::winapi::PROCESSENTRY32_* entry, distant::detail::process_tag tag) noexcept
+		inline bool first(const boost::winapi::HANDLE_ snapshot_handle, boost::winapi::PROCESSENTRY32_* entry, distant::detail::process_tag tag) noexcept
 		{
 			static_cast<void>(tag);
 			return boost::winapi::process32_first(snapshot_handle, entry);
@@ -50,10 +50,10 @@ namespace distant::system::detail {
 			typename Object_t, 
 			typename Entry_t = typename snapshot_dispatcher<Object_t>::entry_type // Get snapshot entry type of kernel::object
 		>
-		inline bool first(boost::winapi::HANDLE_ snapshot_handle, Entry_t* entry) noexcept
+		bool first(boost::winapi::HANDLE_ snapshot_handle, Entry_t& entry) noexcept
 		{
 			using dispatch = typename snapshot_dispatcher<Object_t>::dispatch;
-			return first(snapshot_handle, entry, dispatch{});
+			return first(snapshot_handle, &entry, dispatch{});
 		}
 
 		// snapshot next process tag implementation
@@ -68,10 +68,10 @@ namespace distant::system::detail {
 			typename Object_t, 
 			typename Entry_t = typename snapshot_dispatcher<Object_t>::entry_type // Get snapshot entry type of kernel::object
 		>
-		inline bool next(boost::winapi::HANDLE_ snapshot_handle, Entry_t* entry) noexcept
+		bool next(boost::winapi::HANDLE_ snapshot_handle, Entry_t& entry) noexcept
 		{
 			using dispatch = typename snapshot_dispatcher<Object_t>::dispatch;
-			return next(snapshot_handle, entry, dispatch{});
+			return next(snapshot_handle, &entry, dispatch{});
 		}
 
 		// snapshot get_id process tag implementation
@@ -93,7 +93,7 @@ namespace distant::system::detail {
 		}
 
 		// snapshot open_object process tag implementation
-		inline HANDLE_ open_object(DWORD_ id, DWORD_ access, distant::detail::process_tag tag) noexcept
+		inline HANDLE_ open_object(const DWORD_ id, const DWORD_ access, distant::detail::process_tag tag) noexcept
 		{
 			static_cast<void>(tag);
 			return boost::winapi::OpenProcess(access, false, id);
@@ -101,7 +101,7 @@ namespace distant::system::detail {
 
 		// snapshot open_object main tag dispatcher
 		template <typename Object_t>
-		inline HANDLE_ open_object(DWORD_ id, DWORD_ access) noexcept
+		HANDLE_ open_object(const DWORD_ id, const DWORD_ access) noexcept
 		{
 			using dispatch = typename snapshot_dispatcher<Object_t>::dispatch;
 			return open_object(id, access, dispatch{});

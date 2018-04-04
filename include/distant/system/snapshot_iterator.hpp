@@ -4,8 +4,9 @@
 #include <boost/winapi/basic_types.hpp>
 
 #include <distant/system/detail/dispatch.hpp>
-#include <distant/detail/attorney.hpp>
 #include <distant/detail/fwd.hpp>
+
+#include <memory>
 
 namespace distant::system
 {
@@ -52,7 +53,7 @@ namespace distant::system
 		boost::winapi::HANDLE_ object_handle_;
 
 		/// ToolHelp entry type
-		entry_type entry_;
+		std::shared_ptr<entry_type> entry_;
 	};
 } // end namespace distant::system
 

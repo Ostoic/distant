@@ -1,5 +1,5 @@
 #pragma once
-#include <distant\system\snapshot.hpp>
+#include <distant/system/snapshot.hpp>
 
 #include <stdexcept>
 

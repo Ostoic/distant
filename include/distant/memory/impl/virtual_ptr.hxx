@@ -22,13 +22,13 @@ namespace distant::memory
 	template <typename E, process_rights A, typename Ad>
 	void virtual_ptr<E, A, Ad>::increment() noexcept
 	{
-		++this->address_;
+		this->address_ += sizeof(E);
 	}
 
 	template <typename E, process_rights A, typename Ad>
 	void virtual_ptr<E, A, Ad>::decrement() noexcept
 	{
-		--this->address_;
+		this->address_ -= sizeof(E);
 	}
 
 	template <typename E, process_rights A, typename Ad>
@@ -48,7 +48,7 @@ namespace distant::memory
 	template <typename E, process_rights A, typename Ad>
 	void virtual_ptr<E, A, Ad>::advance(const int n) noexcept
 	{
-		this->address_ += n;
+		this->address_ += sizeof(E) * n;
 	}
 
 	template <typename E, process_rights A, typename Ad>
