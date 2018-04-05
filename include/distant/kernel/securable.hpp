@@ -1,12 +1,12 @@
 #pragma once
 
 #include <distant/handle.hpp>
-#include <distant/kernel/object.hpp>
+#include <distant/kernel/kernel_object.hpp>
 
 namespace distant::kernel
 {
 	// https://msdn.microsoft.com/en-us/library/windows/desktop/aa379557(v=vs.85).aspx
-	class securable : public object
+	class securable : public kernel_object
 	{
 	public:
 		/*********************************/

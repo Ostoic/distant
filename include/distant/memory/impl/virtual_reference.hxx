@@ -11,13 +11,13 @@ namespace distant::memory
 	{}
 
 	template <typename E,  typename T>
-	template <typename OE, typename OT>
+	template <typename OE, typename OT, typename>
 	virtual_reference<E, T>::virtual_reference(virtual_reference<OE, OT> other)
 		: ptr_(other.ptr_)
 	{}
 
 	template <typename E,  typename T>
-	template <typename OE, typename OT>
+	template <typename OE, typename OT, typename>
 	virtual_reference<E, T>& virtual_reference<E, T>::operator=(virtual_reference<OE, OT> other)
 	{
 		this->ptr_ = other.ptr_;
@@ -25,14 +25,10 @@ namespace distant::memory
 	}
 
 	template <typename E,  typename T>
-	virtual_reference<E, T>& virtual_reference<E, T>::operator=(const value_type& x)
+	template <typename Value, typename>
+	virtual_reference<E, T>& virtual_reference<E, T>::operator=(const Value& x)
 	{
-		static_assert(
-			!std::is_const<E>::value,
-			"[virtual_reference::operator=] Cannot assign to constant value"
-		);
-
-		memory::write<value_type, T>(*this->ptr_.process_, this->ptr_.address_, x);
+		memory::write<std::remove_cv_t<value_type>, T>(*this->ptr_.process_, this->ptr_.address_, static_cast<value_type>(x));
 		return *this;
 	}
 

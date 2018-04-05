@@ -28,49 +28,47 @@ namespace error   {
 		return "windows_error";
 	}
 
-	inline std::string windows_category::message(int value) const
+	inline std::string windows_category::message(const int value) const
 	{
 		namespace winapi = boost::winapi;
 
 		// Retrieve the system error message for the given error code.
-		char* errorBuffer;
+		std::string buffer;
 
 		winapi::format_message(
 			winapi::FORMAT_MESSAGE_FROM_SYSTEM_ |
 			winapi::FORMAT_MESSAGE_ALLOCATE_BUFFER_,
 			nullptr, value,
 			winapi::MAKELANGID_(winapi::LANG_NEUTRAL_, winapi::SUBLANG_DEFAULT_),
-			reinterpret_cast<winapi::LPSTR_>(&errorBuffer), 0, nullptr);
+			reinterpret_cast<winapi::LPSTR_>(buffer.data()), 0, nullptr);
 		
-		std::string errorMessage = errorBuffer;
-		boost::winapi::LocalFree(errorBuffer);
-
-		const auto pos = errorMessage.find("\r\n");
+		const auto pos = buffer.find("\r\n");
 		if (pos != std::string::npos)
-			errorMessage.erase(pos, pos + 2);
+			buffer.erase(pos, pos + 2);
 
-		return errorMessage;
+		return buffer;
 	}
 
-	inline const windows_category& get_windows_category()
+	inline const windows_category& get_windows_category() noexcept
 	{
-		static windows_category error_category;
+		thread_local windows_category error_category;
 		return error_category;
 	}
 
-/****************/
-//windows_error:
-/****************/
+
+/*******************/
+//windows_error_code:
+/*******************/
 	inline windows_error_code::windows_error_code() noexcept
 		: windows_error_code(boost::winapi::NO_ERROR_) {}
 
-	inline windows_error_code::windows_error_code(error::gle g) noexcept
+	inline windows_error_code::windows_error_code(gle g) noexcept
 		: windows_error_code(boost::winapi::GetLastError()) { static_cast<void>(g); }
 
-	inline windows_error_code::windows_error_code(boost::winapi::DWORD_ code) noexcept
+	inline windows_error_code::windows_error_code(const boost::winapi::DWORD_ code) noexcept
 		: std::error_code(code, get_windows_category()) {}
 
-	inline void windows_error_code::get_last() noexcept
+	inline void windows_error_code::update_last() noexcept
 	{
 		this->set(boost::winapi::GetLastError());
 	}
@@ -80,7 +78,7 @@ namespace error   {
 		this->set(boost::winapi::NO_ERROR_);
 	}
 
-	inline void windows_error_code::set(boost::winapi::DWORD_ code) noexcept
+	inline void windows_error_code::set(const boost::winapi::DWORD_ code) noexcept
 	{
 		boost::winapi::SetLastError(code);
 		this->assign(code, this->category());
@@ -90,12 +88,12 @@ namespace error   {
 	{ return windows_error_code(gle()); }
 
 //free:
-	inline std::ostream& operator <<(std::ostream& stream, const windows_error_code& error)
+	template <typename CharT, typename CharTraits>
+	std::basic_ostream<CharT, CharTraits>& operator <<(std::basic_ostream<CharT, CharTraits>& stream, const windows_error_code& error)
 	{
 		stream << error.category().name() << " (" << error.value() << "): " << error.category().message(error.value());
 		return stream;
 	}
-
 
 } // namespace error 
 } // namespace distant

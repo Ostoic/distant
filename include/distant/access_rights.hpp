@@ -120,7 +120,7 @@ namespace distant
 		enum class handle
 		{
 			inherit = boost::winapi::HANDLE_FLAG_INHERIT_,
-			// Child process will inherit object handle
+			// Child process will inherit kernel_object handle
 
 			close_protected = boost::winapi::HANDLE_FLAG_PROTECT_FROM_CLOSE_,
 			// Prevent CloseHandle from closing handle
@@ -133,20 +133,33 @@ namespace distant
 	DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(access_rights::standard);
 	DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(access_rights::page_protection);
 
-	/// Check if we have permission to perform the given action
-	constexpr bool check_permission(const access_rights::process given, const access_rights::process check) noexcept
-	{
-		return (given & check) == check;
-	}
+	using process_rights = access_rights::process;
+	using token_rights = access_rights::token;
+	using page_protection = access_rights::page_protection;
 
-	///Check if our permission is at most \a max permission
-	constexpr bool constrain_permission(const access_rights::process given, const access_rights::process max) noexcept
-	{
-		return check_permission(max, given);
-	}
+	constexpr bool operator<=(const process_rights lhs, const process_rights rhs) noexcept
+	{ return (lhs & rhs) == lhs; }
+
+	constexpr bool operator>(const process_rights lhs, const process_rights rhs) noexcept
+	{ return (lhs & rhs) == rhs && lhs != rhs; }
+
+	constexpr bool operator>=(const process_rights lhs, const process_rights rhs) noexcept
+	{ return (lhs & rhs) == rhs; }
+
+	constexpr bool operator<(const process_rights lhs, const process_rights rhs) noexcept
+	{ return operator<=(lhs, rhs) && lhs != rhs; }
 
 	/// Check if we have permission to perform the given action
-	constexpr bool check_permission(const access_rights::token given, const access_rights::token check) noexcept
+	constexpr bool check_permission(const process_rights given, const process_rights check) noexcept
+	{ return given >= check; }
+
+	// Todo: Find a more descriptive name for this
+	/// Check if our permission is at most \a highest permission
+	constexpr bool is_at_most(const process_rights given, const process_rights highest) noexcept
+	{ return given <= highest; }
+
+	/// Check if we have permission to perform the given action
+	constexpr bool check_permission(const token_rights given, const token_rights check) noexcept
 	{
 		return (given & check) == check;
 	}
@@ -156,7 +169,6 @@ namespace distant
 	{
 		return (given & check) == check;
 	}
-
 	
 	/// @brief Shortcut for defining vm_operation process_rights.
 	constexpr auto vm_op = access_rights::process::vm_operation;
@@ -176,7 +188,4 @@ namespace distant
 	/// @brief Shortcut for defining vm_read | vm_write | vm_operation process_rights.
 	constexpr auto vm_rw_op = vm_r_op | vm_write;
 
-	using process_rights = access_rights::process;
-	using token_rights = access_rights::token;
-	using page_protection = access_rights::page_protection;
 } // namespace distant

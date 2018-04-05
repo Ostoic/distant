@@ -4,7 +4,7 @@
 
 namespace distant::kernel
 {
-	class object;
+	class kernel_object;
 	class process_base;
 
 	template <process_rights R>

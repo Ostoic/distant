@@ -21,13 +21,13 @@ namespace distant {
 				std::false_type				// Otherwise return false
 		>;
 
-	// Metafunction for detecting whether a type is a kernel::object
+	// Metafunction for detecting whether a type is a kernel::kernel_object
 	template <class T>
 	struct is_kernel_object
 	{
 		using result = typename
 			std::conditional_t<
-				std::is_convertible<T, kernel::object>::value, // If T derives from kernel::object,
+				std::is_convertible<T, kernel::kernel_object>::value, // If T derives from kernel::kernel_object,
 					std::true_type,					  // return true.
 					std::false_type					  // Otherwise return false
 			>;
@@ -35,26 +35,16 @@ namespace distant {
 		static constexpr bool value = result::value;
 	};
 
-	/// Contains kernel object traits
+	/// Contains kernel kernel_object traits
 	template <class T>
-	struct object_traits 
+	struct kernel_object_traits 
 	{
-		/*static_assert (
-			is_kernel_object<T>::value,
-			"Type must derive from kernel::object");*/
-
 		using handle_type = handle<T>;
 		using error_type  = error::windows_error_code;
 		using object_type = T;
 	};
 
 	template <typename Object>
-	struct get_access_rights {};
-
-	template <access_rights::process A>
-	struct get_access_rights<kernel::process<A>>
-	{
-		static constexpr access_rights::process value = A;
-	};
+	struct get_access_rights;
 
 } // end namespace distant

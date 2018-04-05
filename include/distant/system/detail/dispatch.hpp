@@ -48,7 +48,7 @@ namespace distant::system::detail {
 		// snapshot first main tag dispatcher
 		template <
 			typename Object_t, 
-			typename Entry_t = typename snapshot_dispatcher<Object_t>::entry_type // Get snapshot entry type of kernel::object
+			typename Entry_t = typename snapshot_dispatcher<Object_t>::entry_type // Get snapshot entry type of kernel::kernel_object
 		>
 		bool first(boost::winapi::HANDLE_ snapshot_handle, Entry_t& entry) noexcept
 		{
@@ -66,7 +66,7 @@ namespace distant::system::detail {
 		// snapshot next main tag dispatcher
 		template <
 			typename Object_t, 
-			typename Entry_t = typename snapshot_dispatcher<Object_t>::entry_type // Get snapshot entry type of kernel::object
+			typename Entry_t = typename snapshot_dispatcher<Object_t>::entry_type // Get snapshot entry type of kernel::kernel_object
 		>
 		bool next(boost::winapi::HANDLE_ snapshot_handle, Entry_t& entry) noexcept
 		{
@@ -84,7 +84,7 @@ namespace distant::system::detail {
 		// snapshot get_id main tag dispatcher
 		template <
 			typename Object_t, 
-			typename Entry_t = typename snapshot_dispatcher<Object_t>::entry_type // Get snapshot entry type of kernel::object
+			typename Entry_t = typename snapshot_dispatcher<Object_t>::entry_type // Get snapshot entry type of kernel::kernel_object
 		>
 		inline boost::winapi::DWORD_ get_id(const Entry_t& entry) noexcept
 		{

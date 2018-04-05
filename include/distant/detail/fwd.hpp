@@ -28,7 +28,7 @@ class wait;
 
 namespace kernel {
 
-class object;
+class kernel_object;
 class securable;
 
 // Default template argument is all_access

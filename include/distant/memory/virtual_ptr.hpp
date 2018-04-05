@@ -11,8 +11,6 @@ namespace distant
 { 
 	namespace memory 
 	{
-		// Todo: Consider checking the memory for read/write access and throwing on failure in another class
-		// this one should be similar to a raw pointer.
 		template <typename Element, typename AddressT = dword>
 		class virtual_ptr : public
 			boost::iterator_facade<
@@ -30,18 +28,23 @@ namespace distant
 			using const_reference = virtual_reference<const std::remove_cv_t<Element>, AddressT>;
 
 			static constexpr auto vm_access = virtual_traits<virtual_ptr>::vm_access;
+
+			template <typename T>
+			using require_vm_access_to = std::enable_if_t<detail::required_vm_access<T>::value >= vm_access, T>;
 			
 		public:
 			virtual_ptr() noexcept;
 
 			virtual_ptr(nullptr_t) noexcept;
 
-			template <process_rights Access, typename = std::enable_if_t<constrain_permission(Access, vm_access)>>
+			template <process_rights Access, typename = std::enable_if_t<(Access >= vm_access)>>
 			explicit virtual_ptr(const process<Access>& process, address<AddressT> address = nullptr) noexcept;
 
 			template <
-				typename OtherT = std::enable_if_t<detail::required_vm_access<OtherT> == vm_access, OtherT>,
-				typename OtherAddressT>
+				typename OtherT,
+				typename OtherAddressT,
+				typename = require_vm_access_to<OtherT>
+			>
 			virtual_ptr(virtual_ptr<OtherT, OtherAddressT> pointer) noexcept;
 
 			address<AddressT> get() const noexcept;
@@ -49,23 +52,28 @@ namespace distant
 		private:
 			friend class boost::iterator_core_access;
 
+			struct enabler {};
+
 			// interface for boost::iterator_facade
 			void increment() noexcept;
 			void decrement() noexcept;
 
-			const_reference dereference() const;
-			reference		dereference();
+			reference dereference() const;
 			
 			template <
-				typename OtherT = std::enable_if_t<detail::required_vm_access<OtherT> == vm_access, OtherT>,
-				typename OtherAddressT>
+				typename OtherT,
+				typename OtherAddressT,
+				typename = require_vm_access_to<OtherT>
+			>
 			bool equal(virtual_ptr<OtherT, OtherAddressT> other) const noexcept;
 
 			void advance(int n) noexcept;
 
 			template <
-				typename OtherT = std::enable_if_t<detail::required_vm_access<OtherT> == vm_access, OtherT>,
-				typename OtherAddressT>
+				typename OtherT,
+				typename OtherAddressT,
+				typename = require_vm_access_to<OtherT>
+			>
 			difference_type distance_to(virtual_ptr<OtherT, OtherAddressT> other) const noexcept;
 
 		private:
@@ -83,22 +91,28 @@ namespace distant
 			typename Element, 
 			typename AddressT, 
 			process_rights Access,
-			typename = std::enable_if_t<constrain_permission(Access, detail::required_vm_access<Element>)>
+			typename = std::enable_if_t<(Access >= detail::required_vm_access<Element>::value)>
 		>
-		auto make_virtual_ptr(const process<Access>& process, const address<AddressT> address = nullptr)
-		{ return virtual_ptr<Element, AddressT>(process, address); }
-
+		auto make_virtual_ptr(const process<Access>& p, const address<AddressT> address = nullptr) noexcept
+		{
+			virtual_ptr<Element, AddressT> result;
+			return result;
+		}
 
 		template <
 			typename Element,
 			process_rights Access,
-			typename = std::enable_if_t<constrain_permission(Access, detail::required_vm_access<Element>)>
+			typename = std::enable_if_t<(Access >= detail::required_vm_access<Element>::value)>
 		>
-		auto make_virtual_ptr(const process<Access>& process, const address<dword> address = nullptr)
-		{ return virtual_ptr<Element, dword>(process, address); }
+		auto make_virtual_ptr(const process<Access>& p, const address<dword> address = nullptr) noexcept
+		{
+			virtual_ptr<Element, dword> result;
+			return result;
+		}
 
 		template<typename T, typename AddressT, typename CharT, typename Traits>
-		std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& stream, virtual_ptr<T, AddressT> p)
+		std::basic_ostream<CharT, Traits>& 
+			operator<<(std::basic_ostream<CharT, Traits>& stream, virtual_ptr<T, AddressT> p)
 		{
 			stream << std::hex << reinterpret_cast<void*>(static_cast<AddressT>(p.get()));
 			return stream;
@@ -107,7 +121,7 @@ namespace distant
 		template <typename Element, typename AddressT>
 		struct virtual_traits<virtual_ptr<Element, AddressT>>
 		{
-			static constexpr auto vm_access = detail::required_vm_access<Element>;
+			static constexpr auto vm_access = detail::required_vm_access<Element>::value;
 		};
 
 	} // namespace memory

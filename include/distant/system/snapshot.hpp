@@ -14,48 +14,46 @@ Distributed under the Apache Software License, Version 2.0.
 
 #include <vector>
 
-namespace distant {
-namespace system  {
-
-	// system::snapshot models the ForwardRange concept
-	template <typename KernelObject>
-	class snapshot : public utility::boolean_validator<snapshot<KernelObject>>
+namespace distant 
+{
+	namespace system  
 	{
-	public: /*
-	static_assert(
-		is_kernel_object<KernelObject>::value,
-		"system::snapshot is iterable only for kernel objects.");*/
+		// system::snapshot models the ForwardRange concept
+		template <typename KernelObject>
+		class snapshot : public utility::boolean_validator<snapshot<KernelObject>>
+		{
+		public:
+			using object_type = KernelObject;
+			using handle_type = handle<snapshot>;
 
-		using object_type = KernelObject;
-		using handle_type = handle<snapshot>;
+			using iterator = snapshot_iterator<KernelObject>;
+			using const_iterator = snapshot_iterator<KernelObject>;
 
-		using iterator = snapshot_iterator<KernelObject>;
-		using const_iterator = snapshot_iterator<KernelObject>;
+		public: // interface
+			// Iterate over the snapshot range via the range-based for loop:
+			iterator begin() const;
+			iterator end() const;
 
-	public: // interface
-		// Iterate over the snapshot range via the range-based for loop:
-		iterator begin() const;
-		iterator end() const;
+			template <template <typename, typename> class OutContainer>
+			OutContainer<KernelObject, std::allocator<KernelObject>> as() const;
 
-		template <template <typename, typename> class OutContainer>
-		OutContainer<KernelObject, std::allocator<KernelObject>> as() const;
+			template <template <typename, typename> class OutContainer, typename Predicate>
+			OutContainer<KernelObject, std::allocator<KernelObject>> as(Predicate) const;
 
-		template <template <typename, typename> class OutContainer, typename Predicate>
-		OutContainer<KernelObject, std::allocator<KernelObject>> as(Predicate) const;
+		public: // {ctor}
+			snapshot();
 
-		//operator output_type() const;
+		protected:
+			friend class iterator;
 
-	public: // {ctor}
-		snapshot();
+			handle<snapshot> handle_;
+		};
 
-	protected:
-		friend class iterator;
-
-		handle<snapshot> handle_;
-	};
-} // end namespace system
+	} // namespace system
 
 	using system::snapshot;
-} // end namespace distant
 
+} // namespace distant
+
+// Implementation:
 #include <distant/system/impl/snapshot.hxx>

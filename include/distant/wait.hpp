@@ -6,7 +6,7 @@ Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
 */ 
 
-#include <distant/kernel/object.hpp>
+#include <distant/kernel/kernel_object.hpp>
 #include <distant/utility/literal.hpp>
 
 #include <boost/winapi/wait.hpp>
@@ -43,7 +43,7 @@ namespace distant {
 
 	public:
 		// Wait for synchronizable object for the given amount of time
-		wait::state operator ()(const kernel::object& obj, time_type time) const
+		wait::state operator ()(const kernel::kernel_object& obj, time_type time) const
 		{
 			// XX Consider making free and including std::lock_guard or something
 			// XX Or just the usual below 
@@ -82,7 +82,7 @@ namespace distant {
 		//}
 
 		// Wait on kernel object until the object is done executing
-		wait::state operator ()(const kernel::object& obj, wait::infinite tag) const
+		wait::state operator ()(const kernel::kernel_object& obj, wait::infinite tag) const
 		{ 
 			static_cast<void>(tag);
 			return this->operator()(obj, boost::winapi::INFINITE_); 

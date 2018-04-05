@@ -37,6 +37,8 @@ namespace distant::system
 	private:
 		friend class boost::iterator_core_access;
 
+		struct enabler {};
+
 		bool current_valid();
 
 		bool next();

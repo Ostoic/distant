@@ -21,7 +21,7 @@ namespace distant::memory
 
 
 	template <typename E, typename Ad>
-	template <typename OtherT, typename OtherAddressT>
+	template <typename OtherT, typename OtherAddressT, typename>
 	virtual_ptr<E, Ad>::virtual_ptr(virtual_ptr<OtherT, OtherAddressT> pointer) noexcept
 		: process_(reinterpret_cast<decltype(process_)>(pointer.process_)), address_(pointer.address_)
 	{}
@@ -39,15 +39,8 @@ namespace distant::memory
 	}
 
 	template <typename E, typename Ad>
-	typename virtual_ptr<E, Ad>::const_reference
-	virtual_ptr<E, Ad>::dereference() const
-	{
-		return const_reference(*this);
-	}
-
-	template <typename E, typename Ad>
 	typename virtual_ptr<E, Ad>::reference
-	virtual_ptr<E, Ad>::dereference() 
+	virtual_ptr<E, Ad>::dereference() const
 	{
 		return reference(*this);
 	}
@@ -59,14 +52,14 @@ namespace distant::memory
 	}
 
 	template <typename E, typename Ad>
-	template <typename OtherT, typename OtherAddressT>
+	template <typename OtherT, typename OtherAddressT, typename>
 	bool virtual_ptr<E, Ad>::equal(virtual_ptr<OtherT, OtherAddressT> other) const noexcept
 	{
 		return this->address_ == other.address_ && this->process_ == other.process_;
 	}
 
 	template <typename E, typename Ad>
-	template <typename OtherT, typename OtherAddressT>
+	template <typename OtherT, typename OtherAddressT, typename>
 	typename virtual_ptr<E, Ad>::difference_type 
 	virtual_ptr<E, Ad>::distance_to(virtual_ptr<OtherT, OtherAddressT> other) const noexcept
 	{
