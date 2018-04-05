@@ -20,7 +20,9 @@ namespace distant::kernel
 //class process
 //public:
 	template <access_rights::process T>
-	void process<T>::kill()
+	template <typename Return>
+	auto process<T>::kill()
+		-> std::enable_if_t<check_permission(T, process_rights::terminate), Return>
 	{
 		using access_rights = access_rights::process;
 
@@ -31,10 +33,13 @@ namespace distant::kernel
 			"Process must have terminate access right");
 
 		process_base::kill();
+		return;
 	}
 
 	template <access_rights::process T>
-	bool process<T>::is_active() const
+	template <typename Return>
+	auto process<T>::is_active() const
+		-> std::enable_if_t<check_permission(T, process_rights::synchronize), Return>
 	{
 		using access_rights = access_rights::process;
 
@@ -48,7 +53,12 @@ namespace distant::kernel
 	}
 
 	template <access_rights::process T>
-	bool process<T>::is_32bit() const
+	template <typename Return>
+	auto process<T>::is_32bit() const
+		-> std::enable_if_t<
+			check_permission(T, process_rights::query_information) ||
+			check_permission(T, process_rights::query_limited_information), 
+		Return>
 	{
 		using access_rights = access_rights::process;
 
@@ -63,7 +73,12 @@ namespace distant::kernel
 	}
 
 	template <access_rights::process T>
-	bool process<T>::is_64bit() const
+	template <typename Return>
+	auto process<T>::is_64bit() const
+		-> std::enable_if_t<
+			check_permission(T, process_rights::query_information) ||
+			check_permission(T, process_rights::query_limited_information), 
+		Return>
 	{
 		using access_rights = access_rights::process;
 
@@ -78,7 +93,12 @@ namespace distant::kernel
 	}
 
 	template <access_rights::process T>
-	std::wstring process<T>::filename() const
+	template <typename Return>
+	auto process<T>::filename() const
+		-> std::enable_if_t<
+			check_permission(T, process_rights::query_information) ||
+			check_permission(T, process_rights::query_limited_information),
+		Return>
 	{
 		using access_rights = access_rights::process;
 
@@ -93,7 +113,12 @@ namespace distant::kernel
 	}
 
 	template <access_rights::process T>
-	filesystem::path process<T>::file_path() const
+	template <typename Return>
+	auto process<T>::file_path() const
+		-> std::enable_if_t<
+			check_permission(T, process_rights::query_information) ||
+			check_permission(T, process_rights::query_limited_information),
+		Return>
 	{
 		using access_rights = access_rights::process;
 

@@ -15,7 +15,7 @@ namespace distant
 	namespace kernel
 	{
 		/// Representation of an executable program
-		template <access_rights::process access_flags>
+		template <access_rights::process AccessFlags>
 		class process : private process_base
 		{
 		public: // interface
@@ -29,36 +29,67 @@ namespace distant
 			using process_base::id;
 
 			/// @brief Terminate the process
-			void kill();
+			/// @remark Function is disabled if the process does not have the \a termiante or query_information process right.
+			template <typename Return = void>
+			auto kill()
+				-> std::enable_if_t<check_permission(AccessFlags, process_rights::terminate), Return>;
 
 			/// @brief Query the process handle to see if it is still active
+			/// @remark Function is disabled if the process does not have the \a synchronize or query_information process right.
 			/// @return true if the process is active, and false otherwise
-			bool is_active() const;
+			template <typename Return = bool>
+			auto is_active() const
+				-> std::enable_if_t<check_permission(AccessFlags, process_rights::synchronize), Return>;
 
 			/// @brief Test if the process is running under the WOW64 emulator.
 			/// If the process has been compiled to run on 32-bit system and
 			/// is being run on a 64-bit system, it will be emulated.
+			/// @remark Function is disabled if the process does not have the \a query_limited_information or query_information process right.
 			/// @return true if the process is being emulated, and false if not.
-			bool is_32bit() const;
+			template <typename Return = bool>
+			auto is_32bit() const
+				-> std::enable_if_t<
+					check_permission(AccessFlags, process_rights::query_information) ||
+					check_permission(AccessFlags, process_rights::query_limited_information), 
+				Return>;
 
 			/// @brief Test if the process is being run in 64bit.
+			/// @remark Function is disabled if the process does not have the \a query_limited_information or query_information process right.
 			/// @return true if the process is being run in 64bit mode, and false if not.
-			bool is_64bit() const;
+			template <typename Return = bool>
+			auto is_64bit() const
+				-> std::enable_if_t<
+					check_permission(AccessFlags, process_rights::query_information) ||
+					check_permission(AccessFlags, process_rights::query_limited_information),
+				Return>;
 
 			/// @brief Get the executable name of the process
+			/// @remark Function is disabled if the process does not have the \a query_limited_information or query_information process right.
 			/// @return std::wstring containing the executable name of the process
-			std::wstring filename() const;
+			template <typename Return = std::wstring>
+			auto filename() const
+				-> std::enable_if_t<
+					check_permission(AccessFlags, process_rights::query_information) ||
+					check_permission(AccessFlags, process_rights::query_limited_information),
+				Return>;
 
 			/// @brief Get the file path (in WIN32 format) of the process
+			/// @remark Function is disabled if the process does not have the \a query_limited_information or query_information process right.
 			/// @return std::wstring containing the file path of the process
-			filesystem::path file_path() const;
+			template <typename Return = filesystem::path>
+			auto file_path() const
+				-> std::enable_if_t<
+					check_permission(AccessFlags, process_rights::query_information) ||
+					check_permission(AccessFlags, process_rights::query_limited_information),
+				Return>;
+
 
 			template <access_rights::process OtherFlag,
-			          typename = std::enable_if_t<check_permission(access_flags, OtherFlag)>>
+			          typename = std::enable_if_t<check_permission(AccessFlags, OtherFlag)>>
 			operator process<OtherFlag>&() noexcept;
 
 			template <access_rights::process OtherFlag,
-			          typename = std::enable_if_t<check_permission(access_flags, OtherFlag)>>
+			          typename = std::enable_if_t<check_permission(AccessFlags, OtherFlag)>>
 			operator const process<OtherFlag>&() const noexcept;
 
 			/// @brief Query the process for memory information 
