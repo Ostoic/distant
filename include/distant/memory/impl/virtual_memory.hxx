@@ -57,23 +57,47 @@ namespace distant::memory
 	template <page_protection Protection, typename AddressT>
 	page_protection virtual_protect(const process<vm_op>& process, const address<AddressT> address, const std::size_t size)
 	{
-		using boost::winapi::DWORD_;
 		static_assert(
 			detail::has_virtual_protect_support(Protection),
 			"[memory::virtual_protect] Selected page_protection is not supported"
 		);
 
+		return virual_protect(process, address, Protection, size);
+	}
+
+	inline page_protection virtual_protect(const process<vm_op>& process, const address<dword> address, page_protection protection, const std::size_t size)
+	{
+		return virtual_protect<dword>(process, address, protection, size);
+	}
+
+	template <typename AddressT>
+	page_protection virtual_protect(const process<vm_op>& process, const address<AddressT> address, page_protection protection, const std::size_t size)
+	{
+		using boost::winapi::DWORD_;
+
 		DWORD_ old;
 		if (!::VirtualProtectEx(
-					process.get_handle().native_handle(), 
-					reinterpret_cast<void*>(static_cast<AddressT>(address)), 
-					size, static_cast<DWORD_>(Protection), &old
+			process.get_handle().native_handle(),
+			reinterpret_cast<void*>(static_cast<AddressT>(address)),
+			size, static_cast<DWORD_>(protection), &old
 		))
 			throw std::system_error(distant::last_error(), "[memory::virtual_protect] VirtualProtectEx failed");
 
 		return static_cast<page_protection>(old);
 	}
 
+	template <typename AddressT>
+	bool virtual_protect_noexcept(const process<vm_op>& process, const address<AddressT> address, page_protection protection, const std::size_t size) noexcept
+	{
+		using boost::winapi::DWORD_;
+
+		DWORD_ old;
+		return ::VirtualProtectEx(
+			process.get_handle().native_handle(),
+			reinterpret_cast<void*>(static_cast<AddressT>(address)),
+			size, static_cast<DWORD_>(protection), &old
+		);
+	}
 
 	template <typename T, page_protection Protection, typename AddressT>
 	virtual_ptr<T, AddressT> virtual_malloc(const process<vm_op>& process, const std::size_t n)
