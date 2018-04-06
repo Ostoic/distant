@@ -1,3 +1,7 @@
+// @copyright 2017 - 2018 Shaun Ostoic
+// Distributed under the MIT License.
+// (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
+
 #pragma once
 #include <distant/system/snapshot.hpp>
 
@@ -6,12 +10,13 @@
 namespace distant::system {
 
 	template <typename O>
-	snapshot<O>::snapshot() 
+	snapshot<O>::snapshot()
 		: handle_(system::detail::get_snapshot_handle<object_type, snapshot>())
 	{
 		static_assert(
 			is_kernel_object<O>::value,
-			"[snapshot::{ctor}] Unable to take system snapshot of nonkernel object");
+			"[snapshot::{ctor}] Unable to take system snapshot of nonkernel object"
+		);
 
 		if (handle_ == nullptr)
 			throw std::system_error(error::last_error(), "[snapshot::{ctor}] Invalid handle");
@@ -55,11 +60,5 @@ namespace distant::system {
 
 		return output;
 	}
-/*
-	template <class O, class C>
-	operator typename snapshot<O>::output_type() const
-	{
-		return this->as();
-	}*/
 
-} // end namespace distant::system
+} // namespace distant::system

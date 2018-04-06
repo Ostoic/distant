@@ -1,6 +1,11 @@
+// @copyright 2017 - 2018 Shaun Ostoic
+// Distributed under the MIT License.
+// (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
+
 #pragma once
 
 #include <distant/type_traits.hpp>
+#include <distant/kernel/type_traits.hpp>
 #include <distant/handle.hpp>
 
 #include <distant/security/privilege.hpp>
@@ -13,11 +18,11 @@ namespace distant
 		// Container-like object for privileges, SIDs, and other security stuff.
 		// TODO: Make into a range that enumerates enabled privileges.
 		template <access_rights::token access, typename KernelObject>
-		class access_token : public object
+		class access_token : public kernel_object
 		{
 		private: // subtypes
-			using object_type = typename object_traits<KernelObject>::object_type;
-			using Base = object;
+			using object_type = typename kernel_object_traits<KernelObject>::object_type;
+			using Base = kernel_object;
 
 		public: // interface
 			/// Check if the given privilege is in the access token's list of privileges.
@@ -51,20 +56,18 @@ namespace distant
 			friend class access_token;
 		};
 
-		/// Retrieves the access token of the given kernel object.
-		/// @return the primary access token of the kernel object is a process,
-		/// or it returns an impersonation access token if the kernel object is a thread.
-		template <access_rights::token access, typename KernelObject>
-		access_token<access, KernelObject> get_access_token(const KernelObject&) noexcept;
+		/// @brief Retrieves the access token of the given kernel object.
+		/// @return the primary access token of the kernel object is a process, or it returns an impersonation access token if the kernel object is a thread.
+		template <access_rights::token Access, typename KernelObject, typename = std::enable_if_t<detail::has_token_access<KernelObject>::value, KernelObject>>
+		access_token<Access, KernelObject> get_access_token(const KernelObject&) noexcept;
 
-		/// Retrieves the access token of the given kernel object.
-		/// @return the primary access token of the kernel object is a process,
-		/// or it returns an impersonation access token if the kernel object is a thread.
-		template <typename KernelObject>
+		/// @brief Retrieves the access token of the given kernel object.
+		/// @return the primary access token of the kernel object is a process, or it returns an impersonation access token if the kernel object is a thread.
+		template <typename KernelObject, typename = std::enable_if_t<detail::has_token_access<KernelObject>::value, KernelObject>>
 		access_token<access_rights::token::adjust_privileges | access_rights::token::query, KernelObject>
 		get_access_token(const KernelObject&) noexcept;
 
-		/// Retrieve the access token of the current process.
+		/// @brief Retrieve the access token of the current process.
 		/// @return the primary access token of the current process.
 		access_token<access_rights::token::all_access, process<>>
 		get_access_token() noexcept;

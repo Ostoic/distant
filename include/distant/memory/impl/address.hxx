@@ -1,3 +1,7 @@
+// @copyright 2017 - 2018 Shaun Ostoic
+// Distributed under the MIT License.
+// (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
+
 #pragma once
 #include "../address.hpp"
 
@@ -77,11 +81,6 @@ namespace distant::memory
 	template <typename A>
 	constexpr address<A>::address() noexcept 
 		: address_(static_cast<address_type>(0))
-	{}
-
-	template <typename A>
-	constexpr address<A>::address(nullptr_t) noexcept  
-		: address() 
 	{}
 
 	template <typename A>

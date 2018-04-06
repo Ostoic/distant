@@ -1,3 +1,7 @@
+// @copyright 2017 - 2018 Shaun Ostoic
+// Distributed under the MIT License.
+// (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
+
 #pragma once
 #include <distant/system/snapshot_iterator.hpp>
 
@@ -45,14 +49,13 @@ namespace distant::system
 	{
 		namespace snapshot_entry = detail::snapshot_entry;
 
-		// Open a handle to the kernel object
+		// Open a handle to the kernel kernel_object
 		this->object_handle_ = snapshot_entry::open_object<K>(
 			snapshot_entry::get_id<K>(*this->entry_),
 			static_cast<boost::winapi::DWORD_>(
-				get_access_rights<process<>>::value));
+				get_access_rights<K>::value));
 
-		CloseHandle(this->object_handle_);
-
+		boost::winapi::CloseHandle(this->object_handle_);
 		return this->object_handle_ != nullptr;
 	}
 
@@ -62,7 +65,7 @@ namespace distant::system
 		// Bring the snapshot_entry dispatcher function into scope
 		namespace snapshot_entry = detail::snapshot_entry;
 
-		// Continue iterating until we obtain a valid object handle, or until the API call fails.
+		// Continue iterating until we obtain a valid kernel_object handle, or until the API call fails.
 		while (snapshot_entry::next<K>(this->native_snap_, *this->entry_))
 		{
 			// Check if we received a valid handle

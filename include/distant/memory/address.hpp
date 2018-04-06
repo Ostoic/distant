@@ -1,9 +1,12 @@
+// @copyright 2017 - 2018 Shaun Ostoic
+// Distributed under the MIT License.
+// (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
+
 #pragma once
 
 #include <distant/types.hpp>
 
 #include <type_traits>
-#include <iostream>
 
 namespace distant
 {
@@ -34,6 +37,7 @@ namespace distant
 			friend constexpr bool operator> (const address lhs, const address rhs) noexcept { return !operator<(lhs, rhs) && !operator==(lhs, rhs); }
 			friend constexpr bool operator<=(const address lhs, const address rhs) noexcept { return !operator>(lhs, rhs); }
 
+			friend constexpr address operator% (const address lhs, const address rhs) noexcept { return static_cast<AddressT>(lhs) %  static_cast<AddressT>(rhs); }
 			friend constexpr address operator& (const address lhs, const address rhs) noexcept { return static_cast<AddressT>(lhs) &  static_cast<AddressT>(rhs); }
 			friend constexpr address operator| (const address lhs, const address rhs) noexcept { return static_cast<AddressT>(lhs) |  static_cast<AddressT>(rhs); }
 			friend constexpr address operator^ (const address lhs, const address rhs) noexcept { return static_cast<AddressT>(lhs) ^  static_cast<AddressT>(rhs); }
@@ -46,7 +50,6 @@ namespace distant
 
 		public: // {ctor}
 			constexpr address() noexcept;
-			constexpr address(nullptr_t) noexcept;
 
 			template <typename T>
 			constexpr address(T* x) noexcept;

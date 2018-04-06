@@ -1,3 +1,7 @@
+// @copyright 2017 - 2018 Shaun Ostoic
+// Distributed under the MIT License.
+// (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
+
 #pragma once
 
 /*!
@@ -12,7 +16,7 @@ Distributed under the Apache Software License, Version 2.0.
 
 //#include <exception>
 
-#include <distant/kernel/object.hpp>
+#include <distant/kernel/kernel_object.hpp>
 #include <distant/type_traits.hpp>
 
 #include <distant/support/filesystem.hpp>
@@ -22,16 +26,16 @@ Distributed under the Apache Software License, Version 2.0.
 namespace distant {
 namespace kernel  {
 
-	/// Base type of distant::process
+	/// @brief Base type of distant::process
 	/// This version does not have static access_rights checking
-	class process_base : public kernel::object
+	class process_base : public kernel_object
 	{
 	public:
 		// Object type information
-		using base_type = kernel::object;
+		using base_type = kernel_object;
 
-		using error_type = object_traits<process_base>::error_type;
-		using handle_type = object_traits<process_base>::handle_type;
+		using error_type = kernel_object_traits<process_base>::error_type;
+		using handle_type = kernel_object_traits<process_base>::handle_type;
 		using access_rights_t = access_rights::process;
 
 		using exit_code_type = std::size_t;
@@ -45,59 +49,59 @@ namespace kernel  {
 		static std::size_t get_pid(const handle_type&) noexcept;
 
 	public: // interface
-		/// Get the file name of the process executable.
-		/// @return string containing the filename.
-		std::wstring filename() const;
+		/// @brief Get the name of the process executable.
+		/// @return string containing the name.
+		std::wstring name() const;
 
-		/// Get the path to the process executable.
+		/// @brief Get the path to the process executable.
 		/// @return the path.
 		filesystem::path file_path() const;
 
-		/// Query the process handle to see if it is still active
+		/// @brief Query the process handle to see if it is still active
 		/// @return true if the process is active, false otherwise.
 		bool is_active() const;
 
-		/// Test if the process is running under the WOW64 emulator.
+		/// @brief Test if the process is running under the WOW64 emulator.
 		/// If the process has been compiled to run on 32-bit system and
 		/// is being run on a 64-bit system, it will be emulated.
 		/// @return true if the process is being emulated, and false if not.
 		bool is_32bit() const;
 
-		/// Test if the process is being run in 64bit.
+		/// @brief Test if the process is being run in 64bit.
 		/// @return true if the process is being run in 64bit mode, and false if not.
 		bool is_64bit() const;
 
-		/// Test if the process is being debugged by another process.
+		/// @brief Test if the process is being debugged by another process.
 		/// @return true if the process is being debugged, and false if it is not.
 		bool is_being_debugged() const;
 
-		/// Test if the process is a "zombie" process.
+		/// @brief Test if the process is a "zombie" process.
 		/// A zombie process in this case is one that is not listed upon process list enumeration,
 		/// but still has an active handle in the operating system.
 		/// @return true if the process is a zombie.
 		bool is_zombie() const;
 
-		/// Terminate the process
+		/// @brief Terminate the process
 		void kill();
 
-		/// Retrieve the process id.
+		/// @brief Retrieve the process id.
 		/// @return the process id.
 		std::size_t id() const noexcept { return id_; }
 
-		/// Get the access rights that were used to open the current process
+		/// @brief Get the access rights that were used to open the current process
 		/// @return process access_rights indicating the level of access we have to the process.
 		flag_type access_rights() const noexcept { return access_rights_; }
 		
-		/// Test if the process object is valid
+		/// @brief Test if the process kernel_object is valid
 		/// @return true if the process is valid, false otherwise.
 		bool valid() const noexcept override;
 
 
 	public: // {ctor}
-		/// Empty construct a process
+		/// @brief Construct an empty process
 		process_base() noexcept;
 
-		/// Open process by id
+		/// @brief Open process by id
 		/// @param id the pid (process id) of the process to open.
 		/// @param access the requested access rights to open the process with.
 		explicit process_base(std::size_t id, access_rights_t access = access_rights_t::all_access) noexcept;
@@ -121,10 +125,6 @@ namespace kernel  {
 		std::size_t id_;
 		access_rights_t access_rights_;
 	}; // end class process
-
-	/// Get the current process.
-	/// @return distant::process_base object containing the current process.
-	process_base current_process() noexcept;
 
 } // namespace kernel
 } // namespace distant

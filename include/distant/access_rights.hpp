@@ -1,3 +1,7 @@
+// @copyright 2017 - 2018 Shaun Ostoic
+// Distributed under the MIT License.
+// (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
+
 #pragma once
 
 /*!
@@ -105,6 +109,7 @@ namespace distant
 		{
 			noaccess = boost::winapi::PAGE_NOACCESS_,
 			readonly = boost::winapi::PAGE_READONLY_,
+			readwrite = boost::winapi::PAGE_READWRITE_,
 			writecopy = boost::winapi::PAGE_WRITECOPY_,
 			guard = boost::winapi::PAGE_GUARD_,
 			nocache = boost::winapi::PAGE_NOCACHE_,
@@ -120,47 +125,57 @@ namespace distant
 		enum class handle
 		{
 			inherit = boost::winapi::HANDLE_FLAG_INHERIT_,
-			// Child process will inherit object handle
+			// Child process will inherit kernel_object handle
 
 			close_protected = boost::winapi::HANDLE_FLAG_PROTECT_FROM_CLOSE_,
 			// Prevent CloseHandle from closing handle
 		};
 	};
 
+	using token_rights = access_rights::token;
+	using process_rights = access_rights::process;
+	using standard_rights = access_rights::standard;
+	using page_protection = access_rights::page_protection;
+
 	// Define flag operators for use with conforming access_rights
-	DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(access_rights::process);
-	DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(access_rights::token);
-	DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(access_rights::standard);
-	DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(access_rights::page_protection);
+	DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(token_rights);
+	DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(process_rights);
+	DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(standard_rights);
+	DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(page_protection);
+
+	DEFINE_CONSTEXPR_ENUM_FLAG_PARTIAL_ORDER(token_rights);
+	DEFINE_CONSTEXPR_ENUM_FLAG_PARTIAL_ORDER(process_rights);
+	DEFINE_CONSTEXPR_ENUM_FLAG_PARTIAL_ORDER(standard_rights);
+	DEFINE_CONSTEXPR_ENUM_FLAG_PARTIAL_ORDER(page_protection);
 
 	/// Check if we have permission to perform the given action
-	constexpr bool check_permission(const access_rights::process given, const access_rights::process check) noexcept
-	{
-		return (given & check) == check;
-	}
+	constexpr bool check_permission(const process_rights given, const process_rights check) noexcept
+	{ return given >= check; }
 
 	/// Check if we have permission to perform the given action
-	constexpr bool check_permission(const access_rights::token given, const access_rights::token check) noexcept
-	{
-		return (given & check) == check;
-	}
+	constexpr bool check_permission(const token_rights given, const token_rights check) noexcept
+	{ return (given & check) == check; }
 
 	/// Check if we have permission to perform the given action
-	constexpr bool check_permission(const access_rights::standard given, const access_rights::standard check) noexcept
-	{
-		return (given & check) == check;
-	}
-
-	/// @brief Shortcut for defining vm_read | vm_write | vm_operation process_rights.
-	constexpr auto vm_rw_op = access_rights::process::vm_read | access_rights::process::vm_write | access_rights::process::vm_operation;
-
-	/// @brief Shortcut for defining vm_read | vm_operation process_rights.
-	constexpr auto vm_r_op = access_rights::process::vm_read | access_rights::process::vm_operation;
+	constexpr bool check_permission(const standard_rights given, const standard_rights check) noexcept
+	{ return (given & check) == check; }
+	
+	/// @brief Shortcut for defining vm_operation process_rights.
+	constexpr auto vm_op = access_rights::process::vm_operation;
 
 	/// @brief Shortcut for defining vm_read process_rights.
-	constexpr auto vm_read = access_rights::process::vm_read | access_rights::process::vm_operation;
+	constexpr auto vm_read = access_rights::process::vm_read;
 
-	using process_rights = access_rights::process;
-	using token_rights = access_rights::token;
-	using page_protection = access_rights::page_protection;
+	/// @brief Shortcut for defining vm_write process_rights.
+	constexpr auto vm_write = access_rights::process::vm_write;
+
+	/// @brief Shortcut for defining vm_read | vm_operation process_rights.
+	constexpr auto vm_r_op = vm_read | vm_op;
+
+	/// @brief Shortcut for defining vm_write | vm_operation process_rights.
+	constexpr auto vm_w_op = vm_write | vm_op;
+
+	/// @brief Shortcut for defining vm_read | vm_write | vm_operation process_rights.
+	constexpr auto vm_rw_op = vm_r_op | vm_write;
+
 } // namespace distant

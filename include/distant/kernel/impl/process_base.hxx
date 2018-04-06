@@ -1,3 +1,7 @@
+// @copyright 2017 - 2018 Shaun Ostoic
+// Distributed under the MIT License.
+// (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
+
 #pragma once
 #include <distant/kernel/process_base.hpp>
 
@@ -64,7 +68,7 @@ namespace distant::kernel
 
 		// Return immediately
 		const auto result = wait_for(*this, 0);
-		//error_.get_last();
+		//error_.update_last();
 
 		return result == wait::state::timeout;
 	}
@@ -79,7 +83,7 @@ namespace distant::kernel
 		boost::winapi::IsWow64Process(handle_.native_handle(), reinterpret_cast<boost::winapi::PBOOL_>(&result));
 
 		///*if (!*/))
-		/*	error_.get_last();
+		/*	error_.update_last();
 		else
 			error_.set_success();*/
 
@@ -103,7 +107,7 @@ namespace distant::kernel
 		boost::winapi::BOOL_ result = false;
 		CheckRemoteDebuggerPresent(handle_.native_handle(), &result);
 		//if (!)
-			//error_.get_last();
+			//error_.update_last();
 		//else
 			//error_.set_success();
 
@@ -126,7 +130,7 @@ namespace distant::kernel
 #pragma warning(pop)
 	}
 
-	inline std::wstring process_base::filename() const
+	inline std::wstring process_base::name() const
 	{
 		return this->file_path().filename().wstring();
 	}
@@ -189,7 +193,7 @@ namespace distant::kernel
 	// XXX Choose weakest access rights or produce error about incompatible access rights
 
 	inline process_base::process_base(handle<process_base>&& h, const access_rights_t access) noexcept
-		: object(std::move(reinterpret_cast<handle<object>&>(h)))
+		: kernel_object(std::move(reinterpret_cast<handle<kernel_object>&>(h)))
 		  , id_(GetProcessId(handle_.native_handle()))
 		  , access_rights_(access)
 	{}
@@ -215,10 +219,4 @@ namespace distant::kernel
 		return !operator==(lhs, rhs);
 	}
 
-	inline process_base current_process() noexcept
-	{
-		return process_base{
-			handle<process_base>{GetCurrentProcess(), access_rights::handle::close_protected}, access_rights::process::all_access
-		};
-	}
 } // end namespace distant::kernel::detail

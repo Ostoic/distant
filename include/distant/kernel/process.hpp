@@ -1,12 +1,12 @@
+// @copyright 2017 - 2018 Shaun Ostoic
+// Distributed under the MIT License.
+// (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
+
 #pragma once
 
-/*!
-@file Defines distant::kernel::process
-
-@copyright 2017 Shaun Ostoic
-Distributed under the Apache Software License, Version 2.0.
-(See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
-*/
+/***
+ * @file Contains the interface for distant::process.
+ */
 
 #include <distant/kernel/process_base.hpp>
 
@@ -14,10 +14,15 @@ namespace distant
 {
 	namespace kernel
 	{
-		/// Representation of an executable program
-		template <access_rights::process access_flags>
+		/// @brief distant::process represents a process, and has static type checking on the process access rights.
+		template <process_rights AccessFlags>
 		class process : private process_base
 		{
+		private:
+			/// @brief SFINAE for access permissions
+			template <access_rights::process Required, typename Return = void>
+			using require_permission = std::enable_if_t<check_permission(AccessFlags, Required), Return>;
+
 		public: // interface
 			// Import the process_base interface.
 			using process_base::operator bool;
@@ -29,51 +34,68 @@ namespace distant
 			using process_base::id;
 
 			/// @brief Terminate the process
-			void kill();
+			/// @remark Function is disabled if the process does not have the \a terminate process right.
+			template <typename Return = void>
+			auto kill()
+				-> require_permission<process_rights::terminate, Return>;
 
 			/// @brief Query the process handle to see if it is still active
+			/// @remark Function is disabled if the process does not have the \a synchronize access right.
 			/// @return true if the process is active, and false otherwise
-			bool is_active() const;
+			template <typename Return = bool>
+			auto is_active() const
+				-> require_permission<process_rights::synchronize, Return>;
 
 			/// @brief Test if the process is running under the WOW64 emulator.
 			/// If the process has been compiled to run on 32-bit system and
 			/// is being run on a 64-bit system, it will be emulated.
+			/// @remark Function is disabled if the process does not have the \a query_limited_information or \a query_information access  right.
 			/// @return true if the process is being emulated, and false if not.
-			bool is_32bit() const;
+			template <typename Return = bool>
+			auto is_32bit() const
+				-> require_permission<process_rights::query_information | process_rights::query_limited_information, Return>;
 
 			/// @brief Test if the process is being run in 64bit.
+			/// @remark Function is disabled if the process does not have the \a query_limited_information or \a query_information access  right.
 			/// @return true if the process is being run in 64bit mode, and false if not.
-			bool is_64bit() const;
+			template <typename Return = bool>
+			auto is_64bit() const
+				-> require_permission<process_rights::query_information | process_rights::query_limited_information, Return>;
 
 			/// @brief Get the executable name of the process
+			/// @remark Function is disabled if the process does not have the \a query_limited_information or \a query_information access  right.
 			/// @return std::wstring containing the executable name of the process
-			std::wstring filename() const;
+			template <typename Return = std::wstring>
+			auto name() const
+				-> require_permission<process_rights::query_information | process_rights::query_limited_information, Return>;
 
 			/// @brief Get the file path (in WIN32 format) of the process
+			/// @remark Function is disabled if the process does not have the \a query_limited_information or \a query_information permissions.
 			/// @return std::wstring containing the file path of the process
-			filesystem::path file_path() const;
+			template <typename Return = filesystem::path>
+			auto file_path() const
+				-> require_permission<process_rights::query_information | process_rights::query_limited_information, Return>;
 
-			template <access_rights::process OtherFlag,
-			          typename = std::enable_if_t<check_permission(access_flags, OtherFlag)>>
-			operator process<OtherFlag>&() noexcept;
+			/// @brief Allows implicit conversion to process with a lower level of access.
+			template <process_rights OtherAccess, typename = std::enable_if_t<(OtherAccess <= AccessFlags)>>
+			operator process<OtherAccess>&() noexcept;
 
-			template <access_rights::process OtherFlag,
-			          typename = std::enable_if_t<check_permission(access_flags, OtherFlag)>>
-			operator const process<OtherFlag>&() const noexcept;
-
-			/// @brief Query the process for memory information 
-			/// @return memory_status object used to query for process information
-			//auto memory_status() const;
+			/// @brief Allows implicit conversion to process with a lower level of access.
+			template <process_rights OtherAccess, typename = std::enable_if_t<(OtherAccess <= AccessFlags)>>
+			operator const process<OtherAccess>&() const noexcept;
 
 		public: // {ctor}
-			/// Default process constructor
+			/// @brief Default process constructor
 			constexpr process() noexcept;
 
-			/// Open process by id
+			/// @brief Open process by id
 			explicit process(std::size_t id) noexcept;
 
-			process(process&& other) noexcept; /// move constructible
-			process& operator =(process&& other) noexcept; /// move assignable
+			/// @brief Move constructible
+			process(process&& other) noexcept; 
+
+			/// @brief Move assignable
+			process& operator=(process&& other) noexcept; 
 
 			explicit process(handle<process>&& handle) noexcept;
 
@@ -82,14 +104,27 @@ namespace distant
 		}; // end class process
 
 		/// @brief Create a new process
-		template <access_rights::process Access>
+		// Todo: Implement
+		template <process_rights Access>
 		process<Access> launch();
 
 		/// @brief Get the current process.
-		/// @return distant::process_base object containing the current process.
-		template <access_rights::process T = access_rights::process::all_access>
-		process<T> current_process() noexcept;
-	} // end namespace kernel
+		/// @tparam Access the desired access rights to the process.
+		/// @return a distant::process for the current process.
+		template <process_rights Access = process_rights::all_access>
+		process<Access> current_process() noexcept;
+
+		/// @brief Get the current process.
+		/// @return a distant::process for the current process with process_rights::all_access permissions.
+		process<process_rights::all_access> current_process() noexcept;
+
+	} // namespace kernel
+
+	template <process_rights Access>
+	struct get_access_rights<kernel::process<Access>>
+	{
+		static constexpr auto value = Access;
+	};
 
 	using kernel::process;
 	using kernel::current_process;

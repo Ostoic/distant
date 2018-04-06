@@ -1,8 +1,11 @@
+// @copyright 2017 - 2018 Shaun Ostoic
+// Distributed under the MIT License.
+// (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
+
 #pragma once
 #include <distant/kernel/access_token.hpp>
 
 #include <distant/detail/tags.hpp>
-#include <distant/detail/attorney.hpp>
 
 #include <distant/support/winapi/token.hpp>
 
@@ -16,7 +19,7 @@ namespace distant::kernel
 		template <typename Object>
 		struct dispatcher {};
 
-		template <access_rights::process A>
+		template <process_rights A>
 		struct dispatcher<process<A>>
 		{
 			using dispatch = distant::detail::process_tag;
@@ -28,7 +31,7 @@ namespace distant::kernel
 			using dispatch = distant::detail::process_base_tag;
 		};
 
-		inline HANDLE_ get_token_impl(const process_base& process, DWORD_ access,
+		inline HANDLE_ get_token_impl(const process_base& process, const DWORD_ access,
 		                              const distant::detail::process_base_tag tag) noexcept
 		{
 			static_cast<void>(tag);
@@ -39,15 +42,9 @@ namespace distant::kernel
 		}
 
 		template <access_rights::process A>
-		HANDLE_ get_token_impl(const process<A>& process, DWORD_ access, const distant::detail::process_tag tag) noexcept
+		HANDLE_ get_token_impl(const process<A>& process, const DWORD_ access, const distant::detail::process_tag tag) noexcept
 		{
 			using access_rights = access_rights::process;
-
-			// The OpenProcessToken API call requires the following access rights.
-			static_assert(
-				check_permission(A, access_rights::query_information),
-				" [kernel::get_access_token] Invalid access rights: "
-				"Process must have query_information access rights");
 
 			static_cast<void>(tag);
 			return get_token_impl(reinterpret_cast<const process_base&>(process), access, distant::detail::process_base_tag{});
@@ -69,7 +66,8 @@ namespace distant::kernel
 		: Base(
 			distant::handle<access_token>{
 				detail::get_token_impl(k, static_cast<boost::winapi::DWORD_>(A), detail::dispatcher<K>::dispatch{})
-			}) {}
+			}) 
+	{}
 
 	template <access_rights::token A, typename K>
 	bool access_token<A, K>::has_privilege(const security::privilege& p) const noexcept
@@ -110,29 +108,26 @@ namespace distant::kernel
 		return this->set_privilege(p, security::privilege::attributes::removed);
 	}
 
-	//free:
-	template <access_rights::token Access, typename KernelObject>
+//free:
+	template <token_rights Access, typename KernelObject, typename>
 	access_token<Access, KernelObject>
 	get_access_token(const KernelObject& object) noexcept
 	{
 		return access_token<Access, KernelObject>{object};
 	}
 
-	template <typename KernelObject>
-	access_token<access_rights::token::adjust_privileges | access_rights::token::query, KernelObject>
+	template <typename KernelObject, typename>
+	access_token<token_rights::adjust_privileges | token_rights::query, KernelObject>
 	get_access_token(const KernelObject& object) noexcept
 	{
-		return get_access_token<access_rights::token::adjust_privileges | access_rights::token::query>(object);
+		return get_access_token<token_rights::adjust_privileges | token_rights::query>(object);
 	}
 
 	inline access_token<access_rights::token::all_access, process<>>
 	get_access_token() noexcept
 	{
-		using Token = access_token<access_rights::token::all_access, process<>>;
-		return std::move(
-			reinterpret_cast<Token&>(
-				get_access_token(kernel::current_process<>())
-			)
-		);
+		using token_t = access_token<token_rights::all_access, process<>>;
+
+		reinterpret_cast<token_t&>(get_access_token(kernel::current_process<>()));
 	}
 } // namespace distant::kernel

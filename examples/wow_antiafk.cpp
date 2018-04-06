@@ -3,8 +3,9 @@
 
 #include <iostream>
 #include <thread>
+
+#include <distant/process.hpp>
 #include <distant/virtual_memory.hpp>
-#include <distant/privileges.hpp>
 
 int main()
 {

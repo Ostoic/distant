@@ -1,3 +1,7 @@
+// @copyright 2017 - 2018 Shaun Ostoic
+// Distributed under the MIT License.
+// (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
+
 #pragma once
 
 /*!
@@ -28,7 +32,7 @@ class wait;
 
 namespace kernel {
 
-class object;
+class kernel_object;
 class securable;
 
 // Default template argument is all_access

@@ -1,3 +1,7 @@
+// @copyright 2017 - 2018 Shaun Ostoic
+// Distributed under the MIT License.
+// (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
+
 #pragma once
 #include <distant/system/information.hpp>
 
@@ -47,9 +51,16 @@ namespace distant::system {
 
 	namespace detail 
 	{
+		inline SYSTEM_INFO init_sys_info() noexcept
+		{
+			SYSTEM_INFO sys_info = {0};
+			sys_info.dwPageSize = 4096;
+			return sys_info;
+		}
+
 		inline const SYSTEM_INFO& get_system_info_impl() noexcept
 		{
-			static SYSTEM_INFO sys_info = {0};
+			static SYSTEM_INFO sys_info = init_sys_info();
 
 			if (sys_info.dwActiveProcessorMask == 0)
 				GetSystemInfo(&sys_info);
@@ -62,7 +73,10 @@ namespace distant::system {
 	{ return detail::get_system_info_impl().dwProcessorType; }
 
 	inline std::size_t page_size() noexcept
-	{ return detail::get_system_info_impl().dwPageSize; }
+	{
+		static boost::winapi::DWORD_ page_size_ = detail::get_system_info_impl().dwPageSize;
+		return page_size_;
+	}
 
 	inline std::size_t allocation_granularity() noexcept
 	{ return detail::get_system_info_impl().dwAllocationGranularity; }
