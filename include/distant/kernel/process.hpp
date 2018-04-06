@@ -1,12 +1,12 @@
+// @copyright 2017 - 2018 Shaun Ostoic
+// Distributed under the MIT License.
+// (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
+
 #pragma once
 
-/*!
-@file Defines distant::kernel::process
-
-@copyright 2017 Shaun Ostoic
-Distributed under the Apache Software License, Version 2.0.
-(See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
-*/
+/***
+ * @file Contains the interface for distant::process.
+ */
 
 #include <distant/kernel/process_base.hpp>
 
@@ -14,8 +14,8 @@ namespace distant
 {
 	namespace kernel
 	{
-		/// @brief Represents a running process
-		template <access_rights::process AccessFlags>
+		/// @brief distant::process represents a process, and has static type checking on the process access rights.
+		template <process_rights AccessFlags>
 		class process : private process_base
 		{
 		private:
@@ -76,25 +76,26 @@ namespace distant
 			auto file_path() const
 				-> require_permission<process_rights::query_information | process_rights::query_limited_information, Return>;
 
-			template <process_rights OtherAccess, typename = require_permission<OtherAccess>>
+			/// @brief Allows implicit conversion to process with a lower level of access.
+			template <process_rights OtherAccess, typename = std::enable_if_t<(OtherAccess <= AccessFlags)>>
 			operator process<OtherAccess>&() noexcept;
 
-			template <process_rights OtherAccess, typename = require_permission<OtherAccess>>
+			/// @brief Allows implicit conversion to process with a lower level of access.
+			template <process_rights OtherAccess, typename = std::enable_if_t<(OtherAccess <= AccessFlags)>>
 			operator const process<OtherAccess>&() const noexcept;
 
-			/// @brief Query the process for memory information 
-			/// @return memory_status object used to query for process information
-			//auto memory_status() const;
-
 		public: // {ctor}
-			/// Default process constructor
+			/// @brief Default process constructor
 			constexpr process() noexcept;
 
-			/// Open process by id
+			/// @brief Open process by id
 			explicit process(std::size_t id) noexcept;
 
-			process(process&& other) noexcept; /// move constructible
-			process& operator=(process&& other) noexcept; /// move assignable
+			/// @brief Move constructible
+			process(process&& other) noexcept; 
+
+			/// @brief Move assignable
+			process& operator=(process&& other) noexcept; 
 
 			explicit process(handle<process>&& handle) noexcept;
 
@@ -103,14 +104,21 @@ namespace distant
 		}; // end class process
 
 		/// @brief Create a new process
+		// Todo: Implement
 		template <process_rights Access>
 		process<Access> launch();
 
 		/// @brief Get the current process.
-		/// @return distant::process_base object containing the current process.
-		template <process_rights T = process_rights::all_access>
-		process<T> current_process() noexcept;
-	} // end namespace kernel
+		/// @tparam Access the desired access rights to the process.
+		/// @return a distant::process for the current process.
+		template <process_rights Access = process_rights::all_access>
+		process<Access> current_process() noexcept;
+
+		/// @brief Get the current process.
+		/// @return a distant::process for the current process with process_rights::all_access permissions.
+		process<process_rights::all_access> current_process() noexcept;
+
+	} // namespace kernel
 
 	template <process_rights Access>
 	struct get_access_rights<kernel::process<Access>>

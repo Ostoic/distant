@@ -1,3 +1,7 @@
+// @copyright 2017 - 2018 Shaun Ostoic
+// Distributed under the MIT License.
+// (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
+
 #pragma once
 #include "../virtual_reference.hpp"
 
@@ -28,7 +32,11 @@ namespace distant::memory
 	template <typename Value, typename>
 	virtual_reference<E, T>& virtual_reference<E, T>::operator=(const Value& x)
 	{
-		memory::write<std::remove_cv_t<value_type>, T>(*this->ptr_.process_, this->ptr_.address_, static_cast<value_type>(x));
+		memory::write<std::remove_cv_t<value_type>, T>(
+			*(this->ptr_.process_), 
+			this->ptr_.address_, 
+			static_cast<value_type>(x)
+		);
 		return *this;
 	}
 
@@ -42,7 +50,7 @@ namespace distant::memory
 	template <typename E,  typename T>
 	virtual_reference<E, T>::operator value_type() const
 	{
-		return memory::read<std::remove_cv_t<value_type>>(*this->ptr_.process_, this->ptr_.address_);
+		return memory::read<std::remove_cv_t<value_type>>(*(this->ptr_.process_), this->ptr_.address_);
 	}
 
 	template <typename E,  typename T>

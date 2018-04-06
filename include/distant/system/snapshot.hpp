@@ -1,3 +1,7 @@
+// @copyright 2017 - 2018 Shaun Ostoic
+// Distributed under the MIT License.
+// (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
+
 #pragma once
 
 /*!
@@ -11,8 +15,6 @@ Distributed under the Apache Software License, Version 2.0.
 #include <distant/system/snapshot_iterator.hpp>
 
 #include <distant/utility/boolean_validator.hpp>
-
-#include <vector>
 
 namespace distant 
 {

@@ -1,3 +1,7 @@
+// @copyright 2017 - 2018 Shaun Ostoic
+// Distributed under the MIT License.
+// (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
+
 #pragma once
 
 #include <boost/iterator/iterator_adaptor.hpp>
@@ -37,8 +41,7 @@ namespace distant
 
 			virtual_ptr(nullptr_t) noexcept;
 
-			template <process_rights Access, typename = std::enable_if_t<(Access >= vm_access)>>
-			explicit virtual_ptr(const process<Access>& process, address<AddressT> address = nullptr) noexcept;
+			explicit virtual_ptr(const process<vm_access>& process, address<AddressT> address = 0) noexcept;
 
 			template <
 				typename OtherT,
@@ -87,26 +90,35 @@ namespace distant
 			address<AddressT> address_;
 		};
 
-		template <
-			typename Element, 
-			typename AddressT, 
-			process_rights Access,
-			typename = std::enable_if_t<(Access >= detail::required_vm_access<Element>::value)>
-		>
-		auto make_virtual_ptr(const process<Access>& p, const address<AddressT> address = nullptr) noexcept
+		template <typename Element, typename AddressT = dword>
+		bool operator==(virtual_ptr<Element, AddressT> lhs, nullptr_t)
+		{ return lhs.get() == 0; }
+
+		template <typename Element, typename AddressT = dword>
+		bool operator==(nullptr_t, virtual_ptr<Element, AddressT> rhs)
+		{ return rhs.get() == 0; }
+
+		template <typename Element, typename AddressT = dword>
+		bool operator!=(virtual_ptr<Element, AddressT> lhs, nullptr_t)
+		{ return !operator==(lhs, nullptr); }
+
+		template <typename Element, typename AddressT = dword>
+		bool operator!=(nullptr_t, virtual_ptr<Element, AddressT> rhs)
+		{ return !operator==(nullptr, rhs); }
+
+		template <typename Element, typename AddressT>
+		virtual_ptr<Element, AddressT> 
+		make_virtual_ptr(const process<detail::required_vm_access<Element>::value>& p, const address<AddressT> address = nullptr) noexcept
 		{
-			virtual_ptr<Element, AddressT> result;
+			virtual_ptr<Element, AddressT> result(p, address);
 			return result;
 		}
 
-		template <
-			typename Element,
-			process_rights Access,
-			typename = std::enable_if_t<(Access >= detail::required_vm_access<Element>::value)>
-		>
-		auto make_virtual_ptr(const process<Access>& p, const address<dword> address = nullptr) noexcept
+		template <typename Element>
+		virtual_ptr<Element, dword> 
+		make_virtual_ptr(const process<detail::required_vm_access<Element>::value>& p, const address<dword> address = 0) noexcept
 		{
-			virtual_ptr<Element, dword> result;
+			virtual_ptr<Element, dword> result(p, address);
 			return result;
 		}
 

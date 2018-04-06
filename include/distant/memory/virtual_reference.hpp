@@ -1,3 +1,7 @@
+// @copyright 2017 - 2018 Shaun Ostoic
+// Distributed under the MIT License.
+// (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
+
 #pragma once
 
 #include <distant/memory/virtual_ptr.hpp>
@@ -16,16 +20,9 @@ namespace distant
 			static constexpr auto vm_access = virtual_traits<virtual_reference>::vm_access;
 
 			template <typename T>
-			using require_vm_access_to = std::enable_if_t<detail::required_vm_access<T>::value >= vm_access, T>;
+			using require_vm_access_to = std::enable_if_t<detail::required_vm_access<T>::value >= vm_access>;
 
 		public:
-			// Todo: Fix const corrrectness of casting between nonconst -> const, etc
-			/*template <
-				typename OtherElement, 
-				typename = std::enable_if_t<
-					std::is_const<OtherElement>
-				>
-			>*/
 			explicit virtual_reference(pointer ptr);
 			
 			template <
@@ -42,8 +39,12 @@ namespace distant
 			>
 			virtual_reference& operator=(virtual_reference<OtherElement, OtherAddressT> other);
 
-			template <typename Value, typename = std::enable_if_t<
-				!std::is_const<Value>::value && std::is_convertible<Value, value_type>::value>
+			template <
+				typename Value, 
+				typename = std::enable_if_t<
+					std::is_convertible<Value, value_type>::value && 
+					!std::is_const<Value>::value
+				>
 			>
 			virtual_reference& operator=(const Value& x);
 
@@ -96,13 +97,13 @@ namespace distant
 		template <typename Element, typename AddressT, process_rights Access,
 			typename = std::enable_if_t<Access >= detail::required_vm_access<Element>::value>
 		>
-		auto make_virtual_reference(const process<Access>& process, const address<AddressT> address = nullptr)
+		auto make_virtual_reference(const process<Access>& process, const address<AddressT> address = 0)
 		{ return *make_virtual_ptr<Element, AddressT>(process, address);}
 
 		template <typename Element, process_rights Access,
 			typename = std::enable_if_t<Access >= detail::required_vm_access<Element>::value>
 		>
-		auto make_virtual_reference(const process<Access>& process, const address<dword> address = nullptr)
+		auto make_virtual_reference(const process<Access>& process, const address<dword> address = 0)
 		{ return *make_virtual_ptr<Element>(process, address);}
 
 		template <typename Element, typename AddressT>
@@ -111,12 +112,6 @@ namespace distant
 		{};
 
 	} // namespace memory
-
-	/*template <typename Element, typename AddressT = dword>
-	using virtual_reference = memory::virtual_reference<Element, vm_rw_op, AddressT>;
-
-	template <typename Element, typename AddressT = dword>
-	using const_virtual_reference = memory::virtual_reference<Element, vm_read, AddressT>;*/
 
 	using memory::virtual_reference;
 	using memory::make_virtual_reference;

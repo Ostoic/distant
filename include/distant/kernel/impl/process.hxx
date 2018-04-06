@@ -1,3 +1,7 @@
+// @copyright 2017 - 2018 Shaun Ostoic
+// Distributed under the MIT License.
+// (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
+
 #pragma once
 #include <distant/kernel/process.hpp>
 
@@ -7,7 +11,9 @@ Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
 */
 
-/// @file Implementation header of distant::kernel::process
+/***
+ * @file Contains the implementation of distant::process.
+ */
 
 #include <limits>
 
@@ -109,35 +115,21 @@ namespace distant::kernel
 
 		return process_base::file_path();
 	}
-
+	
 	template <access_rights::process T>
-	template <access_rights::process OtherFlag, typename>
-	process<T>::operator process<OtherFlag>&() noexcept
-	{
-		static_assert(
-			check_permission(T, OtherFlag),
-			"[process::operator process] Process access rights are not compatible"
-		);
-
-		return reinterpret_cast<process<OtherFlag>&>(*this);
-	}
-
+	template <process_rights OtherAccess, typename>
+	process<T>::operator process<OtherAccess>&() noexcept
+	{ return *reinterpret_cast<process<OtherAccess>*>(this); }
+	
 	template <access_rights::process T>
-	template <access_rights::process OtherFlag, typename>
-	process<T>::operator const process<OtherFlag>&() const noexcept
-	{
-		static_assert(
-			check_permission(T, OtherFlag),
-			"[process::operator const process] Process access rights are not compatible"
-		);
+	template <process_rights OtherAccess, typename>
+	process<T>::operator const process<OtherAccess>&() const noexcept
+	{ return *reinterpret_cast<const process<OtherAccess>*>(this); }
 
-		return reinterpret_cast<const process<OtherFlag>&>(*this);
-	}
-
-	//=========================//
-	// Process ctors and dtor  //
-	//=========================//
-	// Empty initialize process
+//=========================//
+// Process ctors and dtor  //
+//=========================//
+// Empty initialize process
 	template <access_rights::process T>
 	constexpr process<T>::process() noexcept
 		: process_base()
@@ -174,4 +166,12 @@ namespace distant::kernel
 	{
 		return std::move(reinterpret_cast<process<T>&>(current_process()));
 	}
+
+	inline process<> current_process() noexcept
+	{
+		return process<>(
+			handle<process<>>(GetCurrentProcess(), access_rights::handle::close_protected)
+		);
+	}
+
 } // end namespace distant::kernel

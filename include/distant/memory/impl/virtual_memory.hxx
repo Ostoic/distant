@@ -1,3 +1,7 @@
+// @copyright 2017 - 2018 Shaun Ostoic
+// Distributed under the MIT License.
+// (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
+
 #pragma once
 #include <distant/memory/virtual_memory.hpp>
 
@@ -13,7 +17,6 @@ namespace distant::memory
 		if (!::WriteProcessMemory(proc.get_handle().native_handle(), reinterpret_cast<LPVOID>(static_cast<AddressT>(address)), &buffer, sizeof(T), &bytes_read))
 			throw std::system_error(distant::last_error(), "[memory::write] WriteProcessMemory failed, " + std::to_string(bytes_read) + " bytes written");
 	}
-
 
 	template <typename T>
 	void write(const process<vm_w_op>& proc, const address<dword> address, T x)

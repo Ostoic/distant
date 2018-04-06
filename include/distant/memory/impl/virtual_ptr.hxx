@@ -1,3 +1,7 @@
+// @copyright 2017 - 2018 Shaun Ostoic
+// Distributed under the MIT License.
+// (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
+
 #pragma once
 #include "../virtual_ptr.hpp"
 
@@ -5,7 +9,7 @@ namespace distant::memory
 {
 	template <typename E, typename Ad>
 	virtual_ptr<E, Ad>::virtual_ptr() noexcept
-		: process_(nullptr), address_(nullptr) 
+		: process_(nullptr), address_(0) 
 	{}
 
 	template <typename E, typename Ad>
@@ -14,11 +18,9 @@ namespace distant::memory
 	{}
 
 	template <typename E, typename Ad>
-	template <process_rights Ac, typename>
-	virtual_ptr<E, Ad>::virtual_ptr(const process<Ac>& process, address<Ad> address) noexcept
-		: process_(&process), address_(address)
+	virtual_ptr<E, Ad>::virtual_ptr(const process<vm_access>& process, address<Ad> address) noexcept
+		: process_(reinterpret_cast<decltype(process_)>(&process)), address_(address)
 	{}
-
 
 	template <typename E, typename Ad>
 	template <typename OtherT, typename OtherAddressT, typename>
@@ -55,7 +57,7 @@ namespace distant::memory
 	template <typename OtherT, typename OtherAddressT, typename>
 	bool virtual_ptr<E, Ad>::equal(virtual_ptr<OtherT, OtherAddressT> other) const noexcept
 	{
-		return this->address_ == other.address_ && this->process_ == other.process_;
+		return this->address_ == other.address_ && *this->process_ == *other.process_;
 	}
 
 	template <typename E, typename Ad>

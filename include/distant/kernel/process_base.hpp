@@ -1,3 +1,7 @@
+// @copyright 2017 - 2018 Shaun Ostoic
+// Distributed under the MIT License.
+// (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
+
 #pragma once
 
 /*!
@@ -121,10 +125,6 @@ namespace kernel  {
 		std::size_t id_;
 		access_rights_t access_rights_;
 	}; // end class process
-
-	/// Get the current process.
-	/// @return distant::process_base kernel_object containing the current process.
-	process_base current_process() noexcept;
 
 } // namespace kernel
 } // namespace distant

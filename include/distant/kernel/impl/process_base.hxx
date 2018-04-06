@@ -1,3 +1,7 @@
+// @copyright 2017 - 2018 Shaun Ostoic
+// Distributed under the MIT License.
+// (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
+
 #pragma once
 #include <distant/kernel/process_base.hpp>
 
@@ -215,10 +219,4 @@ namespace distant::kernel
 		return !operator==(lhs, rhs);
 	}
 
-	inline process_base current_process() noexcept
-	{
-		return process_base{
-			handle<process_base>{GetCurrentProcess(), access_rights::handle::close_protected}, access_rights::process::all_access
-		};
-	}
 } // end namespace distant::kernel::detail

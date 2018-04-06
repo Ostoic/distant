@@ -1,3 +1,7 @@
+// @copyright 2017 - 2018 Shaun Ostoic
+// Distributed under the MIT License.
+// (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
+
 #pragma once
 
 #include <distant/process.hpp>
@@ -9,10 +13,10 @@ namespace distant
 	namespace memory
 	{
 		template <typename T, typename AddressT>
-		void write(const process<vm_rw_op>& proc, address<AddressT> address, T x);
+		void write(const process<vm_w_op>& proc, address<AddressT> address, T x);
 
 		template <typename T>
-		void write(const process<vm_rw_op>& proc, address<dword> address, T x);
+		void write(const process<vm_w_op>& proc, address<dword> address, T x);
 
 		template <typename T, typename AddressT>
 		T read(const process<vm_read>& proc, address<AddressT> address);

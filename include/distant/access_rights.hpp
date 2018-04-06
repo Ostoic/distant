@@ -1,3 +1,7 @@
+// @copyright 2017 - 2018 Shaun Ostoic
+// Distributed under the MIT License.
+// (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
+
 #pragma once
 
 /*!
@@ -105,6 +109,7 @@ namespace distant
 		{
 			noaccess = boost::winapi::PAGE_NOACCESS_,
 			readonly = boost::winapi::PAGE_READONLY_,
+			readwrite = boost::winapi::PAGE_READWRITE_,
 			writecopy = boost::winapi::PAGE_WRITECOPY_,
 			guard = boost::winapi::PAGE_GUARD_,
 			nocache = boost::winapi::PAGE_NOCACHE_,
@@ -127,48 +132,33 @@ namespace distant
 		};
 	};
 
-	// Define flag operators for use with conforming access_rights
-	DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(access_rights::process);
-	DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(access_rights::token);
-	DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(access_rights::standard);
-	DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(access_rights::page_protection);
-
-	using process_rights = access_rights::process;
 	using token_rights = access_rights::token;
+	using process_rights = access_rights::process;
+	using standard_rights = access_rights::standard;
 	using page_protection = access_rights::page_protection;
 
-	constexpr bool operator<=(const process_rights lhs, const process_rights rhs) noexcept
-	{ return (lhs & rhs) == lhs; }
+	// Define flag operators for use with conforming access_rights
+	DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(token_rights);
+	DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(process_rights);
+	DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(standard_rights);
+	DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(page_protection);
 
-	constexpr bool operator>(const process_rights lhs, const process_rights rhs) noexcept
-	{ return (lhs & rhs) == rhs && lhs != rhs; }
-
-	constexpr bool operator>=(const process_rights lhs, const process_rights rhs) noexcept
-	{ return (lhs & rhs) == rhs; }
-
-	constexpr bool operator<(const process_rights lhs, const process_rights rhs) noexcept
-	{ return operator<=(lhs, rhs) && lhs != rhs; }
+	DEFINE_CONSTEXPR_ENUM_FLAG_PARTIAL_ORDER(token_rights);
+	DEFINE_CONSTEXPR_ENUM_FLAG_PARTIAL_ORDER(process_rights);
+	DEFINE_CONSTEXPR_ENUM_FLAG_PARTIAL_ORDER(standard_rights);
+	DEFINE_CONSTEXPR_ENUM_FLAG_PARTIAL_ORDER(page_protection);
 
 	/// Check if we have permission to perform the given action
 	constexpr bool check_permission(const process_rights given, const process_rights check) noexcept
 	{ return given >= check; }
 
-	// Todo: Find a more descriptive name for this
-	/// Check if our permission is at most \a highest permission
-	constexpr bool is_at_most(const process_rights given, const process_rights highest) noexcept
-	{ return given <= highest; }
-
 	/// Check if we have permission to perform the given action
 	constexpr bool check_permission(const token_rights given, const token_rights check) noexcept
-	{
-		return (given & check) == check;
-	}
+	{ return (given & check) == check; }
 
 	/// Check if we have permission to perform the given action
-	constexpr bool check_permission(const access_rights::standard given, const access_rights::standard check) noexcept
-	{
-		return (given & check) == check;
-	}
+	constexpr bool check_permission(const standard_rights given, const standard_rights check) noexcept
+	{ return (given & check) == check; }
 	
 	/// @brief Shortcut for defining vm_operation process_rights.
 	constexpr auto vm_op = access_rights::process::vm_operation;

@@ -1,3 +1,7 @@
+// @copyright 2017 - 2018 Shaun Ostoic
+// Distributed under the MIT License.
+// (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
+
 #pragma once
 #include <distant/error/windows_error.hpp>
 
@@ -33,20 +37,23 @@ namespace error   {
 		namespace winapi = boost::winapi;
 
 		// Retrieve the system error message for the given error code.
-		std::string buffer;
+		char* buffer = nullptr;
 
 		winapi::format_message(
 			winapi::FORMAT_MESSAGE_FROM_SYSTEM_ |
 			winapi::FORMAT_MESSAGE_ALLOCATE_BUFFER_,
 			nullptr, value,
 			winapi::MAKELANGID_(winapi::LANG_NEUTRAL_, winapi::SUBLANG_DEFAULT_),
-			reinterpret_cast<winapi::LPSTR_>(buffer.data()), 0, nullptr);
+			reinterpret_cast<winapi::LPSTR_>(&buffer), 0, nullptr);
 		
-		const auto pos = buffer.find("\r\n");
-		if (pos != std::string::npos)
-			buffer.erase(pos, pos + 2);
+		std::string result = buffer;
+		winapi::LocalFree(buffer);
 
-		return buffer;
+		const auto pos = result.find("\r\n");
+		if (pos != std::string::npos)
+			result.erase(pos, pos + 2);
+
+		return result;
 	}
 
 	inline const windows_category& get_windows_category() noexcept
