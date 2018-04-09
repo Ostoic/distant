@@ -41,6 +41,9 @@ namespace distant::utility::meta
 
 		constexpr iterator find(const key_type& key) const;
 
+		template <std::size_t I>
+		constexpr std::pair<Key, Value> get() const noexcept;
+
 	public: // {ctor}
 		constexpr map() = default;
 
@@ -61,6 +64,22 @@ namespace distant::utility::meta
 	constexpr auto make_map(Ts&&... ts) noexcept;
 
 } // namespace distant::utility::meta
+
+namespace std
+{
+	template <size_t I, typename Key, typename Value, std::size_t Size = 5>
+	constexpr std::pair<Key, Value> get(const distant::utility::meta::map<Key, Value, Size>& map) noexcept
+	{
+		static_assert(I < Size, "map index out of bounds");
+		return map.template get<I>();
+	}
+
+	template <typename Key, typename Value, std::size_t Size>
+	struct tuple_size<distant::utility::meta::map<Key, Value, Size>>
+	{
+		static constexpr auto value = Size;
+	};
+}
 
 // Implementation:
 #include "impl/map.hxx"

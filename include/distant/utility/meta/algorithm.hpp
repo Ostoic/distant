@@ -6,6 +6,8 @@
 
 #include <array>
 
+#include <distant/utility/detection.hpp>
+
 namespace distant::utility::meta
 {
 	template <typename... Ts>
@@ -18,10 +20,16 @@ namespace distant::utility::meta
 	constexpr std::array<T, Size1 + Size2> append(const std::array<T, Size1>& array1, const std::array<T, Size2>& array2) noexcept;
 
 	template <typename T, std::size_t Size>
-	constexpr std::array<T, Size - 1> truncate(const std::array<T, Size>& array);
+	constexpr std::array<T, Size - 1> truncate(const std::array<T, Size>& array) noexcept;
+
+	template <typename T>
+	using generator_function = decltype(std::declval<T>()(0));
+
+	template <std::size_t Size, typename Generator, typename = std::enable_if_t<is_detected<generator_function, Generator>::value>>
+	constexpr auto generate(Generator&& generator) noexcept;
 
 	template<class Tuple, class Func> 
-	void for_each_tuple(Tuple&& tuple, Func f);
+	void for_each_tuple(Tuple&& tuple, Func f) noexcept;
 
 } // namespace distant::utility::meta
 

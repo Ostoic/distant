@@ -4,12 +4,6 @@
 
 #pragma once
 
-/*!
-@copyright 2017 Shaun Ostoic
-Distributed under the Apache Software License, Version 2.0.
-(See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
-*/
-
 #include <distant/utility/enum_operators.hpp>
 
 #include <boost/winapi/access_rights.hpp>
@@ -178,4 +172,10 @@ namespace distant
 	/// @brief Shortcut for defining vm_read | vm_write | vm_operation process_rights.
 	constexpr auto vm_rw_op = vm_r_op | vm_write;
 
+	// Todo: Generalize using traits and compile-time dispatch to the correct map.
+	template <typename CharT, typename TraitsT>
+	std::basic_ostream<CharT, TraitsT>& operator<<(std::basic_ostream<CharT, TraitsT>& stream, process_rights access);
+
 } // namespace distant
+
+#include "impl/access_rights.hxx"

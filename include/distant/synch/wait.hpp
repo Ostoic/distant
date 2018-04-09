@@ -4,12 +4,6 @@
 
 #pragma once
 
-/*!
-@copyright 2017 Shaun Ostoic
-Distributed under the Apache Software License, Version 2.0.
-(See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
-*/ 
-
 #include <distant/kernel_objects/kernel_object.hpp>
 #include <distant/utility/literal.hpp>
 
@@ -40,7 +34,7 @@ namespace distant::synch
 		
 	public:
 		// Infinite amount of time literal
-		class infinite : public distant::utility::Literal<wait> {};
+		class infinite : public distant::utility::literal<wait> {};
 
 	public:
 		using time_type = boost::winapi::DWORD_;

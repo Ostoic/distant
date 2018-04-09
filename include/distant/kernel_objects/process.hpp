@@ -83,11 +83,11 @@ namespace distant
 			auto file_path() const
 				-> require_permission<process_rights::query_information | process_rights::query_limited_information, Return>;
 
-			/// @brief Allows implicit conversion to process with a lower level of access.
+			/// @brief Allows implicit conversion to a process with a lower level of access.
 			template <process_rights OtherAccess, typename = std::enable_if_t<(OtherAccess <= AccessFlags)>>
 			operator process<OtherAccess>&() noexcept;
 
-			/// @brief Allows implicit conversion to process with a lower level of access.
+			/// @brief Allows implicit conversion to a process with a lower level of access.
 			template <process_rights OtherAccess, typename = std::enable_if_t<(OtherAccess <= AccessFlags)>>
 			operator const process<OtherAccess>&() const noexcept;
 

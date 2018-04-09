@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <distant/utility/meta/map.hpp>
+
 namespace distant::system
 {
 	enum class processor_architecture
@@ -14,4 +16,9 @@ namespace distant::system
 		intel = 0,
 		unknown = 0xffff,
 	};
+
+	template <typename CharT, typename TraitsT>
+	std::basic_ostream<CharT, TraitsT>& operator<<(std::basic_ostream<CharT, TraitsT>& stream, processor_architecture architecture);
 }
+
+#include "impl/architectures.hxx"

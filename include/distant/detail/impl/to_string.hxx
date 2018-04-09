@@ -7,8 +7,6 @@
 
 #include <distant/utility/streams.hpp>
 
-#include <iomanip>
-
 #define MAKE_NAME_OPCODE_REG(op, reg) std::make_pair(ops::##op##_##reg##, #op " " #reg)
 
 #define MAKE_NAME_OPCODE_ALL(op) MAKE_NAME_OPCODE_REG(op, eax),\
@@ -19,27 +17,8 @@
 							   MAKE_NAME_OPCODE_REG(op, esi),\
 							   MAKE_NAME_OPCODE_REG(op, edi)
 
-
 namespace distant::detail::string_maps
 {
-	using arp = access_rights::process;
-	constexpr auto access_rights_names = utility::meta::make_map(
-		std::make_pair(arp::all_access, "all_access"),
-		std::make_pair(arp::set_information, "set_information"),
-		std::make_pair(arp::set_quota, "set_quota"),
-		std::make_pair(arp::vm_operation, "vm_operation"),
-		std::make_pair(arp::vm_read, "vm_read"),
-		std::make_pair(arp::vm_write, "vm_write"),
-		std::make_pair(arp::create_process, "create_process"),
-		std::make_pair(arp::create_thread, "create_thread"),
-		std::make_pair(arp::dup_handle, "dup_handle"),
-		std::make_pair(arp::suspend_resume, "suspend_resume"),
-		std::make_pair(arp::terminate, "terminate"),
-		std::make_pair(arp::query_limited_information, "query_limited_information"),
-		std::make_pair(arp::query_information, "query_information"),
-		std::make_pair(arp::synchronize, "synchronize")
-	);
-
 	using ops = memory::opcode;
 	constexpr auto op_names = utility::meta::make_map(
 		std::make_pair(ops::call, "call"),
@@ -74,67 +53,8 @@ namespace distant::detail::string_maps
 		std::make_pair(ops::popfd, "popfd")
 		// TODO: Do the rest
 	);
-
-	using archs = system::processor_architecture;
-	constexpr auto arch_names = utility::meta::make_map(
-		std::make_pair(archs::amd64, "amd64"),
-		std::make_pair(archs::arm, "arm"),
-		std::make_pair(archs::ia64, "ia64"),
-		std::make_pair(archs::intel, "intel"),
-		std::make_pair(archs::unknown, "unknown")
-	);
 }
 
-template <typename Stream>
-Stream& operator<<(Stream& stream, const distant::process_rights access)
-{
-	using distant::detail::string_maps::access_rights_names;
-	using ar = distant::access_rights::process;
-
-	if (access_rights_names.count(access))
-		stream << access_rights_names[access];
-
-	else
-	{
-		// Loop through the map and check if each access right is set in the given access.
-		for (std::size_t i = 0; i < access_rights_names.size(); ++i)
-		{
-			const auto pair = *(access_rights_names.begin() + i);
-
-			if (check_permission(access, pair.first))
-			{
-				stream << pair.second;
-				if (i != access_rights_names.size() - 1)
-					stream << L" | ";
-			}
-		}
-	}
-
-	return stream;
-}
-
-template <typename Stream>
-Stream& operator<<(Stream& stream, distant::system::processor_architecture arch)
-{
-	using distant::detail::string_maps::arch_names;
-	stream << arch_names[arch];
-	return stream;
-}
-
-template <typename Stream>
-Stream& operator<<(Stream& stream, const distant::address address)
-{
-	using char_t = typename Stream::char_type;
-	const auto old_flags = stream.flags();
-
-	stream
-		<< std::hex << "0x"
-		<< std::setfill(char_t{'0'}) << std::setw(2 * sizeof(distant::address))
-		<< static_cast<distant::address::address_type>(address);
-
-	stream.flags(old_flags);
-	return stream;
-}
 
 template <typename Stream, std::size_t S, std::size_t C>
 Stream& operator<<(Stream& stream, const distant::memory::static_instruction<S, C>& instr)

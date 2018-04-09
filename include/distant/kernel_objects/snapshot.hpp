@@ -4,12 +4,6 @@
 
 #pragma once
 
-/*!
-@copyright 2017 Shaun Ostoic
-Distributed under the Apache Software License, Version 2.0.
-(See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
-*/
-
 #include <distant/handle.hpp>
 
 #include <distant/kernel_objects/snapshot_iterator.hpp>
@@ -20,7 +14,10 @@ namespace distant
 {
 	namespace kernel_objects  
 	{
-		// system::snapshot models the ForwardRange concept
+		/// @brief A snapshot is a read-only copy of the current state of one or more of the following lists that reside in system memory: processes, threads, modules, and heaps.
+		/// snapshot is a range modelling InputRange (http://en.cppreference.com/w/cpp/experimental/ranges/range/InputRange) whose elements consist of valid instances of the specified
+		/// \a KernelObject.
+		/// @tparam KernelObject must be one of the following: process, thread, heap, module.
 		template <typename KernelObject>
 		class snapshot : public utility::boolean_validator<snapshot<KernelObject>>
 		{
@@ -32,22 +29,38 @@ namespace distant
 			using const_iterator = snapshot_iterator<KernelObject>;
 
 		public: // interface
-			// Iterate over the snapshot range via the range-based for loop:
+			/// @brief Retrieve the start of the snapshot.
+			/// @return A \a snapshot_iterator pointing to the first element in the snapshot.
 			iterator begin() const;
+
+			/// @brief The end of the snapshot.
+			/// @return a \a snapshot_iterator indicating an element past-the-end of the snapshot.
 			iterator end() const;
 
+			/// @brief Retrieve the start of the snapshot.
+			/// @return A \a snapshot_iterator pointing to the first element in the snapshot.
 			iterator begin();
+
+			/// @brief The end of the snapshot.
+			/// @return a \a snapshot_iterator indicating an element past-the-end of the snapshot.
 			iterator end();
 
+			/// @brief Store a permanent copy of the snapshot as a container
 			template <template <typename, typename> class OutContainer>
 			OutContainer<KernelObject, std::allocator<KernelObject>> as() const;
 
+			/// @brief Store a permanent copy of the snapshot as a container whose elements satisfy the given \a Predicate.
+			/// @tparam Predicate the \a Predicate function \a KernelObjects of the \a OutContainer must satisfy.
+			/// @tparam OutContainer the container in which to store the \a KernelObjects.
 			template <template <typename, typename> class OutContainer, typename Predicate>
 			OutContainer<KernelObject, std::allocator<KernelObject>> as(Predicate) const;
 
 		public: // {ctor}
+
+			/// @brief Default construct a snapshot of all \a KernelObjects at the current time.
 			snapshot();
 
+			/// @brief Construct a snapshot of \a KernelObjects owned by the given process.
 			snapshot(const process<>&);
 
 		protected:

@@ -59,8 +59,11 @@ namespace distant
 			address_type address_;
 		};
 
+		template <typename CharT, typename TraitsT, typename AddressT>
+		std::basic_ostream<CharT, TraitsT>& operator<<(std::basic_ostream<CharT, TraitsT>& stream, const distant::memory::address<AddressT> address);
+
 		template <std::size_t N, typename A>
-		constexpr byte get(address<A>) noexcept;
+		constexpr byte get_byte(address<A>) noexcept;
 	} // namespace memory
 
 	using address = memory::address<dword>;

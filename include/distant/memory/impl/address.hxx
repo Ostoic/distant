@@ -5,6 +5,8 @@
 #pragma once
 #include "../address.hpp"
 
+#include <iomanip>
+
 namespace distant::memory
 {
 //interface:
@@ -98,69 +100,23 @@ namespace distant::memory
 	{}
 #pragma warning(pop)
 
-//free:
-	/*template <typename A>
-	constexpr bool operator==(const address<A> lhs, const address<A> rhs) noexcept
-	{ return static_cast<A>(lhs) == static_cast<A>(rhs); }
+	template <typename CharT, typename TraitsT, typename AddressT>
+	std::basic_ostream<CharT, TraitsT>& operator<<(std::basic_ostream<CharT, TraitsT>& stream, const distant::memory::address<AddressT> address)
+	{
+		using char_t = typename TraitsT::char_type;
+		const auto old_flags = stream.flags();
 
-	template <typename A>
-	constexpr bool operator<(const address<A> lhs, const address<A> rhs) noexcept
-	{ return static_cast<A>(lhs) < static_cast<A>(rhs); }
+		stream
+			<< std::hex << "0x"
+			<< std::setfill(char_t{ '0' }) << std::setw(2 * sizeof(distant::address))
+			<< static_cast<distant::address::address_type>(address);
 
-	template <typename A>
-	constexpr bool operator!=(const address<A> lhs, const address<A> rhs) noexcept
-	{ return !operator==(lhs, rhs); }
-
-	template <typename A>
-	constexpr bool operator>(const address<A> lhs, const address<A> rhs) noexcept
-	{ return !operator<(lhs, rhs) && !operator==(lhs, rhs); }
-
-	template <typename A>
-	constexpr bool operator>=(const address<A> lhs, const address<A> rhs) noexcept
-	{ return !operator>(lhs, rhs); }
-
-	template <typename A>
-	constexpr bool operator<=(const address<A> lhs, const address<A> rhs) noexcept
-	{ return !operator>(lhs, rhs); }
-
-	template <typename A>
-	constexpr address<A> operator&(const address<A> lhs, const address<A> rhs) noexcept
-	{ return static_cast<A>(lhs) & static_cast<A>(rhs); }
-
-	template <typename A>
-	constexpr address<A> operator|(const address<A> lhs, const address<A> rhs) noexcept
-	{ return static_cast<A>(lhs) | static_cast<A>(rhs); }
-
-	template <typename A>
-	constexpr address<A> operator^(const address<A> lhs, const address<A> rhs) noexcept
-	{ return static_cast<A>(lhs) ^ static_cast<A>(rhs); }
-
-	template <typename A>
-	constexpr address<A> operator<<(const address<A> lhs, const address<A> rhs) noexcept
-	{ return static_cast<A>(lhs) << static_cast<A>(rhs); }
-
-	template <typename A>
-	constexpr address<A> operator>>(const address<A> lhs, const address<A> rhs) noexcept
-	{ return static_cast<A>(lhs) >> static_cast<A>(rhs); }
-
-	template <typename A>
-	constexpr address<A> operator+(const address<A> lhs, const address<A> rhs) noexcept
-	{ return static_cast<A>(lhs) + static_cast<A>(rhs); }
-
-	template <typename A>
-	constexpr address<A> operator-(const address<A> lhs, const address<A> rhs) noexcept
-	{ return static_cast<A>(lhs) - static_cast<A>(rhs); }
-
-	template <typename A>
-	constexpr address<A> operator*(const address<A> lhs, const address<A> rhs) noexcept
-	{ return static_cast<A>(lhs) * static_cast<A>(rhs); }
-
-	template <typename A>
-	constexpr address<A> operator/(const address<A> lhs, const address<A> rhs) noexcept
-	{ return static_cast<A>(lhs) / static_cast<A>(rhs); }*/
+		stream.flags(old_flags);
+		return stream;
+	}
 
 	template <std::size_t N, typename A>
-	constexpr distant::byte get(const address<A> addr) noexcept
+	constexpr distant::byte get_byte(const address<A> addr) noexcept
 	{
 		static_assert(N < sizeof(address<A>), "[distant::get_byte<address>] Byte index out of range");
 

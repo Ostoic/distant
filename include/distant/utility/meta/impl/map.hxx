@@ -67,6 +67,13 @@ namespace distant::utility::meta
 		return this->data_[i].second;
 	}
 
+	template <typename K, typename V, std::size_t N>
+	template <std::size_t I>
+	constexpr std::pair<K, V> map<K, V, N>::get() const noexcept
+	{
+		return std::get<I>(this->data_);
+	}
+
 //{ctor}:
 	template <typename K, typename V, std::size_t N>
 	template <typename... Ts>
@@ -94,9 +101,9 @@ namespace distant::utility::meta
 	template <typename... Ts>
 	constexpr auto make_map(Ts&&... ts) noexcept
 	{
-		using Pair_t = std::common_type_t<Ts...>;
-		using Key_t = typename Pair_t::first_type;
-		using Value_t = typename Pair_t::second_type;
-		return map<Key_t, Value_t, /*meta::hash<Key_t>,*/ sizeof...(Ts)>{std::forward<Ts>(ts)...};
+		using pair_t = std::common_type_t<Ts...>;
+		using key_t = typename pair_t::first_type;
+		using value_t = typename pair_t::second_type;
+		return map<key_t, value_t, /*meta::hash<Key_t>,*/ sizeof...(Ts)>{std::forward<Ts>(ts)...};
 	}
 } // namespace distant::utility::meta

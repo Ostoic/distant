@@ -5,12 +5,6 @@
 #pragma once
 #include <distant/kernel_objects/process_base.hpp>
 
-/*!
-@copyright 2017 Shaun Ostoic
-Distributed under the Apache Software License, Version 2.0.
-(See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
-*/
-
 // Implementation header of distant::kernel_objects::process
 #include <distant/synch/wait.hpp>
 

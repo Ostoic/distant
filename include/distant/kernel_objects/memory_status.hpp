@@ -11,12 +11,14 @@ namespace distant
 {
 	namespace kernel_objects
 	{
-
+		/// @brief A class containing memory information about a process.
 		class memory_status
 		{
 		public:
 			static constexpr auto required_status_access = process_rights::vm_read | process_rights::query_limited_information;
 
+			/// @brief Construct a status object for the given process.
+			/// @remark The given process must have at least vm_read and query_limited_information access rights.
 			explicit memory_status(const process<required_status_access>& process);
 
 			/// Total amount of memory (kb) committed for the process
@@ -46,6 +48,7 @@ namespace distant
 			boost::winapi::PROCESS_MEMORY_COUNTERS_ memory_counters_;
 		};
 
+		/// @brief Create a status object for the given process.
 		template <access_rights::process T, typename = std::enable_if_t<(T >= memory_status::required_status_access)>>
 		auto get_memory_status(const process<T>& p)
 		{
