@@ -13,29 +13,19 @@ namespace distant::memory
 	{
 		constexpr bool has_virtual_malloc_support(const page_protection protection) noexcept
 		{
-			switch (protection)
-			{
-				case page_protection::execute_writecopy:
-					return false;
-
-				case page_protection::writecopy:
-					return false;
-
-				case page_protection::noaccess:
-					return false;
-
-				case page_protection::guard:
-					return false;
-
-				case page_protection::nocache:
-					return false;
-
-				case page_protection::writecombine:
-					return false;
-
-				default:
-					return true;
-			}
+			if (protection >= page_protection::execute_writecopy)
+				return false;
+			if (protection >= page_protection::writecopy)
+				return false;
+			if (protection >= page_protection::noaccess)
+				return false;
+			if (protection >= page_protection::guard)
+				return false;
+			if (protection >= page_protection::nocache)
+				return false;
+			if (protection >= page_protection::writecombine)
+				return false;
+			return true;
 		}
 
 		constexpr bool has_virtual_protect_support(const page_protection) noexcept

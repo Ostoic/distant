@@ -5,9 +5,9 @@
 #pragma once
 
 #include <distant/handle.hpp>
-#include <distant/kernel/kernel_object.hpp>
+#include <distant/kernel_objects/kernel_object.hpp>
 
-namespace distant::kernel
+namespace distant::kernel_objects
 {
 	// https://msdn.microsoft.com/en-us/library/windows/desktop/aa379557(v=vs.85).aspx
 	class securable : public kernel_object
@@ -25,4 +25,4 @@ namespace distant::kernel
 
 		securable& operator =(securable&& other) noexcept = default;
 	};
-} // end namespace distant::kernel
+} // end namespace distant::kernel_objects

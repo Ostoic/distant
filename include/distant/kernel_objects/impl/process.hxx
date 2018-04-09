@@ -3,25 +3,13 @@
 // (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
 
 #pragma once
-#include <distant/kernel/process.hpp>
-
-/*!
-@copyright 2017 Shaun Ostoic
-Distributed under the Apache Software License, Version 2.0.
-(See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
-*/
+#include <distant/kernel_objects/process.hpp>
 
 /***
  * @file Contains the implementation of distant::process.
  */
 
-#include <limits>
-
-#include <distant/wait.hpp>
-
-#include <distant/support/winapi/privilege.hpp>
-
-namespace distant::kernel
+namespace distant::kernel_objects
 {
 //class process
 //public:
@@ -38,6 +26,20 @@ namespace distant::kernel
 
 		process_base::kill();
 		return;
+	}
+
+	template <access_rights::process T>
+	template <typename Return>
+	auto process<T>::handle_count() const
+		-> require_permission<process_rights::query_limited_information, Return>
+	{
+		// The TerminateProcess API call requires the following access rights.
+		static_assert(
+			check_permission(T, process_rights::query_limited_information),
+			"Invalid access_rights (process::terminate): "
+			"Process must have terminate access right");
+
+		return process_base::handle_count();
 	}
 
 	template <access_rights::process T>
@@ -144,7 +146,7 @@ namespace distant::kernel
 	// Take possession of process handle. It is ensured to be a convertible process handle
 	// due to encoded type in handle.
 	template <access_rights::process T>
-	process<T>::process(handle<process>&& handle) noexcept
+	process<T>::process(distant::handle<process>&& handle) noexcept
 		: process_base(std::move(handle), T)
 	{}
 
@@ -174,4 +176,4 @@ namespace distant::kernel
 		);
 	}
 
-} // end namespace distant::kernel
+} // end namespace distant::kernel_objects

@@ -5,19 +5,19 @@
 #pragma once
 
 #include <distant/type_traits.hpp>
-#include <distant/kernel/type_traits.hpp>
+#include <distant/kernel_objects/type_traits.hpp>
 #include <distant/handle.hpp>
 
 #include <distant/security/privilege.hpp>
-#include <distant/kernel/process.hpp>
+#include <distant/kernel_objects/process.hpp>
 
 namespace distant
 {
-	namespace kernel
+	namespace kernel_objects
 	{
 		// Container-like object for privileges, SIDs, and other security stuff.
 		// TODO: Make into a range that enumerates enabled privileges.
-		template <access_rights::token access, typename KernelObject>
+		template <access_rights::token Access, typename KernelObject>
 		class access_token : public kernel_object
 		{
 		private: // subtypes
@@ -36,7 +36,6 @@ namespace distant
 			/// @return true if the privilege has been successfully set.
 			bool set_privilege(const security::privilege& p,
 			                   security::privilege::attributes attribute = security::privilege::attributes::enabled) noexcept;
-
 
 			/// Remove the given privilege from the access token.
 			/// @param p the privilege to remove.
@@ -71,10 +70,10 @@ namespace distant
 		/// @return the primary access token of the current process.
 		access_token<access_rights::token::all_access, process<>>
 		get_access_token() noexcept;
-	} // namespace kernel
+	} // namespace kernel_objects
 
-	using kernel::access_token;
-	using kernel::get_access_token;
+	using kernel_objects::access_token;
+	using kernel_objects::get_access_token;
 } // namespace distant
 
-#include <distant/kernel/impl/access_token.hxx>
+#include <distant/kernel_objects/impl/access_token.hxx>

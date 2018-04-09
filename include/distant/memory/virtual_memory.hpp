@@ -45,10 +45,10 @@ namespace distant
 		virtual_ptr<T, dword> virtual_malloc(const process<vm_op>& process, std::size_t n = sizeof(T));
 
 		template <typename T>
-		void virtual_free(const process<vm_op>& process, virtual_ptr<T, dword> pointer) noexcept;
+		bool virtual_free(const process<vm_op>& process, virtual_ptr<T, dword> pointer) noexcept;
 
 		template <typename T, typename AddressT>
-		void virtual_free(const process<vm_op>& process, virtual_ptr<T, AddressT> pointer) noexcept;
+		bool virtual_free(const process<vm_op>& process, virtual_ptr<T, AddressT> pointer) noexcept;
 
 		//void 
 

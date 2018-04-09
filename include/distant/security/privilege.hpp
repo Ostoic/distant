@@ -6,7 +6,7 @@
 
 #include <string>
 #include <distant/security/luid.hpp>
-#include <distant/config.hpp>
+#include <distant/detail/config.hpp>
 
 #include <distant/support/winapi/privilege.hpp>
 #include <distant/support/winapi/token.hpp>
@@ -29,7 +29,7 @@ namespace distant::security {
 		constexpr privilege() noexcept;
 
 		/// Constexpr constructor allowing the privilege's data to be loaded on demand.
-		explicit constexpr privilege(const wchar_t* privilegeName) noexcept;
+		explicit constexpr privilege(const wchar_t* privilege_name) noexcept;
 
 	public: // interface
 		/// Implicility convertible to the TOKEN_PRIVILEGES_ struct.
@@ -47,6 +47,8 @@ namespace distant::security {
 		explicit operator bool() const noexcept;
 
 	private:
+		void update_luid() const noexcept;
+
 		const wchar_t* name_;
 		mutable security::luid luid_;
 	};
@@ -56,7 +58,7 @@ namespace distant::security {
 	std::wstring lookup_name(security::luid luid);
 
 	// Lookup the privilege local UID and attribute given the name.
-	privilege lookup_privilege(const std::wstring& privilegeName);
+	privilege lookup_privilege(const std::wstring& privilege_name);
 
 } // end namespace distant::security
 

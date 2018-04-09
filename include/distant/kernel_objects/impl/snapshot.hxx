@@ -3,15 +3,15 @@
 // (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
 
 #pragma once
-#include <distant/system/snapshot.hpp>
+#include <distant/kernel_objects/snapshot.hpp>
 
 #include <stdexcept>
 
-namespace distant::system {
+namespace distant::kernel_objects {
 
 	template <typename O>
 	snapshot<O>::snapshot()
-		: handle_(system::detail::get_snapshot_handle<object_type, snapshot>())
+		: handle_(kernel_objects::detail::get_snapshot_handle<object_type, snapshot>())
 	{
 		static_assert(
 			is_kernel_object<O>::value,
@@ -25,16 +25,22 @@ namespace distant::system {
 	template <typename O>
 	typename snapshot<O>::iterator
 	snapshot<O>::begin() const
-	{
-		return iterator{*this};
-	}
+	{ return iterator{*this}; }
 
 	template <typename O>
 	typename snapshot<O>::iterator
 	snapshot<O>::end() const
-	{
-		return iterator{*this, iterator::snapshot_end()};
-	}
+	{ return iterator{}; }
+
+	template <typename O>
+	typename snapshot<O>::iterator
+	snapshot<O>::begin()
+	{ return iterator{ *this }; }
+
+	template <typename O>
+	typename snapshot<O>::iterator
+	snapshot<O>::end()
+	{ return iterator{}; }
 
 	template <typename O>
 	template <template <typename, typename> class OutContainer>
@@ -56,7 +62,7 @@ namespace distant::system {
 		OutContainer<O, std::allocator<O>> output;
 		for (auto&& element : *this)
 			if (element && predicate(element))
-				output.push_back(std::move(element));
+				output.emplace_back(std::move(element));
 
 		return output;
 	}

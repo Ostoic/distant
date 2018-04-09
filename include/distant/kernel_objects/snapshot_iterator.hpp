@@ -7,20 +7,20 @@
 #include <boost/iterator/iterator_facade.hpp>
 #include <boost/winapi/basic_types.hpp>
 
-#include <distant/system/detail/dispatch.hpp>
-#include <distant/detail/fwd.hpp>
+#include <distant/kernel_objects/detail/dispatch.hpp>
+#include <distant/kernel_objects/fwd.hpp>
 
 #include <memory>
 
-namespace distant::system
+namespace distant::kernel_objects
 {
-	// snapshot_iterator models the ForwardIterator concept
+	// snapshot_iterator models the InputIterator concept
 	template <typename KernelObject>
 	class snapshot_iterator :
 		public boost::iterator_facade<
 			snapshot_iterator<KernelObject> // Derived class
 			, KernelObject					// Value type
-			, boost::forward_traversal_tag	// Iterator traversal category
+			, std::input_iterator_tag		// Iterator traversal category
 			, KernelObject					// Reference type (otherwise we return address of local variable)
 		>									// The rest is use_default
 	{
@@ -28,15 +28,10 @@ namespace distant::system
 		using snapshot_type = snapshot<KernelObject>;
 		using entry_type = typename detail::snapshot_dispatcher<KernelObject>::entry_type;
 
-	public: // interface
-		class snapshot_end {}; // sentinel value
-
 	public: // {ctor}
-		explicit snapshot_iterator(const snapshot_type& snapshot, snapshot_end) noexcept;
-
 		explicit snapshot_iterator(const snapshot_type& snapshot);
 
-		snapshot_iterator();
+		constexpr snapshot_iterator();
 
 	private:
 		friend class boost::iterator_core_access;
@@ -64,4 +59,4 @@ namespace distant::system
 } // end namespace distant::system
 
 // Implementation:
-#include <distant/system/impl/snapshot_iterator.hxx>
+#include "impl/snapshot_iterator.hxx"

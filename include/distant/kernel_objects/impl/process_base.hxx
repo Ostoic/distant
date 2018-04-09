@@ -3,7 +3,7 @@
 // (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
 
 #pragma once
-#include <distant/kernel/process_base.hpp>
+#include <distant/kernel_objects/process_base.hpp>
 
 /*!
 @copyright 2017 Shaun Ostoic
@@ -11,8 +11,8 @@ Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
 */
 
-// Implementation header of distant::kernel::process
-#include <distant/wait.hpp>
+// Implementation header of distant::kernel_objects::process
+#include <distant/synch/wait.hpp>
 
 #include <distant/support/filesystem.hpp>
 #include <distant/support/winapi/process.hpp>
@@ -23,7 +23,7 @@ Distributed under the Apache Software License, Version 2.0.
 
 #define FORBID_INLINE __declspec(noinline)
 
-namespace distant::kernel
+namespace distant::kernel_objects
 {
 	//protected:
 	inline process_base::handle_type process_base::open(const std::size_t pid, access_rights_t access) noexcept
@@ -32,15 +32,14 @@ namespace distant::kernel
 
 #pragma warning(push)
 #pragma warning(disable:4267)
-		const auto result = OpenProcess(static_cast<flag_t>(access), false, pid);
+		const auto result = boost::winapi::OpenProcess(static_cast<flag_t>(access), false, pid);
 #pragma warning(pop)
 		return handle_type(result);
 	}
 
 	inline std::size_t process_base::get_pid(const handle_type& h) noexcept
 	{
-		const auto native_handle = expose::native_handle(h);
-		const auto id = GetProcessId(native_handle);
+		const auto id = GetProcessId(h.native_handle());
 		return static_cast<std::size_t>(id);
 	}
 
@@ -55,22 +54,30 @@ namespace distant::kernel
 		this->throw_if_invalid("[process_base::terminate] invalid process");
 
 		const unsigned int exit_code = 0;
-		const auto native_handle = expose::native_handle(handle_);
+		boost::winapi::TerminateProcess(this->handle_.native_handle(), exit_code);
+	}
 
-		TerminateProcess(native_handle, exit_code);
+	inline std::size_t process_base::handle_count() const
+	{
+		this->throw_if_invalid("[process_base::handle_count] invalid process");
+
+		boost::winapi::DWORD_ count = 0;
+		if (!::GetProcessHandleCount(this->handle_.native_handle(), &count))
+			throw std::system_error(error::last_error(), "[process_base::handle_count] GetProcessHandleCount failed");
+
+		return static_cast<std::size_t>(count);
 	}
 
 	inline bool process_base::is_active() const
 	{
-		this->throw_if_invalid("[process_base::is_active] invalid process");
+		if (!this->valid()) return false;
 
-		const wait wait_for;
+		const synch::wait wait_for;
 
 		// Return immediately
 		const auto result = wait_for(*this, 0);
-		//error_.update_last();
 
-		return result == wait::state::timeout;
+		return result == synch::wait::state::timeout;
 	}
 
 	inline bool process_base::is_32bit() const
@@ -80,12 +87,7 @@ namespace distant::kernel
 		// Note: Using bool here on some systems can corrupt the stack since
 		// sizeof(bool) != sizeof(BOOL).
 		boost::winapi::BOOL_ result = false;
-		boost::winapi::IsWow64Process(handle_.native_handle(), reinterpret_cast<boost::winapi::PBOOL_>(&result));
-
-		///*if (!*/))
-		/*	error_.update_last();
-		else
-			error_.set_success();*/
+		boost::winapi::IsWow64Process(this->handle_.native_handle(), reinterpret_cast<boost::winapi::PBOOL_>(&result));
 
 		return result;
 	}
@@ -105,12 +107,7 @@ namespace distant::kernel
 
 		// Otherwise use CheckRemoteDebuggerPresent.
 		boost::winapi::BOOL_ result = false;
-		CheckRemoteDebuggerPresent(handle_.native_handle(), &result);
-		//if (!)
-			//error_.update_last();
-		//else
-			//error_.set_success();
-
+		boost::winapi::CheckRemoteDebuggerPresent(this->handle_.native_handle(), &result);
 		return result;
 	}
 
@@ -122,11 +119,12 @@ namespace distant::kernel
 		** listed. I noticed that GetProcessVersion would perform some sort of integrity check on the process
 		** id, which seemed to be consistent with processes on the manager. Indeed, the process handles I was
 		** getting coincided with those from using the standard ToolHelp functions.
+		** Note: I didn't realize zombie processes exist on Windows in this form.
 		*/
 
 #pragma warning(push)
 #pragma warning(disable:4267)
-		return this->get_handle() != nullptr && GetProcessVersion(id_) == 0;
+		return this->handle() != nullptr && GetProcessVersion(this->id_) == 0;
 #pragma warning(pop)
 	}
 
@@ -138,20 +136,17 @@ namespace distant::kernel
 	inline filesystem::path process_base::file_path() const
 	{
 		this->throw_if_invalid("[process_base::file_path] invalid process");
+		
+		wchar_t buffer[boost::winapi::max_path];
+		boost::winapi::DWORD_ max_path = boost::winapi::max_path;
 
-		const auto native_handle = expose::native_handle(handle_);
-
-		wchar_t pathBuffer[boost::winapi::MAX_PATH_];
-		boost::winapi::DWORD_ max_path = boost::winapi::MAX_PATH_;
-
-		if (!boost::winapi::query_full_process_image_name(native_handle, 0, pathBuffer, &max_path))
+		if (!boost::winapi::query_full_process_image_name(this->handle_.native_handle(), 0, buffer, &max_path))
 			throw std::system_error(last_error(), "[process_base::file_path] query_full_process_image_name failed");
-		//error_.set_success();
 
-		return {pathBuffer};
+		return buffer;
 	}
 
-	//public:
+//public:
 	inline bool process_base::valid() const noexcept
 	{
 		return
@@ -160,17 +155,9 @@ namespace distant::kernel
 			id_ != std::numeric_limits<std::size_t>::infinity();
 	}
 
-	//=========================//
-	// Process ctors and dtor  //
-	//=========================//
-
-	// Note: We consider forbidding the compiler from inlining the ctors to reduce code bloat
-	// Upon compiling in release mode with the Visual Studio 2017 compiler,
-	// the process_base::{ctor} would get inlined, but the compiler would create copies
-	// of the same ctor kernel::process code. When we forbid inlining for the process_base,
-	// we observe only calls to process_base::ctor, meaning the kernel::process ctors are 
-	// completely optimized out.
-
+//=========================//
+// Process ctors and dtor  //
+//=========================//
 	// Empty initialize process
 	inline process_base::process_base() noexcept
 		: base_type()
@@ -186,14 +173,12 @@ namespace distant::kernel
 
 	inline process_base::process_base(process_base&& other) noexcept
 		: base_type(std::move(other))
-		  , id_(std::move(other.id_))
-		  , access_rights_(std::move(other.access_rights_))
+		  , id_(other.id_)
+		  , access_rights_(other.access_rights_)	
 	{}
 
-	// XXX Choose weakest access rights or produce error about incompatible access rights
-
-	inline process_base::process_base(handle<process_base>&& h, const access_rights_t access) noexcept
-		: kernel_object(std::move(reinterpret_cast<handle<kernel_object>&>(h)))
+	inline process_base::process_base(distant::handle<process_base>&& h, const access_rights_t access) noexcept
+		: kernel_object(std::move(reinterpret_cast<distant::handle<kernel_object>&>(h)))
 		  , id_(GetProcessId(handle_.native_handle()))
 		  , access_rights_(access)
 	{}
@@ -219,4 +204,4 @@ namespace distant::kernel
 		return !operator==(lhs, rhs);
 	}
 
-} // end namespace distant::kernel::detail
+} // end namespace distant::kernel_objects::detail

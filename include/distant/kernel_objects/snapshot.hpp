@@ -12,13 +12,13 @@ Distributed under the Apache Software License, Version 2.0.
 
 #include <distant/handle.hpp>
 
-#include <distant/system/snapshot_iterator.hpp>
+#include <distant/kernel_objects/snapshot_iterator.hpp>
 
 #include <distant/utility/boolean_validator.hpp>
 
 namespace distant 
 {
-	namespace system  
+	namespace kernel_objects  
 	{
 		// system::snapshot models the ForwardRange concept
 		template <typename KernelObject>
@@ -36,6 +36,9 @@ namespace distant
 			iterator begin() const;
 			iterator end() const;
 
+			iterator begin();
+			iterator end();
+
 			template <template <typename, typename> class OutContainer>
 			OutContainer<KernelObject, std::allocator<KernelObject>> as() const;
 
@@ -45,6 +48,8 @@ namespace distant
 		public: // {ctor}
 			snapshot();
 
+			snapshot(const process<>&);
+
 		protected:
 			friend class iterator;
 
@@ -53,9 +58,9 @@ namespace distant
 
 	} // namespace system
 
-	using system::snapshot;
+	using kernel_objects::snapshot;
 
 } // namespace distant
 
 // Implementation:
-#include <distant/system/impl/snapshot.hxx>
+#include "impl/snapshot.hxx"

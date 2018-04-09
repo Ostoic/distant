@@ -8,14 +8,14 @@
  * @file Contains the interface for distant::process.
  */
 
-#include <distant/kernel/process_base.hpp>
+#include <distant/kernel_objects/process_base.hpp>
 
 namespace distant
 {
-	namespace kernel
+	namespace kernel_objects
 	{
 		/// @brief distant::process represents a process, and has static type checking on the process access rights.
-		template <process_rights AccessFlags>
+		template <process_rights AccessFlags = process_rights::all_access>
 		class process : private process_base
 		{
 		private:
@@ -28,7 +28,7 @@ namespace distant
 			using process_base::operator bool;
 			using process_base::is_being_debugged;
 			using process_base::access_rights;
-			using process_base::get_handle;
+			using process_base::handle;
 			using process_base::is_zombie;
 			using process_base::valid;
 			using process_base::id;
@@ -38,6 +38,13 @@ namespace distant
 			template <typename Return = void>
 			auto kill()
 				-> require_permission<process_rights::terminate, Return>;
+
+			/// Get number of handles opened in the process
+			/// @return the number of handles
+			/// @remark Function is disabled if the process does not have the \a query_limited_information process right.
+			template <typename Return = std::size_t>
+			auto handle_count() const
+				->require_permission<process_rights::query_limited_information, Return>;
 
 			/// @brief Query the process handle to see if it is still active
 			/// @remark Function is disabled if the process does not have the \a synchronize access right.
@@ -97,7 +104,7 @@ namespace distant
 			/// @brief Move assignable
 			process& operator=(process&& other) noexcept; 
 
-			explicit process(handle<process>&& handle) noexcept;
+			explicit process(distant::handle<process>&& handle) noexcept;
 
 		private:
 			friend class memory_status;
@@ -118,17 +125,17 @@ namespace distant
 		/// @return a distant::process for the current process with process_rights::all_access permissions.
 		process<process_rights::all_access> current_process() noexcept;
 
-	} // namespace kernel
+	} // namespace kernel_objects
 
 	template <process_rights Access>
-	struct get_access_rights<kernel::process<Access>>
+	struct get_access_rights<kernel_objects::process<Access>>
 	{
 		static constexpr auto value = Access;
 	};
 
-	using kernel::process;
-	using kernel::current_process;
+	using kernel_objects::process;
+	using kernel_objects::current_process;
 } // end namespace distant
 
 // Implementation 
-#include <distant/kernel/impl/process.hxx>
+#include <distant/kernel_objects/impl/process.hxx>

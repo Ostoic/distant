@@ -7,17 +7,17 @@
 #include <distant/handle.hpp>
 
 #include <distant/type_traits.hpp>
-#include <distant/detail/fwd.hpp>
+#include <distant/kernel_objects/fwd.hpp>
 
-#include <distant/system/detail/snapshot_traits.hpp>
+#include <distant/kernel_objects/detail/snapshot_traits.hpp>
 
 #include <distant/support/winapi/toolhelp32.hpp>
 
-namespace distant::system::detail {
+namespace distant::kernel_objects::detail {
 
 	// get_snapshot process tag implementation
 	template <typename Object_t, typename Snapshot_t>
-	inline handle<Snapshot_t> get_snapshot_handle(distant::detail::process_tag tag) noexcept
+	handle<Snapshot_t> get_snapshot_handle(distant::detail::process_tag tag) noexcept
 	{
 		static_cast<void>(tag);
 
@@ -31,7 +31,7 @@ namespace distant::system::detail {
 	
 	// get_snapshot main tag dispatcher
 	template <typename Object_t, typename Snapshot_t>
-	inline handle<Snapshot_t> get_snapshot_handle() noexcept
+	handle<Snapshot_t> get_snapshot_handle() noexcept
 	{
 		using dispatch = typename snapshot_dispatcher<Object_t>::dispatch;
 		return get_snapshot_handle<Object_t, Snapshot_t>(dispatch{});
@@ -52,7 +52,7 @@ namespace distant::system::detail {
 		// snapshot first main tag dispatcher
 		template <
 			typename Object_t, 
-			typename Entry_t = typename snapshot_dispatcher<Object_t>::entry_type // Get snapshot entry type of kernel::kernel_object
+			typename Entry_t = typename snapshot_dispatcher<Object_t>::entry_type // Get snapshot entry type of kernel_objects::kernel_object
 		>
 		bool first(boost::winapi::HANDLE_ snapshot_handle, Entry_t& entry) noexcept
 		{
@@ -70,7 +70,7 @@ namespace distant::system::detail {
 		// snapshot next main tag dispatcher
 		template <
 			typename Object_t, 
-			typename Entry_t = typename snapshot_dispatcher<Object_t>::entry_type // Get snapshot entry type of kernel::kernel_object
+			typename Entry_t = typename snapshot_dispatcher<Object_t>::entry_type // Get snapshot entry type of kernel_objects::kernel_object
 		>
 		bool next(boost::winapi::HANDLE_ snapshot_handle, Entry_t& entry) noexcept
 		{
@@ -88,9 +88,9 @@ namespace distant::system::detail {
 		// snapshot get_id main tag dispatcher
 		template <
 			typename Object_t, 
-			typename Entry_t = typename snapshot_dispatcher<Object_t>::entry_type // Get snapshot entry type of kernel::kernel_object
+			typename Entry_t = typename snapshot_dispatcher<Object_t>::entry_type // Get snapshot entry type of kernel_objects::kernel_object
 		>
-		inline boost::winapi::DWORD_ get_id(const Entry_t& entry) noexcept
+		boost::winapi::DWORD_ get_id(const Entry_t& entry) noexcept
 		{
 			using dispatch = typename snapshot_dispatcher<Object_t>::dispatch;
 			return get_id(entry, dispatch{});

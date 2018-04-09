@@ -10,28 +10,25 @@
 namespace distant
 {
 	template <std::size_t N>
-	constexpr byte get(const word bytes) noexcept
+	constexpr byte get_byte(const word bytes) noexcept
 	{
-		if constexpr (N >= sizeof(word))
-			static_assert(false, "[distant::get<word>] Byte index out of range");
+		static_assert(N < sizeof(word), "[distant::get_byte<word>] Byte index out of range");
 
 		return (bytes >> (8 * N)) & 0xff;
 	}
 
 	template <std::size_t N>
-	constexpr byte get(const dword bytes) noexcept
+	constexpr byte get_byte(const dword bytes) noexcept
 	{
-		if constexpr (N >= sizeof(dword))
-			static_assert(false, "[distant::get<dword>] Byte index out of range");
+		static_assert(N < sizeof(word), "[distant::get_byte<dword>] Byte index out of range");
 
 		return (bytes >> (8 * N)) & 0xff;
 	}
 
 	template <std::size_t N>
-	constexpr byte get(const qword bytes) noexcept
+	constexpr byte get_byte(const qword bytes) noexcept
 	{
-		if constexpr (N >= sizeof(qword))
-			static_assert(false, "[distant::get<qword>] Byte index out of range");
+		static_assert(N < sizeof(word), "[distant::get_byte<qword>] Byte index out of range");
 
 		return (bytes >> (8 * N)) & 0xff;
 	}

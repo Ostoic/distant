@@ -62,7 +62,7 @@ namespace winapi {
 		boost::winapi::LPSTR_ lpExeName,
 		boost::winapi::PDWORD_ lpdwSize)
 	{
-		return ::QueryFullProcessImageNameA(
+		return QueryFullProcessImageNameA(
 			hProcess,
 			dwFlags,
 			lpExeName,
@@ -76,7 +76,7 @@ namespace winapi {
 		boost::winapi::LPWSTR_ lpExeName,
 		boost::winapi::PDWORD_ lpdwSize)
 	{
-		return ::QueryFullProcessImageNameW(
+		return QueryFullProcessImageNameW(
 			hProcess,
 			dwFlags,
 			lpExeName,

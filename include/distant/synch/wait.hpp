@@ -10,7 +10,7 @@ Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
 */ 
 
-#include <distant/kernel/kernel_object.hpp>
+#include <distant/kernel_objects/kernel_object.hpp>
 #include <distant/utility/literal.hpp>
 
 #include <boost/winapi/wait.hpp>
@@ -19,8 +19,8 @@ Distributed under the Apache Software License, Version 2.0.
 #include <chrono>
 #include <utility>
 
-namespace distant {
-
+namespace distant::synch 
+{
 	// TODO: Revise heavily
 	// XX Consider moving into distant::handle as a member/free function.
 	// XX Look at injectory's wait interface.
@@ -47,13 +47,13 @@ namespace distant {
 
 	public:
 		// Wait for synchronizable object for the given amount of time
-		wait::state operator ()(const kernel::kernel_object& obj, time_type time) const
+		wait::state operator ()(const kernel_objects::kernel_object& obj, time_type time) const
 		{
 			// XX Consider making free and including std::lock_guard or something
 			// XX Or just the usual below 
 			using expose = distant::detail::attorney::to_handle<wait>;
 
-			const auto handle = obj.get_handle().native_handle();
+			const auto handle = obj.handle().native_handle();
 			const auto result = boost::winapi::WaitForSingleObject(handle, time);
 
 			return static_cast<state>(result);
@@ -77,7 +77,7 @@ namespace distant {
 
 		//	for (const auto& obj : objects)
 		//	{
-		//		auto value = detail::attorney::to_handle<wait>::get_value(obj.get_handle()); // Get handle value (void *)
+		//		auto value = detail::attorney::to_handle<wait>::get_value(obj.handle()); // Get handle value (void *)
 		//		auto result = WaitForSingleObject(value, time);
 		//	}
 
@@ -86,15 +86,13 @@ namespace distant {
 		//}
 
 		// Wait on kernel object until the object is done executing
-		wait::state operator ()(const kernel::kernel_object& obj, wait::infinite tag) const
+		wait::state operator ()(const kernel_objects::kernel_object& obj, wait::infinite tag) const
 		{ 
 			static_cast<void>(tag);
 			return this->operator()(obj, boost::winapi::INFINITE_); 
 		}
 
 		//wait::state operator()
-	private:
-		mutable error::windows_error_code m_last_error;
 	};
 
 } // end namespace distant

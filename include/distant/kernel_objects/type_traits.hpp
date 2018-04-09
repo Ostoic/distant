@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include <distant/kernel/fwd.hpp>
+#include <distant/kernel_objects/fwd.hpp>
 
-namespace distant::kernel
+namespace distant::kernel_objects
 {
 	namespace detail
 	{

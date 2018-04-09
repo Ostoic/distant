@@ -19,8 +19,6 @@ BOOST_SYMBOL_IMPORT boost::winapi::BOOL_ WINAPI K32GetProcessMemoryInfo(
 namespace boost  {
 namespace winapi {
 
-#if !defined (BOOST_USE_WINDOWS_H)
-
 	typedef struct _PROCESS_MEMORY_COUNTERS_ {
 		boost::winapi::DWORD_ cb;
 		boost::winapi::DWORD_ PageFaultCount;
@@ -50,9 +48,8 @@ namespace winapi {
 		boost::winapi::SIZE_T_ PrivateUsage;
 	} PROCESS_MEMORY_COUNTERS_EX_;
 	typedef PROCESS_MEMORY_COUNTERS_EX_ *PPROCESS_MEMORY_COUNTERS_EX_;
-#endif // >= winxpi version check
 
-#endif // !defined BOOST_USE_WINDOWS_H
+#endif // >= winxpi version check
 
 	BOOST_FORCEINLINE bool get_process_memory_info(
 		boost::winapi::HANDLE_ Process,

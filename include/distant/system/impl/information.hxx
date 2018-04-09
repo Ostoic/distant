@@ -8,8 +8,8 @@
 #include <distant/support/winapi/sysinfo.hpp>
 #include <distant/error/windows_error.hpp>
 
-namespace distant::system {
-
+namespace distant::system 
+{
 	inline const filesystem::path& windows_path()
 	{
 		static filesystem::path path;
@@ -19,6 +19,23 @@ namespace distant::system {
 			boost::winapi::WCHAR_ buffer[boost::winapi::max_path];
 
 			if (boost::winapi::GetWindowsDirectoryW(reinterpret_cast<boost::winapi::LPWSTR_>(&buffer), boost::winapi::max_path) == 0)
+				throw std::system_error(error::last_error(), "[system::windows_path] Unable to get windows directory");
+
+			path = buffer;
+		}
+
+		return path;
+	}
+
+	inline const filesystem::path& system_path()
+	{
+		static filesystem::path path;
+
+		if (path.empty())
+		{
+			boost::winapi::WCHAR_ buffer[boost::winapi::max_path];
+
+			if (GetSystemDirectory(reinterpret_cast<boost::winapi::LPWSTR_>(&buffer), boost::winapi::max_path) == 0)
 				throw std::system_error(error::last_error(), "[system::windows_path] Unable to get windows directory");
 
 			path = buffer;
@@ -44,7 +61,7 @@ namespace distant::system {
 		boost::winapi::WCHAR_ buffer[boost::winapi::UNLEN_ + 1];
 
 		if (!boost::winapi::GetUserNameW(reinterpret_cast<boost::winapi::LPWSTR_>(buffer), reinterpret_cast<boost::winapi::LPDWORD_>(&size)))
-			throw std::system_error(error::last_error(), "[system::username] Unable to get username");
+			throw std::system_error(error::last_error(), "[system::username] GetUserName failed");
 
 		return {buffer};
 	}

@@ -6,7 +6,6 @@
 
 #include <distant/security/privilege.hpp>
 
-// TODO: make privilege global variables as inline variables to avoid linkage issues?
 namespace distant {
 namespace security::privileges {
 
@@ -51,7 +50,8 @@ namespace security::privileges {
 	constexpr security::privilege time_zone				{ boost::winapi::SE_TIME_ZONE_NAME_ };
 	constexpr security::privilege create_symbolic_link	{ boost::winapi::SE_CREATE_SYMBOLIC_LINK_NAME_ };
 
-
+	/// @brief Shortcut function for requesting debug privileges.
+	/// @return true if debug privileges were granted, and false otherwise.
 	bool request_debug_privileges() noexcept;
 
 } // namespace security::privileges

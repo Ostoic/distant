@@ -14,7 +14,7 @@ namespace distant::memory
 	{
 		SIZE_T bytes_read = 0;
 		T buffer = std::move(x);
-		if (!::WriteProcessMemory(proc.get_handle().native_handle(), reinterpret_cast<LPVOID>(static_cast<AddressT>(address)), &buffer, sizeof(T), &bytes_read))
+		if (!::WriteProcessMemory(proc.handle().native_handle(), reinterpret_cast<LPVOID>(static_cast<AddressT>(address)), &buffer, sizeof(T), &bytes_read))
 			throw std::system_error(distant::last_error(), "[memory::write] WriteProcessMemory failed, " + std::to_string(bytes_read) + " bytes written");
 	}
 
@@ -23,7 +23,7 @@ namespace distant::memory
 	{
 		SIZE_T bytes_read = 0;
 		T buffer = std::move(x);
-		if (!::WriteProcessMemory(proc.get_handle().native_handle(), reinterpret_cast<LPVOID>(static_cast<dword>(address)), &buffer, sizeof(T), &bytes_read))
+		if (!::WriteProcessMemory(proc.handle().native_handle(), reinterpret_cast<LPVOID>(static_cast<dword>(address)), &buffer, sizeof(T), &bytes_read))
 			throw std::system_error(distant::last_error(), "[memory::write] WriteProcessMemory failed, " + std::to_string(bytes_read) + " bytes written");
 	}
 
@@ -33,7 +33,7 @@ namespace distant::memory
 		T result;
 		SIZE_T bytes_read = 0;
 
-		if (!::ReadProcessMemory(process.get_handle().native_handle(), 
+		if (!::ReadProcessMemory(process.handle().native_handle(), 
 								 reinterpret_cast<LPVOID>(static_cast<AddressT>(address)), 
 								 &result, sizeof(T), &bytes_read
 		))
@@ -77,7 +77,7 @@ namespace distant::memory
 
 		DWORD_ old;
 		if (!::VirtualProtectEx(
-			process.get_handle().native_handle(),
+			process.handle().native_handle(),
 			reinterpret_cast<void*>(static_cast<AddressT>(address)),
 			size, static_cast<DWORD_>(protection), &old
 		))
@@ -93,7 +93,7 @@ namespace distant::memory
 
 		DWORD_ old;
 		return ::VirtualProtectEx(
-			process.get_handle().native_handle(),
+			process.handle().native_handle(),
 			reinterpret_cast<void*>(static_cast<AddressT>(address)),
 			size, static_cast<DWORD_>(protection), &old
 		);
@@ -107,11 +107,11 @@ namespace distant::memory
 			"[memory::virtual_malloc] Selected page_protection is not supported"
 		);
 
-		void* result = ::VirtualAllocEx(process.get_handle().native_handle(), nullptr, n, MEM_RESERVE | MEM_COMMIT, static_cast<boost::winapi::DWORD_>(Protection));
-		if (result == nullptr)
+		void* allocated_address = ::VirtualAllocEx(process.handle().native_handle(), nullptr, n, MEM_RESERVE | MEM_COMMIT, static_cast<boost::winapi::DWORD_>(Protection));
+		if (allocated_address == nullptr)
 			throw std::system_error(distant::last_error(), "[memory::virtual_malloc] VirtualAllocEx failed");
 
-		return virtual_ptr<T, AddressT>{process, result};
+		return virtual_ptr<T, AddressT>{process, allocated_address};
 	}
 
 	template <typename T, page_protection Protection>
@@ -121,16 +121,16 @@ namespace distant::memory
 	}
 
 	template <typename T>
-	void virtual_free(const process<vm_op>& process, const virtual_ptr<T, dword> pointer) noexcept
+	bool virtual_free(const process<vm_op>& process, const virtual_ptr<T, dword> pointer) noexcept
 	{
-		virtual_free<T, dword>(process, pointer);
+		return virtual_free<T, dword>(process, pointer);
 	}
 
 	template <typename T, typename AddressT>
-	void virtual_free(const process<vm_op>& process, const virtual_ptr<T, AddressT> pointer) noexcept
+	bool virtual_free(const process<vm_op>& process, const virtual_ptr<T, AddressT> pointer) noexcept
 	{
-		::VirtualFreeEx(
-			process.get_handle().native_handle(), 
+		return ::VirtualFreeEx(
+			process.handle().native_handle(), 
 			reinterpret_cast<void*>(static_cast<AddressT>(pointer.get())),
 			0, MEM_RELEASE
 		);

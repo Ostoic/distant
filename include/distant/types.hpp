@@ -21,22 +21,22 @@ namespace distant
 	using byte = unsigned char;
 
 	template <std::size_t N>
-	constexpr distant::byte get(distant::word bytes) noexcept;
+	constexpr byte get_byte(distant::word bytes) noexcept;
 
 	template <std::size_t N>
-	constexpr distant::byte get(distant::dword bytes) noexcept;
+	constexpr byte get_byte(distant::dword bytes) noexcept;
 
 	template <std::size_t N>
-	constexpr distant::byte get(distant::qword bytes) noexcept;
+	constexpr byte get_byte(distant::qword bytes) noexcept;
 
 	template <typename... Bytes, typename = std::enable_if_t<sizeof...(Bytes) <= sizeof(distant::word)>>
-	constexpr distant::word make_word(Bytes&&... bytes) noexcept;
+	constexpr word make_word(Bytes&&... bytes) noexcept;
 
 	template <typename... Bytes, typename = std::enable_if_t<sizeof...(Bytes) <= sizeof(distant::dword)>>
-	constexpr distant::dword make_dword(Bytes&&... bytes) noexcept;
+	constexpr dword make_dword(Bytes&&... bytes) noexcept;
 
 	template <typename... Bytes, typename = std::enable_if_t<sizeof...(Bytes) <= sizeof(distant::qword)>>
-	constexpr distant::qword make_qword(Bytes&&... bytes) noexcept;
+	constexpr qword make_qword(Bytes&&... bytes) noexcept;
 
 	template <typename Integer, typename... Bytes>
 	constexpr Integer make_integer(Bytes&&... bytes) noexcept;

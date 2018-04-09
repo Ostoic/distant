@@ -11,6 +11,7 @@ Distributed under the Apache Software License, Version 2.0.
 */
 
 #include <distant/detail/handle_base.hpp>
+#include <distant/type_traits.hpp>
 
 namespace distant
 {		
@@ -25,10 +26,10 @@ namespace distant
 		using object_type = ObjectT;
 
 	public: // {ctor}
-		/// @param h the native handle value.
+		/// @param native_handle the native handle value.
 		/// @param flags handle flags .
 		/// @param closed whether or not the handle is closed.
-		explicit constexpr handle(native_type h, flag_type flags = flag_type::inherit, bool closed = false) noexcept;
+		explicit constexpr handle(native_type native_handle, flag_type flags = flag_type::inherit, bool closed = false) noexcept;
 
 		/// Construct an invalid handle.
 		/// This allows handles to be comparable with nullptr.
@@ -38,20 +39,16 @@ namespace distant
 		/// Invalid handle literal constructor
 		constexpr handle() noexcept;
 
-		/// Bivariant move constructor
-		template <typename other_t>
-		handle(handle<other_t>&& other) noexcept;
+		template <typename OtherT, typename = std::enable_if_t<is_quasiconvertible<ObjectT, OtherT>::value>>
+		handle(handle<OtherT>&& other) noexcept;
 
-		/// Bivariant move assignment
-		template <typename other_t>
-		handle& operator=(handle<other_t>&& other) noexcept;
+		template <typename OtherT, typename = std::enable_if_t<is_quasiconvertible<ObjectT, OtherT>::value>>
+		handle& operator=(handle<OtherT>&&) noexcept;
+
+		handle(handle&&) noexcept = default;
+		handle& operator=(handle&&) noexcept = default;
 
 	private:
-		/// Allow attorney to expose some implementation details
-		// This is mainly for recreated winapi functions to pass the underlying handle value into the winapi.
-		template <typename>
-		friend class detail::attorney::to_handle;
-
 		// Expose implementation to other handle types
 		template <typename>
 		friend class handle;

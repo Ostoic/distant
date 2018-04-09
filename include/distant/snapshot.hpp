@@ -4,4 +4,4 @@
 
 #pragma once
 
-#include <distant/system/snapshot.hpp>
+#include <distant/kernel_objects/snapshot.hpp>

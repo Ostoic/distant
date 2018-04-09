@@ -18,7 +18,7 @@ Distributed under the Apache Software License, Version 2.0.
 #include <boost/winapi/local_memory.hpp>
 #include <boost/winapi/limits.hpp>
 
-#include <distant/config.hpp>
+#include <distant/detail/config.hpp>
 #include <distant/support/winapi/last_error.hpp>
 
 namespace distant {

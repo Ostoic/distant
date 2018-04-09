@@ -162,7 +162,7 @@ namespace distant::memory
 	template <std::size_t N, typename A>
 	constexpr distant::byte get(const address<A> addr) noexcept
 	{
-		static_assert(N < sizeof(address<A>), "[distant::get<address>] Byte index out of range");
+		static_assert(N < sizeof(address<A>), "[distant::get_byte<address>] Byte index out of range");
 
 		const auto bytes = static_cast<A>(addr);
 		return (bytes >> (8 * N)) & 0xff;

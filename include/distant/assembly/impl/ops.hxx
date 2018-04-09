@@ -97,18 +97,18 @@ namespace distant::memory::ops
 	constexpr static_assembler<sizeof(opcode) + sizeof(distant::address), 1>
 	mov(x86_register r, distant::dword param) noexcept
 	{
-		using distant::get;
+		using distant::get_byte;
 		constexpr auto map = meta::make_map(
 			MAKE_REGISTER_ALL(mov)
 		);
 
-		return make_instruction(map[r], get<0>(param), get<1>(param), get<2>(param), get<3>(param));
+		return make_instruction(map[r], get_byte<0>(param), get_byte<1>(param), get_byte<2>(param), get_byte<3>(param));
 	}
 
 	constexpr static_assembler<sizeof(opcode) + sizeof(distant::dword), 1> 
 	mov(x86_register r, dword_ptr_t<distant::address> add_ptr)
 	{
-		using distant::get;
+		using distant::get_byte;
 		constexpr auto map = meta::make_map(
 			std::make_pair(x86_register::eax, opcode::mov_eax_ptr),
 			std::make_pair(x86_register::ebx, opcode::mov_ebx_ptr),
@@ -127,7 +127,7 @@ namespace distant::memory::ops
 	constexpr static_assembler<sizeof(opcode), 1> 
 	mov(x86_register r, dword_ptr_t<x86_register> reg)
 	{
-		using distant::get;
+		using distant::get_byte;
 		constexpr auto map = meta::make_map(
 			MAKE_REGISTER_PTR_ALL(eax),
 			MAKE_REGISTER_PTR_ALL(ecx),

@@ -19,6 +19,10 @@ namespace distant::utility::meta
 
 	template <typename T, std::size_t Size>
 	constexpr std::array<T, Size - 1> truncate(const std::array<T, Size>& array);
+
+	template<class Tuple, class Func> 
+	void for_each_tuple(Tuple&& tuple, Func f);
+
 } // namespace distant::utility::meta
 
 #include "impl/algorithm.hxx"

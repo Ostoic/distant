@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <distant/kernel/process.hpp>
+#include <distant/kernel_objects/process.hpp>
 #include <distant/memory/virtual_ptr.hpp>
 #include <distant/memory/virtual_reference.hpp>
 

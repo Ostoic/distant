@@ -3,13 +3,6 @@
 // (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
 
 #pragma once
-/*
-* Copyright 2017 Shaun Ostoic
-*
-* Distributed under the Boost Software License, Version 1.0.
-* See http://www.boost.org/LICENSE_1_0.txt
-*/
-
 
 #include <boost/winapi/basic_types.hpp>
 

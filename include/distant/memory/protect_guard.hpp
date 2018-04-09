@@ -1,6 +1,6 @@
 #pragma once
 
-#include <distant/kernel/process.hpp>
+#include <distant/kernel_objects/process.hpp>
 #include <distant/memory/page.hpp>
 #include <distant/memory/virtual_memory.hpp>
 
@@ -12,28 +12,28 @@ namespace distant
 	{
 		// Todo: multiple pages, etc
 		template <typename AddressT>
-		class scoped_protect
+		class protect_guard
 		{
 		public:
-			explicit scoped_protect(const process<vm_op>& process, address<AddressT> address, const page_protection protection, const std::size_t size)
+			explicit protect_guard(const process<vm_op>& process, address<AddressT> address, const page_protection protection, const std::size_t size)
 				: process_(&process)
 				, page_(address)
 				, old_protection_(virtual_protect<AddressT>(process, address, protection, size))
 			{}
 
-			~scoped_protect() noexcept
+			~protect_guard() noexcept
 			{
 				if (process_ != nullptr)
 					virtual_protect_noexcept<AddressT>(*this->process_, this->page_.base(), this->old_protection_, this->page_.size());
 			}
 
-			scoped_protect(scoped_protect&& other) noexcept
+			protect_guard(protect_guard&& other) noexcept
 				: process_(other.process_)
 				, page_(other.page_)
 				, old_protection_(other.old_protection_)
 			{ other.process_ = nullptr; }
 
-			scoped_protect& operator=(scoped_protect&& other) noexcept
+			protect_guard& operator=(protect_guard&& other) noexcept
 			{
 				this->process_ = other.process_;
 				other.process_ = nullptr;
@@ -43,41 +43,41 @@ namespace distant
 				return *this;
 			};
 
-			scoped_protect(const scoped_protect&) = delete;
-			scoped_protect& operator=(const scoped_protect&) = delete;
+			protect_guard(const protect_guard&) = delete;
+			protect_guard& operator=(const protect_guard&) = delete;
 
 		private:
 			const process<vm_op>* process_;
 			const page<AddressT> page_;
 			const page_protection old_protection_;
 
-		}; // class scoped_protect
+		}; // class protect_guard
 
 		template <page_protection Protection, typename AddressT>
 		[[nodiscard]]
-		scoped_protect<AddressT>
-			make_scoped_protect(const process<vm_op>& process, const address<AddressT> address, const std::size_t size)
+		protect_guard<AddressT>
+			make_protect_guard(const process<vm_op>& process, const address<AddressT> address, const std::size_t size)
 		{
-			return scoped_protect<AddressT>{process, address, Protection, size};
+			return protect_guard<AddressT>{process, address, Protection, size};
 		}
 
 		template <page_protection Protection>
 		[[nodiscard]]
-		scoped_protect<dword>
-			make_scoped_protect(const process<vm_op>& process, const address<dword> address, const std::size_t size)
+		protect_guard<dword>
+			make_protect_guard(const process<vm_op>& process, const address<dword> address, const std::size_t size)
 		{
-			return scoped_protect<dword>{process, address, Protection, size};
+			return protect_guard<dword>{process, address, Protection, size};
 		}
 
-		/// @brief Attempts to protect a region of memory in the given process, but will catch any exceptions thrown by scoped_protect.
+		/// @brief Attempts to protect a region of memory in the given process, but will catch any exceptions thrown by protect_guard.
 		template <page_protection Protection, typename AddressT>
 		[[nodiscard]]
-		std::optional<scoped_protect<dword>>
-			try_scoped_protect(const process<vm_op>& process, const address<AddressT> address, const std::size_t size = 1)
+		std::optional<protect_guard<dword>>
+			try_protect_guard(const process<vm_op>& process, const address<AddressT> address, const std::size_t size = 1)
 		{
 			try
 			{
-				scoped_protect<AddressT> protect{process, address, Protection, size};
+				protect_guard<AddressT> protect{process, address, Protection, size};
 				return std::move(protect);
 			}
 			catch (std::system_error&) {}
@@ -87,12 +87,12 @@ namespace distant
 
 		template <page_protection Protection>
 		[[nodiscard]]
-		std::optional<scoped_protect<dword>>
-			try_scoped_protect(const process<vm_op>& process, const address<dword> address, const std::size_t size = 1)
+		std::optional<protect_guard<dword>>
+			try_protect_guard(const process<vm_op>& process, const address<dword> address, const std::size_t size = 1)
 		{
 			try
 			{
-				scoped_protect<dword> protect{process, address, Protection, size};
+				protect_guard<dword> protect{process, address, Protection, size};
 				return std::move(protect);
 			}
 			catch (std::system_error&) {}
@@ -101,7 +101,7 @@ namespace distant
 		}
 	} // namespace memory
 	
-	using memory::make_scoped_protect;
-	using memory::try_scoped_protect;
+	using memory::make_protect_guard;
+	using memory::try_protect_guard;
 
 } // namespace distant

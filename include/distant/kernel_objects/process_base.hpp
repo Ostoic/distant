@@ -16,7 +16,7 @@ Distributed under the Apache Software License, Version 2.0.
 
 //#include <exception>
 
-#include <distant/kernel/kernel_object.hpp>
+#include <distant/kernel_objects/kernel_object.hpp>
 #include <distant/type_traits.hpp>
 
 #include <distant/support/filesystem.hpp>
@@ -24,7 +24,7 @@ Distributed under the Apache Software License, Version 2.0.
 //#include <distant\memory\vm.h>
 
 namespace distant {
-namespace kernel  {
+namespace kernel_objects  {
 
 	/// @brief Base type of distant::process
 	/// This version does not have static access_rights checking
@@ -36,6 +36,7 @@ namespace kernel  {
 
 		using error_type = kernel_object_traits<process_base>::error_type;
 		using handle_type = kernel_object_traits<process_base>::handle_type;
+		using native_handle_type = kernel_object_traits<process_base>::native_handle_type;
 		using access_rights_t = access_rights::process;
 
 		using exit_code_type = std::size_t;
@@ -49,13 +50,9 @@ namespace kernel  {
 		static std::size_t get_pid(const handle_type&) noexcept;
 
 	public: // interface
-		/// @brief Get the name of the process executable.
-		/// @return string containing the name.
-		std::wstring name() const;
 
-		/// @brief Get the path to the process executable.
-		/// @return the path.
-		filesystem::path file_path() const;
+		/// @brief Terminate the process
+		void kill();
 
 		/// @brief Query the process handle to see if it is still active
 		/// @return true if the process is active, false otherwise.
@@ -71,6 +68,14 @@ namespace kernel  {
 		/// @return true if the process is being run in 64bit mode, and false if not.
 		bool is_64bit() const;
 
+		/// @brief Get the name of the process executable.
+		/// @return string containing the name.
+		std::wstring name() const;
+
+		/// @brief Get the path to the process executable.
+		/// @return the path.
+		filesystem::path file_path() const;
+
 		/// @brief Test if the process is being debugged by another process.
 		/// @return true if the process is being debugged, and false if it is not.
 		bool is_being_debugged() const;
@@ -81,8 +86,9 @@ namespace kernel  {
 		/// @return true if the process is a zombie.
 		bool is_zombie() const;
 
-		/// @brief Terminate the process
-		void kill();
+		/// Get number of handles opened in the process
+		/// @return the number of handles
+		std::size_t handle_count() const;
 
 		/// @brief Retrieve the process id.
 		/// @return the process id.
@@ -109,7 +115,7 @@ namespace kernel  {
 		process_base(process_base&& other) noexcept; // move constructible
 		process_base& operator=(process_base&& other) noexcept; // move assignable
 
-		explicit process_base(handle<process_base>&& handle, access_rights_t) noexcept;
+		explicit process_base(distant::handle<process_base>&& handle, access_rights_t) noexcept;
 
 	private:
 		using expose = distant::detail::attorney::to_handle<process_base>;
@@ -126,7 +132,7 @@ namespace kernel  {
 		access_rights_t access_rights_;
 	}; // end class process
 
-} // namespace kernel
+} // namespace kernel_objects
 } // namespace distant
 
-#include <distant/kernel/impl/process_base.hxx>
+#include <distant/kernel_objects/impl/process_base.hxx>

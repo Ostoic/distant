@@ -12,17 +12,15 @@ int main()
 	using distant::process_rights;
 	using distant::page_protection;
 
-
 	// Open the process with pid 137016.
 	// For simplicity, this is assumed to be the target wow.exe, version 3.3.5 123450.
-	const distant::process<distant::vm_rw_op> wow(137016); 
+	const distant::process<distant::vm_rw_op> wow(184512); 
 
 	if (!wow)
 	{
 		std::cerr << "Unable to open wow\n";
 		return 0;
 	}
-
 
 	// Static addresses corresponding to the last action in-game, and the current timestamp.
 	constexpr distant::address last_action_address = 0x00B499A4;

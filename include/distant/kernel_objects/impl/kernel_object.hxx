@@ -3,17 +3,17 @@
 // (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
 
 #pragma once
-#include <distant/kernel/kernel_object.hpp>
+#include <distant/kernel_objects/kernel_object.hpp>
 
-namespace distant::kernel
+namespace distant::kernel_objects
 {
 //class kernel_object
 //public:
 	template <typename KernelObject, typename>
-	const handle<KernelObject>& kernel_object::get_handle() const noexcept
-	{ return reinterpret_cast<const handle<KernelObject>&>(handle_); }
+	const distant::handle<KernelObject>& kernel_object::handle() const noexcept
+	{ return *reinterpret_cast<const distant::handle<KernelObject>*>(&handle_); }
 
-	inline const handle<kernel_object>& kernel_object::get_handle() const noexcept
+	inline const distant::handle<kernel_object>& kernel_object::handle() const noexcept
 	{ return handle_; }
 
 	inline kernel_object::kernel_object(handle_type&& handle) noexcept
@@ -28,4 +28,4 @@ namespace distant::kernel
 	{
 		return handle_.valid();
 	}
-} // end namespace distant::kernel
+} // end namespace distant::kernel_objects

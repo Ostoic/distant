@@ -6,7 +6,7 @@
 
 #include <type_traits>
 
-#include <distant/detail/fwd.hpp>
+#include <distant/kernel_objects/fwd.hpp>
 
 namespace distant {
 
@@ -19,13 +19,13 @@ namespace distant {
 				std::false_type				// Otherwise return false
 		>;
 
-	// Metafunction for detecting whether a type is a kernel::kernel_object
+	// Metafunction for detecting whether a type is a kernel_objects::kernel_object
 	template <class T>
 	struct is_kernel_object
 	{
-		using result = typename
+		using result = 
 			std::conditional_t<
-				std::is_convertible<T, kernel::kernel_object>::value, // If T derives from kernel::kernel_object,
+				std::is_convertible<T, kernel_objects::kernel_object>::value, // If T derives from kernel_objects::kernel_object,
 					std::true_type,					  // return true.
 					std::false_type					  // Otherwise return false
 			>;
@@ -33,11 +33,12 @@ namespace distant {
 		static constexpr bool value = result::value;
 	};
 
-	/// Contains kernel kernel_object traits
+	/// Contains kernel_object traits
 	template <class T>
 	struct kernel_object_traits 
 	{
 		using handle_type = handle<T>;
+		using native_handle_type = void*;
 		using error_type  = error::windows_error_code;
 		using object_type = T;
 	};

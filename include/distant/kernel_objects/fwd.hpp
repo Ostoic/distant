@@ -6,7 +6,7 @@
 
 #include <distant/access_rights.hpp>
 
-namespace distant::kernel
+namespace distant::kernel_objects
 {
 	class kernel_object;
 	class process_base;
@@ -16,4 +16,7 @@ namespace distant::kernel
 
 	template <token_rights R, typename Object>
 	class access_token;
+
+	template <typename>
+	class snapshot;
 }

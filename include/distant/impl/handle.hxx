@@ -17,8 +17,8 @@ namespace distant
 {
 	//public:
 	template <typename T>
-	constexpr handle<T>::handle(const native_type h, const flag_type flags, const bool closed) noexcept
-		: handle_base(h, flags, closed) {}
+	constexpr handle<T>::handle(const native_type native_handle, const flag_type flags, const bool closed) noexcept
+		: handle_base(native_handle, flags, closed) {}
 
 	template <typename T>
 	constexpr handle<T>::handle(nullptr_t) noexcept
@@ -28,23 +28,17 @@ namespace distant
 	constexpr handle<T>::handle() noexcept
 		: handle(nullptr, flag_type::close_protected, true) {}
 
-	// Move constructor
 	template <typename T>
-	template <typename OtherT>
+	template <typename OtherT, typename>
 	handle<T>::handle(handle<OtherT>&& other) noexcept
-		: handle_base(std::move(other))
-	{
-		utility::assert_compatible<T, OtherT>();
-	}
+		: handle(std::move(*reinterpret_cast<handle*>(&other)))
+	{}
 
-	// Move assignment
 	template <typename T>
-	template <typename other_t>
-	handle<T>& handle<T>::operator=(handle<other_t>&& other) noexcept
+	template <typename OtherT, typename>
+	handle<T>& handle<T>::operator=(handle<OtherT>&& other) noexcept
 	{
-		utility::assert_compatible<T, other_t>();
-		handle_base::operator=(std::move(other));
-		return *this;
+		return this->operator=(*std::move(reinterpret_cast<handle*>(&other)));
 	}
 
 	//free:

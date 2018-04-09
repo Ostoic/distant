@@ -4,5 +4,5 @@
 
 #pragma once
 
-#include <distant/config.hpp>
-#include <distant/kernel/process.hpp>
+#include <distant/detail/config.hpp>
+#include <distant/kernel_objects/process.hpp>

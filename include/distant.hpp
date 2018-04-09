@@ -10,12 +10,12 @@ Distributed under the Apache Software License, Version 2.0.
 (See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
 */
 
-#include <distant/config.hpp>
+#include <distant/detail/config.hpp>
 #include <distant/types.hpp>
 #include <distant/handle.hpp>
-#include <distant/kernel/process.hpp>
-#include <distant/kernel/access_token.hpp>
-#include <distant/system/snapshot.hpp>
+#include <distant/kernel_objects/process.hpp>
+#include <distant/kernel_objects/access_token.hpp>
+#include <distant/kernel_objects/snapshot.hpp>
 #include <distant/system/information.hpp>
 
 #include <distant/virtual_memory.hpp>

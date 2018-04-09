@@ -3,21 +3,14 @@
 // (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
 
 #pragma once
-#include <distant/system/snapshot_iterator.hpp>
+#include <distant/kernel_objects/snapshot_iterator.hpp>
 
 #include <distant/type_traits.hpp>
 
-namespace distant::system
+namespace distant::kernel_objects
 {
 // class snapshot_iterator <KernelObject>:
 //public:
-	template <typename K>
-	snapshot_iterator<K>::snapshot_iterator(const snapshot_type& snapshot, snapshot_end) noexcept
-		: native_snap_(snapshot.handle_.native_handle())
-		, object_handle_(nullptr) 
-		, entry_(nullptr)
-	{}
-
 	template <typename K>
 	snapshot_iterator<K>::snapshot_iterator(const snapshot_type& snapshot)
 		: native_snap_(snapshot.handle_.native_handle())
@@ -37,7 +30,7 @@ namespace distant::system
 	}
 
 	template <typename K>
-	snapshot_iterator<K>::snapshot_iterator()
+	constexpr snapshot_iterator<K>::snapshot_iterator()
 		: native_snap_(nullptr)
 		, object_handle_(nullptr) 
 		, entry_(nullptr)

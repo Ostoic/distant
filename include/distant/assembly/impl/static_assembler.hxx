@@ -50,13 +50,13 @@ namespace distant::memory
 		using under = std::underlying_type_t<opcode>;
 		using index = std::size_t;
 		using length = std::size_t;
-		using distant::get;
+		using distant::get_byte;
 
 		// The opcode can be represented by a byte
 		return static_assembler<sizeof...(Bytes) + sizeof(opcode), 1> {
 			std::array<distant::byte, sizeof...(Bytes) + 2> {
-				get<0>(static_cast<under>(op)),
-				get<1>(static_cast<under>(op)),
+				get_byte<0>(static_cast<under>(op)),
+				get_byte<1>(static_cast<under>(op)),
 				static_cast<distant::byte>(bytes)...
 			},
 
@@ -71,12 +71,12 @@ namespace distant::memory
 		using index = std::size_t;
 		using length = std::size_t;
 		using under = std::underlying_type_t<opcode>;
-		using distant::get;
+		using distant::get_byte;
 
 		return static_assembler<sizeof(opcode), 1> {
 			std::array<distant::byte, 2> {
-				static_cast<distant::byte>(get<0>(static_cast<under>(op))),
-				static_cast<distant::byte>(get<1>(static_cast<under>(op)))
+				static_cast<distant::byte>(get_byte<0>(static_cast<under>(op))),
+				static_cast<distant::byte>(get_byte<1>(static_cast<under>(op)))
 			},
 
 			std::array<std::pair<index, length>, 1> {

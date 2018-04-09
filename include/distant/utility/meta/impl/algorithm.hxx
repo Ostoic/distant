@@ -28,6 +28,19 @@ namespace distant::utility::meta
 		{
 			return make_array(std::get<I1s>(array1)..., std::get<I2s>(array2)...);
 		}
+
+		template<class Tuple, class Func, size_t... Is>
+		void for_each_tuple_element_impl(Tuple&& tuple, Func f, const std::index_sequence<Is...>)
+		{
+			// Unpack variadic trick
+			int ignored[] = {
+				(static_cast<void>(f(
+					std::get<Is>(std::forward<Tuple>(tuple))
+				)), 0)...
+			};
+
+			(void)ignored;
+		}
 	}
 
 	template <typename... Ts>
@@ -49,8 +62,18 @@ namespace distant::utility::meta
 	}
 
 	template <typename T, std::size_t Size>
-	inline constexpr auto truncate(const std::array<T, Size>& array) noexcept
+	constexpr auto truncate(const std::array<T, Size>& array) noexcept
 	{
 		return detail::filter_array_impl(array, std::make_index_sequence<Size - 1>{});
+	}
+
+	template<class Tuple, class Func>
+	void for_each_tuple(Tuple&& tuple, Func f)
+	{
+		detail::for_each_tuple_element_impl(
+			std::forward<Tuple>(tuple),
+			f,
+			std::make_index_sequence<std::tuple_size<std::remove_reference_t<Tuple>>::value>()
+		);
 	}
 } // namespacedistant::utility::meta

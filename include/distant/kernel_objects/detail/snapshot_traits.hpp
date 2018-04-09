@@ -7,21 +7,22 @@
 #include <distant/support/winapi/toolhelp32.hpp>
 
 #include <distant/detail/tags.hpp>
+#include "distant/kernel_objects/process_base.hpp"
 
-namespace distant::system::detail {
+namespace distant::kernel_objects::detail {
 	
 	template <class T>
 	struct snapshot_dispatcher {};
 
 	template <access_rights::process access>
-	struct snapshot_dispatcher<kernel::process<access>>
+	struct snapshot_dispatcher<kernel_objects::process<access>>
 	{
 		using dispatch = distant::detail::process_tag;
 		using entry_type = boost::winapi::PROCESSENTRY32_;
 	};
 
 	template <>
-	struct snapshot_dispatcher<kernel::process_base>
+	struct snapshot_dispatcher<kernel_objects::process_base>
 	{
 		using dispatch = distant::detail::process_tag;
 		using entry_type = boost::winapi::PROCESSENTRY32_;

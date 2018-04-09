@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <distant/detail/fwd.hpp>
+#include <distant/kernel_objects/fwd.hpp>
 
 namespace distant::detail
 {

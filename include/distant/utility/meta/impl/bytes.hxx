@@ -37,7 +37,7 @@ namespace distant::utility::meta
 	template <std::size_t N, typename T>
 	constexpr unsigned char get(const T& bytes) noexcept
 	{
-		static_assert(N < sizeof(T), "[meta::get] Byte index out of bounds");
+		static_assert(N < sizeof(T), "[meta::get_byte] Byte index out of bounds");
 		return (bytes >> (8 * N)) & 0xff;
 	}
 } // namespace distant::utility::meta

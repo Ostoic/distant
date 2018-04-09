@@ -29,8 +29,8 @@ namespace distant::detail {
 
 	// Move constructor
 	inline handle_base::handle_base(handle_base&& other) noexcept
-		: native_handle_(std::move(other.native_handle_))
-		, flags_(std::move(other.flags_))
+		: native_handle_(other.native_handle_)
+		, flags_(other.flags_)
 	{ other.invalidate(); }
 
 	// Move assignment
@@ -40,8 +40,8 @@ namespace distant::detail {
 		this->close();
 
 		// Move other handle
-		flags_ = std::move(other.flags_);
-		native_handle_ = std::move(other.native_handle_);
+		this->flags_ = other.flags_;
+		this->native_handle_ = other.native_handle_;
 
 		other.invalidate();
 		return *this;
