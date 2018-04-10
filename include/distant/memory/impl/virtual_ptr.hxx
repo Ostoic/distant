@@ -48,7 +48,7 @@ namespace distant::memory
 	}
 
 	template <typename E, typename Ad>
-	void virtual_ptr<E, Ad>::advance(const int n) noexcept
+	void virtual_ptr<E, Ad>::advance(const difference_type n) noexcept
 	{
 		this->address_ += sizeof(E) * n;
 	}

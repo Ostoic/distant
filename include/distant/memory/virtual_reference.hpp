@@ -90,7 +90,7 @@ namespace distant
 			template <typename E, typename Ad>
 			friend class virtual_ptr;
 
-			const pointer ptr_;
+			pointer ptr_;
 
 		}; // class virtual_reference
 
@@ -104,7 +104,7 @@ namespace distant
 			typename = std::enable_if_t<Access >= detail::required_vm_access<Element>::value>
 		>
 		auto make_virtual_reference(const process<Access>& process, const address<dword> address = 0)
-		{ return *make_virtual_ptr<Element>(process, address);}
+		{ return *make_virtual_ptr<Element, dword>(process, address);}
 
 		template <typename Element, typename AddressT>
 		struct virtual_traits<virtual_reference<Element, AddressT>>

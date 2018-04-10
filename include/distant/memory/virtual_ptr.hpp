@@ -19,10 +19,10 @@ namespace distant
 		class virtual_ptr : public
 			boost::iterator_facade<
 				virtual_ptr<Element, AddressT>,
-				Element,	
+				typename std::pointer_traits<virtual_ptr<Element, AddressT>>::element_type,
 				std::random_access_iterator_tag,
 				virtual_reference<Element, AddressT>,
-				address<AddressT>
+				typename std::pointer_traits<virtual_ptr<Element, AddressT>>::difference_type
 			>
 		{
 		public:
@@ -70,7 +70,7 @@ namespace distant
 			>
 			bool equal(virtual_ptr<OtherT, OtherAddressT> other) const noexcept;
 
-			void advance(int n) noexcept;
+			void advance(difference_type n) noexcept;
 
 			template <
 				typename OtherT,
@@ -156,7 +156,7 @@ namespace std
 	public:
 		using element_type	  = std::remove_cv_t<Element>;
 		using pointer		  = vptr_t<Element>;
-		using difference_type = distant::memory::address<AddressT>;
+		using difference_type = std::ptrdiff_t;
 
 		template <typename U>
 		struct rebind

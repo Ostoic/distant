@@ -5,10 +5,7 @@
 #pragma once
 
 #include <cstddef>
-
 #include <string>
-
-//#include <exception>
 
 #include <distant/kernel_objects/kernel_object.hpp>
 #include <distant/type_traits.hpp>
@@ -28,12 +25,10 @@ namespace kernel_objects  {
 		// Object type information
 		using base_type = kernel_object;
 
-		using error_type = kernel_object_traits<process_base>::error_type;
-		using handle_type = kernel_object_traits<process_base>::handle_type;
+		using error_type		 = kernel_object_traits<process_base>::error_type;
+		using handle_type		 = kernel_object_traits<process_base>::handle_type;
 		using native_handle_type = kernel_object_traits<process_base>::native_handle_type;
-		using access_rights_t = access_rights::process;
-
-		using exit_code_type = std::size_t;
+		using access_rights_t	 = process_rights;
 
 		// Process type information
 		using flag_type = access_rights_t;
@@ -119,7 +114,7 @@ namespace kernel_objects  {
 
 		/// Throw a system_error with the given message if the process is not in a valid state.
 		/// @param message the exception message to pass to system_error.
-		void throw_if_invalid(const char* message) const;
+		void assert_valid(const char* message) const;
 			
 	protected:
 		std::size_t id_;

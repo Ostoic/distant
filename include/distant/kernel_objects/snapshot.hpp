@@ -42,7 +42,7 @@ namespace distant
 			iterator begin();
 
 			/// @brief The end of the snapshot.
-			/// @return a \a snapshot_iterator indicating an element past-the-end of the snapshot.
+			/// @return a \a snapshot_iterator pointing past-the-end of the last element in the snapshot.
 			iterator end();
 
 			/// @brief Store a permanent copy of the snapshot as a container

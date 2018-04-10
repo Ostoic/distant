@@ -128,6 +128,14 @@ namespace distant::kernel_objects
 	process<T>::operator const process<OtherAccess>&() const noexcept
 	{ return *reinterpret_cast<const process<OtherAccess>*>(this); }
 
+	/*template <access_rights::process T>
+	process<T>::operator const process_base&() const noexcept
+	{ return *reinterpret_cast<const process_base*>(this); }
+
+	template <access_rights::process T>
+	process<T>::operator process_base&() noexcept
+	{ return *reinterpret_cast<process_base*>(this); }*/
+
 //=========================//
 // Process ctors and dtor  //
 //=========================//
@@ -151,18 +159,18 @@ namespace distant::kernel_objects
 	{}
 
 	template <access_rights::process T>
-	process<T>::process(process<T>&& other) noexcept
+	process<T>::process(process&& other) noexcept
 		: process_base(std::move(other))
 	{}
 
 	template <access_rights::process T>
-	process<T>& process<T>::operator=(process<T>&& other) noexcept
+	process<T>& process<T>::operator=(process&& other) noexcept
 	{
 		process_base::operator=(std::move(other));
 		return *this;
 	}
 
-	//free:
+//free:
 	template <access_rights::process T>
 	process<T> current_process() noexcept
 	{

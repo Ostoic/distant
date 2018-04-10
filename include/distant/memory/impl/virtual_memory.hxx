@@ -99,8 +99,8 @@ namespace distant::memory
 		);
 	}
 
-	template <typename T, page_protection Protection, typename AddressT>
-	virtual_ptr<T, AddressT> virtual_malloc(const process<vm_op>& process, const std::size_t n)
+	template <typename T, page_protection Protection, process_rights Access, typename AddressT, typename>
+	virtual_ptr<T, AddressT> virtual_malloc(const process<Access>& process, const std::size_t n)
 	{
 		static_assert(
 			detail::has_virtual_malloc_support(Protection),
@@ -114,10 +114,10 @@ namespace distant::memory
 		return virtual_ptr<T, AddressT>{process, allocated_address};
 	}
 
-	template <typename T, page_protection Protection>
-	virtual_ptr<T, dword> virtual_malloc(const process<vm_op>& process, const std::size_t n)
+	template <typename T, page_protection Protection, process_rights Access, typename>
+	virtual_ptr<T, dword> virtual_malloc(const process<Access>& process, const std::size_t n)
 	{
-		return virtual_malloc<T, Protection, dword>(process, n);
+		return virtual_malloc<T, Protection, Access, dword, void>(process, n);
 	}
 
 	template <typename T>

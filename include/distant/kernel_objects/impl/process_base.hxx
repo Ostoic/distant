@@ -12,8 +12,9 @@
 #include <distant/support/winapi/process.hpp>
 #include <distant/support/winapi/debug.hpp>
 #include <distant/support/winapi/wow64.hpp>
-
 #include <boost/winapi/limits.hpp>
+
+#include <boost/assert.hpp>
 
 #define FORBID_INLINE __declspec(noinline)
 
@@ -37,15 +38,14 @@ namespace distant::kernel_objects
 		return static_cast<std::size_t>(id);
 	}
 
-	inline void process_base::throw_if_invalid(const char* message) const
+	inline void process_base::assert_valid(const char* message) const
 	{
-		if (!this->valid())
-			throw std::system_error(last_error(), message);
+		BOOST_ASSERT_MSG(this->valid(), message);
 	}
 
 	inline void process_base::kill()
 	{
-		this->throw_if_invalid("[process_base::terminate] invalid process");
+		this->assert_valid("[process_base::terminate] invalid process");
 
 		const unsigned int exit_code = 0;
 		boost::winapi::TerminateProcess(this->handle_.native_handle(), exit_code);
@@ -53,7 +53,7 @@ namespace distant::kernel_objects
 
 	inline std::size_t process_base::handle_count() const
 	{
-		this->throw_if_invalid("[process_base::handle_count] invalid process");
+		this->assert_valid("[process_base::handle_count] invalid process");
 
 		boost::winapi::DWORD_ count = 0;
 		if (!::GetProcessHandleCount(this->handle_.native_handle(), &count))
@@ -76,12 +76,15 @@ namespace distant::kernel_objects
 
 	inline bool process_base::is_32bit() const
 	{
-		this->throw_if_invalid("[process_base::is_32bit] invalid process");
+		this->assert_valid("[process_base::is_32bit] invalid process");
 
 		// Note: Using bool here on some systems can corrupt the stack since
 		// sizeof(bool) != sizeof(BOOL).
 		boost::winapi::BOOL_ result = false;
-		boost::winapi::IsWow64Process(this->handle_.native_handle(), reinterpret_cast<boost::winapi::PBOOL_>(&result));
+		boost::winapi::IsWow64Process(
+			this->handle_.native_handle(),
+			reinterpret_cast<boost::winapi::PBOOL_>(&result)
+		);
 
 		return result;
 	}
@@ -93,11 +96,11 @@ namespace distant::kernel_objects
 
 	inline bool process_base::is_being_debugged() const
 	{
+		this->assert_valid("[process_base::is_being_debugged] invalid process");
+
 		// If we are considering the current process, use IsDebuggerPresent.
 		if (this->id_ == GetCurrentProcessId())
 			return IsDebuggerPresent();
-
-		this->throw_if_invalid("[process_base::is_being_debugged] invalid process");
 
 		// Otherwise use CheckRemoteDebuggerPresent.
 		boost::winapi::BOOL_ result = false;
@@ -129,7 +132,7 @@ namespace distant::kernel_objects
 
 	inline filesystem::path process_base::file_path() const
 	{
-		this->throw_if_invalid("[process_base::file_path] invalid process");
+		this->assert_valid("[process_base::file_path] invalid process");
 		
 		wchar_t buffer[boost::winapi::max_path];
 		boost::winapi::DWORD_ max_path = boost::winapi::max_path;

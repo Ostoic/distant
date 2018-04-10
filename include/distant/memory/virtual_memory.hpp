@@ -38,11 +38,22 @@ namespace distant
 		template <typename AddressT>
 		page_protection virtual_protect(const process<vm_op>& process, address<AddressT> address, page_protection protection, std::size_t size);
 
-		template <typename T, page_protection Protection = page_protection::execute_readwrite, typename AddressT>
-		virtual_ptr<T, AddressT> virtual_malloc(const process<vm_op>& process, std::size_t n = sizeof(T));
+		template <
+			typename T, 
+			page_protection Protection = page_protection::execute_readwrite, 
+			process_rights Access, 
+			typename AddressT,
+			typename = std::enable_if_t<(Access >= vm_op)>
+		>
+		virtual_ptr<T, AddressT> virtual_malloc(const process<Access>& process, std::size_t n = sizeof(T));
 
-		template <typename T, page_protection Protection = page_protection::execute_readwrite>
-		virtual_ptr<T, dword> virtual_malloc(const process<vm_op>& process, std::size_t n = sizeof(T));
+		template <
+			typename T, 
+			page_protection Protection = page_protection::execute_readwrite,
+			process_rights Access,
+			typename = std::enable_if_t<(Access >= vm_op)>
+		>
+		virtual_ptr<T, dword> virtual_malloc(const process<Access>& process, std::size_t n = sizeof(T));
 
 		template <typename T>
 		bool virtual_free(const process<vm_op>& process, virtual_ptr<T, dword> pointer) noexcept;
