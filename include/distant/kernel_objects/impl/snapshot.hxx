@@ -19,7 +19,7 @@ namespace distant::kernel_objects {
 		);
 
 		if (handle_ == nullptr)
-			throw std::system_error(error::last_error(), "[snapshot::{ctor}] Invalid handle");
+			throw windows_error("[snapshot::{ctor}] Invalid handle");
 	}
 
 	template <typename O>

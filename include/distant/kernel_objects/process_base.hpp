@@ -19,7 +19,7 @@ namespace kernel_objects  {
 
 	/// @brief Base type of distant::process
 	/// This version does not have static access_rights checking
-	class process_base : public kernel_object
+	class process_base
 	{
 	public:
 		// Object type information
@@ -83,14 +83,19 @@ namespace kernel_objects  {
 		/// @return the process id.
 		std::size_t id() const noexcept { return id_; }
 
+		const distant::handle<process_base>& handle() const noexcept { return handle_; }
+
 		/// @brief Get the access rights that were used to open the current process
 		/// @return process access_rights indicating the level of access we have to the process.
 		flag_type access_rights() const noexcept { return access_rights_; }
 		
 		/// @brief Test if the process kernel_object is valid
 		/// @return true if the process is valid, false otherwise.
-		bool valid() const noexcept override;
+		bool valid() const noexcept;
 
+		/// @brief Test if the process kernel_object is valid
+		/// @return true if the process is valid, false otherwise.
+		operator bool() const noexcept;
 
 	public: // {ctor}
 		/// @brief Construct an empty process
@@ -117,6 +122,7 @@ namespace kernel_objects  {
 		void assert_valid(const char* message) const;
 			
 	protected:
+		distant::handle<process_base> handle_;
 		std::size_t id_;
 		access_rights_t access_rights_;
 	}; // end class process

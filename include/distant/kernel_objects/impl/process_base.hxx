@@ -57,7 +57,7 @@ namespace distant::kernel_objects
 
 		boost::winapi::DWORD_ count = 0;
 		if (!::GetProcessHandleCount(this->handle_.native_handle(), &count))
-			throw std::system_error(error::last_error(), "[process_base::handle_count] GetProcessHandleCount failed");
+			throw windows_error("[process_base::handle_count] GetProcessHandleCount failed");
 
 		return static_cast<std::size_t>(count);
 	}
@@ -121,7 +121,7 @@ namespace distant::kernel_objects
 
 #pragma warning(push)
 #pragma warning(disable:4267)
-		return this->handle() != nullptr && GetProcessVersion(this->id_) == 0;
+		return handle_ != nullptr && GetProcessVersion(this->id_) == 0;
 #pragma warning(pop)
 	}
 
@@ -138,7 +138,7 @@ namespace distant::kernel_objects
 		boost::winapi::DWORD_ max_path = boost::winapi::max_path;
 
 		if (!boost::winapi::query_full_process_image_name(this->handle_.native_handle(), 0, buffer, &max_path))
-			throw std::system_error(last_error(), "[process_base::file_path] query_full_process_image_name failed");
+			throw windows_error("[process_base::file_path] query_full_process_image_name failed");
 
 		return buffer;
 	}
@@ -147,9 +147,14 @@ namespace distant::kernel_objects
 	inline bool process_base::valid() const noexcept
 	{
 		return
-			base_type::valid() &&
+			handle_.valid() &&
 			!this->is_zombie() &&
 			id_ != std::numeric_limits<std::size_t>::infinity();
+	}
+
+	inline process_base::operator bool() const noexcept
+	{
+		return this->valid();
 	}
 
 //=========================//
@@ -157,34 +162,34 @@ namespace distant::kernel_objects
 //=========================//
 	// Empty initialize process
 	inline process_base::process_base() noexcept
-		: base_type()
-		  , id_(std::numeric_limits<std::size_t>::infinity())
-		  , access_rights_()
+		: handle_()
+		, id_(std::numeric_limits<std::size_t>::infinity())
+		, access_rights_()
 	{}
 
 	inline process_base::process_base(const std::size_t id, const access_rights_t access) noexcept
-		: base_type(this->open(id, access))
-		  , id_(id)
-		  , access_rights_(access)
+		: handle_(this->open(id, access))
+		, id_(id)
+		, access_rights_(access)
 	{}
 
 	inline process_base::process_base(process_base&& other) noexcept
-		: base_type(std::move(other))
-		  , id_(other.id_)
-		  , access_rights_(other.access_rights_)	
+		: handle_(std::move(other.handle_))
+		, id_(other.id_)
+		, access_rights_(other.access_rights_)	
 	{}
 
 	inline process_base::process_base(distant::handle<process_base>&& h, const access_rights_t access) noexcept
-		: kernel_object(std::move(reinterpret_cast<distant::handle<kernel_object>&>(h)))
-		  , id_(GetProcessId(handle_.native_handle()))
-		  , access_rights_(access)
+		: handle_(std::move(h))
+		, id_(GetProcessId(handle_.native_handle()))
+		, access_rights_(access)
 	{}
 
 	inline process_base& process_base::operator=(process_base&& other) noexcept
 	{
-		this->access_rights_ = other.access_rights_;
-		this->id_ = other.id_;
-		base_type::operator=(std::move(other));
+		handle_ = std::move(other.handle_);
+		access_rights_ = other.access_rights_;
+		id_ = other.id_;
 		return *this;
 	}
 

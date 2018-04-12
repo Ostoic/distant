@@ -51,17 +51,19 @@ namespace distant::detail {
 	inline bool handle_base::closed() const noexcept
 	{ return flags_.test(0); }
 
-	inline void handle_base::close() noexcept
+	inline bool handle_base::close() noexcept
 	{
 		// Close the handle if it is weakly valid and its closure wasn't observed
 		if (!this->close_protected() && !this->closed() && this->valid())
 		{
-			boost::winapi::CloseHandle(native_handle_);
+			const bool result = boost::winapi::CloseHandle(native_handle_);
 			this->invalidate();
+			return result;
 		}
 
 		// Set closed bit to true.
 		flags_.set(0);
+		return true;
 	}
 
 //protected:

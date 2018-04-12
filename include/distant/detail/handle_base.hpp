@@ -74,7 +74,7 @@ namespace detail  {
 		bool closed() const noexcept;
 
 		/// Close the handle, if it is valid and its closure wasn't observed
-		void close() noexcept;
+		bool close() noexcept;
 
 		/// Get the value of the native handle
 		/// @return value of the native handle

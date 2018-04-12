@@ -19,13 +19,13 @@ namespace distant::system {
 
 	std::wstring username();
 
-	std::size_t processor_type() noexcept;
+	unsigned intprocessor_type() noexcept;
 
 	std::size_t page_size() noexcept;
 
 	std::size_t allocation_granularity() noexcept;
 
-	std::size_t number_of_processors() noexcept;
+	unsigned int number_of_processors() noexcept;
 
 	processor_architecture architecture() noexcept;
 

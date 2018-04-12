@@ -4,12 +4,6 @@
 
 #pragma once
 
-/*!
-@copyright 2017 Shaun Ostoic
-Distributed under the Apache Software License, Version 2.0.
-(See accompanying file LICENSE.md or copy at http://www.apache.org/licenses/LICENSE-2.0)
-*/
-
 #include <distant/detail/handle_base.hpp>
 #include <distant/type_traits.hpp>
 
@@ -48,6 +42,13 @@ namespace distant
 		handle(handle&&) noexcept = default;
 		handle& operator=(handle&&) noexcept = default;
 
+		template <typename U>
+		void swap(handle<U>& other) noexcept
+		{
+			std::swap(native_handle_, other.native_handle_);
+			std::swap(flags_, other.flags_);
+		}
+
 	private:
 		// Expose implementation to other handle types
 		template <typename>
@@ -60,6 +61,15 @@ namespace distant
 		template <typename T, typename U>
 		friend constexpr bool operator !=(const handle<T>&, const handle<U>&) noexcept;
 	};
+
+	template <typename T, typename U>
+	void swap(distant::handle<T>& lhs, distant::handle<U>& rhs) noexcept
+	{
+		lhs.swap(rhs);
+	}
+
 } // end namespace distant
+
+
 
 #include <distant/impl/handle.hxx>

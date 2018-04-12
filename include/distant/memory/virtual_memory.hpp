@@ -24,13 +24,13 @@ namespace distant
 		template <typename T>
 		T read(const process<vm_read>& proc, address<dword> address);
 
+		page_protection virtual_protect(const process<vm_op>& process, address<dword> address, page_protection protection, std::size_t size);
+
 		template <page_protection Protection, typename AddressT>
 		page_protection virtual_protect(const process<vm_op>& process, address<AddressT> address, std::size_t size);
 
 		template <page_protection Protection>
 		page_protection virtual_protect(const process<vm_op>& process, address<dword> address, std::size_t size);
-
-		page_protection virtual_protect(const process<vm_op>& process, address<dword> address, page_protection protection, std::size_t size);
 
 		template <typename AddressT>
 		bool virtual_protect_noexcept(const process<vm_op>& process, address<AddressT> address, page_protection protection, std::size_t size) noexcept;

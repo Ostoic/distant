@@ -41,7 +41,8 @@ namespace distant::synch
 
 	public:
 		// Wait for synchronizable object for the given amount of time
-		wait::state operator ()(const kernel_objects::kernel_object& obj, time_type time) const
+		template <typename KernelObject>
+		wait::state operator ()(const KernelObject& obj, const time_type time) const
 		{
 			// XX Consider making free and including std::lock_guard or something
 			// XX Or just the usual below 
@@ -80,7 +81,8 @@ namespace distant::synch
 		//}
 
 		// Wait on kernel object until the object is done executing
-		wait::state operator ()(const kernel_objects::kernel_object& obj, wait::infinite tag) const
+		template <typename KernelObject>
+		wait::state operator ()(const KernelObject& obj, wait::infinite tag) const
 		{ 
 			static_cast<void>(tag);
 			return this->operator()(obj, boost::winapi::INFINITE_); 

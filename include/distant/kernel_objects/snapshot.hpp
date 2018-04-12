@@ -63,7 +63,7 @@ namespace distant
 			/// @brief Construct a snapshot of \a KernelObjects owned by the given process.
 			snapshot(const process<>&);
 
-		protected:
+		private:
 			friend class iterator;
 
 			handle<snapshot> handle_;

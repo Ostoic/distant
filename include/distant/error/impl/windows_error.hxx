@@ -86,13 +86,24 @@ namespace error   {
 	}
 
 	inline windows_error_code last_error() noexcept
-	{ return windows_error_code(gle()); }
+	{
+		return windows_error_code(gle());
+	}
+
+// class windows_error
+	inline windows_error::windows_error()
+		: std::system_error(last_error())
+	{}
+
+	inline windows_error::windows_error(const std::string& message)
+		: std::system_error(last_error(), message)
+	{}
 
 //free:
 	template <typename CharT, typename CharTraits>
-	std::basic_ostream<CharT, CharTraits>& operator <<(std::basic_ostream<CharT, CharTraits>& stream, const windows_error_code& error)
+	std::basic_ostream<CharT, CharTraits>& operator<<(std::basic_ostream<CharT, CharTraits>& stream, const windows_error& error)
 	{
-		stream << error.category().name() << " (" << error.value() << "): " << error.category().message(error.value());
+		stream << error.what() << " " << error.code();
 		return stream;
 	}
 

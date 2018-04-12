@@ -15,7 +15,7 @@ namespace distant::memory
 		SIZE_T bytes_read = 0;
 		T buffer = std::move(x);
 		if (!::WriteProcessMemory(proc.handle().native_handle(), reinterpret_cast<LPVOID>(static_cast<AddressT>(address)), &buffer, sizeof(T), &bytes_read))
-			throw std::system_error(distant::last_error(), "[memory::write] WriteProcessMemory failed, " + std::to_string(bytes_read) + " bytes written");
+			throw windows_error("[memory::write] WriteProcessMemory failed, " + std::to_string(bytes_read) + " bytes written");
 	}
 
 	template <typename T>
@@ -24,7 +24,7 @@ namespace distant::memory
 		SIZE_T bytes_read = 0;
 		T buffer = std::move(x);
 		if (!::WriteProcessMemory(proc.handle().native_handle(), reinterpret_cast<LPVOID>(static_cast<dword>(address)), &buffer, sizeof(T), &bytes_read))
-			throw std::system_error(distant::last_error(), "[memory::write] WriteProcessMemory failed, " + std::to_string(bytes_read) + " bytes written");
+			throw windows_error("[memory::write] WriteProcessMemory failed, " + std::to_string(bytes_read) + " bytes written");
 	}
 
 	template <typename T, typename AddressT>
@@ -37,7 +37,7 @@ namespace distant::memory
 								 reinterpret_cast<LPVOID>(static_cast<AddressT>(address)), 
 								 &result, sizeof(T), &bytes_read
 		))
-			throw std::system_error(distant::last_error(), std::string("[memory::read] ReadProcessMemory failed, ") + std::to_string(bytes_read) + " bytes read");
+			throw windows_error("[memory::read] ReadProcessMemory failed, " + std::to_string(bytes_read) + " bytes read");
 
 		return result;
 	}
@@ -46,6 +46,22 @@ namespace distant::memory
 	T read(const process<vm_read>& proc, const address<dword> address)
 	{
 		return read<T, dword>(proc, address);
+	}
+
+	template <typename AddressT>
+	page_protection virtual_protect(const process<vm_op>& process, const address<AddressT> address, page_protection protection, const std::size_t size)
+	{
+		using boost::winapi::DWORD_;
+
+		DWORD_ old;
+		if (!::VirtualProtectEx(
+			process.handle().native_handle(),
+			reinterpret_cast<void*>(static_cast<AddressT>(address)),
+			size, static_cast<DWORD_>(protection), &old
+		))
+			throw windows_error("[memory::virtual_protect] VirtualProtectEx failed");
+
+		return static_cast<page_protection>(old);
 	}
 
 	template <page_protection Protection>
@@ -62,32 +78,16 @@ namespace distant::memory
 			"[memory::virtual_protect] Selected page_protection is not supported"
 		);
 
-		return virual_protect(process, address, Protection, size);
+		return virual_protect<AddressT>(process, address, Protection, size);
 	}
 
-	inline page_protection virtual_protect(const process<vm_op>& process, const address<dword> address, page_protection protection, const std::size_t size)
+	inline page_protection virtual_protect(const process<vm_op>& process, const address<dword> address, const page_protection protection, const std::size_t size)
 	{
 		return virtual_protect<dword>(process, address, protection, size);
 	}
 
 	template <typename AddressT>
-	page_protection virtual_protect(const process<vm_op>& process, const address<AddressT> address, page_protection protection, const std::size_t size)
-	{
-		using boost::winapi::DWORD_;
-
-		DWORD_ old;
-		if (!::VirtualProtectEx(
-			process.handle().native_handle(),
-			reinterpret_cast<void*>(static_cast<AddressT>(address)),
-			size, static_cast<DWORD_>(protection), &old
-		))
-			throw std::system_error(distant::last_error(), "[memory::virtual_protect] VirtualProtectEx failed");
-
-		return static_cast<page_protection>(old);
-	}
-
-	template <typename AddressT>
-	bool virtual_protect_noexcept(const process<vm_op>& process, const address<AddressT> address, page_protection protection, const std::size_t size) noexcept
+	bool virtual_protect_noexcept(const process<vm_op>& process, const address<AddressT> address, const page_protection protection, const std::size_t size) noexcept
 	{
 		using boost::winapi::DWORD_;
 
@@ -109,7 +109,7 @@ namespace distant::memory
 
 		void* allocated_address = ::VirtualAllocEx(process.handle().native_handle(), nullptr, n, MEM_RESERVE | MEM_COMMIT, static_cast<boost::winapi::DWORD_>(Protection));
 		if (allocated_address == nullptr)
-			throw std::system_error(distant::last_error(), "[memory::virtual_malloc] VirtualAllocEx failed");
+			throw windows_error("[memory::virtual_malloc] VirtualAllocEx failed");
 
 		return virtual_ptr<T, AddressT>{process, allocated_address};
 	}

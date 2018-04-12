@@ -19,7 +19,7 @@ namespace distant::system
 			boost::winapi::WCHAR_ buffer[boost::winapi::max_path];
 
 			if (boost::winapi::GetWindowsDirectoryW(reinterpret_cast<boost::winapi::LPWSTR_>(&buffer), boost::winapi::max_path) == 0)
-				throw std::system_error(error::last_error(), "[system::windows_path] Unable to get windows directory");
+				throw windows_error("[system::windows_path] Unable to get windows directory");
 
 			path = buffer;
 		}
@@ -36,7 +36,7 @@ namespace distant::system
 			boost::winapi::WCHAR_ buffer[boost::winapi::max_path];
 
 			if (GetSystemDirectory(reinterpret_cast<boost::winapi::LPWSTR_>(&buffer), boost::winapi::max_path) == 0)
-				throw std::system_error(error::last_error(), "[system::windows_path] Unable to get windows directory");
+				throw windows_error("[system::windows_path] Unable to get windows directory");
 
 			path = buffer;
 		}
@@ -50,7 +50,7 @@ namespace distant::system
 		boost::winapi::WCHAR_ buffer[boost::winapi::MAX_COMPUTERNAME_LENGTH_ + 1];
 
 		if (!boost::winapi::GetComputerNameW(reinterpret_cast<boost::winapi::LPWSTR_>(buffer), reinterpret_cast<boost::winapi::LPDWORD_>(&size)))
-			throw std::system_error(error::last_error(), "[system::computer_name] Unable to get computer name");
+			throw windows_error("[system::computer_name] Unable to get computer name");
 
 		return {buffer};
 	}
@@ -61,7 +61,7 @@ namespace distant::system
 		boost::winapi::WCHAR_ buffer[boost::winapi::UNLEN_ + 1];
 
 		if (!boost::winapi::GetUserNameW(reinterpret_cast<boost::winapi::LPWSTR_>(buffer), reinterpret_cast<boost::winapi::LPDWORD_>(&size)))
-			throw std::system_error(error::last_error(), "[system::username] GetUserName failed");
+			throw windows_error("[system::username] GetUserName failed");
 
 		return {buffer};
 	}
@@ -86,7 +86,7 @@ namespace distant::system
 		}
 	}
 
-	inline std::size_t processor_type() noexcept
+	inline unsigned int processor_type() noexcept
 	{ return detail::get_system_info_impl().dwProcessorType; }
 
 	inline std::size_t page_size() noexcept
@@ -95,10 +95,10 @@ namespace distant::system
 		return page_size_;
 	}
 
-	inline std::size_t allocation_granularity() noexcept
+	inline std::size_t intallocation_granularity() noexcept
 	{ return detail::get_system_info_impl().dwAllocationGranularity; }
 
-	inline std::size_t number_of_processors() noexcept
+	inline unsigned int number_of_processors() noexcept
 	{ return detail::get_system_info_impl().dwNumberOfProcessors; }
 
 	inline processor_architecture architecture() noexcept

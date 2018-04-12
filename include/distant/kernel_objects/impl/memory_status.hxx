@@ -5,7 +5,6 @@
 #pragma once
 
 #include "../memory_status.hpp"
-#include <distant/detail/attorney.hpp>
 
 namespace distant::kernel_objects {
 
@@ -14,7 +13,7 @@ namespace distant::kernel_objects {
 		: memory_counters_()
 	{
 		if (!boost::winapi::get_process_memory_info(process.handle().native_handle(), &memory_counters_, sizeof(memory_counters_)))
-			throw std::system_error(error::last_error(), "[memory_status::{ctor}] K32GetProcessMemoryInfo failed");
+			throw windows_error("[memory_status::{ctor}] K32GetProcessMemoryInfo failed");
 	}
 
 	inline std::size_t memory_status::private_usage() const noexcept

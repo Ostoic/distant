@@ -19,7 +19,7 @@ namespace distant::kernel_objects
 		// Invalid handle default constructor
 		securable() noexcept = default;
 
-		explicit securable(handle<securable>&& h);
+		explicit securable(distant::handle<securable>&& h);
 
 		securable(securable&& tmp) noexcept = default;
 

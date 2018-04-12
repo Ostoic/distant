@@ -46,6 +46,13 @@ namespace error   {
 		void set(boost::winapi::DWORD_ code) noexcept;
 	};
 
+	class windows_error : public std::system_error
+	{
+	public:
+		windows_error();
+		explicit windows_error(const std::string& message);
+	};
+
 	/// @brief Return the last error local to the executing thread.
 	/// @return the last error code that was set.
 	windows_error_code last_error() noexcept;
@@ -55,12 +62,12 @@ namespace error   {
 	/// @param error the windows error to write.
 	/// @return the modified output stream.
 	template <typename CharT, typename CharTraits>
-	std::basic_ostream<CharT, CharTraits>& operator <<(std::basic_ostream<CharT, CharTraits>& stream, const windows_error_code& error);
+	std::basic_ostream<CharT, CharTraits>& operator<<(std::basic_ostream<CharT, CharTraits>& stream, const windows_error_code& error);
 
 } // end namespace error 
 
 using error::last_error;
-using windows_error = error::windows_error_code;
+using windows_error = error::windows_error;
 
 } // end namespace distant
 
