@@ -2,7 +2,7 @@
 
 #include <distant/kernel_objects/process.hpp>
 #include <distant/system/information.hpp>
-#include <distant/memory/virtual_function.hpp>
+#include <distant/memory/function.hpp>
 
 namespace distant {
 namespace kernel_objects 
@@ -26,7 +26,7 @@ namespace kernel_objects
 		thread() noexcept;
 
 		template <typename Fn, typename... Args>
-		explicit thread(const process<required_access>&, memory::virtual_function<int>, Args&&... args);
+		explicit thread(const process<required_access>&, memory::function<int>, Args&&... args);
 
 		thread(thread&& other) noexcept;
 		thread& operator=(thread&& other) noexcept;

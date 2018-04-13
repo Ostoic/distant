@@ -24,6 +24,6 @@ namespace distant::memory
 	template <typename AddressT>
 	class page;
 
-	template <typename Signature>
-	class virtual_function;
+	template <typename Signature, typename AddressT>
+	class function;
 }
