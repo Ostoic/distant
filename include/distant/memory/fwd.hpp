@@ -24,6 +24,6 @@ namespace distant::memory
 	template <typename AddressT>
 	class page;
 
-	template <typename Signature, typename AddressT>
+	template <typename Signature, typename CallingConv, typename AddressT>
 	class function;
 }
