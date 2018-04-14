@@ -4,8 +4,10 @@
 
 #pragma once
 
-#include <distant/memory/address.hpp>
+#include <distant/kernel_objects/process.hpp>
+#include <distant/memory/virtual_ptr.hpp>
 #include <distant/memory/x86_calling_conventions.hpp>
+#include <distant/memory/type_traits.hpp>
 
 // Other declarations: ./fwd.hpp
 
@@ -13,23 +15,29 @@ namespace distant {
 namespace memory 
 {
 	template <typename Signature, typename CallingConv = x86_calling_conventions::cdeclcall, typename AddressT = dword>
-	class function
+	class function;
+
+	template <typename R, typename... Args, typename CallingConv, typename AddressT>
+	class function<R(Args...), CallingConv, AddressT>
 	{
 	public:
-		using args_t = typename function_traits<function>::template argument_t<0>;
-		using return_type = typename function_traits<function>::return_type;
+		static constexpr auto required_process_rights = process_rights::all_access;
 
 	public:
 		function() noexcept = default;
-		explicit function(memory::address<AddressT> address);
 
-		template <typename... Args>
-		return_type operator()(Args&&... args);
+		//template <typename Fn, typename = std::enable_if_t<std::is_function<Fn>::value>>
+		//function(Fn&& fn) const noexcept;
 
-		memory::address<AddressT> address() const noexcept;
+		explicit function(virtual_ptr<R(*)(Args...), AddressT> fn_ptr) 
+			: ptr_(fn_ptr) {}
+
+		R operator()(Args... args);
+
+		void set_process(const process<required_process_rights>& process) noexcept;
 
 	private:
-		memory::address<AddressT> address_;
+		virtual_ptr<R(*)(Args...), AddressT> ptr_;
 	};
 
 } // namespace memory
@@ -40,9 +48,9 @@ template <typename R, typename... Args, typename CallingConv, typename AddressT>
 struct function_traits<function<R(Args...), CallingConv, AddressT>>
 {
 	using return_type = R;
-	static constexpr auto arity = sizeof...(Args);
+	static constexpr std::size_t arity = sizeof...(Args);
 
-	template <unsigned int N>
+	template <std::size_t N>
 	struct argument
 	{
 		static_assert(N < arity, "Argument index out of range");

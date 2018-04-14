@@ -3,13 +3,13 @@
 // (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
 
 #pragma once
-#include <distant/assembly/dword_ptr.hpp>
+#include "../dword_ptr.hpp"
 
-namespace distant::memory
+namespace distant::assembly
 {
 //class dword_ptr
 //public:
-	template<typename T>
-	constexpr dword_ptr_t<T>::dword_ptr_t(T data) noexcept
+	template<typename T, typename S>
+	constexpr dword_ptr_t<T, S>::dword_ptr_t(T data) noexcept
 		: data(data) {}
 }

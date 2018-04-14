@@ -6,7 +6,7 @@
 
 #include <distant/types.hpp>
 
-namespace distant::memory
+namespace distant::assembly
 {
 	enum class x86_register : distant::byte
 	{

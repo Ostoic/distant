@@ -81,10 +81,10 @@ namespace detail  {
 		native_type native_handle() const noexcept;
 
 	protected:
-		// According to "Windows Via C\C++" by Jeffrey Richter,
+		// From "Windows Via C\C++" by Jeffrey Richter,
 		// setting the handle to null is preferable to invalid_handle
 		// after closing the handle. This is probably because some API
-		// calls take invalid_handle as the current process.
+		// calls consider invalid_handle as the current process.
 		/// Numerically invalidate and close protect our handle.
 		void invalidate() noexcept;
 

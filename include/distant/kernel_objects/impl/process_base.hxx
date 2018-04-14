@@ -38,14 +38,9 @@ namespace distant::kernel_objects
 		return static_cast<std::size_t>(id);
 	}
 
-	inline void process_base::assert_valid(const char* message) const
-	{
-		BOOST_ASSERT_MSG(this->valid(), message);
-	}
-
 	inline void process_base::kill()
 	{
-		this->assert_valid("[process_base::terminate] invalid process");
+		BOOST_ASSERT_MSG(this->valid(), "[process_base::kill] invalid process handle");
 
 		const unsigned int exit_code = 0;
 		boost::winapi::TerminateProcess(this->handle_.native_handle(), exit_code);
@@ -53,7 +48,7 @@ namespace distant::kernel_objects
 
 	inline std::size_t process_base::handle_count() const
 	{
-		this->assert_valid("[process_base::handle_count] invalid process");
+		BOOST_ASSERT_MSG(this->valid(), "[process_base::handle_count] invalid process handle");
 
 		boost::winapi::DWORD_ count = 0;
 		if (!::GetProcessHandleCount(this->handle_.native_handle(), &count))
@@ -76,7 +71,7 @@ namespace distant::kernel_objects
 
 	inline bool process_base::is_32bit() const
 	{
-		this->assert_valid("[process_base::is_32bit] invalid process");
+		BOOST_ASSERT_MSG(this->valid(), "[process_base::is_32bit] invalid process handle");
 
 		// Note: Using bool here on some systems can corrupt the stack since
 		// sizeof(bool) != sizeof(BOOL).
@@ -96,7 +91,7 @@ namespace distant::kernel_objects
 
 	inline bool process_base::is_being_debugged() const
 	{
-		this->assert_valid("[process_base::is_being_debugged] invalid process");
+		BOOST_ASSERT_MSG(this->valid(), "[process_base::is_being_debugged] invalid process handle");
 
 		// If we are considering the current process, use IsDebuggerPresent.
 		if (this->id_ == GetCurrentProcessId())
@@ -132,7 +127,7 @@ namespace distant::kernel_objects
 
 	inline filesystem::path process_base::file_path() const
 	{
-		this->assert_valid("[process_base::file_path] invalid process");
+		BOOST_ASSERT_MSG(this->valid(), "[process_base::file_path] invalid process handle");
 		
 		wchar_t buffer[boost::winapi::max_path];
 		boost::winapi::DWORD_ max_path = boost::winapi::max_path;

@@ -12,6 +12,8 @@ namespace kernel_objects
 	public:
 		static constexpr auto required_access = process_rights::create_thread | process_rights::query_information | vm_rw_op;
 
+		static unsigned int hardware_concurrency() noexcept;
+
 	public:
 		void join();
 
@@ -23,10 +25,13 @@ namespace kernel_objects
 
 		bool joinable() const noexcept;
 
+		const distant::handle<thread>& handle() const noexcept;
+
+	public:
 		thread() noexcept;
 
 		template <typename Fn, typename... Args>
-		explicit thread(const process<required_access>&, memory::function<int>, Args&&... args);
+		explicit thread(const process<required_access>&, function<int>, Args&&... args);
 
 		thread(thread&& other) noexcept;
 		thread& operator=(thread&& other) noexcept;
@@ -36,17 +41,11 @@ namespace kernel_objects
 		thread(const thread&) = delete;
 		thread& operator=(const thread&) = delete;
 
-	public:
-		static unsigned int hardware_concurrency() noexcept
-		{
-			return distant::system::number_of_processors();
-		}
-
 	private:
 		void detach_unchecked();
 
 	private:
-		handle<thread> handle_;
+		distant::handle<thread> handle_;
 		unsigned int id_;
 	};
 

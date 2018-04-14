@@ -19,7 +19,7 @@
 
 namespace distant::detail::string_maps
 {
-	using ops = memory::opcode;
+	using ops = assembly::opcode;
 	constexpr auto op_names = utility::meta::make_map(
 		std::make_pair(ops::call, "call"),
 		MAKE_NAME_OPCODE_ALL(call),

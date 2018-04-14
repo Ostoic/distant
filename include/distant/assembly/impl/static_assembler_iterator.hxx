@@ -5,7 +5,7 @@
 #pragma once
 #include <distant/assembly/static_assembler_iterator.hpp>
 
-namespace distant::memory
+namespace distant::assembly
 {
 //class assembler_iterator:
 //{ctor}:

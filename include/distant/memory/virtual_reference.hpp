@@ -23,21 +23,21 @@ namespace distant
 			using require_vm_access_to = std::enable_if_t<detail::required_vm_access<T>::value >= vm_access>;
 
 		public:
-			explicit virtual_reference(pointer ptr);
+			explicit virtual_reference(pointer ptr) noexcept;
 			
 			template <
 				typename OtherElement,
 				typename OtherAddressT,
 				typename = require_vm_access_to<OtherElement>
 			>
-			virtual_reference(virtual_reference<OtherElement, OtherAddressT> other);
+			virtual_reference(virtual_reference<OtherElement, OtherAddressT> other) noexcept;
 
 			template <
 				typename OtherElement,
 				typename OtherAddressT,
 				typename = require_vm_access_to<OtherElement>
 			>
-			virtual_reference& operator=(virtual_reference<OtherElement, OtherAddressT> other);
+			virtual_reference& operator=(virtual_reference<OtherElement, OtherAddressT> other) noexcept;
 
 			template <
 				typename Value, 
@@ -48,7 +48,7 @@ namespace distant
 			>
 			virtual_reference& operator=(const Value& x);
 
-			pointer operator&() const;
+			pointer operator&() const noexcept;
 			
 			operator value_type() const;
 
@@ -59,11 +59,11 @@ namespace distant
 
 			value_type operator++(int);
 
-			virtual_reference& operator+=(const value_type& rhs);
-
 			virtual_reference& operator--();
 
 			value_type operator--(int);
+
+			virtual_reference& operator+=(const value_type& rhs);
 
 			virtual_reference& operator-=(const value_type& rhs);
 
@@ -97,13 +97,13 @@ namespace distant
 		template <typename Element, typename AddressT, process_rights Access,
 			typename = std::enable_if_t<Access >= detail::required_vm_access<Element>::value>
 		>
-		auto make_virtual_reference(const process<Access>& process, const address<AddressT> address = 0)
+		auto make_virtual_reference(const process<Access>& process, const address<AddressT> address) noexcept
 		{ return *make_virtual_ptr<Element, AddressT>(process, address);}
 
 		template <typename Element, process_rights Access,
 			typename = std::enable_if_t<Access >= detail::required_vm_access<Element>::value>
 		>
-		auto make_virtual_reference(const process<Access>& process, const address<dword> address = 0)
+		auto make_virtual_reference(const process<Access>& process, const address<dword> address) noexcept
 		{ return *make_virtual_ptr<Element, dword>(process, address);}
 
 		template <typename Element, typename AddressT>

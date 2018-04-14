@@ -7,9 +7,9 @@
 #include <distant/memory/address.hpp>
 #include <distant/assembly/x86_register.hpp>
 
-namespace distant::memory
+namespace distant::assembly
 {
-	template <typename T =
+	template <typename T, typename =
 		std::enable_if_t<
 			std::is_same_v<x86_register, T> || std::is_same_v<distant::address, T>,
 			T

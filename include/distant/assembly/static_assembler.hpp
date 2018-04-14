@@ -7,10 +7,11 @@
 #include <distant/types.hpp>
 #include <distant/utility/meta/algorithm.hpp>
 
+#include <distant/assembly/opcode.hpp>
 #include <distant/assembly/static_instruction.hpp>
 #include <distant/assembly/static_assembler_iterator.hpp>
 
-namespace distant::memory
+namespace distant::assembly
 {
 	template <std::size_t Size = 0, std::size_t InstrCount = 0>
 	class static_assembler
@@ -21,44 +22,40 @@ namespace distant::memory
 
 	public: // {ctor}
 		constexpr static_assembler() = default;
-		constexpr static_assembler(const static_assembler& other) noexcept = default;
 
 	public: // interface
 		constexpr iterator begin() const;
 		constexpr iterator end() const;
 
 	public: // operators
-		template <typename... Bytes,
-		          typename = std::enable_if_t<
-			          std::is_convertible_v<std::common_type_t<Bytes...>, byte>
-		          >
-		>
-		friend constexpr auto make_instruction(opcode op, Bytes&&... bytes) noexcept;
-
-		friend constexpr auto make_instruction(opcode op) noexcept;
-
 		// TODO: Extend this to operator that can take a second argument with an arbitrary number of instructions.
 		// ***** To do this, we need to transform the instruction_ptrs indices + InstrCount.
 		template <std::size_t First, std::size_t FirstCount, std::size_t Second>
 		friend constexpr static_assembler<First + Second, FirstCount + 1>
 		operator+(const static_assembler<First, FirstCount>& first, const static_assembler<Second, 1>& second) noexcept;
 
-	private:
+	//private:
 		using index = std::size_t;
+		using opcode_length = std::size_t;
 		using instruction_length = std::size_t;
+
+		using instruction_ptr = std::tuple<index, opcode_length, instruction_length>;
 
 		constexpr static_assembler(
 			const std::array<byte, Size>& bytes,
-			const std::array<std::pair<index, instruction_length>, InstrCount>& instruction_ptrs) noexcept;
+			const std::array<instruction_ptr, InstrCount>& instruction_ptrs) noexcept;
 	private:
-		friend class static_instruction<Size, InstrCount>;
-		friend class static_assembler_iterator<Size, InstrCount>;
+		template <std::size_t S, std::size_t IC>
+		friend class static_instruction;
+
+		template <std::size_t S, std::size_t IC>
+		friend class static_assembler_iterator;
 
 		std::array<byte, Size> bytes_;
 
 		// instruction_ptrs_ holds indices to where each instruction in bytes_ is located,
 		// along with the length of the instruction.
-		std::array<std::pair<index, instruction_length>, InstrCount> instruction_ptrs_;
+		std::array<instruction_ptr, InstrCount> instruction_ptrs_;
 	};
 
 	template <typename... Bytes,
@@ -85,4 +82,4 @@ namespace distant::memory
 }
 
 // Implementation:
-#include <distant/assembly/impl/static_assembler.hxx>
+#include "impl/static_assembler.hxx"

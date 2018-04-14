@@ -9,7 +9,7 @@
 #include <distant/assembly/dword_ptr.hpp>
 #include <distant/assembly/x86_register.hpp>
 
-namespace distant::memory::ops
+namespace distant::assembly::ops
 {
 	constexpr dword_ptr_t<distant::address> dword_ptr(distant::address) noexcept;
 	constexpr dword_ptr_t<x86_register> dword_ptr(x86_register) noexcept;
@@ -85,4 +85,4 @@ namespace distant::memory::ops
 	constexpr bool parameter_is_dword(opcode op) noexcept;
 }
 
-#include <distant/assembly/impl/ops.hxx>
+#include "impl/ops.hxx"

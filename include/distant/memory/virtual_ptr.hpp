@@ -34,10 +34,10 @@ namespace distant
 			static constexpr auto vm_access = virtual_traits<virtual_ptr>::vm_access;
 
 			template <typename T>
-			using require_vm_access_to = std::enable_if_t<detail::required_vm_access<T>::value >= vm_access, T>;
+			using require_vm_access_to = std::enable_if_t<(detail::required_vm_access<T>::value >= vm_access) && std::is_convertible<T, Element>::value, T>;
 			
 		public:
-			virtual_ptr() noexcept;
+			virtual_ptr() noexcept = default;
 
 			virtual_ptr(nullptr_t) noexcept;
 
@@ -52,6 +52,8 @@ namespace distant
 
 			address<AddressT> get() const noexcept;
 
+			const kernel_objects::process<vm_access>& ambient_process() const noexcept { return *process_; }
+
 		private:
 			friend class boost::iterator_core_access;
 
@@ -61,7 +63,7 @@ namespace distant
 			void increment() noexcept;
 			void decrement() noexcept;
 
-			reference dereference() const;
+			reference dereference() const noexcept;
 			
 			template <
 				typename OtherT,
@@ -86,7 +88,7 @@ namespace distant
 			template <typename E, typename T>
 			friend class virtual_ptr;
 
-			const process<vm_access>* process_;
+			const kernel_objects::process<vm_access>* process_;
 			address<AddressT> address_;
 		};
 

@@ -5,8 +5,9 @@
 #pragma once
 
 #include <distant/types.hpp>
+#include <distant/utility/meta/algorithm.hpp>
 
-namespace distant::memory
+namespace distant::assembly
 {
 	enum class opcode : distant::word
 	{
@@ -158,4 +159,20 @@ namespace distant::memory
 
 		nop = 0x90,
 	};
+
+	constexpr std::size_t opcode_length(const opcode code) noexcept
+	{
+		std::size_t length = 0;
+
+		// If the second byte is nonzero, the whole 2 bytes form an opcode
+		if (get_byte<1>(static_cast<word>(code)) != 0)
+			length = 2;
+
+		// Otherwise we have a 1 byte opcode
+		else if (get_byte<0>(static_cast<word>(code)) != 0)
+			length = 1;
+
+		return length;
+	}
+
 }

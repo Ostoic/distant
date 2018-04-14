@@ -9,6 +9,7 @@
 
 namespace distant
 {		
+	// Todo: Closure policies for different types of handles CloseHandle, 
 	/// Type-safe handle for windows objects
 	template <typename ObjectT>
 	class handle : public detail::handle_base

@@ -7,17 +7,17 @@
 
 #include <distant/types.hpp>
 
-namespace distant::memory
+namespace distant::assembly
 {
 //class assembler:
 //{ctor}:
 	template <std::size_t C, std::size_t I>
 	constexpr static_assembler<C, I>::static_assembler(
 		const std::array<distant::byte, C>& instructions, 
-		const std::array<std::pair<std::size_t, std::size_t>, I>& instruction_ptrs) noexcept
+		const std::array<std::tuple<index, opcode_length, instruction_length>, I>& instruction_ptrs) noexcept
 			: bytes_(instructions)
-			, instruction_ptrs_(instruction_ptrs) {}
-
+			, instruction_ptrs_(instruction_ptrs) 
+	{}
 
 //interface:
 	template <std::size_t S, std::size_t C>
@@ -39,8 +39,8 @@ namespace distant::memory
 	constexpr static_assembler<F + S, FI + 1> operator+(const static_assembler<F, FI>& first, const static_assembler<S, 1>& second) noexcept
 	{
 		return {
-			meta::append(first.bytes_, second.bytes_),
-			meta::append(first.instruction_ptrs_, meta::make_array(std::make_pair(F, S)))
+			utility::meta::append(first.bytes_, second.bytes_),
+			utility::meta::append(first.instruction_ptrs_, utility::meta::make_array(std::make_pair(F, S)))
 		};
 	}
 
@@ -50,19 +50,18 @@ namespace distant::memory
 		using under = std::underlying_type_t<opcode>;
 		using index = std::size_t;
 		using length = std::size_t;
+		using op_length = std::size_t;
 		using distant::get_byte;
 
 		// The opcode can be represented by a byte
 		return static_assembler<sizeof...(Bytes) + sizeof(opcode), 1> {
-			std::array<distant::byte, sizeof...(Bytes) + 2> {
+			std::array<distant::byte, sizeof...(Bytes) + opcode_length(op)> {
 				get_byte<0>(static_cast<under>(op)),
 				get_byte<1>(static_cast<under>(op)),
 				static_cast<distant::byte>(bytes)...
 			},
 
-			std::array<std::pair<index, length>, 1> {
-				std::make_pair(0, sizeof...(Bytes) + 2)
-			}
+			{std::make_tuple(0, opcode_length(op), sizeof...(Bytes) + 2)}
 		};
 	}
 
@@ -74,14 +73,12 @@ namespace distant::memory
 		using distant::get_byte;
 
 		return static_assembler<sizeof(opcode), 1> {
-			std::array<distant::byte, 2> {
+			{
 				static_cast<distant::byte>(get_byte<0>(static_cast<under>(op))),
 				static_cast<distant::byte>(get_byte<1>(static_cast<under>(op)))
 			},
 
-			std::array<std::pair<index, length>, 1> {
-				std::make_pair(0, 2)
-			}
+			{std::make_tuple(0, opcode_length(op), 2)}
 		};
 	}
 

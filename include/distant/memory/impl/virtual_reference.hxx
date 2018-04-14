@@ -10,19 +10,19 @@
 namespace distant::memory
 {
 	template <typename E,  typename T>
-	virtual_reference<E, T>::virtual_reference(pointer ptr)
+	virtual_reference<E, T>::virtual_reference(pointer ptr) noexcept
 		: ptr_(ptr) 
 	{}
 
 	template <typename E,  typename T>
 	template <typename OE, typename OT, typename>
-	virtual_reference<E, T>::virtual_reference(virtual_reference<OE, OT> other)
+	virtual_reference<E, T>::virtual_reference(virtual_reference<OE, OT> other) noexcept
 		: ptr_(other.ptr_)
 	{}
 
 	template <typename E,  typename T>
 	template <typename OE, typename OT, typename>
-	virtual_reference<E, T>& virtual_reference<E, T>::operator=(virtual_reference<OE, OT> other)
+	virtual_reference<E, T>& virtual_reference<E, T>::operator=(virtual_reference<OE, OT> other) noexcept
 	{
 		this->ptr_ = other.ptr_;
 		return *this;
@@ -42,7 +42,7 @@ namespace distant::memory
 
 	template <typename E,  typename T>
 	typename virtual_reference<E, T>::pointer 
-	virtual_reference<E, T>::operator&() const
+	virtual_reference<E, T>::operator&() const noexcept
 	{
 		return this->ptr_;
 	}

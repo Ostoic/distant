@@ -6,6 +6,11 @@
 
 namespace distant::kernel_objects
 {
+	inline unsigned int thread::hardware_concurrency() noexcept
+	{
+		return distant::system::number_of_processors();
+	}
+
 	inline void thread::join()
 	{
 		if (!this->joinable())
@@ -15,18 +20,19 @@ namespace distant::kernel_objects
 			throw std::invalid_argument("[thread::join] Join on current thread, deadlock would occur");
 
 		namespace winapi = boost::winapi;
-		if (
-			winapi::WaitForSingleObjectEx(
+		if (winapi::WaitForSingleObjectEx(
 				handle_.native_handle(),
 				winapi::infinite,
-				false) == winapi::wait_failed
+				false) 
+			== winapi::wait_failed
 		)
 			throw windows_error("[thread::join] WaitForSingleObjectEx failed");
 
 		winapi::DWORD_ exit_code;
 		if (GetExitCodeThread(
 				handle_.native_handle(),
-				&exit_code) == 0
+				&exit_code) 
+			== 0
 		)
 			throw windows_error("[thread::join] GetExitCodeThread failed");
 
@@ -52,6 +58,12 @@ namespace distant::kernel_objects
 		return handle_ != nullptr;
 	}
 
+	inline const distant::handle<thread>& thread::handle() const noexcept
+	{
+		return handle_;
+	}
+
+
 	inline unsigned int thread::id() const noexcept
 	{
 		return this->id_;
@@ -67,7 +79,7 @@ namespace distant::kernel_objects
 	{
 		//CreateRemoteThread(process.handle().native_handle(), nullptr, 0, , , ,)
 		// Remote thread launch on distant::function
-		handle_ = ::CreateRemoteThread(process.handle().native_handle(), nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(fn.address()), nullptr, 0, nullptr);
+		handle_ = ::CreateRemoteThread(process.handle().native_handle(), nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(static_cast<dword>(fn.address())), nullptr, 0, &id_);
 		
 	}
 
@@ -93,7 +105,6 @@ namespace distant::kernel_objects
 	{
 		handle_.close();
 	}
-
 
 //free:
 	inline bool operator==(const thread& lhs, const thread& rhs) noexcept

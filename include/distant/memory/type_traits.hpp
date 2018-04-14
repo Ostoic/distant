@@ -6,7 +6,8 @@
 
 #include <distant/access_rights.hpp>
 
-namespace distant::memory
+namespace distant {
+namespace memory 
 {
 	namespace detail
 	{
@@ -48,7 +49,10 @@ namespace distant::memory
 	template <typename Virtual>
 	struct virtual_traits;
 
-	template <typename F>
-	struct function_traits;
+} // namespace memory
 
-} // namespace distant::memory
+template <typename F>
+struct function_traits;
+
+
+} // namespace distant

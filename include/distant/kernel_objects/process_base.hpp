@@ -112,15 +112,9 @@ namespace kernel_objects  {
 		explicit process_base(distant::handle<process_base>&& handle, access_rights_t) noexcept;
 
 	private:
-		using expose = distant::detail::attorney::to_handle<process_base>;
-
 		friend bool operator ==(const process_base&, const process_base&) noexcept;
 		friend bool operator !=(const process_base&, const process_base&) noexcept;
 
-		/// Throw a system_error with the given message if the process is not in a valid state.
-		/// @param message the exception message to pass to system_error.
-		void assert_valid(const char* message) const;
-			
 	protected:
 		distant::handle<process_base> handle_;
 		std::size_t id_;
