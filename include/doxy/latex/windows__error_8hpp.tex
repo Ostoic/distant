@@ -1,0 +1,39 @@
+\hypertarget{windows__error_8hpp}{}\section{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/error/windows\+\_\+error.hpp File Reference}
+\label{windows__error_8hpp}\index{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/error/windows\+\_\+error.\+hpp@{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/error/windows\+\_\+error.\+hpp}}
+{\ttfamily \#include $<$string$>$}\newline
+{\ttfamily \#include $<$ostream$>$}\newline
+{\ttfamily \#include $<$system\+\_\+error$>$}\newline
+{\ttfamily \#include $<$boost/winapi/basic\+\_\+types.\+hpp$>$}\newline
+{\ttfamily \#include $<$distant/error/impl/windows\+\_\+error.\+hxx$>$}\newline
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classdistant_1_1error_1_1windows__category}{distant\+::error\+::windows\+\_\+category}}
+\item 
+struct \mbox{\hyperlink{structdistant_1_1error_1_1gle}{distant\+::error\+::gle}}
+\item 
+class \mbox{\hyperlink{classdistant_1_1error_1_1windows__error__code}{distant\+::error\+::windows\+\_\+error\+\_\+code}}
+\begin{DoxyCompactList}\small\item\em Windows error code. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classdistant_1_1error_1_1windows__error}{distant\+::error\+::windows\+\_\+error}}
+\end{DoxyCompactItemize}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \mbox{\hyperlink{namespacedistant}{distant}}
+\item 
+ \mbox{\hyperlink{namespacedistant_1_1error}{distant\+::error}}
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+using \mbox{\hyperlink{namespacedistant_a72bfe7b4631ab280678b0b02ac38c8ab}{distant\+::windows\+\_\+error}} = error\+::windows\+\_\+error
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+const windows\+\_\+category \& \mbox{\hyperlink{namespacedistant_1_1error_a02ebc3d724cbfe0804e5d4079bb85bd4}{distant\+::error\+::get\+\_\+windows\+\_\+category}} () noexcept
+\item 
+windows\+\_\+error\+\_\+code \mbox{\hyperlink{namespacedistant_1_1error_aaaf1a34cba6373db33d2c27d8876c0b2}{distant\+::error\+::last\+\_\+error}} () noexcept
+\begin{DoxyCompactList}\small\item\em Return the last error local to the executing thread. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename CharT , typename Char\+Traits $>$ }\\std\+::basic\+\_\+ostream$<$ CharT, Char\+Traits $>$ \& \mbox{\hyperlink{namespacedistant_1_1error_a48665acc974b937ffe1c2addb0c8777a}{distant\+::error\+::operator$<$$<$}} (std\+::basic\+\_\+ostream$<$ CharT, Char\+Traits $>$ \&stream, const windows\+\_\+error\+\_\+code \&error)
+\begin{DoxyCompactList}\small\item\em Write a windows error to an output stream. \end{DoxyCompactList}\end{DoxyCompactItemize}

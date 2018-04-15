@@ -1,0 +1,45 @@
+\hypertarget{enum__operators_8hpp}{}\section{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/utility/enum\+\_\+operators.hpp File Reference}
+\label{enum__operators_8hpp}\index{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/utility/enum\+\_\+operators.\+hpp@{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/utility/enum\+\_\+operators.\+hpp}}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{enum__operators_8hpp_a03bcea289059be89f3ef1a7f75c79c81}{D\+E\+F\+I\+N\+E\+\_\+\+C\+O\+N\+S\+T\+E\+X\+P\+R\+\_\+\+E\+N\+U\+M\+\_\+\+F\+L\+A\+G\+\_\+\+O\+P\+E\+R\+A\+T\+O\+RS}}(E\+N\+U\+M\+T\+Y\+PE)
+\item 
+\#define \mbox{\hyperlink{enum__operators_8hpp_a35c28e4f1f5fe6eaa58385b3ca903995}{D\+E\+F\+I\+N\+E\+\_\+\+C\+O\+N\+S\+T\+E\+X\+P\+R\+\_\+\+E\+N\+U\+M\+\_\+\+F\+L\+A\+G\+\_\+\+P\+A\+R\+T\+I\+A\+L\+\_\+\+O\+R\+D\+ER}}(E\+N\+U\+M\+T\+Y\+PE)
+\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\Hypertarget{enum__operators_8hpp_a03bcea289059be89f3ef1a7f75c79c81}\label{enum__operators_8hpp_a03bcea289059be89f3ef1a7f75c79c81}} 
+\index{enum\+\_\+operators.\+hpp@{enum\+\_\+operators.\+hpp}!D\+E\+F\+I\+N\+E\+\_\+\+C\+O\+N\+S\+T\+E\+X\+P\+R\+\_\+\+E\+N\+U\+M\+\_\+\+F\+L\+A\+G\+\_\+\+O\+P\+E\+R\+A\+T\+O\+RS@{D\+E\+F\+I\+N\+E\+\_\+\+C\+O\+N\+S\+T\+E\+X\+P\+R\+\_\+\+E\+N\+U\+M\+\_\+\+F\+L\+A\+G\+\_\+\+O\+P\+E\+R\+A\+T\+O\+RS}}
+\index{D\+E\+F\+I\+N\+E\+\_\+\+C\+O\+N\+S\+T\+E\+X\+P\+R\+\_\+\+E\+N\+U\+M\+\_\+\+F\+L\+A\+G\+\_\+\+O\+P\+E\+R\+A\+T\+O\+RS@{D\+E\+F\+I\+N\+E\+\_\+\+C\+O\+N\+S\+T\+E\+X\+P\+R\+\_\+\+E\+N\+U\+M\+\_\+\+F\+L\+A\+G\+\_\+\+O\+P\+E\+R\+A\+T\+O\+RS}!enum\+\_\+operators.\+hpp@{enum\+\_\+operators.\+hpp}}
+\subsubsection{\texorpdfstring{D\+E\+F\+I\+N\+E\+\_\+\+C\+O\+N\+S\+T\+E\+X\+P\+R\+\_\+\+E\+N\+U\+M\+\_\+\+F\+L\+A\+G\+\_\+\+O\+P\+E\+R\+A\+T\+O\+RS}{DEFINE\_CONSTEXPR\_ENUM\_FLAG\_OPERATORS}}
+{\footnotesize\ttfamily \#define D\+E\+F\+I\+N\+E\+\_\+\+C\+O\+N\+S\+T\+E\+X\+P\+R\+\_\+\+E\+N\+U\+M\+\_\+\+F\+L\+A\+G\+\_\+\+O\+P\+E\+R\+A\+T\+O\+RS(\begin{DoxyParamCaption}\item[{}]{E\+N\+U\+M\+T\+Y\+PE }\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}
+constexpr ENUMTYPE operator | (ENUMTYPE a, ENUMTYPE b) noexcept \{ \textcolor{keywordflow}{return} \textcolor{keyword}{static\_cast<}ENUMTYPE\textcolor{keyword}{>}(\textcolor{keyword}{static\_cast<}
+      std::underlying\_type\_t<ENUMTYPE>\textcolor{keyword}{>}(a) | \textcolor{keyword}{static\_cast<}std::underlying\_type\_t<ENUMTYPE>\textcolor{keyword}{>}(b)); \} \(\backslash\)
+    constexpr ENUMTYPE operator & (ENUMTYPE a, ENUMTYPE b) noexcept \{ \textcolor{keywordflow}{return} \textcolor{keyword}{static\_cast<}ENUMTYPE\textcolor{keyword}{>}(\textcolor{keyword}{
+      static\_cast<}std::underlying\_type\_t<ENUMTYPE>\textcolor{keyword}{>}(a) & \textcolor{keyword}{static\_cast<}std::underlying\_type\_t<ENUMTYPE>\textcolor{keyword}{>}(b)); \} \(\backslash\)
+    constexpr ENUMTYPE operator ^ (ENUMTYPE a, ENUMTYPE b) noexcept \{ \textcolor{keywordflow}{return} \textcolor{keyword}{static\_cast<}ENUMTYPE\textcolor{keyword}{>}(\textcolor{keyword}{
+      static\_cast<}std::underlying\_type\_t<ENUMTYPE>\textcolor{keyword}{>}(a) ^ \textcolor{keyword}{static\_cast<}std::underlying\_type\_t<ENUMTYPE>\textcolor{keyword}{>}(b)); \} \(\backslash\)
+    constexpr ENUMTYPE operator ~ (ENUMTYPE a)            noexcept \{ \textcolor{keywordflow}{return} \textcolor{keyword}{static\_cast<}ENUMTYPE\textcolor{keyword}{>}(~
+      static\_cast<std::underlying\_type\_t<ENUMTYPE>>(a)); \}
+\end{DoxyCode}
+\mbox{\Hypertarget{enum__operators_8hpp_a35c28e4f1f5fe6eaa58385b3ca903995}\label{enum__operators_8hpp_a35c28e4f1f5fe6eaa58385b3ca903995}} 
+\index{enum\+\_\+operators.\+hpp@{enum\+\_\+operators.\+hpp}!D\+E\+F\+I\+N\+E\+\_\+\+C\+O\+N\+S\+T\+E\+X\+P\+R\+\_\+\+E\+N\+U\+M\+\_\+\+F\+L\+A\+G\+\_\+\+P\+A\+R\+T\+I\+A\+L\+\_\+\+O\+R\+D\+ER@{D\+E\+F\+I\+N\+E\+\_\+\+C\+O\+N\+S\+T\+E\+X\+P\+R\+\_\+\+E\+N\+U\+M\+\_\+\+F\+L\+A\+G\+\_\+\+P\+A\+R\+T\+I\+A\+L\+\_\+\+O\+R\+D\+ER}}
+\index{D\+E\+F\+I\+N\+E\+\_\+\+C\+O\+N\+S\+T\+E\+X\+P\+R\+\_\+\+E\+N\+U\+M\+\_\+\+F\+L\+A\+G\+\_\+\+P\+A\+R\+T\+I\+A\+L\+\_\+\+O\+R\+D\+ER@{D\+E\+F\+I\+N\+E\+\_\+\+C\+O\+N\+S\+T\+E\+X\+P\+R\+\_\+\+E\+N\+U\+M\+\_\+\+F\+L\+A\+G\+\_\+\+P\+A\+R\+T\+I\+A\+L\+\_\+\+O\+R\+D\+ER}!enum\+\_\+operators.\+hpp@{enum\+\_\+operators.\+hpp}}
+\subsubsection{\texorpdfstring{D\+E\+F\+I\+N\+E\+\_\+\+C\+O\+N\+S\+T\+E\+X\+P\+R\+\_\+\+E\+N\+U\+M\+\_\+\+F\+L\+A\+G\+\_\+\+P\+A\+R\+T\+I\+A\+L\+\_\+\+O\+R\+D\+ER}{DEFINE\_CONSTEXPR\_ENUM\_FLAG\_PARTIAL\_ORDER}}
+{\footnotesize\ttfamily \#define D\+E\+F\+I\+N\+E\+\_\+\+C\+O\+N\+S\+T\+E\+X\+P\+R\+\_\+\+E\+N\+U\+M\+\_\+\+F\+L\+A\+G\+\_\+\+P\+A\+R\+T\+I\+A\+L\+\_\+\+O\+R\+D\+ER(\begin{DoxyParamCaption}\item[{}]{E\+N\+U\+M\+T\+Y\+PE }\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}
+constexpr \textcolor{keywordtype}{bool} operator<=(\textcolor{keyword}{const} ENUMTYPE lhs, \textcolor{keyword}{const} ENUMTYPE rhs) noexcept \{ \textcolor{keywordflow}{return} (lhs & rhs) == lhs; \}\(\backslash\)
+    constexpr \textcolor{keywordtype}{bool} operator>=(\textcolor{keyword}{const} ENUMTYPE lhs, \textcolor{keyword}{const} ENUMTYPE rhs) noexcept \{ \textcolor{keywordflow}{return} (lhs & rhs) == rhs;
+       \}\(\backslash\)
+    constexpr \textcolor{keywordtype}{bool} operator< (\textcolor{keyword}{const} ENUMTYPE lhs, \textcolor{keyword}{const} ENUMTYPE rhs) noexcept \{ \textcolor{keywordflow}{return} operator<=(lhs, rhs
+      ) && lhs != rhs; \}\(\backslash\)
+    constexpr \textcolor{keywordtype}{bool} operator> (\textcolor{keyword}{const} ENUMTYPE lhs, \textcolor{keyword}{const} ENUMTYPE rhs) noexcept \{ \textcolor{keywordflow}{return} operator>=(lhs, rhs
+      ) && lhs != rhs; \}
+\end{DoxyCode}

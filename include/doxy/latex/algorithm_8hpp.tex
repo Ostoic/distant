@@ -1,0 +1,30 @@
+\hypertarget{algorithm_8hpp}{}\section{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/utility/meta/algorithm.hpp File Reference}
+\label{algorithm_8hpp}\index{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/utility/meta/algorithm.\+hpp@{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/utility/meta/algorithm.\+hpp}}
+{\ttfamily \#include $<$array$>$}\newline
+{\ttfamily \#include $<$distant/utility/detection.\+hpp$>$}\newline
+{\ttfamily \#include \char`\"{}impl/algorithm.\+hxx\char`\"{}}\newline
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \mbox{\hyperlink{namespacedistant_1_1utility_1_1meta}{distant\+::utility\+::meta}}
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T $>$ }\\using \mbox{\hyperlink{namespacedistant_1_1utility_1_1meta_a61f75cfe650b1bcb71aa5ab01299936d}{distant\+::utility\+::meta\+::generator\+\_\+function}} = decltype(std\+::declval$<$ T $>$()(0))
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename... Ts$>$ }\\constexpr auto \mbox{\hyperlink{namespacedistant_1_1utility_1_1meta_a82ae6ce7d1f5abeee347027c95ff986e}{distant\+::utility\+::meta\+::make\+\_\+array}} (Ts \&\&... ts) noexcept
+\item 
+{\footnotesize template$<$typename T , std\+::size\+\_\+t Size$>$ }\\constexpr std\+::array$<$ T, Size+1 $>$ \mbox{\hyperlink{namespacedistant_1_1utility_1_1meta_a03f70faa19018e00727dfb7c53319bff}{distant\+::utility\+::meta\+::append}} (const std\+::array$<$ T, Size $>$ \&array, const T \&value) noexcept
+\item 
+{\footnotesize template$<$typename T , std\+::size\+\_\+t Size1, std\+::size\+\_\+t Size2$>$ }\\constexpr std\+::array$<$ T, Size1+Size2 $>$ \mbox{\hyperlink{namespacedistant_1_1utility_1_1meta_af906f08f34a3f7c55985df5556b1ce90}{distant\+::utility\+::meta\+::append}} (const std\+::array$<$ T, Size1 $>$ \&array1, const std\+::array$<$ T, Size2 $>$ \&array2) noexcept
+\item 
+{\footnotesize template$<$typename T , std\+::size\+\_\+t Size$>$ }\\constexpr std\+::array$<$ T, Size -\/ 1 $>$ \mbox{\hyperlink{namespacedistant_1_1utility_1_1meta_ab001afce8c8e9e18d68a47eab7b95768}{distant\+::utility\+::meta\+::truncate}} (const std\+::array$<$ T, Size $>$ \&array) noexcept
+\item 
+{\footnotesize template$<$std\+::size\+\_\+t Size, typename Generator , typename  = std\+::enable\+\_\+if\+\_\+t$<$is\+\_\+detected$<$generator\+\_\+function, Generator$>$\+::value$>$$>$ }\\constexpr auto \mbox{\hyperlink{namespacedistant_1_1utility_1_1meta_a2f4bc82868002f3838262b733bf762a0}{distant\+::utility\+::meta\+::generate}} (Generator \&\&generator) noexcept
+\item 
+{\footnotesize template$<$class Tuple , class Func $>$ }\\void \mbox{\hyperlink{namespacedistant_1_1utility_1_1meta_a5984385b95013d564582d4fc91051ffe}{distant\+::utility\+::meta\+::for\+\_\+each\+\_\+tuple}} (Tuple \&\&tuple, Func f) noexcept
+\end{DoxyCompactItemize}

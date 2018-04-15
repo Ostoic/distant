@@ -14,13 +14,15 @@ namespace distant		 {
 namespace kernel_objects {
 
 	/// @brief distant::process represents a process, and has static type checking on the process access rights.
-	template <process_rights AccessFlags = process_rights::all_access>
+	/// @tparam AccessRights the desired permissions to open the process with.
+	/// @see process_rights
+	template <process_rights AccessRights = process_rights::all_access>
 	class process : private process_base
 	{
 	private:
 		/// @brief SFINAE for access permissions
 		template <access_rights::process Required, typename Return = void>
-		using require_permission = std::enable_if_t<check_permission(AccessFlags, Required), Return>;
+		using require_permission = std::enable_if_t<check_permission(AccessRights, Required), Return>;
 
 	public: // interface
 		// Import the process_base interface.
@@ -32,62 +34,69 @@ namespace kernel_objects {
 		using process_base::valid;
 		using process_base::id;
 
-		/// @brief Terminate the process
-		/// @remark Function is disabled if the process does not have the \a terminate process right.
+		/// @brief Terminate the process.
+		/// @see process_rights
+		/// @remark Requires \a AccessRights >= \a terminate.
 		template <typename Return = void>
 		auto kill()
 			-> require_permission<process_rights::terminate, Return>;
 
-		/// Get number of handles opened in the process
-		/// @return the number of handles
-		/// @remark Function is disabled if the process does not have the \a query_limited_information process right.
+		/// @brief Get number of handles opened in the process
+		/// @see process_rights
+		/// @return unsigned int: the number of handles
+		/// @remark Requires \a AccessRights >= \a query_limited_information.
 		template <typename Return = std::size_t>
 		auto handle_count() const
 			-> require_permission<process_rights::query_limited_information, Return>;
 
 		/// @brief Query the process handle to see if it is still active
-		/// @remark Function is disabled if the process does not have the \a synchronize access right.
-		/// @return true if the process is active, and false otherwise
+		/// @see process_rights
+		/// @return bool: \a true if the process is active, and \a false otherwise
+		/// @remark Requires \a AccessRights >= \a synchronize.
 		template <typename Return = bool>
 		auto is_active() const
 			-> require_permission<process_rights::synchronize, Return>;
 
 		/// @brief Test if the process is running under the WOW64 emulator.
-		/// If the process has been compiled to run on 32-bit system and
+		/// <br> If the process has been compiled to run on 32-bit system and
 		/// is being run on a 64-bit system, it will be emulated.
-		/// @remark Function is disabled if the process does not have the \a query_limited_information or \a query_information access  right.
-		/// @return true if the process is being emulated, and false if not.
+		/// @see process_rights
+		/// @return bool: \a true if the process is being emulated, and \a false otherwise.
+		/// @remark Requires \a AccessRights >= \a query_limited_information or \a AccessRights >= \a query_information.
 		template <typename Return = bool>
 		auto is_32bit() const
 			-> require_permission<process_rights::query_information | process_rights::query_limited_information, Return>;
 
 		/// @brief Test if the process is being run in 64bit.
-		/// @remark Function is disabled if the process does not have the \a query_limited_information or \a query_information access  right.
-		/// @return true if the process is being run in 64bit mode, and false if not.
+		/// @see process_rights
+		/// @return  bool: \a true if the process is being run in 64bit mode, and \a false otherwise.
+		/// @remark Requires \a AccessRights >= \a query_limited_information or \a AccessRights >= \a query_information.
 		template <typename Return = bool>
 		auto is_64bit() const
 			-> require_permission<process_rights::query_information | process_rights::query_limited_information, Return>;
 
 		/// @brief Get the executable name of the process
-		/// @remark Function is disabled if the process does not have the \a query_limited_information or \a query_information access  right.
-		/// @return std::wstring containing the executable name of the process
+		/// @see process_rights
+		/// @return std::wstring: the executable image name for the given process.
+		/// @remark Requires \a AccessRights >= \a query_limited_information or \a AccessRights >= \a query_information.
 		template <typename Return = std::wstring>
 		auto name() const
 			-> require_permission<process_rights::query_information | process_rights::query_limited_information, Return>;
 
 		/// @brief Get the file path (in WIN32 format) of the process
-		/// @remark Function is disabled if the process does not have the \a query_limited_information or \a query_information permissions.
-		/// @return std::wstring containing the file path of the process
+		/// @see process_rights
+		/// @return filesystem::path: the absolute path to the executable image for the given process.
+		/// @remark Requires \a AccessRights >= \a query_limited_information or \a AccessRights >= \a query_information.
 		template <typename Return = filesystem::path>
 		auto file_path() const
 			-> require_permission<process_rights::query_information | process_rights::query_limited_information, Return>;
 
 		/// @brief Allows implicit conversion to a process with a lower level of access.
-		template <process_rights OtherAccess, typename = std::enable_if_t<(OtherAccess <= AccessFlags)>>
+		template <process_rights OtherAccess, typename = std::enable_if_t<(OtherAccess <= AccessRights)>>
 		operator process<OtherAccess>&() noexcept;
 
 		/// @brief Allows implicit conversion to a process with a lower level of access.
-		template <process_rights OtherAccess, typename = std::enable_if_t<(OtherAccess <= AccessFlags)>>
+		template <process_rights OtherAccess, typename = std::enable_if_t<(OtherAccess <= AccessRights)>>
 		operator const process<OtherAccess>&() const noexcept;
 
 		/*explicit operator const process_base&() const noexcept;
@@ -110,7 +119,7 @@ namespace kernel_objects {
 
 	private:
 		friend class memory_status;
-	}; // end class process
+	}; // class process
 
 	template <process_rights A1, process_rights A2>
 	bool operator==(const process<A1>& lhs, const process<A2>& rhs) noexcept 
@@ -127,12 +136,12 @@ namespace kernel_objects {
 
 	/// @brief Get the current process.
 	/// @tparam Access the desired access rights to the process.
-	/// @return a distant::process for the current process.
+	/// @return distant::process: a process object representing the current process.
 	template <process_rights Access = process_rights::all_access>
 	process<Access> current_process() noexcept;
 
 	/// @brief Get the current process.
-	/// @return a distant::process for the current process with process_rights::all_access permissions.
+	/// @return distant::process: a process object representing the current process with the highest \a AccessRights.
 	process<process_rights::all_access> current_process() noexcept;
 
 } // namespace kernel_objects

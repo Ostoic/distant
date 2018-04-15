@@ -15,7 +15,7 @@ namespace distant
 	namespace kernel_objects  
 	{
 		/// @brief A snapshot is a read-only copy of the current state of one or more of the following lists that reside in system memory: processes, threads, modules, and heaps.
-		/// snapshot is a range modelling InputRange (http://en.cppreference.com/w/cpp/experimental/ranges/range/InputRange) whose elements consist of valid instances of the specified
+		/// snapshot is a range modelling [InputRange](http://en.cppreference.com/w/cpp/experimental/ranges/range/InputRange) whose elements consist of valid instances of the specified
 		/// \a KernelObject.
 		/// @tparam KernelObject must be one of the following: process, thread, heap, module.
 		template <typename KernelObject>

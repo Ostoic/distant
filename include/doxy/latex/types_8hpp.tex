@@ -1,0 +1,32 @@
+\hypertarget{types_8hpp}{}\section{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/types.hpp File Reference}
+\label{types_8hpp}\index{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/types.\+hpp@{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/types.\+hpp}}
+{\ttfamily \#include $<$boost/winapi/basic\+\_\+types.\+hpp$>$}\newline
+{\ttfamily \#include $<$cstddef$>$}\newline
+{\ttfamily \#include $<$distant/impl/types.\+hxx$>$}\newline
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \mbox{\hyperlink{namespacedistant}{distant}}
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+using \mbox{\hyperlink{namespacedistant_a615d26c8218c108ba83dfea768c0e130}{distant\+::word}} = unsigned short
+\item 
+using \mbox{\hyperlink{namespacedistant_a9fa41a5a1a17dcbd24da1c1855c92489}{distant\+::dword}} = boost\+::winapi\+::\+D\+W\+O\+R\+D\+\_\+
+\item 
+using \mbox{\hyperlink{namespacedistant_ac5f83107c559f04950d4c9fa5464364e}{distant\+::qword}} = long long
+\item 
+using \mbox{\hyperlink{namespacedistant_af3c2023269e188e3cb45f57d6e2a2b8b}{distant\+::uint}} = unsigned int
+\item 
+using \mbox{\hyperlink{namespacedistant_af9c3f04a9b855a1368d6c1a9ce28c2f4}{distant\+::byte}} = unsigned char
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$std\+::size\+\_\+t N$>$ }\\constexpr byte \mbox{\hyperlink{namespacedistant_a0f9ebb6f0a15b607a7b15ecbeb6af958}{distant\+::get\+\_\+byte}} (const word bytes) noexcept
+\item 
+{\footnotesize template$<$std\+::size\+\_\+t N$>$ }\\constexpr byte \mbox{\hyperlink{namespacedistant_aa9bd72cd14756eceba7009980b84e19a}{distant\+::get\+\_\+byte}} (const dword bytes) noexcept
+\item 
+{\footnotesize template$<$std\+::size\+\_\+t N$>$ }\\constexpr byte \mbox{\hyperlink{namespacedistant_a109646e8e7f0c98fefc2ff6a07c28717}{distant\+::get\+\_\+byte}} (const qword bytes) noexcept
+\end{DoxyCompactItemize}

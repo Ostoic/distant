@@ -1,0 +1,108 @@
+\hypertarget{classdistant_1_1handle}{}\section{distant\+:\+:handle$<$ ObjectT $>$ Class Template Reference}
+\label{classdistant_1_1handle}\index{distant\+::handle$<$ Object\+T $>$@{distant\+::handle$<$ Object\+T $>$}}
+
+
+Type-\/safe handle for windows objects.  
+
+
+
+
+{\ttfamily \#include $<$handle.\+hpp$>$}
+
+Inheritance diagram for distant\+:\+:handle$<$ ObjectT $>$\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classdistant_1_1handle}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classdistant_1_1handle_ad0687033839123a1babb00fd9d3735e9}\label{classdistant_1_1handle_ad0687033839123a1babb00fd9d3735e9}} 
+using {\bfseries object\+\_\+type} = ObjectT
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+constexpr \mbox{\hyperlink{classdistant_1_1handle_a62c90d8be9b15cce2e0ec0ac85aab687}{handle}} (native\+\_\+type \mbox{\hyperlink{classdistant_1_1detail_1_1handle__base_a3207e125c17f2ebb59cab614083f782b}{native\+\_\+handle}}, flag\+\_\+type \mbox{\hyperlink{classdistant_1_1detail_1_1handle__base_adc97dc91543d76d0b89f43fee5f5f26b}{flags}}=flag\+\_\+type\+::inherit, bool \mbox{\hyperlink{classdistant_1_1detail_1_1handle__base_abd5ad44b32fda79418c5faada682336a}{closed}}=false) noexcept
+\item 
+constexpr \mbox{\hyperlink{classdistant_1_1handle_af2f4a42da3e2c88b0593cefa439e20ed}{handle}} (nullptr\+\_\+t h) noexcept
+\item 
+\mbox{\Hypertarget{classdistant_1_1handle_a05cdf625487c59ffdfee11470fad5d41}\label{classdistant_1_1handle_a05cdf625487c59ffdfee11470fad5d41}} 
+constexpr \mbox{\hyperlink{classdistant_1_1handle_a05cdf625487c59ffdfee11470fad5d41}{handle}} () noexcept
+\begin{DoxyCompactList}\small\item\em Invalid handle literal constructor. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classdistant_1_1handle_ae4a3ee70142af4ac84eab8542e4cac17}\label{classdistant_1_1handle_ae4a3ee70142af4ac84eab8542e4cac17}} 
+{\footnotesize template$<$typename OtherT , typename  = std\+::enable\+\_\+if\+\_\+t$<$is\+\_\+quasiconvertible$<$\+Object\+T, Other\+T$>$\+::value$>$$>$ }\\{\bfseries handle} (\mbox{\hyperlink{classdistant_1_1handle}{handle}}$<$ OtherT $>$ \&\&other) noexcept
+\item 
+\mbox{\Hypertarget{classdistant_1_1handle_a4d6d2690a64a8105236d236168f60f1c}\label{classdistant_1_1handle_a4d6d2690a64a8105236d236168f60f1c}} 
+{\footnotesize template$<$typename OtherT , typename  = std\+::enable\+\_\+if\+\_\+t$<$is\+\_\+quasiconvertible$<$\+Object\+T, Other\+T$>$\+::value$>$$>$ }\\\mbox{\hyperlink{classdistant_1_1handle}{handle}} \& {\bfseries operator=} (\mbox{\hyperlink{classdistant_1_1handle}{handle}}$<$ OtherT $>$ \&\&) noexcept
+\item 
+\mbox{\Hypertarget{classdistant_1_1handle_a1aeeca85db91bd5c1596f2c79680315f}\label{classdistant_1_1handle_a1aeeca85db91bd5c1596f2c79680315f}} 
+{\bfseries handle} (\mbox{\hyperlink{classdistant_1_1handle}{handle}} \&\&) noexcept=default
+\item 
+\mbox{\Hypertarget{classdistant_1_1handle_a74bb937d5bd3f82a1bbf96d4fa2202cb}\label{classdistant_1_1handle_a74bb937d5bd3f82a1bbf96d4fa2202cb}} 
+\mbox{\hyperlink{classdistant_1_1handle}{handle}} \& {\bfseries operator=} (\mbox{\hyperlink{classdistant_1_1handle}{handle}} \&\&) noexcept=default
+\item 
+\mbox{\Hypertarget{classdistant_1_1handle_a8bcd9d7f086f2f2660ff1864cbd21989}\label{classdistant_1_1handle_a8bcd9d7f086f2f2660ff1864cbd21989}} 
+{\footnotesize template$<$typename U $>$ }\\void {\bfseries swap} (\mbox{\hyperlink{classdistant_1_1handle}{handle}}$<$ U $>$ \&other) noexcept
+\item 
+\mbox{\Hypertarget{classdistant_1_1handle_a5c2bed1faa6a28060e9090fdc9536fd3}\label{classdistant_1_1handle_a5c2bed1faa6a28060e9090fdc9536fd3}} 
+{\footnotesize template$<$typename OtherT , typename $>$ }\\\mbox{\hyperlink{classdistant_1_1handle}{handle}}$<$ T $>$ \& {\bfseries operator=} (\mbox{\hyperlink{classdistant_1_1handle}{handle}}$<$ OtherT $>$ \&\&other) noexcept
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classdistant_1_1handle_a09563db836b1abb27abbd07b38d77cf7}\label{classdistant_1_1handle_a09563db836b1abb27abbd07b38d77cf7}} 
+{\footnotesize template$<$typename $>$ }\\class {\bfseries handle}
+\item 
+\mbox{\Hypertarget{classdistant_1_1handle_aa0ed784cab3502540e32427581986e33}\label{classdistant_1_1handle_aa0ed784cab3502540e32427581986e33}} 
+{\footnotesize template$<$typename T , typename U $>$ }\\constexpr bool {\bfseries operator==} (const \mbox{\hyperlink{classdistant_1_1handle}{handle}}$<$ T $>$ \&, const \mbox{\hyperlink{classdistant_1_1handle}{handle}}$<$ U $>$ \&) noexcept
+\item 
+\mbox{\Hypertarget{classdistant_1_1handle_a874fe586ac59c5b364dff2691ddbc263}\label{classdistant_1_1handle_a874fe586ac59c5b364dff2691ddbc263}} 
+{\footnotesize template$<$typename T , typename U $>$ }\\constexpr bool {\bfseries operator!=} (const \mbox{\hyperlink{classdistant_1_1handle}{handle}}$<$ T $>$ \&, const \mbox{\hyperlink{classdistant_1_1handle}{handle}}$<$ U $>$ \&) noexcept
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename ObjectT$>$\newline
+class distant\+::handle$<$ Object\+T $>$}
+
+Type-\/safe handle for windows objects. 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classdistant_1_1handle_a62c90d8be9b15cce2e0ec0ac85aab687}\label{classdistant_1_1handle_a62c90d8be9b15cce2e0ec0ac85aab687}} 
+\index{distant\+::handle@{distant\+::handle}!handle@{handle}}
+\index{handle@{handle}!distant\+::handle@{distant\+::handle}}
+\subsubsection{\texorpdfstring{handle()}{handle()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+constexpr \mbox{\hyperlink{classdistant_1_1handle}{distant\+::handle}}$<$ T $>$\+::\mbox{\hyperlink{classdistant_1_1handle}{handle}} (\begin{DoxyParamCaption}\item[{native\+\_\+type}]{native\+\_\+handle,  }\item[{flag\+\_\+type}]{flags = {\ttfamily flag\+\_\+type\+:\+:inherit},  }\item[{bool}]{closed = {\ttfamily false} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [explicit]}, {\ttfamily [noexcept]}}
+
+
+\begin{DoxyParams}{Parameters}
+{\em native\+\_\+handle} & the native handle value. \\
+\hline
+{\em flags} & handle flags . \\
+\hline
+{\em closed} & whether or not the handle is closed. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classdistant_1_1handle_af2f4a42da3e2c88b0593cefa439e20ed}\label{classdistant_1_1handle_af2f4a42da3e2c88b0593cefa439e20ed}} 
+\index{distant\+::handle@{distant\+::handle}!handle@{handle}}
+\index{handle@{handle}!distant\+::handle@{distant\+::handle}}
+\subsubsection{\texorpdfstring{handle()}{handle()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+constexpr \mbox{\hyperlink{classdistant_1_1handle}{distant\+::handle}}$<$ T $>$\+::\mbox{\hyperlink{classdistant_1_1handle}{handle}} (\begin{DoxyParamCaption}\item[{nullptr\+\_\+t}]{h }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [noexcept]}}
+
+Construct an invalid handle. This allows handles to be comparable with nullptr. 
+\begin{DoxyParams}{Parameters}
+{\em h} & the nullptr. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/fwd.\+hpp\item 
+C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/handle.\+hpp\item 
+C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/impl/handle.\+hxx\end{DoxyCompactItemize}

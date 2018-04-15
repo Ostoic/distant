@@ -62,7 +62,7 @@ Stream& operator<<(Stream& stream, const distant::memory::static_instruction<S, 
 	using char_t = typename Stream::char_type;
 	static_assert(S >= 2, "[operator<<(instruction)] Invalid instruction length");
 
-	using opcode = distant::memory::opcode;
+	using opcode = distant::assembly::opcode;
 	using distant::detail::string_maps::op_names;
 
 	const auto write_byte = [&stream](const auto&& byte)

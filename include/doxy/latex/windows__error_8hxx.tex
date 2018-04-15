@@ -1,0 +1,27 @@
+\hypertarget{windows__error_8hxx}{}\section{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/error/impl/windows\+\_\+error.hxx File Reference}
+\label{windows__error_8hxx}\index{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/error/impl/windows\+\_\+error.\+hxx@{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/error/impl/windows\+\_\+error.\+hxx}}
+{\ttfamily \#include $<$distant/error/windows\+\_\+error.\+hpp$>$}\newline
+{\ttfamily \#include $<$boost/winapi/basic\+\_\+types.\+hpp$>$}\newline
+{\ttfamily \#include $<$boost/winapi/error\+\_\+codes.\+hpp$>$}\newline
+{\ttfamily \#include $<$boost/winapi/error\+\_\+handling.\+hpp$>$}\newline
+{\ttfamily \#include $<$boost/winapi/get\+\_\+last\+\_\+error.\+hpp$>$}\newline
+{\ttfamily \#include $<$boost/winapi/local\+\_\+memory.\+hpp$>$}\newline
+{\ttfamily \#include $<$boost/winapi/limits.\+hpp$>$}\newline
+{\ttfamily \#include $<$distant/detail/config.\+hpp$>$}\newline
+{\ttfamily \#include $<$distant/support/winapi/last\+\_\+error.\+hpp$>$}\newline
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \mbox{\hyperlink{namespacedistant}{distant}}
+\item 
+ \mbox{\hyperlink{namespacedistant_1_1error}{distant\+::error}}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+const windows\+\_\+category \& \mbox{\hyperlink{namespacedistant_1_1error_a02ebc3d724cbfe0804e5d4079bb85bd4}{distant\+::error\+::get\+\_\+windows\+\_\+category}} () noexcept
+\item 
+windows\+\_\+error\+\_\+code \mbox{\hyperlink{namespacedistant_1_1error_aaaf1a34cba6373db33d2c27d8876c0b2}{distant\+::error\+::last\+\_\+error}} () noexcept
+\begin{DoxyCompactList}\small\item\em Return the last error local to the executing thread. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename CharT , typename Char\+Traits $>$ }\\std\+::basic\+\_\+ostream$<$ CharT, Char\+Traits $>$ \& \mbox{\hyperlink{namespacedistant_1_1error_acd5106fb576fa993cc526e3c9a14ef7b}{distant\+::error\+::operator$<$$<$}} (std\+::basic\+\_\+ostream$<$ CharT, Char\+Traits $>$ \&stream, const windows\+\_\+error \&error)
+\end{DoxyCompactItemize}

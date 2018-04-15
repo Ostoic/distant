@@ -1,0 +1,52 @@
+\hypertarget{classdistant_1_1memory_1_1virtual__allocator}{}\section{distant\+:\+:memory\+:\+:virtual\+\_\+allocator$<$ T, Access, AddressT $>$ Class Template Reference}
+\label{classdistant_1_1memory_1_1virtual__allocator}\index{distant\+::memory\+::virtual\+\_\+allocator$<$ T, Access, Address\+T $>$@{distant\+::memory\+::virtual\+\_\+allocator$<$ T, Access, Address\+T $>$}}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structdistant_1_1memory_1_1virtual__allocator_1_1rebind}{rebind}}
+\end{DoxyCompactItemize}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classdistant_1_1memory_1_1virtual__allocator_a5097eefa8e1f0b46aa521f6f3d0c0253}\label{classdistant_1_1memory_1_1virtual__allocator_a5097eefa8e1f0b46aa521f6f3d0c0253}} 
+using {\bfseries value\+\_\+type} = T
+\item 
+\mbox{\Hypertarget{classdistant_1_1memory_1_1virtual__allocator_acc8faacc300591c67badf1c687f670af}\label{classdistant_1_1memory_1_1virtual__allocator_acc8faacc300591c67badf1c687f670af}} 
+using {\bfseries pointer} = \mbox{\hyperlink{classdistant_1_1memory_1_1virtual__ptr}{virtual\+\_\+ptr}}$<$ T, AddressT $>$
+\item 
+\mbox{\Hypertarget{classdistant_1_1memory_1_1virtual__allocator_aa7fa8853e9fd1938e6fd0f9ceefd57d6}\label{classdistant_1_1memory_1_1virtual__allocator_aa7fa8853e9fd1938e6fd0f9ceefd57d6}} 
+using {\bfseries const\+\_\+pointer} = \mbox{\hyperlink{classdistant_1_1memory_1_1virtual__ptr}{virtual\+\_\+ptr}}$<$ const T, AddressT $>$
+\item 
+\mbox{\Hypertarget{classdistant_1_1memory_1_1virtual__allocator_a4c669f4f3ecb8d4bbc9d408bf34e2db4}\label{classdistant_1_1memory_1_1virtual__allocator_a4c669f4f3ecb8d4bbc9d408bf34e2db4}} 
+using {\bfseries reference} = \mbox{\hyperlink{classdistant_1_1memory_1_1virtual__reference}{virtual\+\_\+reference}}$<$ T, AddressT $>$
+\item 
+\mbox{\Hypertarget{classdistant_1_1memory_1_1virtual__allocator_a88342c274eff69899bcc4874b32514d1}\label{classdistant_1_1memory_1_1virtual__allocator_a88342c274eff69899bcc4874b32514d1}} 
+using {\bfseries const\+\_\+reference} = \mbox{\hyperlink{classdistant_1_1memory_1_1virtual__reference}{virtual\+\_\+reference}}$<$ const T, AddressT $>$
+\item 
+\mbox{\Hypertarget{classdistant_1_1memory_1_1virtual__allocator_a7c04d5aab0eeb3891909441ef962c559}\label{classdistant_1_1memory_1_1virtual__allocator_a7c04d5aab0eeb3891909441ef962c559}} 
+using {\bfseries size\+\_\+type} = std\+::size\+\_\+t
+\item 
+\mbox{\Hypertarget{classdistant_1_1memory_1_1virtual__allocator_a7a6974a04f6c47c53b26a1b36de66849}\label{classdistant_1_1memory_1_1virtual__allocator_a7a6974a04f6c47c53b26a1b36de66849}} 
+using {\bfseries difference\+\_\+type} = \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ AddressT $>$
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classdistant_1_1memory_1_1virtual__allocator_a98f83a116256ebe497b788aa23b3a56b}\label{classdistant_1_1memory_1_1virtual__allocator_a98f83a116256ebe497b788aa23b3a56b}} 
+{\bfseries virtual\+\_\+allocator} (const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ Access $>$ \&\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}) noexcept
+\item 
+\mbox{\Hypertarget{classdistant_1_1memory_1_1virtual__allocator_a9c9b28fbe61d4ec8d231527f2f2f1a25}\label{classdistant_1_1memory_1_1virtual__allocator_a9c9b28fbe61d4ec8d231527f2f2f1a25}} 
+\mbox{\hyperlink{classdistant_1_1memory_1_1virtual__ptr}{pointer}} {\bfseries allocate} (size\+\_\+type count)
+\item 
+\mbox{\Hypertarget{classdistant_1_1memory_1_1virtual__allocator_ae04dc300d479920055cbce11b4a20256}\label{classdistant_1_1memory_1_1virtual__allocator_ae04dc300d479920055cbce11b4a20256}} 
+void {\bfseries deallocate} (\mbox{\hyperlink{classdistant_1_1memory_1_1virtual__ptr}{pointer}} p, size\+\_\+type count)
+\item 
+\mbox{\Hypertarget{classdistant_1_1memory_1_1virtual__allocator_a6d68950bcc34434a6ff1fd6908471786}\label{classdistant_1_1memory_1_1virtual__allocator_a6d68950bcc34434a6ff1fd6908471786}} 
+size\+\_\+type {\bfseries max\+\_\+size} () const noexcept
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/memory/virtual\+\_\+allocator.\+hpp\item 
+C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/memory/impl/virtual\+\_\+allocator.\+hxx\end{DoxyCompactItemize}

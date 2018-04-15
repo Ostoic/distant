@@ -1,0 +1,89 @@
+\hypertarget{classdistant_1_1kernel__objects_1_1access__token}{}\section{distant\+:\+:kernel\+\_\+objects\+:\+:access\+\_\+token$<$ Access, Kernel\+Object $>$ Class Template Reference}
+\label{classdistant_1_1kernel__objects_1_1access__token}\index{distant\+::kernel\+\_\+objects\+::access\+\_\+token$<$ Access, Kernel\+Object $>$@{distant\+::kernel\+\_\+objects\+::access\+\_\+token$<$ Access, Kernel\+Object $>$}}
+Inheritance diagram for distant\+:\+:kernel\+\_\+objects\+:\+:access\+\_\+token$<$ Access, Kernel\+Object $>$\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classdistant_1_1kernel__objects_1_1access__token}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1access__token_a6509ad02d8454898bdd591c6a70f55d5}{has\+\_\+privilege}} (const \mbox{\hyperlink{classdistant_1_1security_1_1privilege}{security\+::privilege}} \&p) const noexcept
+\item 
+bool \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1access__token_aa51295b8d8f8602743d5d431806a29c4}{set\+\_\+privilege}} (const \mbox{\hyperlink{classdistant_1_1security_1_1privilege}{security\+::privilege}} \&p, security\+::privilege\+::attributes attribute=security\+::privilege\+::attributes\+::enabled) noexcept
+\item 
+bool \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1access__token_aa396b0b32bd1f9aba79320a5104e0289}{remove\+\_\+privilege}} (const \mbox{\hyperlink{classdistant_1_1security_1_1privilege}{security\+::privilege}} \&p) noexcept
+\item 
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1access__token_a98db4be610792be51a07631bb3016a70}\label{classdistant_1_1kernel__objects_1_1access__token_a98db4be610792be51a07631bb3016a70}} 
+{\bfseries access\+\_\+token} (const Kernel\+Object \&k) noexcept
+\item 
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1access__token_a9565c8e217a315df78664ef057b5fe18}\label{classdistant_1_1kernel__objects_1_1access__token_a9565c8e217a315df78664ef057b5fe18}} 
+{\bfseries access\+\_\+token} (\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1access__token}{access\+\_\+token}} \&\&) noexcept=default
+\item 
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1access__token_a095187fef9d7ec7297666e2eebff949c}\label{classdistant_1_1kernel__objects_1_1access__token_a095187fef9d7ec7297666e2eebff949c}} 
+{\footnotesize template$<$access\+\_\+rights\+::token A, typename K $>$ }\\{\bfseries access\+\_\+token} (const K \&k) noexcept
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1access__token_aae4643b98f37138b1f31ff510f3a3197}\label{classdistant_1_1kernel__objects_1_1access__token_aae4643b98f37138b1f31ff510f3a3197}} 
+{\footnotesize template$<$access\+\_\+rights\+::token , class $>$ }\\class {\bfseries access\+\_\+token}
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1access__token_a6509ad02d8454898bdd591c6a70f55d5}\label{classdistant_1_1kernel__objects_1_1access__token_a6509ad02d8454898bdd591c6a70f55d5}} 
+\index{distant\+::kernel\+\_\+objects\+::access\+\_\+token@{distant\+::kernel\+\_\+objects\+::access\+\_\+token}!has\+\_\+privilege@{has\+\_\+privilege}}
+\index{has\+\_\+privilege@{has\+\_\+privilege}!distant\+::kernel\+\_\+objects\+::access\+\_\+token@{distant\+::kernel\+\_\+objects\+::access\+\_\+token}}
+\subsubsection{\texorpdfstring{has\+\_\+privilege()}{has\_privilege()}}
+{\footnotesize\ttfamily template$<$access\+\_\+rights\+::token A, typename K $>$ \\
+bool \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1access__token}{distant\+::kernel\+\_\+objects\+::access\+\_\+token}}$<$ A, K $>$\+::has\+\_\+privilege (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classdistant_1_1security_1_1privilege}{security\+::privilege}} \&}]{p }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [noexcept]}}
+
+Check if the given privilege is in the access token\textquotesingle{}s list of privileges. 
+\begin{DoxyParams}{Parameters}
+{\em p} & the privilege to test. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the privilege is enabled for the access token. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1access__token_aa396b0b32bd1f9aba79320a5104e0289}\label{classdistant_1_1kernel__objects_1_1access__token_aa396b0b32bd1f9aba79320a5104e0289}} 
+\index{distant\+::kernel\+\_\+objects\+::access\+\_\+token@{distant\+::kernel\+\_\+objects\+::access\+\_\+token}!remove\+\_\+privilege@{remove\+\_\+privilege}}
+\index{remove\+\_\+privilege@{remove\+\_\+privilege}!distant\+::kernel\+\_\+objects\+::access\+\_\+token@{distant\+::kernel\+\_\+objects\+::access\+\_\+token}}
+\subsubsection{\texorpdfstring{remove\+\_\+privilege()}{remove\_privilege()}}
+{\footnotesize\ttfamily template$<$access\+\_\+rights\+::token A, typename K $>$ \\
+bool \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1access__token}{distant\+::kernel\+\_\+objects\+::access\+\_\+token}}$<$ A, K $>$\+::remove\+\_\+privilege (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classdistant_1_1security_1_1privilege}{security\+::privilege}} \&}]{p }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [noexcept]}}
+
+Remove the given privilege from the access token. 
+\begin{DoxyParams}{Parameters}
+{\em p} & the privilege to remove. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the privilege has been successfully removed. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1access__token_aa51295b8d8f8602743d5d431806a29c4}\label{classdistant_1_1kernel__objects_1_1access__token_aa51295b8d8f8602743d5d431806a29c4}} 
+\index{distant\+::kernel\+\_\+objects\+::access\+\_\+token@{distant\+::kernel\+\_\+objects\+::access\+\_\+token}!set\+\_\+privilege@{set\+\_\+privilege}}
+\index{set\+\_\+privilege@{set\+\_\+privilege}!distant\+::kernel\+\_\+objects\+::access\+\_\+token@{distant\+::kernel\+\_\+objects\+::access\+\_\+token}}
+\subsubsection{\texorpdfstring{set\+\_\+privilege()}{set\_privilege()}}
+{\footnotesize\ttfamily template$<$access\+\_\+rights\+::token A, typename K $>$ \\
+bool \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1access__token}{distant\+::kernel\+\_\+objects\+::access\+\_\+token}}$<$ A, K $>$\+::set\+\_\+privilege (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classdistant_1_1security_1_1privilege}{security\+::privilege}} \&}]{p,  }\item[{security\+::privilege\+::attributes}]{attribute = {\ttfamily security\+:\+:privilege\+:\+:attributes\+:\+:enabled} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [noexcept]}}
+
+Enable/disable the given privilege in the access token 
+\begin{DoxyParams}{Parameters}
+{\em p} & the privilege to set. \\
+\hline
+{\em attribute} & enable, remove, or enable by default the privilege. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the privilege has been successfully set. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/kernel\+\_\+objects/access\+\_\+token.\+hpp\item 
+C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/kernel\+\_\+objects/impl/access\+\_\+token.\+hxx\end{DoxyCompactItemize}

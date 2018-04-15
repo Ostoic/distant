@@ -1,0 +1,315 @@
+\hypertarget{namespacedistant_1_1memory}{}\section{distant\+:\+:memory Namespace Reference}
+\label{namespacedistant_1_1memory}\index{distant\+::memory@{distant\+::memory}}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \mbox{\hyperlink{namespacedistant_1_1memory_1_1detail}{detail}}
+\item 
+ \mbox{\hyperlink{namespacedistant_1_1memory_1_1x86__calling__conventions}{x86\+\_\+calling\+\_\+conventions}}
+\end{DoxyCompactItemize}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}
+\item 
+class \mbox{\hyperlink{classdistant_1_1memory_1_1function}{function}}
+\item 
+class \mbox{\hyperlink{classdistant_1_1memory_1_1function_3_01_r_07_args_8_8_8_08_00_01_calling_conv_00_01_address_t_01_4}{function$<$ R(\+Args...), Calling\+Conv, Address\+T $>$}}
+\item 
+class \mbox{\hyperlink{classdistant_1_1memory_1_1page}{page}}
+\begin{DoxyCompactList}\small\item\em Represents a memory page in a process. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classdistant_1_1memory_1_1protect__guard}{protect\+\_\+guard}}
+\item 
+class \mbox{\hyperlink{classdistant_1_1memory_1_1static__instruction}{static\+\_\+instruction}}
+\item 
+class \mbox{\hyperlink{classdistant_1_1memory_1_1virtual__allocator}{virtual\+\_\+allocator}}
+\item 
+class \mbox{\hyperlink{classdistant_1_1memory_1_1virtual__ptr}{virtual\+\_\+ptr}}
+\item 
+class \mbox{\hyperlink{classdistant_1_1memory_1_1virtual__reference}{virtual\+\_\+reference}}
+\item 
+struct \mbox{\hyperlink{structdistant_1_1memory_1_1virtual__traits}{virtual\+\_\+traits}}
+\item 
+struct \mbox{\hyperlink{structdistant_1_1memory_1_1virtual__traits_3_01virtual__ptr_3_01_element_00_01_address_t_01_4_01_4}{virtual\+\_\+traits$<$ virtual\+\_\+ptr$<$ Element, Address\+T $>$ $>$}}
+\item 
+struct \mbox{\hyperlink{structdistant_1_1memory_1_1virtual__traits_3_01virtual__reference_3_01_element_00_01_address_t_01_4_01_4}{virtual\+\_\+traits$<$ virtual\+\_\+reference$<$ Element, Address\+T $>$ $>$}}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename CharT , typename TraitsT , typename AddressT $>$ }\\std\+::basic\+\_\+ostream$<$ CharT, TraitsT $>$ \& \mbox{\hyperlink{namespacedistant_1_1memory_a86dd0cf939f40576160089daa28b3e3f}{operator$<$$<$}} (std\+::basic\+\_\+ostream$<$ CharT, TraitsT $>$ \&stream, const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{distant\+::memory\+::address}}$<$ AddressT $>$ \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}})
+\item 
+{\footnotesize template$<$std\+::size\+\_\+t N, typename A $>$ }\\constexpr \mbox{\hyperlink{namespacedistant_af9c3f04a9b855a1368d6c1a9ce28c2f4}{byte}} \mbox{\hyperlink{namespacedistant_1_1memory_a3497f1e6d6d81c0d01cdf57136980099}{get\+\_\+byte}} (\mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ A $>$) noexcept
+\item 
+{\footnotesize template$<$std\+::size\+\_\+t N, typename A $>$ }\\constexpr \mbox{\hyperlink{namespacedistant_af9c3f04a9b855a1368d6c1a9ce28c2f4}{distant\+::byte}} \mbox{\hyperlink{namespacedistant_1_1memory_a3febd1915bbec9ab10979f06dae9ffd9}{get\+\_\+byte}} (const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ A $>$ addr) noexcept
+\item 
+{\footnotesize template$<$typename T , typename AddressT $>$ }\\void \mbox{\hyperlink{namespacedistant_1_1memory_adaa15cd72b1436e24239d70964bf3323}{write}} (const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{namespacedistant_a6312277824ed2f04c414a61f24c135bb}{vm\+\_\+w\+\_\+op}} $>$ \&proc, const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ AddressT $>$ \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}, T x)
+\item 
+{\footnotesize template$<$typename T $>$ }\\void \mbox{\hyperlink{namespacedistant_1_1memory_a4a6bb40c53cd73bc18f548238ba977b1}{write}} (const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{namespacedistant_a6312277824ed2f04c414a61f24c135bb}{vm\+\_\+w\+\_\+op}} $>$ \&proc, const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ \mbox{\hyperlink{namespacedistant_a9fa41a5a1a17dcbd24da1c1855c92489}{dword}} $>$ \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}, T x)
+\item 
+{\footnotesize template$<$typename T , typename AddressT $>$ }\\T \mbox{\hyperlink{namespacedistant_1_1memory_a5a24d0d196510d8789b81010723809e9}{read}} (const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{namespacedistant_a671e87e004e808bfc0d54a4e816981df}{vm\+\_\+read}} $>$ \&\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}, const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ AddressT $>$ \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}})
+\item 
+{\footnotesize template$<$typename T $>$ }\\T \mbox{\hyperlink{namespacedistant_1_1memory_abf084cc29320d1031fd87b0daa6820e1}{read}} (const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{namespacedistant_a671e87e004e808bfc0d54a4e816981df}{vm\+\_\+read}} $>$ \&proc, const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ \mbox{\hyperlink{namespacedistant_a9fa41a5a1a17dcbd24da1c1855c92489}{dword}} $>$ \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}})
+\item 
+{\footnotesize template$<$typename AddressT $>$ }\\\mbox{\hyperlink{structdistant_1_1access__rights_a09c6caea8f570f8e2d18c3ef2e2a7804}{page\+\_\+protection}} \mbox{\hyperlink{namespacedistant_1_1memory_a68ad702e80d06667f99122f69c2dcbad}{virtual\+\_\+protect}} (const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{namespacedistant_af02d4223cd2f509cc373ac9d83655f19}{vm\+\_\+op}} $>$ \&\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}, const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ AddressT $>$ \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}, \mbox{\hyperlink{structdistant_1_1access__rights_a09c6caea8f570f8e2d18c3ef2e2a7804}{page\+\_\+protection}} protection, const std\+::size\+\_\+t size)
+\item 
+{\footnotesize template$<$page\+\_\+protection Protection$>$ }\\\mbox{\hyperlink{structdistant_1_1access__rights_a09c6caea8f570f8e2d18c3ef2e2a7804}{page\+\_\+protection}} \mbox{\hyperlink{namespacedistant_1_1memory_a3544f90cd68f7f91601b0f84f04c6000}{virtual\+\_\+protect}} (const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{namespacedistant_af02d4223cd2f509cc373ac9d83655f19}{vm\+\_\+op}} $>$ \&\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}, const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ \mbox{\hyperlink{namespacedistant_a9fa41a5a1a17dcbd24da1c1855c92489}{dword}} $>$ \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}, const std\+::size\+\_\+t size)
+\item 
+{\footnotesize template$<$page\+\_\+protection Protection, typename AddressT $>$ }\\\mbox{\hyperlink{structdistant_1_1access__rights_a09c6caea8f570f8e2d18c3ef2e2a7804}{page\+\_\+protection}} \mbox{\hyperlink{namespacedistant_1_1memory_a66c503d49f2bda7d569060ef957fc763}{virtual\+\_\+protect}} (const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{namespacedistant_af02d4223cd2f509cc373ac9d83655f19}{vm\+\_\+op}} $>$ \&\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}, const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ AddressT $>$ \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}, const std\+::size\+\_\+t size)
+\item 
+\mbox{\hyperlink{structdistant_1_1access__rights_a09c6caea8f570f8e2d18c3ef2e2a7804}{page\+\_\+protection}} \mbox{\hyperlink{namespacedistant_1_1memory_a1d52e5f62c1914f97b4e08a653e9b6fb}{virtual\+\_\+protect}} (const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{namespacedistant_af02d4223cd2f509cc373ac9d83655f19}{vm\+\_\+op}} $>$ \&\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}, const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ \mbox{\hyperlink{namespacedistant_a9fa41a5a1a17dcbd24da1c1855c92489}{dword}} $>$ \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}, const \mbox{\hyperlink{structdistant_1_1access__rights_a09c6caea8f570f8e2d18c3ef2e2a7804}{page\+\_\+protection}} protection, const std\+::size\+\_\+t size)
+\item 
+{\footnotesize template$<$typename AddressT $>$ }\\bool \mbox{\hyperlink{namespacedistant_1_1memory_a3819d0b0d2faf36f55bb8221618f6fc0}{virtual\+\_\+protect\+\_\+noexcept}} (const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{namespacedistant_af02d4223cd2f509cc373ac9d83655f19}{vm\+\_\+op}} $>$ \&\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}, const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ AddressT $>$ \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}, const \mbox{\hyperlink{structdistant_1_1access__rights_a09c6caea8f570f8e2d18c3ef2e2a7804}{page\+\_\+protection}} protection, const std\+::size\+\_\+t size) noexcept
+\item 
+{\footnotesize template$<$typename T , page\+\_\+protection Protection, process\+\_\+rights Access, typename AddressT , typename $>$ }\\\mbox{\hyperlink{classdistant_1_1memory_1_1virtual__ptr}{virtual\+\_\+ptr}}$<$ T, AddressT $>$ \mbox{\hyperlink{namespacedistant_1_1memory_a4c70496966478cc4190de831ac4534ec}{virtual\+\_\+malloc}} (const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ Access $>$ \&\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}, const std\+::size\+\_\+t n)
+\item 
+{\footnotesize template$<$typename T , page\+\_\+protection Protection, process\+\_\+rights Access, typename $>$ }\\\mbox{\hyperlink{classdistant_1_1memory_1_1virtual__ptr}{virtual\+\_\+ptr}}$<$ T, \mbox{\hyperlink{namespacedistant_a9fa41a5a1a17dcbd24da1c1855c92489}{dword}} $>$ \mbox{\hyperlink{namespacedistant_1_1memory_a3737676d3de70913b89d7c1dcd91739f}{virtual\+\_\+malloc}} (const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ Access $>$ \&\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}, const std\+::size\+\_\+t n)
+\item 
+{\footnotesize template$<$typename T $>$ }\\bool \mbox{\hyperlink{namespacedistant_1_1memory_acd6d17802cc6c8b096b24c6fc7818f2d}{virtual\+\_\+free}} (const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{namespacedistant_af02d4223cd2f509cc373ac9d83655f19}{vm\+\_\+op}} $>$ \&\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}, const \mbox{\hyperlink{classdistant_1_1memory_1_1virtual__ptr}{virtual\+\_\+ptr}}$<$ T, \mbox{\hyperlink{namespacedistant_a9fa41a5a1a17dcbd24da1c1855c92489}{dword}} $>$ pointer) noexcept
+\item 
+{\footnotesize template$<$typename T , typename AddressT $>$ }\\bool \mbox{\hyperlink{namespacedistant_1_1memory_a08a756a4933a9202174e3ecbc91a9f26}{virtual\+\_\+free}} (const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{namespacedistant_af02d4223cd2f509cc373ac9d83655f19}{vm\+\_\+op}} $>$ \&\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}, const \mbox{\hyperlink{classdistant_1_1memory_1_1virtual__ptr}{virtual\+\_\+ptr}}$<$ T, AddressT $>$ pointer) noexcept
+\item 
+{\footnotesize template$<$page\+\_\+protection Protection, typename AddressT $>$ }\\\mbox{\hyperlink{classdistant_1_1memory_1_1protect__guard}{protect\+\_\+guard}}$<$ AddressT $>$ \mbox{\hyperlink{namespacedistant_1_1memory_a6021f7cb185a7211fdfd784beb072cce}{make\+\_\+protect\+\_\+guard}} (const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{namespacedistant_af02d4223cd2f509cc373ac9d83655f19}{vm\+\_\+op}} $>$ \&\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}, const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ AddressT $>$ \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}, const std\+::size\+\_\+t size)
+\item 
+{\footnotesize template$<$page\+\_\+protection Protection$>$ }\\\mbox{\hyperlink{classdistant_1_1memory_1_1protect__guard}{protect\+\_\+guard}}$<$ \mbox{\hyperlink{namespacedistant_a9fa41a5a1a17dcbd24da1c1855c92489}{dword}} $>$ \mbox{\hyperlink{namespacedistant_1_1memory_a157d87a06b5c0fc6efaf536407c37a31}{make\+\_\+protect\+\_\+guard}} (const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{namespacedistant_af02d4223cd2f509cc373ac9d83655f19}{vm\+\_\+op}} $>$ \&\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}, const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ \mbox{\hyperlink{namespacedistant_a9fa41a5a1a17dcbd24da1c1855c92489}{dword}} $>$ \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}, const std\+::size\+\_\+t size)
+\item 
+{\footnotesize template$<$page\+\_\+protection Protection, typename AddressT $>$ }\\std\+::optional$<$ \mbox{\hyperlink{classdistant_1_1memory_1_1protect__guard}{protect\+\_\+guard}}$<$ \mbox{\hyperlink{namespacedistant_a9fa41a5a1a17dcbd24da1c1855c92489}{dword}} $>$ $>$ \mbox{\hyperlink{namespacedistant_1_1memory_a9a400d3aaa98b8153eb0876ef216cae6}{try\+\_\+protect\+\_\+guard}} (const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{namespacedistant_af02d4223cd2f509cc373ac9d83655f19}{vm\+\_\+op}} $>$ \&\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}, const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ AddressT $>$ \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}, const std\+::size\+\_\+t size=1)
+\begin{DoxyCompactList}\small\item\em Attempts to protect a region of memory in the given process, but will catch any exceptions thrown by \mbox{\hyperlink{classdistant_1_1memory_1_1protect__guard}{protect\+\_\+guard}}. \end{DoxyCompactList}\item 
+{\footnotesize template$<$page\+\_\+protection Protection$>$ }\\std\+::optional$<$ \mbox{\hyperlink{classdistant_1_1memory_1_1protect__guard}{protect\+\_\+guard}}$<$ \mbox{\hyperlink{namespacedistant_a9fa41a5a1a17dcbd24da1c1855c92489}{dword}} $>$ $>$ \mbox{\hyperlink{namespacedistant_1_1memory_a60d112d11d35e12bc9482612aa4fa54e}{try\+\_\+protect\+\_\+guard}} (const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{namespacedistant_af02d4223cd2f509cc373ac9d83655f19}{vm\+\_\+op}} $>$ \&\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}, const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ \mbox{\hyperlink{namespacedistant_a9fa41a5a1a17dcbd24da1c1855c92489}{dword}} $>$ \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}, const std\+::size\+\_\+t size=1)
+\item 
+{\footnotesize template$<$typename Element , typename AddressT  = dword$>$ }\\bool \mbox{\hyperlink{namespacedistant_1_1memory_a266da479d4c10610b10d6ad71986cf39}{operator==}} (\mbox{\hyperlink{classdistant_1_1memory_1_1virtual__ptr}{virtual\+\_\+ptr}}$<$ Element, AddressT $>$ lhs, nullptr\+\_\+t)
+\item 
+{\footnotesize template$<$typename Element , typename AddressT  = dword$>$ }\\bool \mbox{\hyperlink{namespacedistant_1_1memory_a8b98e15c5d137dd94c604799bce5279a}{operator==}} (nullptr\+\_\+t, \mbox{\hyperlink{classdistant_1_1memory_1_1virtual__ptr}{virtual\+\_\+ptr}}$<$ Element, AddressT $>$ rhs)
+\item 
+{\footnotesize template$<$typename Element , typename AddressT  = dword$>$ }\\bool \mbox{\hyperlink{namespacedistant_1_1memory_a70bc692ecf97f1b944d73cb9499d5afd}{operator!=}} (\mbox{\hyperlink{classdistant_1_1memory_1_1virtual__ptr}{virtual\+\_\+ptr}}$<$ Element, AddressT $>$ lhs, nullptr\+\_\+t)
+\item 
+{\footnotesize template$<$typename Element , typename AddressT  = dword$>$ }\\bool \mbox{\hyperlink{namespacedistant_1_1memory_a94b18e6bb8f8d8d45be25433fa3f3549}{operator!=}} (nullptr\+\_\+t, \mbox{\hyperlink{classdistant_1_1memory_1_1virtual__ptr}{virtual\+\_\+ptr}}$<$ Element, AddressT $>$ rhs)
+\item 
+{\footnotesize template$<$typename Element , typename AddressT $>$ }\\\mbox{\hyperlink{classdistant_1_1memory_1_1virtual__ptr}{virtual\+\_\+ptr}}$<$ Element, AddressT $>$ \mbox{\hyperlink{namespacedistant_1_1memory_a960d8c20d10f2451ed596b4de4498bcd}{make\+\_\+virtual\+\_\+ptr}} (const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{structdistant_1_1memory_1_1detail_1_1required__vm__access}{detail\+::required\+\_\+vm\+\_\+access}}$<$ Element $>$\+::value $>$ \&p, const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ AddressT $>$ \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}=nullptr) noexcept
+\item 
+{\footnotesize template$<$typename Element $>$ }\\\mbox{\hyperlink{classdistant_1_1memory_1_1virtual__ptr}{virtual\+\_\+ptr}}$<$ Element, \mbox{\hyperlink{namespacedistant_a9fa41a5a1a17dcbd24da1c1855c92489}{dword}} $>$ \mbox{\hyperlink{namespacedistant_1_1memory_acb30dfca8c04ed8d001247c5073067e0}{make\+\_\+virtual\+\_\+ptr}} (const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{structdistant_1_1memory_1_1detail_1_1required__vm__access}{detail\+::required\+\_\+vm\+\_\+access}}$<$ Element $>$\+::value $>$ \&p, const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ \mbox{\hyperlink{namespacedistant_a9fa41a5a1a17dcbd24da1c1855c92489}{dword}} $>$ \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}=0) noexcept
+\item 
+{\footnotesize template$<$typename T , typename AddressT , typename CharT , typename Traits $>$ }\\std\+::basic\+\_\+ostream$<$ CharT, Traits $>$ \& \mbox{\hyperlink{namespacedistant_1_1memory_a9fa01f25df79ff7c22a84d717fdb4539}{operator$<$$<$}} (std\+::basic\+\_\+ostream$<$ CharT, Traits $>$ \&stream, \mbox{\hyperlink{classdistant_1_1memory_1_1virtual__ptr}{virtual\+\_\+ptr}}$<$ T, AddressT $>$ p)
+\item 
+{\footnotesize template$<$typename Element , typename AddressT , process\+\_\+rights Access, typename  = std\+::enable\+\_\+if\+\_\+t$<$\+Access $>$= detail\+::required\+\_\+vm\+\_\+access$<$\+Element$>$\+::value$>$ }\\auto \mbox{\hyperlink{namespacedistant_1_1memory_abd3c8f39450cad344c08cd8036efc2d7}{make\+\_\+virtual\+\_\+reference}} (const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ Access $>$ \&\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}, const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ AddressT $>$ \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}) noexcept
+\item 
+{\footnotesize template$<$typename Element , process\+\_\+rights Access, typename  = std\+::enable\+\_\+if\+\_\+t$<$\+Access $>$= detail\+::required\+\_\+vm\+\_\+access$<$\+Element$>$\+::value$>$ }\\auto \mbox{\hyperlink{namespacedistant_1_1memory_af20ac6e74d8e00e996bfa16048ae36e2}{make\+\_\+virtual\+\_\+reference}} (const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ Access $>$ \&\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}, const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ \mbox{\hyperlink{namespacedistant_a9fa41a5a1a17dcbd24da1c1855c92489}{dword}} $>$ \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}) noexcept
+\item 
+{\footnotesize template$<$typename T $>$ }\\constexpr auto \mbox{\hyperlink{namespacedistant_1_1memory_a796f3ecce5e93dc03cd01f2894fa4aba}{remove\+\_\+volatile}} (T \&\&t)
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{namespacedistant_1_1memory_a3497f1e6d6d81c0d01cdf57136980099}\label{namespacedistant_1_1memory_a3497f1e6d6d81c0d01cdf57136980099}} 
+\index{distant\+::memory@{distant\+::memory}!get\+\_\+byte@{get\+\_\+byte}}
+\index{get\+\_\+byte@{get\+\_\+byte}!distant\+::memory@{distant\+::memory}}
+\subsubsection{\texorpdfstring{get\+\_\+byte()}{get\_byte()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$std\+::size\+\_\+t N, typename A $>$ \\
+constexpr \mbox{\hyperlink{namespacedistant_af9c3f04a9b855a1368d6c1a9ce28c2f4}{byte}} distant\+::memory\+::get\+\_\+byte (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ A $>$}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [noexcept]}}
+
+\mbox{\Hypertarget{namespacedistant_1_1memory_a3febd1915bbec9ab10979f06dae9ffd9}\label{namespacedistant_1_1memory_a3febd1915bbec9ab10979f06dae9ffd9}} 
+\index{distant\+::memory@{distant\+::memory}!get\+\_\+byte@{get\+\_\+byte}}
+\index{get\+\_\+byte@{get\+\_\+byte}!distant\+::memory@{distant\+::memory}}
+\subsubsection{\texorpdfstring{get\+\_\+byte()}{get\_byte()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$std\+::size\+\_\+t N, typename A $>$ \\
+constexpr \mbox{\hyperlink{namespacedistant_af9c3f04a9b855a1368d6c1a9ce28c2f4}{distant\+::byte}} distant\+::memory\+::get\+\_\+byte (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ A $>$}]{addr }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [noexcept]}}
+
+\mbox{\Hypertarget{namespacedistant_1_1memory_a6021f7cb185a7211fdfd784beb072cce}\label{namespacedistant_1_1memory_a6021f7cb185a7211fdfd784beb072cce}} 
+\index{distant\+::memory@{distant\+::memory}!make\+\_\+protect\+\_\+guard@{make\+\_\+protect\+\_\+guard}}
+\index{make\+\_\+protect\+\_\+guard@{make\+\_\+protect\+\_\+guard}!distant\+::memory@{distant\+::memory}}
+\subsubsection{\texorpdfstring{make\+\_\+protect\+\_\+guard()}{make\_protect\_guard()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$page\+\_\+protection Protection, typename AddressT $>$ \\
+\mbox{\hyperlink{classdistant_1_1memory_1_1protect__guard}{protect\+\_\+guard}}$<$AddressT$>$ distant\+::memory\+::make\+\_\+protect\+\_\+guard (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{namespacedistant_af02d4223cd2f509cc373ac9d83655f19}{vm\+\_\+op}} $>$ \&}]{process,  }\item[{const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ AddressT $>$}]{address,  }\item[{const std\+::size\+\_\+t}]{size }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespacedistant_1_1memory_a157d87a06b5c0fc6efaf536407c37a31}\label{namespacedistant_1_1memory_a157d87a06b5c0fc6efaf536407c37a31}} 
+\index{distant\+::memory@{distant\+::memory}!make\+\_\+protect\+\_\+guard@{make\+\_\+protect\+\_\+guard}}
+\index{make\+\_\+protect\+\_\+guard@{make\+\_\+protect\+\_\+guard}!distant\+::memory@{distant\+::memory}}
+\subsubsection{\texorpdfstring{make\+\_\+protect\+\_\+guard()}{make\_protect\_guard()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$page\+\_\+protection Protection$>$ \\
+\mbox{\hyperlink{classdistant_1_1memory_1_1protect__guard}{protect\+\_\+guard}}$<$\mbox{\hyperlink{namespacedistant_a9fa41a5a1a17dcbd24da1c1855c92489}{dword}}$>$ distant\+::memory\+::make\+\_\+protect\+\_\+guard (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{namespacedistant_af02d4223cd2f509cc373ac9d83655f19}{vm\+\_\+op}} $>$ \&}]{process,  }\item[{const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ \mbox{\hyperlink{namespacedistant_a9fa41a5a1a17dcbd24da1c1855c92489}{dword}} $>$}]{address,  }\item[{const std\+::size\+\_\+t}]{size }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespacedistant_1_1memory_a960d8c20d10f2451ed596b4de4498bcd}\label{namespacedistant_1_1memory_a960d8c20d10f2451ed596b4de4498bcd}} 
+\index{distant\+::memory@{distant\+::memory}!make\+\_\+virtual\+\_\+ptr@{make\+\_\+virtual\+\_\+ptr}}
+\index{make\+\_\+virtual\+\_\+ptr@{make\+\_\+virtual\+\_\+ptr}!distant\+::memory@{distant\+::memory}}
+\subsubsection{\texorpdfstring{make\+\_\+virtual\+\_\+ptr()}{make\_virtual\_ptr()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename Element , typename AddressT $>$ \\
+\mbox{\hyperlink{classdistant_1_1memory_1_1virtual__ptr}{virtual\+\_\+ptr}}$<$Element, AddressT$>$ distant\+::memory\+::make\+\_\+virtual\+\_\+ptr (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{structdistant_1_1memory_1_1detail_1_1required__vm__access}{detail\+::required\+\_\+vm\+\_\+access}}$<$ Element $>$\+::value $>$ \&}]{p,  }\item[{const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ AddressT $>$}]{address = {\ttfamily nullptr} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [noexcept]}}
+
+\mbox{\Hypertarget{namespacedistant_1_1memory_acb30dfca8c04ed8d001247c5073067e0}\label{namespacedistant_1_1memory_acb30dfca8c04ed8d001247c5073067e0}} 
+\index{distant\+::memory@{distant\+::memory}!make\+\_\+virtual\+\_\+ptr@{make\+\_\+virtual\+\_\+ptr}}
+\index{make\+\_\+virtual\+\_\+ptr@{make\+\_\+virtual\+\_\+ptr}!distant\+::memory@{distant\+::memory}}
+\subsubsection{\texorpdfstring{make\+\_\+virtual\+\_\+ptr()}{make\_virtual\_ptr()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename Element $>$ \\
+\mbox{\hyperlink{classdistant_1_1memory_1_1virtual__ptr}{virtual\+\_\+ptr}}$<$Element, \mbox{\hyperlink{namespacedistant_a9fa41a5a1a17dcbd24da1c1855c92489}{dword}}$>$ distant\+::memory\+::make\+\_\+virtual\+\_\+ptr (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{structdistant_1_1memory_1_1detail_1_1required__vm__access}{detail\+::required\+\_\+vm\+\_\+access}}$<$ Element $>$\+::value $>$ \&}]{p,  }\item[{const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ \mbox{\hyperlink{namespacedistant_a9fa41a5a1a17dcbd24da1c1855c92489}{dword}} $>$}]{address = {\ttfamily 0} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [noexcept]}}
+
+\mbox{\Hypertarget{namespacedistant_1_1memory_abd3c8f39450cad344c08cd8036efc2d7}\label{namespacedistant_1_1memory_abd3c8f39450cad344c08cd8036efc2d7}} 
+\index{distant\+::memory@{distant\+::memory}!make\+\_\+virtual\+\_\+reference@{make\+\_\+virtual\+\_\+reference}}
+\index{make\+\_\+virtual\+\_\+reference@{make\+\_\+virtual\+\_\+reference}!distant\+::memory@{distant\+::memory}}
+\subsubsection{\texorpdfstring{make\+\_\+virtual\+\_\+reference()}{make\_virtual\_reference()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename Element , typename AddressT , process\+\_\+rights Access, typename  = std\+::enable\+\_\+if\+\_\+t$<$\+Access $>$= detail\+::required\+\_\+vm\+\_\+access$<$\+Element$>$\+::value$>$ \\
+auto distant\+::memory\+::make\+\_\+virtual\+\_\+reference (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ Access $>$ \&}]{process,  }\item[{const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ AddressT $>$}]{address }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [noexcept]}}
+
+\mbox{\Hypertarget{namespacedistant_1_1memory_af20ac6e74d8e00e996bfa16048ae36e2}\label{namespacedistant_1_1memory_af20ac6e74d8e00e996bfa16048ae36e2}} 
+\index{distant\+::memory@{distant\+::memory}!make\+\_\+virtual\+\_\+reference@{make\+\_\+virtual\+\_\+reference}}
+\index{make\+\_\+virtual\+\_\+reference@{make\+\_\+virtual\+\_\+reference}!distant\+::memory@{distant\+::memory}}
+\subsubsection{\texorpdfstring{make\+\_\+virtual\+\_\+reference()}{make\_virtual\_reference()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename Element , process\+\_\+rights Access, typename  = std\+::enable\+\_\+if\+\_\+t$<$\+Access $>$= detail\+::required\+\_\+vm\+\_\+access$<$\+Element$>$\+::value$>$ \\
+auto distant\+::memory\+::make\+\_\+virtual\+\_\+reference (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ Access $>$ \&}]{process,  }\item[{const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ \mbox{\hyperlink{namespacedistant_a9fa41a5a1a17dcbd24da1c1855c92489}{dword}} $>$}]{address }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [noexcept]}}
+
+\mbox{\Hypertarget{namespacedistant_1_1memory_a70bc692ecf97f1b944d73cb9499d5afd}\label{namespacedistant_1_1memory_a70bc692ecf97f1b944d73cb9499d5afd}} 
+\index{distant\+::memory@{distant\+::memory}!operator"!=@{operator"!=}}
+\index{operator"!=@{operator"!=}!distant\+::memory@{distant\+::memory}}
+\subsubsection{\texorpdfstring{operator"!=()}{operator!=()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename Element , typename AddressT  = dword$>$ \\
+bool distant\+::memory\+::operator!= (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classdistant_1_1memory_1_1virtual__ptr}{virtual\+\_\+ptr}}$<$ Element, AddressT $>$}]{lhs,  }\item[{nullptr\+\_\+t}]{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespacedistant_1_1memory_a94b18e6bb8f8d8d45be25433fa3f3549}\label{namespacedistant_1_1memory_a94b18e6bb8f8d8d45be25433fa3f3549}} 
+\index{distant\+::memory@{distant\+::memory}!operator"!=@{operator"!=}}
+\index{operator"!=@{operator"!=}!distant\+::memory@{distant\+::memory}}
+\subsubsection{\texorpdfstring{operator"!=()}{operator!=()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename Element , typename AddressT  = dword$>$ \\
+bool distant\+::memory\+::operator!= (\begin{DoxyParamCaption}\item[{nullptr\+\_\+t}]{,  }\item[{\mbox{\hyperlink{classdistant_1_1memory_1_1virtual__ptr}{virtual\+\_\+ptr}}$<$ Element, AddressT $>$}]{rhs }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespacedistant_1_1memory_a86dd0cf939f40576160089daa28b3e3f}\label{namespacedistant_1_1memory_a86dd0cf939f40576160089daa28b3e3f}} 
+\index{distant\+::memory@{distant\+::memory}!operator$<$$<$@{operator$<$$<$}}
+\index{operator$<$$<$@{operator$<$$<$}!distant\+::memory@{distant\+::memory}}
+\subsubsection{\texorpdfstring{operator$<$$<$()}{operator<<()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename CharT , typename TraitsT , typename AddressT $>$ \\
+std\+::basic\+\_\+ostream$<$ CharT, TraitsT $>$ \& distant\+::memory\+::operator$<$$<$ (\begin{DoxyParamCaption}\item[{std\+::basic\+\_\+ostream$<$ CharT, TraitsT $>$ \&}]{stream,  }\item[{const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{distant\+::memory\+::address}}$<$ AddressT $>$}]{address }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespacedistant_1_1memory_a9fa01f25df79ff7c22a84d717fdb4539}\label{namespacedistant_1_1memory_a9fa01f25df79ff7c22a84d717fdb4539}} 
+\index{distant\+::memory@{distant\+::memory}!operator$<$$<$@{operator$<$$<$}}
+\index{operator$<$$<$@{operator$<$$<$}!distant\+::memory@{distant\+::memory}}
+\subsubsection{\texorpdfstring{operator$<$$<$()}{operator<<()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename T , typename AddressT , typename CharT , typename Traits $>$ \\
+std\+::basic\+\_\+ostream$<$CharT, Traits$>$\& distant\+::memory\+::operator$<$$<$ (\begin{DoxyParamCaption}\item[{std\+::basic\+\_\+ostream$<$ CharT, Traits $>$ \&}]{stream,  }\item[{\mbox{\hyperlink{classdistant_1_1memory_1_1virtual__ptr}{virtual\+\_\+ptr}}$<$ T, AddressT $>$}]{p }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespacedistant_1_1memory_a266da479d4c10610b10d6ad71986cf39}\label{namespacedistant_1_1memory_a266da479d4c10610b10d6ad71986cf39}} 
+\index{distant\+::memory@{distant\+::memory}!operator==@{operator==}}
+\index{operator==@{operator==}!distant\+::memory@{distant\+::memory}}
+\subsubsection{\texorpdfstring{operator==()}{operator==()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename Element , typename AddressT  = dword$>$ \\
+bool distant\+::memory\+::operator== (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classdistant_1_1memory_1_1virtual__ptr}{virtual\+\_\+ptr}}$<$ Element, AddressT $>$}]{lhs,  }\item[{nullptr\+\_\+t}]{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespacedistant_1_1memory_a8b98e15c5d137dd94c604799bce5279a}\label{namespacedistant_1_1memory_a8b98e15c5d137dd94c604799bce5279a}} 
+\index{distant\+::memory@{distant\+::memory}!operator==@{operator==}}
+\index{operator==@{operator==}!distant\+::memory@{distant\+::memory}}
+\subsubsection{\texorpdfstring{operator==()}{operator==()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename Element , typename AddressT  = dword$>$ \\
+bool distant\+::memory\+::operator== (\begin{DoxyParamCaption}\item[{nullptr\+\_\+t}]{,  }\item[{\mbox{\hyperlink{classdistant_1_1memory_1_1virtual__ptr}{virtual\+\_\+ptr}}$<$ Element, AddressT $>$}]{rhs }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespacedistant_1_1memory_a5a24d0d196510d8789b81010723809e9}\label{namespacedistant_1_1memory_a5a24d0d196510d8789b81010723809e9}} 
+\index{distant\+::memory@{distant\+::memory}!read@{read}}
+\index{read@{read}!distant\+::memory@{distant\+::memory}}
+\subsubsection{\texorpdfstring{read()}{read()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename T , typename AddressT $>$ \\
+T distant\+::memory\+::read (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{namespacedistant_a671e87e004e808bfc0d54a4e816981df}{vm\+\_\+read}} $>$ \&}]{process,  }\item[{const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ AddressT $>$}]{address }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespacedistant_1_1memory_abf084cc29320d1031fd87b0daa6820e1}\label{namespacedistant_1_1memory_abf084cc29320d1031fd87b0daa6820e1}} 
+\index{distant\+::memory@{distant\+::memory}!read@{read}}
+\index{read@{read}!distant\+::memory@{distant\+::memory}}
+\subsubsection{\texorpdfstring{read()}{read()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+T distant\+::memory\+::read (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{namespacedistant_a671e87e004e808bfc0d54a4e816981df}{vm\+\_\+read}} $>$ \&}]{proc,  }\item[{const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ \mbox{\hyperlink{namespacedistant_a9fa41a5a1a17dcbd24da1c1855c92489}{dword}} $>$}]{address }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespacedistant_1_1memory_a796f3ecce5e93dc03cd01f2894fa4aba}\label{namespacedistant_1_1memory_a796f3ecce5e93dc03cd01f2894fa4aba}} 
+\index{distant\+::memory@{distant\+::memory}!remove\+\_\+volatile@{remove\+\_\+volatile}}
+\index{remove\+\_\+volatile@{remove\+\_\+volatile}!distant\+::memory@{distant\+::memory}}
+\subsubsection{\texorpdfstring{remove\+\_\+volatile()}{remove\_volatile()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+constexpr auto distant\+::memory\+::remove\+\_\+volatile (\begin{DoxyParamCaption}\item[{T \&\&}]{t }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespacedistant_1_1memory_a9a400d3aaa98b8153eb0876ef216cae6}\label{namespacedistant_1_1memory_a9a400d3aaa98b8153eb0876ef216cae6}} 
+\index{distant\+::memory@{distant\+::memory}!try\+\_\+protect\+\_\+guard@{try\+\_\+protect\+\_\+guard}}
+\index{try\+\_\+protect\+\_\+guard@{try\+\_\+protect\+\_\+guard}!distant\+::memory@{distant\+::memory}}
+\subsubsection{\texorpdfstring{try\+\_\+protect\+\_\+guard()}{try\_protect\_guard()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$page\+\_\+protection Protection, typename AddressT $>$ \\
+std\+::optional$<$\mbox{\hyperlink{classdistant_1_1memory_1_1protect__guard}{protect\+\_\+guard}}$<$\mbox{\hyperlink{namespacedistant_a9fa41a5a1a17dcbd24da1c1855c92489}{dword}}$>$ $>$ distant\+::memory\+::try\+\_\+protect\+\_\+guard (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{namespacedistant_af02d4223cd2f509cc373ac9d83655f19}{vm\+\_\+op}} $>$ \&}]{process,  }\item[{const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ AddressT $>$}]{address,  }\item[{const std\+::size\+\_\+t}]{size = {\ttfamily 1} }\end{DoxyParamCaption})}
+
+
+
+Attempts to protect a region of memory in the given process, but will catch any exceptions thrown by \mbox{\hyperlink{classdistant_1_1memory_1_1protect__guard}{protect\+\_\+guard}}. 
+
+\mbox{\Hypertarget{namespacedistant_1_1memory_a60d112d11d35e12bc9482612aa4fa54e}\label{namespacedistant_1_1memory_a60d112d11d35e12bc9482612aa4fa54e}} 
+\index{distant\+::memory@{distant\+::memory}!try\+\_\+protect\+\_\+guard@{try\+\_\+protect\+\_\+guard}}
+\index{try\+\_\+protect\+\_\+guard@{try\+\_\+protect\+\_\+guard}!distant\+::memory@{distant\+::memory}}
+\subsubsection{\texorpdfstring{try\+\_\+protect\+\_\+guard()}{try\_protect\_guard()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$page\+\_\+protection Protection$>$ \\
+std\+::optional$<$\mbox{\hyperlink{classdistant_1_1memory_1_1protect__guard}{protect\+\_\+guard}}$<$\mbox{\hyperlink{namespacedistant_a9fa41a5a1a17dcbd24da1c1855c92489}{dword}}$>$ $>$ distant\+::memory\+::try\+\_\+protect\+\_\+guard (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{namespacedistant_af02d4223cd2f509cc373ac9d83655f19}{vm\+\_\+op}} $>$ \&}]{process,  }\item[{const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ \mbox{\hyperlink{namespacedistant_a9fa41a5a1a17dcbd24da1c1855c92489}{dword}} $>$}]{address,  }\item[{const std\+::size\+\_\+t}]{size = {\ttfamily 1} }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespacedistant_1_1memory_acd6d17802cc6c8b096b24c6fc7818f2d}\label{namespacedistant_1_1memory_acd6d17802cc6c8b096b24c6fc7818f2d}} 
+\index{distant\+::memory@{distant\+::memory}!virtual\+\_\+free@{virtual\+\_\+free}}
+\index{virtual\+\_\+free@{virtual\+\_\+free}!distant\+::memory@{distant\+::memory}}
+\subsubsection{\texorpdfstring{virtual\+\_\+free()}{virtual\_free()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+bool distant\+::memory\+::virtual\+\_\+free (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{namespacedistant_af02d4223cd2f509cc373ac9d83655f19}{vm\+\_\+op}} $>$ \&}]{process,  }\item[{const \mbox{\hyperlink{classdistant_1_1memory_1_1virtual__ptr}{virtual\+\_\+ptr}}$<$ T, \mbox{\hyperlink{namespacedistant_a9fa41a5a1a17dcbd24da1c1855c92489}{dword}} $>$}]{pointer }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [noexcept]}}
+
+\mbox{\Hypertarget{namespacedistant_1_1memory_a08a756a4933a9202174e3ecbc91a9f26}\label{namespacedistant_1_1memory_a08a756a4933a9202174e3ecbc91a9f26}} 
+\index{distant\+::memory@{distant\+::memory}!virtual\+\_\+free@{virtual\+\_\+free}}
+\index{virtual\+\_\+free@{virtual\+\_\+free}!distant\+::memory@{distant\+::memory}}
+\subsubsection{\texorpdfstring{virtual\+\_\+free()}{virtual\_free()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename T , typename AddressT $>$ \\
+bool distant\+::memory\+::virtual\+\_\+free (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{namespacedistant_af02d4223cd2f509cc373ac9d83655f19}{vm\+\_\+op}} $>$ \&}]{process,  }\item[{const \mbox{\hyperlink{classdistant_1_1memory_1_1virtual__ptr}{virtual\+\_\+ptr}}$<$ T, AddressT $>$}]{pointer }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [noexcept]}}
+
+\mbox{\Hypertarget{namespacedistant_1_1memory_a4c70496966478cc4190de831ac4534ec}\label{namespacedistant_1_1memory_a4c70496966478cc4190de831ac4534ec}} 
+\index{distant\+::memory@{distant\+::memory}!virtual\+\_\+malloc@{virtual\+\_\+malloc}}
+\index{virtual\+\_\+malloc@{virtual\+\_\+malloc}!distant\+::memory@{distant\+::memory}}
+\subsubsection{\texorpdfstring{virtual\+\_\+malloc()}{virtual\_malloc()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename T , page\+\_\+protection Protection, process\+\_\+rights Access, typename AddressT , typename $>$ \\
+\mbox{\hyperlink{classdistant_1_1memory_1_1virtual__ptr}{virtual\+\_\+ptr}}$<$ T, AddressT $>$ distant\+::memory\+::virtual\+\_\+malloc (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ Access $>$ \&}]{process,  }\item[{const std\+::size\+\_\+t}]{n }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespacedistant_1_1memory_a3737676d3de70913b89d7c1dcd91739f}\label{namespacedistant_1_1memory_a3737676d3de70913b89d7c1dcd91739f}} 
+\index{distant\+::memory@{distant\+::memory}!virtual\+\_\+malloc@{virtual\+\_\+malloc}}
+\index{virtual\+\_\+malloc@{virtual\+\_\+malloc}!distant\+::memory@{distant\+::memory}}
+\subsubsection{\texorpdfstring{virtual\+\_\+malloc()}{virtual\_malloc()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename T , page\+\_\+protection Protection, process\+\_\+rights Access, typename $>$ \\
+\mbox{\hyperlink{classdistant_1_1memory_1_1virtual__ptr}{virtual\+\_\+ptr}}$<$ T, \mbox{\hyperlink{namespacedistant_a9fa41a5a1a17dcbd24da1c1855c92489}{dword}} $>$ distant\+::memory\+::virtual\+\_\+malloc (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ Access $>$ \&}]{process,  }\item[{const std\+::size\+\_\+t}]{n }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespacedistant_1_1memory_a68ad702e80d06667f99122f69c2dcbad}\label{namespacedistant_1_1memory_a68ad702e80d06667f99122f69c2dcbad}} 
+\index{distant\+::memory@{distant\+::memory}!virtual\+\_\+protect@{virtual\+\_\+protect}}
+\index{virtual\+\_\+protect@{virtual\+\_\+protect}!distant\+::memory@{distant\+::memory}}
+\subsubsection{\texorpdfstring{virtual\+\_\+protect()}{virtual\_protect()}\hspace{0.1cm}{\footnotesize\ttfamily [1/4]}}
+{\footnotesize\ttfamily template$<$typename AddressT $>$ \\
+\mbox{\hyperlink{structdistant_1_1access__rights_a09c6caea8f570f8e2d18c3ef2e2a7804}{page\+\_\+protection}} distant\+::memory\+::virtual\+\_\+protect (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{namespacedistant_af02d4223cd2f509cc373ac9d83655f19}{vm\+\_\+op}} $>$ \&}]{process,  }\item[{const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ AddressT $>$}]{address,  }\item[{\mbox{\hyperlink{structdistant_1_1access__rights_a09c6caea8f570f8e2d18c3ef2e2a7804}{page\+\_\+protection}}}]{protection,  }\item[{const std\+::size\+\_\+t}]{size }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespacedistant_1_1memory_a3544f90cd68f7f91601b0f84f04c6000}\label{namespacedistant_1_1memory_a3544f90cd68f7f91601b0f84f04c6000}} 
+\index{distant\+::memory@{distant\+::memory}!virtual\+\_\+protect@{virtual\+\_\+protect}}
+\index{virtual\+\_\+protect@{virtual\+\_\+protect}!distant\+::memory@{distant\+::memory}}
+\subsubsection{\texorpdfstring{virtual\+\_\+protect()}{virtual\_protect()}\hspace{0.1cm}{\footnotesize\ttfamily [2/4]}}
+{\footnotesize\ttfamily template$<$page\+\_\+protection Protection$>$ \\
+\mbox{\hyperlink{structdistant_1_1access__rights_a09c6caea8f570f8e2d18c3ef2e2a7804}{page\+\_\+protection}} distant\+::memory\+::virtual\+\_\+protect (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{namespacedistant_af02d4223cd2f509cc373ac9d83655f19}{vm\+\_\+op}} $>$ \&}]{process,  }\item[{const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ \mbox{\hyperlink{namespacedistant_a9fa41a5a1a17dcbd24da1c1855c92489}{dword}} $>$}]{address,  }\item[{const std\+::size\+\_\+t}]{size }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespacedistant_1_1memory_a66c503d49f2bda7d569060ef957fc763}\label{namespacedistant_1_1memory_a66c503d49f2bda7d569060ef957fc763}} 
+\index{distant\+::memory@{distant\+::memory}!virtual\+\_\+protect@{virtual\+\_\+protect}}
+\index{virtual\+\_\+protect@{virtual\+\_\+protect}!distant\+::memory@{distant\+::memory}}
+\subsubsection{\texorpdfstring{virtual\+\_\+protect()}{virtual\_protect()}\hspace{0.1cm}{\footnotesize\ttfamily [3/4]}}
+{\footnotesize\ttfamily template$<$page\+\_\+protection Protection, typename AddressT $>$ \\
+\mbox{\hyperlink{structdistant_1_1access__rights_a09c6caea8f570f8e2d18c3ef2e2a7804}{page\+\_\+protection}} distant\+::memory\+::virtual\+\_\+protect (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{namespacedistant_af02d4223cd2f509cc373ac9d83655f19}{vm\+\_\+op}} $>$ \&}]{process,  }\item[{const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ AddressT $>$}]{address,  }\item[{const std\+::size\+\_\+t}]{size }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespacedistant_1_1memory_a1d52e5f62c1914f97b4e08a653e9b6fb}\label{namespacedistant_1_1memory_a1d52e5f62c1914f97b4e08a653e9b6fb}} 
+\index{distant\+::memory@{distant\+::memory}!virtual\+\_\+protect@{virtual\+\_\+protect}}
+\index{virtual\+\_\+protect@{virtual\+\_\+protect}!distant\+::memory@{distant\+::memory}}
+\subsubsection{\texorpdfstring{virtual\+\_\+protect()}{virtual\_protect()}\hspace{0.1cm}{\footnotesize\ttfamily [4/4]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structdistant_1_1access__rights_a09c6caea8f570f8e2d18c3ef2e2a7804}{page\+\_\+protection}} distant\+::memory\+::virtual\+\_\+protect (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{namespacedistant_af02d4223cd2f509cc373ac9d83655f19}{vm\+\_\+op}} $>$ \&}]{process,  }\item[{const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ \mbox{\hyperlink{namespacedistant_a9fa41a5a1a17dcbd24da1c1855c92489}{dword}} $>$}]{address,  }\item[{const \mbox{\hyperlink{structdistant_1_1access__rights_a09c6caea8f570f8e2d18c3ef2e2a7804}{page\+\_\+protection}}}]{protection,  }\item[{const std\+::size\+\_\+t}]{size }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{namespacedistant_1_1memory_a3819d0b0d2faf36f55bb8221618f6fc0}\label{namespacedistant_1_1memory_a3819d0b0d2faf36f55bb8221618f6fc0}} 
+\index{distant\+::memory@{distant\+::memory}!virtual\+\_\+protect\+\_\+noexcept@{virtual\+\_\+protect\+\_\+noexcept}}
+\index{virtual\+\_\+protect\+\_\+noexcept@{virtual\+\_\+protect\+\_\+noexcept}!distant\+::memory@{distant\+::memory}}
+\subsubsection{\texorpdfstring{virtual\+\_\+protect\+\_\+noexcept()}{virtual\_protect\_noexcept()}}
+{\footnotesize\ttfamily template$<$typename AddressT $>$ \\
+bool distant\+::memory\+::virtual\+\_\+protect\+\_\+noexcept (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{namespacedistant_af02d4223cd2f509cc373ac9d83655f19}{vm\+\_\+op}} $>$ \&}]{process,  }\item[{const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ AddressT $>$}]{address,  }\item[{const \mbox{\hyperlink{structdistant_1_1access__rights_a09c6caea8f570f8e2d18c3ef2e2a7804}{page\+\_\+protection}}}]{protection,  }\item[{const std\+::size\+\_\+t}]{size }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [noexcept]}}
+
+\mbox{\Hypertarget{namespacedistant_1_1memory_adaa15cd72b1436e24239d70964bf3323}\label{namespacedistant_1_1memory_adaa15cd72b1436e24239d70964bf3323}} 
+\index{distant\+::memory@{distant\+::memory}!write@{write}}
+\index{write@{write}!distant\+::memory@{distant\+::memory}}
+\subsubsection{\texorpdfstring{write()}{write()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename T , typename AddressT $>$ \\
+void distant\+::memory\+::write (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{namespacedistant_a6312277824ed2f04c414a61f24c135bb}{vm\+\_\+w\+\_\+op}} $>$ \&}]{proc,  }\item[{const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ AddressT $>$}]{address,  }\item[{T}]{x }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespacedistant_1_1memory_a4a6bb40c53cd73bc18f548238ba977b1}\label{namespacedistant_1_1memory_a4a6bb40c53cd73bc18f548238ba977b1}} 
+\index{distant\+::memory@{distant\+::memory}!write@{write}}
+\index{write@{write}!distant\+::memory@{distant\+::memory}}
+\subsubsection{\texorpdfstring{write()}{write()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void distant\+::memory\+::write (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{namespacedistant_a6312277824ed2f04c414a61f24c135bb}{vm\+\_\+w\+\_\+op}} $>$ \&}]{proc,  }\item[{const \mbox{\hyperlink{classdistant_1_1memory_1_1address}{address}}$<$ \mbox{\hyperlink{namespacedistant_a9fa41a5a1a17dcbd24da1c1855c92489}{dword}} $>$}]{address,  }\item[{T}]{x }\end{DoxyParamCaption})}
+

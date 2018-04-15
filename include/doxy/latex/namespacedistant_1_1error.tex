@@ -1,0 +1,74 @@
+\hypertarget{namespacedistant_1_1error}{}\section{distant\+:\+:error Namespace Reference}
+\label{namespacedistant_1_1error}\index{distant\+::error@{distant\+::error}}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structdistant_1_1error_1_1gle}{gle}}
+\item 
+class \mbox{\hyperlink{classdistant_1_1error_1_1windows__category}{windows\+\_\+category}}
+\item 
+class \mbox{\hyperlink{classdistant_1_1error_1_1windows__error}{windows\+\_\+error}}
+\item 
+class \mbox{\hyperlink{classdistant_1_1error_1_1windows__error__code}{windows\+\_\+error\+\_\+code}}
+\begin{DoxyCompactList}\small\item\em Windows error code. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+const \mbox{\hyperlink{classdistant_1_1error_1_1windows__category}{windows\+\_\+category}} \& \mbox{\hyperlink{namespacedistant_1_1error_a02ebc3d724cbfe0804e5d4079bb85bd4}{get\+\_\+windows\+\_\+category}} () noexcept
+\item 
+\mbox{\hyperlink{classdistant_1_1error_1_1windows__error__code}{windows\+\_\+error\+\_\+code}} \mbox{\hyperlink{namespacedistant_1_1error_aaaf1a34cba6373db33d2c27d8876c0b2}{last\+\_\+error}} () noexcept
+\begin{DoxyCompactList}\small\item\em Return the last error local to the executing thread. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename CharT , typename Char\+Traits $>$ }\\std\+::basic\+\_\+ostream$<$ CharT, Char\+Traits $>$ \& \mbox{\hyperlink{namespacedistant_1_1error_acd5106fb576fa993cc526e3c9a14ef7b}{operator$<$$<$}} (std\+::basic\+\_\+ostream$<$ CharT, Char\+Traits $>$ \&stream, const \mbox{\hyperlink{classdistant_1_1error_1_1windows__error}{windows\+\_\+error}} \&error)
+\item 
+{\footnotesize template$<$typename CharT , typename Char\+Traits $>$ }\\std\+::basic\+\_\+ostream$<$ CharT, Char\+Traits $>$ \& \mbox{\hyperlink{namespacedistant_1_1error_a48665acc974b937ffe1c2addb0c8777a}{operator$<$$<$}} (std\+::basic\+\_\+ostream$<$ CharT, Char\+Traits $>$ \&stream, const \mbox{\hyperlink{classdistant_1_1error_1_1windows__error__code}{windows\+\_\+error\+\_\+code}} \&error)
+\begin{DoxyCompactList}\small\item\em Write a windows error to an output stream. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{namespacedistant_1_1error_a02ebc3d724cbfe0804e5d4079bb85bd4}\label{namespacedistant_1_1error_a02ebc3d724cbfe0804e5d4079bb85bd4}} 
+\index{distant\+::error@{distant\+::error}!get\+\_\+windows\+\_\+category@{get\+\_\+windows\+\_\+category}}
+\index{get\+\_\+windows\+\_\+category@{get\+\_\+windows\+\_\+category}!distant\+::error@{distant\+::error}}
+\subsubsection{\texorpdfstring{get\+\_\+windows\+\_\+category()}{get\_windows\_category()}}
+{\footnotesize\ttfamily const \mbox{\hyperlink{classdistant_1_1error_1_1windows__category}{windows\+\_\+category}} \& distant\+::error\+::get\+\_\+windows\+\_\+category (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+\mbox{\Hypertarget{namespacedistant_1_1error_aaaf1a34cba6373db33d2c27d8876c0b2}\label{namespacedistant_1_1error_aaaf1a34cba6373db33d2c27d8876c0b2}} 
+\index{distant\+::error@{distant\+::error}!last\+\_\+error@{last\+\_\+error}}
+\index{last\+\_\+error@{last\+\_\+error}!distant\+::error@{distant\+::error}}
+\subsubsection{\texorpdfstring{last\+\_\+error()}{last\_error()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classdistant_1_1error_1_1windows__error__code}{windows\+\_\+error\+\_\+code}} distant\+::error\+::last\+\_\+error (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+
+
+Return the last error local to the executing thread. 
+
+\begin{DoxyReturn}{Returns}
+the last error code that was set. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{namespacedistant_1_1error_a48665acc974b937ffe1c2addb0c8777a}\label{namespacedistant_1_1error_a48665acc974b937ffe1c2addb0c8777a}} 
+\index{distant\+::error@{distant\+::error}!operator$<$$<$@{operator$<$$<$}}
+\index{operator$<$$<$@{operator$<$$<$}!distant\+::error@{distant\+::error}}
+\subsubsection{\texorpdfstring{operator$<$$<$()}{operator<<()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename CharT , typename Char\+Traits $>$ \\
+std\+::basic\+\_\+ostream$<$CharT, Char\+Traits$>$\& distant\+::error\+::operator$<$$<$ (\begin{DoxyParamCaption}\item[{std\+::basic\+\_\+ostream$<$ CharT, Char\+Traits $>$ \&}]{stream,  }\item[{const \mbox{\hyperlink{classdistant_1_1error_1_1windows__error__code}{windows\+\_\+error\+\_\+code}} \&}]{error }\end{DoxyParamCaption})}
+
+
+
+Write a windows error to an output stream. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em stream} & the output stream. \\
+\hline
+{\em error} & the windows error to write. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the modified output stream. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{namespacedistant_1_1error_acd5106fb576fa993cc526e3c9a14ef7b}\label{namespacedistant_1_1error_acd5106fb576fa993cc526e3c9a14ef7b}} 
+\index{distant\+::error@{distant\+::error}!operator$<$$<$@{operator$<$$<$}}
+\index{operator$<$$<$@{operator$<$$<$}!distant\+::error@{distant\+::error}}
+\subsubsection{\texorpdfstring{operator$<$$<$()}{operator<<()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename CharT , typename Char\+Traits $>$ \\
+std\+::basic\+\_\+ostream$<$CharT, Char\+Traits$>$\& distant\+::error\+::operator$<$$<$ (\begin{DoxyParamCaption}\item[{std\+::basic\+\_\+ostream$<$ CharT, Char\+Traits $>$ \&}]{stream,  }\item[{const \mbox{\hyperlink{classdistant_1_1error_1_1windows__error}{windows\+\_\+error}} \&}]{error }\end{DoxyParamCaption})}
+

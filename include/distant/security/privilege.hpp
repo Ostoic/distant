@@ -11,8 +11,10 @@
 #include <distant/support/winapi/privilege.hpp>
 #include <distant/support/winapi/token.hpp>
 
-namespace distant::security {
-
+namespace distant::security 
+{
+	/// @brief A [privilege](https://msdn.microsoft.com/en-us/library/windows/desktop/aa379306(v=vs.85).aspx) is the right of an account, such as a user or group account, to perform various system-related operations on the local computer, such as shutting down the system, loading device drivers, or changing the system time.
+	/// a \a security::privilege allows one to modify a \a kernel_object's \a access_token to constrain or relax permissions for the given \a kernel_object.
 	class privilege
 	{
 	public:

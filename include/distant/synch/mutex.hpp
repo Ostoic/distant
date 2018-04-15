@@ -6,8 +6,7 @@
 
 namespace distant {
 namespace synch   {
-	/// @brief A system-wide mutex satisfying the Lockable concept.
-	/// http://en.cppreference.com/w/cpp/concept/Lockable
+	/// @brief A system-wide mutex satisfying the [Lockable](http://en.cppreference.com/w/cpp/concept/Lockable) concept.
 	class mutex
 	{
 	public:

@@ -1,0 +1,23 @@
+\hypertarget{type__traits_8hpp}{}\section{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/type\+\_\+traits.hpp File Reference}
+\label{type__traits_8hpp}\index{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/type\+\_\+traits.\+hpp@{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/type\+\_\+traits.\+hpp}}
+{\ttfamily \#include $<$type\+\_\+traits$>$}\newline
+{\ttfamily \#include $<$distant/kernel\+\_\+objects/fwd.\+hpp$>$}\newline
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structdistant_1_1is__kernel__object}{distant\+::is\+\_\+kernel\+\_\+object$<$ T $>$}}
+\item 
+struct \mbox{\hyperlink{structdistant_1_1kernel__object__traits}{distant\+::kernel\+\_\+object\+\_\+traits$<$ T $>$}}
+\begin{DoxyCompactList}\small\item\em Contains kernel\+\_\+object traits. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structdistant_1_1get__access__rights}{distant\+::get\+\_\+access\+\_\+rights$<$ Object $>$}}
+\end{DoxyCompactItemize}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \mbox{\hyperlink{namespacedistant}{distant}}
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$class A , class B $>$ }\\using \mbox{\hyperlink{namespacedistant_a5aaf0aee23e381d421c833f927f4ff34}{distant\+::is\+\_\+quasiconvertible}} = std\+::conditional\+\_\+t$<$ std\+::is\+\_\+convertible$<$ A, B $>$\+::value$\vert$$\vert$std\+::is\+\_\+convertible$<$ B, A $>$\+::value, std\+::true\+\_\+type, std\+::false\+\_\+type $>$
+\end{DoxyCompactItemize}

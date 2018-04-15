@@ -1,0 +1,31 @@
+\hypertarget{kernel__objects_2process_8hpp}{}\section{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/kernel\+\_\+objects/process.hpp File Reference}
+\label{kernel__objects_2process_8hpp}\index{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/kernel\+\_\+objects/process.\+hpp@{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/kernel\+\_\+objects/process.\+hpp}}
+{\ttfamily \#include $<$distant/kernel\+\_\+objects/process\+\_\+base.\+hpp$>$}\newline
+{\ttfamily \#include $<$distant/kernel\+\_\+objects/impl/process.\+hxx$>$}\newline
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{distant\+::kernel\+\_\+objects\+::process$<$ Access\+Rights $>$}}
+\begin{DoxyCompactList}\small\item\em distant\+::process represents a process, and has static type checking on the process access rights. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structdistant_1_1get__access__rights_3_01kernel__objects_1_1process_3_01_access_01_4_01_4}{distant\+::get\+\_\+access\+\_\+rights$<$ kernel\+\_\+objects\+::process$<$ Access $>$ $>$}}
+\end{DoxyCompactItemize}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \mbox{\hyperlink{namespacedistant}{distant}}
+\item 
+ \mbox{\hyperlink{namespacedistant_1_1kernel__objects}{distant\+::kernel\+\_\+objects}}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$process\+\_\+rights A1, process\+\_\+rights A2$>$ }\\bool \mbox{\hyperlink{namespacedistant_1_1kernel__objects_a1276316b66c4c95a1eed35e2c6778216}{distant\+::kernel\+\_\+objects\+::operator==}} (const process$<$ A1 $>$ \&lhs, const process$<$ A2 $>$ \&rhs) noexcept
+\item 
+{\footnotesize template$<$process\+\_\+rights A1, process\+\_\+rights A2$>$ }\\bool \mbox{\hyperlink{namespacedistant_1_1kernel__objects_a0039fde5cf2f6b4e5d863a45b835c0e8}{distant\+::kernel\+\_\+objects\+::operator!=}} (const process$<$ A1 $>$ \&lhs, const process$<$ A2 $>$ \&rhs) noexcept
+\item 
+{\footnotesize template$<$process\+\_\+rights Access$>$ }\\process$<$ Access $>$ \mbox{\hyperlink{namespacedistant_1_1kernel__objects_a4f266ac49d365b14ca51b09160e19f47}{distant\+::kernel\+\_\+objects\+::launch}} ()
+\begin{DoxyCompactList}\small\item\em Create a new process. \end{DoxyCompactList}\item 
+{\footnotesize template$<$process\+\_\+rights Access = process\+\_\+rights\+::all\+\_\+access$>$ }\\process$<$ Access $>$ \mbox{\hyperlink{namespacedistant_1_1kernel__objects_a45b5fb9ff08d50ed36f83bcedf01272b}{distant\+::kernel\+\_\+objects\+::current\+\_\+process}} () noexcept
+\begin{DoxyCompactList}\small\item\em Get the current process. \end{DoxyCompactList}\item 
+{\footnotesize template$<$access\+\_\+rights\+::process T$>$ }\\process$<$ T $>$ \mbox{\hyperlink{namespacedistant_1_1kernel__objects_aa666b1f055c5bb805240da3191333474}{distant\+::kernel\+\_\+objects\+::current\+\_\+process}} () noexcept
+\begin{DoxyCompactList}\small\item\em Get the current process. \end{DoxyCompactList}\end{DoxyCompactItemize}

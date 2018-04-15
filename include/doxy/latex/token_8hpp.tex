@@ -1,0 +1,94 @@
+\hypertarget{token_8hpp}{}\section{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/support/winapi/token.hpp File Reference}
+\label{token_8hpp}\index{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/support/winapi/token.\+hpp@{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/support/winapi/token.\+hpp}}
+{\ttfamily \#include $<$boost/winapi/access\+\_\+rights.\+hpp$>$}\newline
+{\ttfamily \#include $<$distant/support/winapi/basic\+\_\+types.\+hpp$>$}\newline
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structboost_1_1winapi_1_1___t_o_k_e_n___p_r_i_v_i_l_e_g_e_s__}{boost\+::winapi\+::\+\_\+\+T\+O\+K\+E\+N\+\_\+\+P\+R\+I\+V\+I\+L\+E\+G\+E\+S\+\_\+}}
+\end{DoxyCompactItemize}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \mbox{\hyperlink{namespaceboost_1_1winapi}{boost\+::winapi}}
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \mbox{\hyperlink{structboost_1_1winapi_1_1___t_o_k_e_n___p_r_i_v_i_l_e_g_e_s__}{boost\+::winapi\+::\+\_\+\+T\+O\+K\+E\+N\+\_\+\+P\+R\+I\+V\+I\+L\+E\+G\+E\+S\+\_\+}} \mbox{\hyperlink{namespaceboost_1_1winapi_a2f67ef0e5761d692b8782a76d1d9d5da}{boost\+::winapi\+::\+T\+O\+K\+E\+N\+\_\+\+P\+R\+I\+V\+I\+L\+E\+G\+E\+S\+\_\+}}
+\item 
+typedef struct \mbox{\hyperlink{structboost_1_1winapi_1_1___t_o_k_e_n___p_r_i_v_i_l_e_g_e_s__}{boost\+::winapi\+::\+\_\+\+T\+O\+K\+E\+N\+\_\+\+P\+R\+I\+V\+I\+L\+E\+G\+E\+S\+\_\+}} $\ast$ \mbox{\hyperlink{namespaceboost_1_1winapi_a9d5f985cca2c6c8adc061e489ff44b99}{boost\+::winapi\+::\+P\+T\+O\+K\+E\+N\+\_\+\+P\+R\+I\+V\+I\+L\+E\+G\+E\+S\+\_\+}}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+B\+O\+O\+S\+T\+\_\+\+S\+Y\+M\+B\+O\+L\+\_\+\+I\+M\+P\+O\+RT boost\+::winapi\+::\+B\+O\+O\+L\+\_\+ W\+I\+N\+A\+PI \mbox{\hyperlink{token_8hpp_abfd911317f93cc3e8ea593866948ea8c}{Adjust\+Token\+Privileges}} (boost\+::winapi\+::\+H\+A\+N\+D\+L\+E\+\_\+ Token\+Handle, boost\+::winapi\+::\+B\+O\+O\+L\+\_\+ Disable\+All\+Privileges, \+::T\+O\+K\+E\+N\+\_\+\+P\+R\+I\+V\+I\+L\+E\+G\+ES $\ast$New\+State, boost\+::winapi\+::\+D\+W\+O\+R\+D\+\_\+ Buffer\+Length, \+\_\+\+Out\+\_\+writes\+\_\+bytes\+\_\+to\+\_\+opt\+\_\+(Buffer\+Length, $\ast$Return\+Length) \+::T\+O\+K\+E\+N\+\_\+\+P\+R\+I\+V\+I\+L\+E\+G\+ES $\ast$Previous\+State, boost\+::winapi\+::\+P\+D\+W\+O\+R\+D\+\_\+ Return\+Length)
+\item 
+B\+O\+O\+S\+T\+\_\+\+S\+Y\+M\+B\+O\+L\+\_\+\+I\+M\+P\+O\+RT boost\+::winapi\+::\+B\+O\+O\+L\+\_\+ W\+I\+N\+A\+PI \mbox{\hyperlink{token_8hpp_a3312f53d426b8aa4c0b3290f9a7f0db0}{Set\+Thread\+Token}} (boost\+::winapi\+::\+P\+H\+A\+N\+D\+L\+E\+\_\+ Thread, boost\+::winapi\+::\+H\+A\+N\+D\+L\+E\+\_\+ Token)
+\item 
+B\+O\+O\+S\+T\+\_\+\+S\+Y\+M\+B\+O\+L\+\_\+\+I\+M\+P\+O\+RT boost\+::winapi\+::\+B\+O\+O\+L\+\_\+ W\+I\+N\+A\+PI \mbox{\hyperlink{token_8hpp_a7a37b2c3465b44ff56817e7a0993eaac}{Open\+Process\+Token}} (boost\+::winapi\+::\+H\+A\+N\+D\+L\+E\+\_\+ Process\+Handle, boost\+::winapi\+::\+D\+W\+O\+R\+D\+\_\+ Desired\+Access, boost\+::winapi\+::\+P\+H\+A\+N\+D\+L\+E\+\_\+ Token\+Handle)
+\item 
+B\+O\+O\+S\+T\+\_\+\+S\+Y\+M\+B\+O\+L\+\_\+\+I\+M\+P\+O\+RT boost\+::winapi\+::\+B\+O\+O\+L\+\_\+ W\+I\+N\+A\+PI \mbox{\hyperlink{token_8hpp_ab531ad5440a9681e455b46afd04131b4}{Open\+Thread\+Token}} (boost\+::winapi\+::\+H\+A\+N\+D\+L\+E\+\_\+ Thread\+Handle, boost\+::winapi\+::\+D\+W\+O\+R\+D\+\_\+ Desired\+Access, boost\+::winapi\+::\+B\+O\+O\+L\+\_\+ Open\+As\+Self, boost\+::winapi\+::\+P\+H\+A\+N\+D\+L\+E\+\_\+ Token\+Handle)
+\item 
+B\+O\+O\+S\+T\+\_\+\+F\+O\+R\+C\+E\+I\+N\+L\+I\+NE boost\+::winapi\+::\+D\+W\+O\+R\+D\+\_\+ \mbox{\hyperlink{namespaceboost_1_1winapi_aacdef11f59297ca9df5b711316c94757}{boost\+::winapi\+::adjust\+\_\+token\+\_\+privilege}} (boost\+::winapi\+::\+H\+A\+N\+D\+L\+E\+\_\+ Token\+Handle, boost\+::winapi\+::\+B\+O\+O\+L\+\_\+ Disable\+All\+Privileges, \mbox{\hyperlink{namespaceboost_1_1winapi_a9d5f985cca2c6c8adc061e489ff44b99}{boost\+::winapi\+::\+P\+T\+O\+K\+E\+N\+\_\+\+P\+R\+I\+V\+I\+L\+E\+G\+E\+S\+\_\+}} New\+State, boost\+::winapi\+::\+D\+W\+O\+R\+D\+\_\+ Buffer\+Length, \+\_\+\+Out\+\_\+writes\+\_\+bytes\+\_\+to\+\_\+opt\+\_\+(Buffer\+Length, $\ast$Return\+Length) \mbox{\hyperlink{namespaceboost_1_1winapi_a9d5f985cca2c6c8adc061e489ff44b99}{boost\+::winapi\+::\+P\+T\+O\+K\+E\+N\+\_\+\+P\+R\+I\+V\+I\+L\+E\+G\+E\+S\+\_\+}} Previous\+State, boost\+::winapi\+::\+P\+D\+W\+O\+R\+D\+\_\+ Return\+Length)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+constexpr boost\+::winapi\+::\+D\+W\+O\+R\+D\+\_\+ \mbox{\hyperlink{namespaceboost_1_1winapi_a13cefc4e4a8bd197ce2fa95ce25f47e4}{boost\+::winapi\+::\+T\+O\+K\+E\+N\+\_\+\+A\+S\+S\+I\+G\+N\+\_\+\+P\+R\+I\+M\+A\+R\+Y\+\_\+}} = 0x0001
+\item 
+constexpr boost\+::winapi\+::\+D\+W\+O\+R\+D\+\_\+ \mbox{\hyperlink{namespaceboost_1_1winapi_a24320c5b14eb3b2076bb80b310d69e28}{boost\+::winapi\+::\+T\+O\+K\+E\+N\+\_\+\+D\+U\+P\+L\+I\+C\+A\+T\+E\+\_\+}} = 0x0002
+\item 
+constexpr boost\+::winapi\+::\+D\+W\+O\+R\+D\+\_\+ \mbox{\hyperlink{namespaceboost_1_1winapi_acf614cf0385c34f998b17e1a4aac2f5a}{boost\+::winapi\+::\+T\+O\+K\+E\+N\+\_\+\+I\+M\+P\+E\+R\+S\+O\+N\+A\+T\+E\+\_\+}} = 0x0004
+\item 
+constexpr boost\+::winapi\+::\+D\+W\+O\+R\+D\+\_\+ \mbox{\hyperlink{namespaceboost_1_1winapi_aa8d690e5577abdf2d156cbcda5cf23fb}{boost\+::winapi\+::\+T\+O\+K\+E\+N\+\_\+\+Q\+U\+E\+R\+Y\+\_\+}} = 0x0008
+\item 
+constexpr boost\+::winapi\+::\+D\+W\+O\+R\+D\+\_\+ \mbox{\hyperlink{namespaceboost_1_1winapi_af504352b775da9ed41d3e8d451fb60b2}{boost\+::winapi\+::\+T\+O\+K\+E\+N\+\_\+\+Q\+U\+E\+R\+Y\+\_\+\+S\+O\+U\+R\+C\+E\+\_\+}} = 0x0010
+\item 
+constexpr boost\+::winapi\+::\+D\+W\+O\+R\+D\+\_\+ \mbox{\hyperlink{namespaceboost_1_1winapi_ae421c93ef942bc0c7728ecd495a19208}{boost\+::winapi\+::\+T\+O\+K\+E\+N\+\_\+\+A\+D\+J\+U\+S\+T\+\_\+\+P\+R\+I\+V\+I\+L\+E\+G\+E\+S\+\_\+}} = 0x0020
+\item 
+constexpr boost\+::winapi\+::\+D\+W\+O\+R\+D\+\_\+ \mbox{\hyperlink{namespaceboost_1_1winapi_a5bceb0371395d6c4af2c6fd537a9df1c}{boost\+::winapi\+::\+T\+O\+K\+E\+N\+\_\+\+A\+D\+J\+U\+S\+T\+\_\+\+G\+R\+O\+U\+P\+S\+\_\+}} = 0x0040
+\item 
+constexpr boost\+::winapi\+::\+D\+W\+O\+R\+D\+\_\+ \mbox{\hyperlink{namespaceboost_1_1winapi_a392915600d4ba82203d0ac72f10e8563}{boost\+::winapi\+::\+T\+O\+K\+E\+N\+\_\+\+A\+D\+J\+U\+S\+T\+\_\+\+D\+E\+F\+A\+U\+L\+T\+\_\+}} = 0x0080
+\item 
+constexpr boost\+::winapi\+::\+D\+W\+O\+R\+D\+\_\+ \mbox{\hyperlink{namespaceboost_1_1winapi_a578f20e58ff86d7b1d90d57967d5804d}{boost\+::winapi\+::\+T\+O\+K\+E\+N\+\_\+\+A\+D\+J\+U\+S\+T\+\_\+\+S\+E\+S\+S\+I\+O\+N\+I\+D\+\_\+}} = 0x0100
+\item 
+constexpr boost\+::winapi\+::\+D\+W\+O\+R\+D\+\_\+ \mbox{\hyperlink{namespaceboost_1_1winapi_ad8a9a381342ee6b398fd35fa744c31a1}{boost\+::winapi\+::\+T\+O\+K\+E\+N\+\_\+\+A\+L\+L\+\_\+\+A\+C\+C\+E\+S\+S\+\_\+\+P\+\_\+}}
+\item 
+constexpr boost\+::winapi\+::\+D\+W\+O\+R\+D\+\_\+ \mbox{\hyperlink{namespaceboost_1_1winapi_a22cc3c0934682021bd512ee6fddaaac2}{boost\+::winapi\+::\+T\+O\+K\+E\+N\+\_\+\+A\+L\+L\+\_\+\+A\+C\+C\+E\+S\+S\+\_\+}} = T\+O\+K\+E\+N\+\_\+\+A\+L\+L\+\_\+\+A\+C\+C\+E\+S\+S\+\_\+\+P\+\_\+ $\vert$ T\+O\+K\+E\+N\+\_\+\+A\+D\+J\+U\+S\+T\+\_\+\+S\+E\+S\+S\+I\+O\+N\+I\+D\+\_\+
+\item 
+constexpr boost\+::winapi\+::\+D\+W\+O\+R\+D\+\_\+ \mbox{\hyperlink{namespaceboost_1_1winapi_a75da7dd90f2e1e86adcf03adc73c1c69}{boost\+::winapi\+::\+T\+O\+K\+E\+N\+\_\+\+R\+E\+A\+D\+\_\+}} = boost\+::winapi\+::\+S\+T\+A\+N\+D\+A\+R\+D\+\_\+\+R\+I\+G\+H\+T\+S\+\_\+\+R\+E\+A\+D\+\_\+ $\vert$ T\+O\+K\+E\+N\+\_\+\+Q\+U\+E\+R\+Y\+\_\+
+\item 
+constexpr boost\+::winapi\+::\+D\+W\+O\+R\+D\+\_\+ \mbox{\hyperlink{namespaceboost_1_1winapi_aa3759e68597b280f97ab3f8c467ece85}{boost\+::winapi\+::\+T\+O\+K\+E\+N\+\_\+\+W\+R\+I\+T\+E\+\_\+}} = boost\+::winapi\+::\+S\+T\+A\+N\+D\+A\+R\+D\+\_\+\+R\+I\+G\+H\+T\+S\+\_\+\+W\+R\+I\+T\+E\+\_\+ $\vert$ T\+O\+K\+E\+N\+\_\+\+A\+D\+J\+U\+S\+T\+\_\+\+P\+R\+I\+V\+I\+L\+E\+G\+E\+S\+\_\+ $\vert$ T\+O\+K\+E\+N\+\_\+\+A\+D\+J\+U\+S\+T\+\_\+\+G\+R\+O\+U\+P\+S\+\_\+ $\vert$ T\+O\+K\+E\+N\+\_\+\+A\+D\+J\+U\+S\+T\+\_\+\+D\+E\+F\+A\+U\+L\+T\+\_\+
+\item 
+constexpr boost\+::winapi\+::\+D\+W\+O\+R\+D\+\_\+ \mbox{\hyperlink{namespaceboost_1_1winapi_ac73d765eab000f25070ed41c9b416dd9}{boost\+::winapi\+::\+T\+O\+K\+E\+N\+\_\+\+E\+X\+E\+C\+U\+T\+E\+\_\+}} = boost\+::winapi\+::\+S\+T\+A\+N\+D\+A\+R\+D\+\_\+\+R\+I\+G\+H\+T\+S\+\_\+\+E\+X\+E\+C\+U\+T\+E\+\_\+
+\item 
+constexpr boost\+::winapi\+::\+D\+W\+O\+R\+D\+\_\+ \mbox{\hyperlink{namespaceboost_1_1winapi_a5e9eb7c82d58f9a4b581d8e946f42b63}{boost\+::winapi\+::\+T\+O\+K\+E\+N\+\_\+\+T\+R\+U\+S\+T\+\_\+\+C\+O\+N\+S\+T\+R\+A\+I\+N\+T\+\_\+\+M\+A\+S\+K\+\_\+}} = boost\+::winapi\+::\+S\+T\+A\+N\+D\+A\+R\+D\+\_\+\+R\+I\+G\+H\+T\+S\+\_\+\+R\+E\+A\+D\+\_\+ $\vert$ T\+O\+K\+E\+N\+\_\+\+Q\+U\+E\+R\+Y\+\_\+ $\vert$ T\+O\+K\+E\+N\+\_\+\+Q\+U\+E\+R\+Y\+\_\+\+S\+O\+U\+R\+C\+E\+\_\+
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{token_8hpp_abfd911317f93cc3e8ea593866948ea8c}\label{token_8hpp_abfd911317f93cc3e8ea593866948ea8c}} 
+\index{token.\+hpp@{token.\+hpp}!Adjust\+Token\+Privileges@{Adjust\+Token\+Privileges}}
+\index{Adjust\+Token\+Privileges@{Adjust\+Token\+Privileges}!token.\+hpp@{token.\+hpp}}
+\subsubsection{\texorpdfstring{Adjust\+Token\+Privileges()}{AdjustTokenPrivileges()}}
+{\footnotesize\ttfamily B\+O\+O\+S\+T\+\_\+\+S\+Y\+M\+B\+O\+L\+\_\+\+I\+M\+P\+O\+RT boost\+::winapi\+::\+B\+O\+O\+L\+\_\+ W\+I\+N\+A\+PI Adjust\+Token\+Privileges (\begin{DoxyParamCaption}\item[{boost\+::winapi\+::\+H\+A\+N\+D\+L\+E\+\_\+}]{Token\+Handle,  }\item[{boost\+::winapi\+::\+B\+O\+O\+L\+\_\+}]{Disable\+All\+Privileges,  }\item[{\+::T\+O\+K\+E\+N\+\_\+\+P\+R\+I\+V\+I\+L\+E\+G\+ES $\ast$}]{New\+State,  }\item[{boost\+::winapi\+::\+D\+W\+O\+R\+D\+\_\+}]{Buffer\+Length,  }\item[{\+\_\+\+Out\+\_\+writes\+\_\+bytes\+\_\+to\+\_\+opt\+\_\+(Buffer\+Length, $\ast$Return\+Length) \+::T\+O\+K\+E\+N\+\_\+\+P\+R\+I\+V\+I\+L\+E\+G\+ES $\ast$}]{Previous\+State,  }\item[{boost\+::winapi\+::\+P\+D\+W\+O\+R\+D\+\_\+}]{Return\+Length }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{token_8hpp_a7a37b2c3465b44ff56817e7a0993eaac}\label{token_8hpp_a7a37b2c3465b44ff56817e7a0993eaac}} 
+\index{token.\+hpp@{token.\+hpp}!Open\+Process\+Token@{Open\+Process\+Token}}
+\index{Open\+Process\+Token@{Open\+Process\+Token}!token.\+hpp@{token.\+hpp}}
+\subsubsection{\texorpdfstring{Open\+Process\+Token()}{OpenProcessToken()}}
+{\footnotesize\ttfamily B\+O\+O\+S\+T\+\_\+\+S\+Y\+M\+B\+O\+L\+\_\+\+I\+M\+P\+O\+RT boost\+::winapi\+::\+B\+O\+O\+L\+\_\+ W\+I\+N\+A\+PI Open\+Process\+Token (\begin{DoxyParamCaption}\item[{boost\+::winapi\+::\+H\+A\+N\+D\+L\+E\+\_\+}]{Process\+Handle,  }\item[{boost\+::winapi\+::\+D\+W\+O\+R\+D\+\_\+}]{Desired\+Access,  }\item[{boost\+::winapi\+::\+P\+H\+A\+N\+D\+L\+E\+\_\+}]{Token\+Handle }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{token_8hpp_ab531ad5440a9681e455b46afd04131b4}\label{token_8hpp_ab531ad5440a9681e455b46afd04131b4}} 
+\index{token.\+hpp@{token.\+hpp}!Open\+Thread\+Token@{Open\+Thread\+Token}}
+\index{Open\+Thread\+Token@{Open\+Thread\+Token}!token.\+hpp@{token.\+hpp}}
+\subsubsection{\texorpdfstring{Open\+Thread\+Token()}{OpenThreadToken()}}
+{\footnotesize\ttfamily B\+O\+O\+S\+T\+\_\+\+S\+Y\+M\+B\+O\+L\+\_\+\+I\+M\+P\+O\+RT boost\+::winapi\+::\+B\+O\+O\+L\+\_\+ W\+I\+N\+A\+PI Open\+Thread\+Token (\begin{DoxyParamCaption}\item[{boost\+::winapi\+::\+H\+A\+N\+D\+L\+E\+\_\+}]{Thread\+Handle,  }\item[{boost\+::winapi\+::\+D\+W\+O\+R\+D\+\_\+}]{Desired\+Access,  }\item[{boost\+::winapi\+::\+B\+O\+O\+L\+\_\+}]{Open\+As\+Self,  }\item[{boost\+::winapi\+::\+P\+H\+A\+N\+D\+L\+E\+\_\+}]{Token\+Handle }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{token_8hpp_a3312f53d426b8aa4c0b3290f9a7f0db0}\label{token_8hpp_a3312f53d426b8aa4c0b3290f9a7f0db0}} 
+\index{token.\+hpp@{token.\+hpp}!Set\+Thread\+Token@{Set\+Thread\+Token}}
+\index{Set\+Thread\+Token@{Set\+Thread\+Token}!token.\+hpp@{token.\+hpp}}
+\subsubsection{\texorpdfstring{Set\+Thread\+Token()}{SetThreadToken()}}
+{\footnotesize\ttfamily B\+O\+O\+S\+T\+\_\+\+S\+Y\+M\+B\+O\+L\+\_\+\+I\+M\+P\+O\+RT boost\+::winapi\+::\+B\+O\+O\+L\+\_\+ W\+I\+N\+A\+PI Set\+Thread\+Token (\begin{DoxyParamCaption}\item[{boost\+::winapi\+::\+P\+H\+A\+N\+D\+L\+E\+\_\+}]{Thread,  }\item[{boost\+::winapi\+::\+H\+A\+N\+D\+L\+E\+\_\+}]{Token }\end{DoxyParamCaption})}
+

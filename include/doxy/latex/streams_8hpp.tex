@@ -1,0 +1,25 @@
+\hypertarget{streams_8hpp}{}\section{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/utility/streams.hpp File Reference}
+\label{streams_8hpp}\index{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/utility/streams.\+hpp@{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/utility/streams.\+hpp}}
+{\ttfamily \#include $<$iostream$>$}\newline
+{\ttfamily \#include $<$distant/utility/impl/streams.\+hxx$>$}\newline
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \mbox{\hyperlink{namespacedistant_1_1utility}{distant\+::utility}}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename Stream $>$ }\\bool \mbox{\hyperlink{namespacedistant_1_1utility_acdbbfda9345d09ca6fc5206c6268e3e2}{distant\+::utility\+::is\+\_\+hex}} (const Stream \&stream) noexcept
+\item 
+{\footnotesize template$<$typename Stream $>$ }\\bool \mbox{\hyperlink{namespacedistant_1_1utility_a555ff7ab9537f1ab2ec83d4e1f791ef5}{distant\+::utility\+::is\+\_\+dec}} (const Stream \&stream) noexcept
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename Stream $>$ }\\constexpr bool \mbox{\hyperlink{namespacedistant_1_1utility_a4abab579fa60aa717d9cb9249c4d4da6}{distant\+::utility\+::is\+\_\+output\+\_\+stream}} = std\+::is\+\_\+base\+\_\+of$<$std\+::ostream, Stream$>$\+::value $\vert$$\vert$ std\+::is\+\_\+base\+\_\+of\+\_\+v$<$std\+::wostream, Stream$>$\+::value
+\item 
+{\footnotesize template$<$typename Stream $>$ }\\constexpr bool \mbox{\hyperlink{namespacedistant_1_1utility_a69c3d26cb83bc95d8c18c4d0a26f5ab2}{distant\+::utility\+::is\+\_\+input\+\_\+stream}} = std\+::is\+\_\+base\+\_\+of$<$std\+::istream, Stream$>$\+::value $\vert$$\vert$ std\+::is\+\_\+base\+\_\+of$<$std\+::wistream, Stream$>$\+::value
+\item 
+{\footnotesize template$<$typename Stream $>$ }\\constexpr bool \mbox{\hyperlink{namespacedistant_1_1utility_ab7c9156805fa0568d78be4cb580ae173}{distant\+::utility\+::is\+\_\+stream}} = std\+::is\+\_\+base\+\_\+of$<$std\+::ios\+\_\+base, Stream$>$\+::value
+\end{DoxyCompactItemize}

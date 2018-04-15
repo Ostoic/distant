@@ -1,0 +1,137 @@
+\hypertarget{classdistant_1_1synch_1_1mutex}{}\section{distant\+:\+:synch\+:\+:mutex Class Reference}
+\label{classdistant_1_1synch_1_1mutex}\index{distant\+::synch\+::mutex@{distant\+::synch\+::mutex}}
+
+
+A system-\/wide mutex satisfying the \href{http://en.cppreference.com/w/cpp/concept/Lockable}{\tt Lockable} concept.  
+
+
+
+
+{\ttfamily \#include $<$mutex.\+hpp$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classdistant_1_1synch_1_1mutex_a76302be241c3a302037958dbe59577e8}\label{classdistant_1_1synch_1_1mutex_a76302be241c3a302037958dbe59577e8}} 
+using {\bfseries native\+\_\+handle\+\_\+type} = boost\+::winapi\+::\+H\+A\+N\+D\+L\+E\+\_\+
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classdistant_1_1synch_1_1mutex_aea8a33da8746aae1d78ebb970d80bc1a}{mutex}} ()
+\begin{DoxyCompactList}\small\item\em Default construct an anonymous mutex. The mutex is not initially locked. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classdistant_1_1synch_1_1mutex_aa6a362d74dfe7447353d2d237e52a5f7}{mutex}} (const std\+::wstring \&name, bool create\+\_\+new=true)
+\begin{DoxyCompactList}\small\item\em Construct a named mutex that can be newly created, or opens an existing mutex. The mutex is not initially locked. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classdistant_1_1synch_1_1mutex_a1a37630c7ff5ae38d76f408a56ec4e92}{lock}} ()
+\begin{DoxyCompactList}\small\item\em Lock the mutex. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classdistant_1_1synch_1_1mutex_add8dd1b7088b9063c094bfc9b818db5e}\label{classdistant_1_1synch_1_1mutex_add8dd1b7088b9063c094bfc9b818db5e}} 
+void \mbox{\hyperlink{classdistant_1_1synch_1_1mutex_add8dd1b7088b9063c094bfc9b818db5e}{unlock}} () noexcept
+\begin{DoxyCompactList}\small\item\em Unlock the mutex. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classdistant_1_1synch_1_1mutex_acea5e3450dfd9227185a55f558f4d024}{try\+\_\+lock}} ()
+\begin{DoxyCompactList}\small\item\em Nonblocking lock that immediately returns. \end{DoxyCompactList}\item 
+const \mbox{\hyperlink{classdistant_1_1handle}{distant\+::handle}}$<$ \mbox{\hyperlink{classdistant_1_1synch_1_1mutex}{mutex}} $>$ \& \mbox{\hyperlink{classdistant_1_1synch_1_1mutex_a8f590ad6a717569b87f4c4ab1b9d24c1}{handle}} () const noexcept
+\begin{DoxyCompactList}\small\item\em Get the handle to the mutex. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classdistant_1_1synch_1_1mutex_adf5066835ff2753520bb4ead031c6a61}\label{classdistant_1_1synch_1_1mutex_adf5066835ff2753520bb4ead031c6a61}} 
+{\bfseries mutex} (const \mbox{\hyperlink{classdistant_1_1synch_1_1mutex}{mutex}} \&)=delete
+\item 
+\mbox{\Hypertarget{classdistant_1_1synch_1_1mutex_a77692917eff76ae0cc43d803b75266b7}\label{classdistant_1_1synch_1_1mutex_a77692917eff76ae0cc43d803b75266b7}} 
+\mbox{\hyperlink{classdistant_1_1synch_1_1mutex}{mutex}} \& {\bfseries operator=} (const \mbox{\hyperlink{classdistant_1_1synch_1_1mutex}{mutex}} \&)=delete
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+A system-\/wide mutex satisfying the \href{http://en.cppreference.com/w/cpp/concept/Lockable}{\tt Lockable} concept. 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classdistant_1_1synch_1_1mutex_aea8a33da8746aae1d78ebb970d80bc1a}\label{classdistant_1_1synch_1_1mutex_aea8a33da8746aae1d78ebb970d80bc1a}} 
+\index{distant\+::synch\+::mutex@{distant\+::synch\+::mutex}!mutex@{mutex}}
+\index{mutex@{mutex}!distant\+::synch\+::mutex@{distant\+::synch\+::mutex}}
+\subsubsection{\texorpdfstring{mutex()}{mutex()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily distant\+::synch\+::mutex\+::mutex (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Default construct an anonymous mutex. The mutex is not initially locked. 
+
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Throws} & a std\+::system\+\_\+error in the event an A\+PI call fails. \\
+\hline
+\end{DoxyExceptions}
+\mbox{\Hypertarget{classdistant_1_1synch_1_1mutex_aa6a362d74dfe7447353d2d237e52a5f7}\label{classdistant_1_1synch_1_1mutex_aa6a362d74dfe7447353d2d237e52a5f7}} 
+\index{distant\+::synch\+::mutex@{distant\+::synch\+::mutex}!mutex@{mutex}}
+\index{mutex@{mutex}!distant\+::synch\+::mutex@{distant\+::synch\+::mutex}}
+\subsubsection{\texorpdfstring{mutex()}{mutex()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily distant\+::synch\+::mutex\+::mutex (\begin{DoxyParamCaption}\item[{const std\+::wstring \&}]{name,  }\item[{bool}]{create\+\_\+new = {\ttfamily true} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [explicit]}}
+
+
+
+Construct a named mutex that can be newly created, or opens an existing mutex. The mutex is not initially locked. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & the name of the mutex. \\
+\hline
+{\em create\+\_\+new} & specifies whether or not to create a new mutex, or to open an existing one. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Throws} & a std\+::system\+\_\+error in the event an A\+PI call fails. \\
+\hline
+\end{DoxyExceptions}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classdistant_1_1synch_1_1mutex_a8f590ad6a717569b87f4c4ab1b9d24c1}\label{classdistant_1_1synch_1_1mutex_a8f590ad6a717569b87f4c4ab1b9d24c1}} 
+\index{distant\+::synch\+::mutex@{distant\+::synch\+::mutex}!handle@{handle}}
+\index{handle@{handle}!distant\+::synch\+::mutex@{distant\+::synch\+::mutex}}
+\subsubsection{\texorpdfstring{handle()}{handle()}}
+{\footnotesize\ttfamily const \mbox{\hyperlink{classdistant_1_1handle}{distant\+::handle}}$<$ \mbox{\hyperlink{classdistant_1_1synch_1_1mutex}{mutex}} $>$ \& distant\+::synch\+::mutex\+::handle (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+
+
+Get the handle to the mutex. 
+
+\begin{DoxyReturn}{Returns}
+the handle. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdistant_1_1synch_1_1mutex_a1a37630c7ff5ae38d76f408a56ec4e92}\label{classdistant_1_1synch_1_1mutex_a1a37630c7ff5ae38d76f408a56ec4e92}} 
+\index{distant\+::synch\+::mutex@{distant\+::synch\+::mutex}!lock@{lock}}
+\index{lock@{lock}!distant\+::synch\+::mutex@{distant\+::synch\+::mutex}}
+\subsubsection{\texorpdfstring{lock()}{lock()}}
+{\footnotesize\ttfamily void distant\+::synch\+::mutex\+::lock (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Lock the mutex. 
+
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Throws} & a std\+::system\+\_\+error in the event an A\+PI call fails. \\
+\hline
+\end{DoxyExceptions}
+\mbox{\Hypertarget{classdistant_1_1synch_1_1mutex_acea5e3450dfd9227185a55f558f4d024}\label{classdistant_1_1synch_1_1mutex_acea5e3450dfd9227185a55f558f4d024}} 
+\index{distant\+::synch\+::mutex@{distant\+::synch\+::mutex}!try\+\_\+lock@{try\+\_\+lock}}
+\index{try\+\_\+lock@{try\+\_\+lock}!distant\+::synch\+::mutex@{distant\+::synch\+::mutex}}
+\subsubsection{\texorpdfstring{try\+\_\+lock()}{try\_lock()}}
+{\footnotesize\ttfamily bool distant\+::synch\+::mutex\+::try\+\_\+lock (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Nonblocking lock that immediately returns. 
+
+\begin{DoxyReturn}{Returns}
+true if the lock was successful, false otherwise. 
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Throws} & a std\+::system\+\_\+error in the event an A\+PI call fails. \\
+\hline
+\end{DoxyExceptions}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/synch/mutex.\+hpp\item 
+C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/synch/impl/mutex.\+hxx\end{DoxyCompactItemize}

@@ -1,0 +1,299 @@
+\hypertarget{classdistant_1_1kernel__objects_1_1process__base}{}\section{distant\+:\+:kernel\+\_\+objects\+:\+:process\+\_\+base Class Reference}
+\label{classdistant_1_1kernel__objects_1_1process__base}\index{distant\+::kernel\+\_\+objects\+::process\+\_\+base@{distant\+::kernel\+\_\+objects\+::process\+\_\+base}}
+
+
+Base type of distant\+::process This version does not have static \mbox{\hyperlink{structdistant_1_1access__rights}{access\+\_\+rights}} checking.  
+
+
+
+
+{\ttfamily \#include $<$process\+\_\+base.\+hpp$>$}
+
+Inheritance diagram for distant\+:\+:kernel\+\_\+objects\+:\+:process\+\_\+base\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=0.949153cm]{classdistant_1_1kernel__objects_1_1process__base}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1process__base_a2bbdf1b2c69e2f076aba267294dac8a5}\label{classdistant_1_1kernel__objects_1_1process__base_a2bbdf1b2c69e2f076aba267294dac8a5}} 
+using {\bfseries base\+\_\+type} = \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1kernel__object}{kernel\+\_\+object}}
+\item 
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1process__base_af6e123be2cae7818d2695fd98a904f1e}\label{classdistant_1_1kernel__objects_1_1process__base_af6e123be2cae7818d2695fd98a904f1e}} 
+using {\bfseries error\+\_\+type} = \mbox{\hyperlink{structdistant_1_1kernel__object__traits}{kernel\+\_\+object\+\_\+traits}}$<$ \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base}{process\+\_\+base}} $>$\+::\mbox{\hyperlink{classdistant_1_1error_1_1windows__error__code}{error\+\_\+type}}
+\item 
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1process__base_a8dc331497fcc1d116c595bf412b0b6c8}\label{classdistant_1_1kernel__objects_1_1process__base_a8dc331497fcc1d116c595bf412b0b6c8}} 
+using {\bfseries handle\+\_\+type} = \mbox{\hyperlink{structdistant_1_1kernel__object__traits}{kernel\+\_\+object\+\_\+traits}}$<$ \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base}{process\+\_\+base}} $>$\+::\mbox{\hyperlink{classdistant_1_1handle}{handle\+\_\+type}}
+\item 
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1process__base_a167dca0d4baabe8ca206b2e6e1b03282}\label{classdistant_1_1kernel__objects_1_1process__base_a167dca0d4baabe8ca206b2e6e1b03282}} 
+using {\bfseries native\+\_\+handle\+\_\+type} = \mbox{\hyperlink{structdistant_1_1kernel__object__traits}{kernel\+\_\+object\+\_\+traits}}$<$ \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base}{process\+\_\+base}} $>$\+::native\+\_\+handle\+\_\+type
+\item 
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1process__base_a551a3e72af7a0c58c6b4eb4f6c4f7d0e}\label{classdistant_1_1kernel__objects_1_1process__base_a551a3e72af7a0c58c6b4eb4f6c4f7d0e}} 
+using {\bfseries access\+\_\+rights\+\_\+t} = process\+\_\+rights
+\item 
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1process__base_a66d761572fa3db89575a79d396277667}\label{classdistant_1_1kernel__objects_1_1process__base_a66d761572fa3db89575a79d396277667}} 
+using {\bfseries flag\+\_\+type} = access\+\_\+rights\+\_\+t
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1process__base_a3f1bf976485f4c55ab5e12b972382836}\label{classdistant_1_1kernel__objects_1_1process__base_a3f1bf976485f4c55ab5e12b972382836}} 
+void \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base_a3f1bf976485f4c55ab5e12b972382836}{kill}} ()
+\begin{DoxyCompactList}\small\item\em Terminate the process. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base_ac3d56fd3e4c92b1e1dbbf2f5f9242fbe}{is\+\_\+active}} () const
+\begin{DoxyCompactList}\small\item\em Query the process handle to see if it is still active. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base_a4c71065703937a737865428b03af8e99}{is\+\_\+32bit}} () const
+\begin{DoxyCompactList}\small\item\em Test if the process is running under the W\+O\+W64 emulator. If the process has been compiled to run on 32-\/bit system and is being run on a 64-\/bit system, it will be emulated. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base_a9ac787a611e73f5347cd25a850fa0122}{is\+\_\+64bit}} () const
+\begin{DoxyCompactList}\small\item\em Test if the process is being run in 64bit. \end{DoxyCompactList}\item 
+std\+::wstring \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base_a465314221bd0fbea3ce48ffcf7213578}{name}} () const
+\begin{DoxyCompactList}\small\item\em Get the name of the process executable. \end{DoxyCompactList}\item 
+filesystem\+::path \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base_a0c1640e125f4667c139bf9d44f7cd096}{file\+\_\+path}} () const
+\begin{DoxyCompactList}\small\item\em Get the path to the process executable. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base_a9acb308895639407b1925ad238f05344}{is\+\_\+being\+\_\+debugged}} () const
+\begin{DoxyCompactList}\small\item\em Test if the process is being debugged by another process. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base_ab023cd4a4d27ccef7879d1a3c513148b}{is\+\_\+zombie}} () const
+\begin{DoxyCompactList}\small\item\em Test if the process is a \char`\"{}zombie\char`\"{} process. A zombie process in this case is one that is not listed upon process list enumeration, but still has an active handle in the operating system. \end{DoxyCompactList}\item 
+std\+::size\+\_\+t \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base_a8c14c3aca084496eafa68f23b7535567}{handle\+\_\+count}} () const
+\item 
+std\+::size\+\_\+t \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base_a553b90767de864164d807075f67c1402}{id}} () const noexcept
+\begin{DoxyCompactList}\small\item\em Retrieve the process id. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1process__base_a3476af5b30ce778a41eed891fdd93ece}\label{classdistant_1_1kernel__objects_1_1process__base_a3476af5b30ce778a41eed891fdd93ece}} 
+const \mbox{\hyperlink{classdistant_1_1handle}{distant\+::handle}}$<$ \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base}{process\+\_\+base}} $>$ \& {\bfseries handle} () const noexcept
+\item 
+flag\+\_\+type \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base_a28b2a7b7297714d4c7c4d320a0c4fbbc}{access\+\_\+rights}} () const noexcept
+\begin{DoxyCompactList}\small\item\em Get the access rights that were used to open the current process. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base_a6299b49ad8fb1c22e54dc9aa6c3a09b2}{valid}} () const noexcept
+\begin{DoxyCompactList}\small\item\em Test if the process \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1kernel__object}{kernel\+\_\+object}} is valid. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base_a0d69c4e7d61551e7246eed5dcaabc6d9}{operator bool}} () const noexcept
+\begin{DoxyCompactList}\small\item\em Test if the process \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1kernel__object}{kernel\+\_\+object}} is valid. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1process__base_ad5aa6b7591af9560bf164b5ae75a295c}\label{classdistant_1_1kernel__objects_1_1process__base_ad5aa6b7591af9560bf164b5ae75a295c}} 
+\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base_ad5aa6b7591af9560bf164b5ae75a295c}{process\+\_\+base}} () noexcept
+\begin{DoxyCompactList}\small\item\em Construct an empty process. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base_a845358a2126f878a2777acf7d855b79b}{process\+\_\+base}} (std\+::size\+\_\+t \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base_a553b90767de864164d807075f67c1402}{id}}, access\+\_\+rights\+\_\+t access=access\+\_\+rights\+\_\+t\+::all\+\_\+access) noexcept
+\begin{DoxyCompactList}\small\item\em Open process by id. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1process__base_a77b9fe42db8ee2b364cf6e56f369867b}\label{classdistant_1_1kernel__objects_1_1process__base_a77b9fe42db8ee2b364cf6e56f369867b}} 
+{\bfseries process\+\_\+base} (\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base}{process\+\_\+base}} \&\&other) noexcept
+\item 
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1process__base_a449fa10bee50a4091db59a6550479598}\label{classdistant_1_1kernel__objects_1_1process__base_a449fa10bee50a4091db59a6550479598}} 
+\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base}{process\+\_\+base}} \& {\bfseries operator=} (\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base}{process\+\_\+base}} \&\&other) noexcept
+\item 
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1process__base_a80ae44cbed38950723309d0a567af7c1}\label{classdistant_1_1kernel__objects_1_1process__base_a80ae44cbed38950723309d0a567af7c1}} 
+{\bfseries process\+\_\+base} (\mbox{\hyperlink{classdistant_1_1handle}{distant\+::handle}}$<$ \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base}{process\+\_\+base}} $>$ \&\&\mbox{\hyperlink{classdistant_1_1handle}{handle}}, access\+\_\+rights\+\_\+t) noexcept
+\end{DoxyCompactItemize}
+\subsection*{Static Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1process__base_a4bad2a3570c2e76ded4a8bd22f4928a9}\label{classdistant_1_1kernel__objects_1_1process__base_a4bad2a3570c2e76ded4a8bd22f4928a9}} 
+static \mbox{\hyperlink{classdistant_1_1handle}{handle\+\_\+type}} {\bfseries open} (std\+::size\+\_\+t, access\+\_\+rights\+\_\+t) noexcept
+\item 
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1process__base_a7bec537ad007e7439f81fc95c965958d}\label{classdistant_1_1kernel__objects_1_1process__base_a7bec537ad007e7439f81fc95c965958d}} 
+static std\+::size\+\_\+t {\bfseries get\+\_\+pid} (const \mbox{\hyperlink{classdistant_1_1handle}{handle\+\_\+type}} \&) noexcept
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1process__base_aa2f7eeea4b9769e9ebda10d907fea830}\label{classdistant_1_1kernel__objects_1_1process__base_aa2f7eeea4b9769e9ebda10d907fea830}} 
+\mbox{\hyperlink{classdistant_1_1handle}{distant\+::handle}}$<$ \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base}{process\+\_\+base}} $>$ {\bfseries handle\+\_\+}
+\item 
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1process__base_a7fb322f6d108727fb48a986ac88a3199}\label{classdistant_1_1kernel__objects_1_1process__base_a7fb322f6d108727fb48a986ac88a3199}} 
+std\+::size\+\_\+t {\bfseries id\+\_\+}
+\item 
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1process__base_af4f78745cb41d78979cc313b6e91f3b3}\label{classdistant_1_1kernel__objects_1_1process__base_af4f78745cb41d78979cc313b6e91f3b3}} 
+access\+\_\+rights\+\_\+t {\bfseries access\+\_\+rights\+\_\+}
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1process__base_a023b8a425917f7dddc2144678a3d5bfb}\label{classdistant_1_1kernel__objects_1_1process__base_a023b8a425917f7dddc2144678a3d5bfb}} 
+bool {\bfseries operator==} (const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base}{process\+\_\+base}} \&, const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base}{process\+\_\+base}} \&) noexcept
+\item 
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1process__base_a5fd7d7dcf5b09480ae8c4b742562db1a}\label{classdistant_1_1kernel__objects_1_1process__base_a5fd7d7dcf5b09480ae8c4b742562db1a}} 
+bool {\bfseries operator!=} (const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base}{process\+\_\+base}} \&, const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base}{process\+\_\+base}} \&) noexcept
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Base type of distant\+::process This version does not have static \mbox{\hyperlink{structdistant_1_1access__rights}{access\+\_\+rights}} checking. 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1process__base_a845358a2126f878a2777acf7d855b79b}\label{classdistant_1_1kernel__objects_1_1process__base_a845358a2126f878a2777acf7d855b79b}} 
+\index{distant\+::kernel\+\_\+objects\+::process\+\_\+base@{distant\+::kernel\+\_\+objects\+::process\+\_\+base}!process\+\_\+base@{process\+\_\+base}}
+\index{process\+\_\+base@{process\+\_\+base}!distant\+::kernel\+\_\+objects\+::process\+\_\+base@{distant\+::kernel\+\_\+objects\+::process\+\_\+base}}
+\subsubsection{\texorpdfstring{process\+\_\+base()}{process\_base()}}
+{\footnotesize\ttfamily distant\+::kernel\+\_\+objects\+::process\+\_\+base\+::process\+\_\+base (\begin{DoxyParamCaption}\item[{std\+::size\+\_\+t}]{id,  }\item[{access\+\_\+rights\+\_\+t}]{access = {\ttfamily access\+\_\+rights\+\_\+t\+:\+:all\+\_\+access} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [explicit]}, {\ttfamily [noexcept]}}
+
+
+
+Open process by id. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & the pid (process id) of the process to open. \\
+\hline
+{\em access} & the requested access rights to open the process with. \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1process__base_a28b2a7b7297714d4c7c4d320a0c4fbbc}\label{classdistant_1_1kernel__objects_1_1process__base_a28b2a7b7297714d4c7c4d320a0c4fbbc}} 
+\index{distant\+::kernel\+\_\+objects\+::process\+\_\+base@{distant\+::kernel\+\_\+objects\+::process\+\_\+base}!access\+\_\+rights@{access\+\_\+rights}}
+\index{access\+\_\+rights@{access\+\_\+rights}!distant\+::kernel\+\_\+objects\+::process\+\_\+base@{distant\+::kernel\+\_\+objects\+::process\+\_\+base}}
+\subsubsection{\texorpdfstring{access\+\_\+rights()}{access\_rights()}}
+{\footnotesize\ttfamily flag\+\_\+type distant\+::kernel\+\_\+objects\+::process\+\_\+base\+::access\+\_\+rights (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+
+
+Get the access rights that were used to open the current process. 
+
+\begin{DoxyReturn}{Returns}
+process \mbox{\hyperlink{structdistant_1_1access__rights}{access\+\_\+rights}} indicating the level of access we have to the process. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1process__base_a0c1640e125f4667c139bf9d44f7cd096}\label{classdistant_1_1kernel__objects_1_1process__base_a0c1640e125f4667c139bf9d44f7cd096}} 
+\index{distant\+::kernel\+\_\+objects\+::process\+\_\+base@{distant\+::kernel\+\_\+objects\+::process\+\_\+base}!file\+\_\+path@{file\+\_\+path}}
+\index{file\+\_\+path@{file\+\_\+path}!distant\+::kernel\+\_\+objects\+::process\+\_\+base@{distant\+::kernel\+\_\+objects\+::process\+\_\+base}}
+\subsubsection{\texorpdfstring{file\+\_\+path()}{file\_path()}}
+{\footnotesize\ttfamily filesystem\+::path distant\+::kernel\+\_\+objects\+::process\+\_\+base\+::file\+\_\+path (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get the path to the process executable. 
+
+\begin{DoxyReturn}{Returns}
+the path. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1process__base_a8c14c3aca084496eafa68f23b7535567}\label{classdistant_1_1kernel__objects_1_1process__base_a8c14c3aca084496eafa68f23b7535567}} 
+\index{distant\+::kernel\+\_\+objects\+::process\+\_\+base@{distant\+::kernel\+\_\+objects\+::process\+\_\+base}!handle\+\_\+count@{handle\+\_\+count}}
+\index{handle\+\_\+count@{handle\+\_\+count}!distant\+::kernel\+\_\+objects\+::process\+\_\+base@{distant\+::kernel\+\_\+objects\+::process\+\_\+base}}
+\subsubsection{\texorpdfstring{handle\+\_\+count()}{handle\_count()}}
+{\footnotesize\ttfamily std\+::size\+\_\+t distant\+::kernel\+\_\+objects\+::process\+\_\+base\+::handle\+\_\+count (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Get number of handles opened in the process \begin{DoxyReturn}{Returns}
+the number of handles 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1process__base_a553b90767de864164d807075f67c1402}\label{classdistant_1_1kernel__objects_1_1process__base_a553b90767de864164d807075f67c1402}} 
+\index{distant\+::kernel\+\_\+objects\+::process\+\_\+base@{distant\+::kernel\+\_\+objects\+::process\+\_\+base}!id@{id}}
+\index{id@{id}!distant\+::kernel\+\_\+objects\+::process\+\_\+base@{distant\+::kernel\+\_\+objects\+::process\+\_\+base}}
+\subsubsection{\texorpdfstring{id()}{id()}}
+{\footnotesize\ttfamily std\+::size\+\_\+t distant\+::kernel\+\_\+objects\+::process\+\_\+base\+::id (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+
+
+Retrieve the process id. 
+
+\begin{DoxyReturn}{Returns}
+the process id. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1process__base_a4c71065703937a737865428b03af8e99}\label{classdistant_1_1kernel__objects_1_1process__base_a4c71065703937a737865428b03af8e99}} 
+\index{distant\+::kernel\+\_\+objects\+::process\+\_\+base@{distant\+::kernel\+\_\+objects\+::process\+\_\+base}!is\+\_\+32bit@{is\+\_\+32bit}}
+\index{is\+\_\+32bit@{is\+\_\+32bit}!distant\+::kernel\+\_\+objects\+::process\+\_\+base@{distant\+::kernel\+\_\+objects\+::process\+\_\+base}}
+\subsubsection{\texorpdfstring{is\+\_\+32bit()}{is\_32bit()}}
+{\footnotesize\ttfamily bool distant\+::kernel\+\_\+objects\+::process\+\_\+base\+::is\+\_\+32bit (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Test if the process is running under the W\+O\+W64 emulator. If the process has been compiled to run on 32-\/bit system and is being run on a 64-\/bit system, it will be emulated. 
+
+\begin{DoxyReturn}{Returns}
+true if the process is being emulated, and false if not. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1process__base_a9ac787a611e73f5347cd25a850fa0122}\label{classdistant_1_1kernel__objects_1_1process__base_a9ac787a611e73f5347cd25a850fa0122}} 
+\index{distant\+::kernel\+\_\+objects\+::process\+\_\+base@{distant\+::kernel\+\_\+objects\+::process\+\_\+base}!is\+\_\+64bit@{is\+\_\+64bit}}
+\index{is\+\_\+64bit@{is\+\_\+64bit}!distant\+::kernel\+\_\+objects\+::process\+\_\+base@{distant\+::kernel\+\_\+objects\+::process\+\_\+base}}
+\subsubsection{\texorpdfstring{is\+\_\+64bit()}{is\_64bit()}}
+{\footnotesize\ttfamily bool distant\+::kernel\+\_\+objects\+::process\+\_\+base\+::is\+\_\+64bit (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Test if the process is being run in 64bit. 
+
+\begin{DoxyReturn}{Returns}
+true if the process is being run in 64bit mode, and false if not. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1process__base_ac3d56fd3e4c92b1e1dbbf2f5f9242fbe}\label{classdistant_1_1kernel__objects_1_1process__base_ac3d56fd3e4c92b1e1dbbf2f5f9242fbe}} 
+\index{distant\+::kernel\+\_\+objects\+::process\+\_\+base@{distant\+::kernel\+\_\+objects\+::process\+\_\+base}!is\+\_\+active@{is\+\_\+active}}
+\index{is\+\_\+active@{is\+\_\+active}!distant\+::kernel\+\_\+objects\+::process\+\_\+base@{distant\+::kernel\+\_\+objects\+::process\+\_\+base}}
+\subsubsection{\texorpdfstring{is\+\_\+active()}{is\_active()}}
+{\footnotesize\ttfamily bool distant\+::kernel\+\_\+objects\+::process\+\_\+base\+::is\+\_\+active (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Query the process handle to see if it is still active. 
+
+\begin{DoxyReturn}{Returns}
+true if the process is active, false otherwise. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1process__base_a9acb308895639407b1925ad238f05344}\label{classdistant_1_1kernel__objects_1_1process__base_a9acb308895639407b1925ad238f05344}} 
+\index{distant\+::kernel\+\_\+objects\+::process\+\_\+base@{distant\+::kernel\+\_\+objects\+::process\+\_\+base}!is\+\_\+being\+\_\+debugged@{is\+\_\+being\+\_\+debugged}}
+\index{is\+\_\+being\+\_\+debugged@{is\+\_\+being\+\_\+debugged}!distant\+::kernel\+\_\+objects\+::process\+\_\+base@{distant\+::kernel\+\_\+objects\+::process\+\_\+base}}
+\subsubsection{\texorpdfstring{is\+\_\+being\+\_\+debugged()}{is\_being\_debugged()}}
+{\footnotesize\ttfamily bool distant\+::kernel\+\_\+objects\+::process\+\_\+base\+::is\+\_\+being\+\_\+debugged (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Test if the process is being debugged by another process. 
+
+\begin{DoxyReturn}{Returns}
+true if the process is being debugged, and false if it is not. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1process__base_ab023cd4a4d27ccef7879d1a3c513148b}\label{classdistant_1_1kernel__objects_1_1process__base_ab023cd4a4d27ccef7879d1a3c513148b}} 
+\index{distant\+::kernel\+\_\+objects\+::process\+\_\+base@{distant\+::kernel\+\_\+objects\+::process\+\_\+base}!is\+\_\+zombie@{is\+\_\+zombie}}
+\index{is\+\_\+zombie@{is\+\_\+zombie}!distant\+::kernel\+\_\+objects\+::process\+\_\+base@{distant\+::kernel\+\_\+objects\+::process\+\_\+base}}
+\subsubsection{\texorpdfstring{is\+\_\+zombie()}{is\_zombie()}}
+{\footnotesize\ttfamily bool distant\+::kernel\+\_\+objects\+::process\+\_\+base\+::is\+\_\+zombie (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Test if the process is a \char`\"{}zombie\char`\"{} process. A zombie process in this case is one that is not listed upon process list enumeration, but still has an active handle in the operating system. 
+
+\begin{DoxyReturn}{Returns}
+true if the process is a zombie. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1process__base_a465314221bd0fbea3ce48ffcf7213578}\label{classdistant_1_1kernel__objects_1_1process__base_a465314221bd0fbea3ce48ffcf7213578}} 
+\index{distant\+::kernel\+\_\+objects\+::process\+\_\+base@{distant\+::kernel\+\_\+objects\+::process\+\_\+base}!name@{name}}
+\index{name@{name}!distant\+::kernel\+\_\+objects\+::process\+\_\+base@{distant\+::kernel\+\_\+objects\+::process\+\_\+base}}
+\subsubsection{\texorpdfstring{name()}{name()}}
+{\footnotesize\ttfamily std\+::wstring distant\+::kernel\+\_\+objects\+::process\+\_\+base\+::name (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get the name of the process executable. 
+
+\begin{DoxyReturn}{Returns}
+string containing the name. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1process__base_a0d69c4e7d61551e7246eed5dcaabc6d9}\label{classdistant_1_1kernel__objects_1_1process__base_a0d69c4e7d61551e7246eed5dcaabc6d9}} 
+\index{distant\+::kernel\+\_\+objects\+::process\+\_\+base@{distant\+::kernel\+\_\+objects\+::process\+\_\+base}!operator bool@{operator bool}}
+\index{operator bool@{operator bool}!distant\+::kernel\+\_\+objects\+::process\+\_\+base@{distant\+::kernel\+\_\+objects\+::process\+\_\+base}}
+\subsubsection{\texorpdfstring{operator bool()}{operator bool()}}
+{\footnotesize\ttfamily distant\+::kernel\+\_\+objects\+::process\+\_\+base\+::operator bool (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+
+
+Test if the process \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1kernel__object}{kernel\+\_\+object}} is valid. 
+
+\begin{DoxyReturn}{Returns}
+true if the process is valid, false otherwise. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdistant_1_1kernel__objects_1_1process__base_a6299b49ad8fb1c22e54dc9aa6c3a09b2}\label{classdistant_1_1kernel__objects_1_1process__base_a6299b49ad8fb1c22e54dc9aa6c3a09b2}} 
+\index{distant\+::kernel\+\_\+objects\+::process\+\_\+base@{distant\+::kernel\+\_\+objects\+::process\+\_\+base}!valid@{valid}}
+\index{valid@{valid}!distant\+::kernel\+\_\+objects\+::process\+\_\+base@{distant\+::kernel\+\_\+objects\+::process\+\_\+base}}
+\subsubsection{\texorpdfstring{valid()}{valid()}}
+{\footnotesize\ttfamily bool distant\+::kernel\+\_\+objects\+::process\+\_\+base\+::valid (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+
+
+Test if the process \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1kernel__object}{kernel\+\_\+object}} is valid. 
+
+\begin{DoxyReturn}{Returns}
+true if the process is valid, false otherwise. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/kernel\+\_\+objects/process\+\_\+base.\+hpp\item 
+C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/kernel\+\_\+objects/impl/process\+\_\+base.\+hxx\end{DoxyCompactItemize}

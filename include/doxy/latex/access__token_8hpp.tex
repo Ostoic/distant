@@ -1,0 +1,29 @@
+\hypertarget{access__token_8hpp}{}\section{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/kernel\+\_\+objects/access\+\_\+token.hpp File Reference}
+\label{access__token_8hpp}\index{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/kernel\+\_\+objects/access\+\_\+token.\+hpp@{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/kernel\+\_\+objects/access\+\_\+token.\+hpp}}
+{\ttfamily \#include $<$distant/type\+\_\+traits.\+hpp$>$}\newline
+{\ttfamily \#include $<$distant/kernel\+\_\+objects/type\+\_\+traits.\+hpp$>$}\newline
+{\ttfamily \#include $<$distant/handle.\+hpp$>$}\newline
+{\ttfamily \#include $<$distant/security/privilege.\+hpp$>$}\newline
+{\ttfamily \#include $<$distant/kernel\+\_\+objects/process.\+hpp$>$}\newline
+{\ttfamily \#include $<$distant/kernel\+\_\+objects/impl/access\+\_\+token.\+hxx$>$}\newline
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1access__token}{distant\+::kernel\+\_\+objects\+::access\+\_\+token$<$ Access, Kernel\+Object $>$}}
+\end{DoxyCompactItemize}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \mbox{\hyperlink{namespacedistant}{distant}}
+\item 
+ \mbox{\hyperlink{namespacedistant_1_1kernel__objects}{distant\+::kernel\+\_\+objects}}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$access\+\_\+rights\+::token Access, typename Kernel\+Object , typename  = std\+::enable\+\_\+if\+\_\+t$<$detail\+::has\+\_\+token\+\_\+access$<$\+Kernel\+Object$>$\+::value, Kernel\+Object$>$$>$ }\\access\+\_\+token$<$ Access, Kernel\+Object $>$ \mbox{\hyperlink{namespacedistant_1_1kernel__objects_a3729729dfaad90c6567da506deef03cf}{distant\+::kernel\+\_\+objects\+::get\+\_\+access\+\_\+token}} (const Kernel\+Object \&) noexcept
+\begin{DoxyCompactList}\small\item\em Retrieves the access token of the given kernel object. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Kernel\+Object , typename  = std\+::enable\+\_\+if\+\_\+t$<$detail\+::has\+\_\+token\+\_\+access$<$\+Kernel\+Object$>$\+::value, Kernel\+Object$>$$>$ }\\access\+\_\+token$<$ access\+\_\+rights\+::token\+::adjust\+\_\+privileges$\vert$access\+\_\+rights\+::token\+::query, Kernel\+Object $>$ \mbox{\hyperlink{namespacedistant_1_1kernel__objects_a183f62d57b0b3641d56100f0483242f7}{distant\+::kernel\+\_\+objects\+::get\+\_\+access\+\_\+token}} (const Kernel\+Object \&) noexcept
+\begin{DoxyCompactList}\small\item\em Retrieves the access token of the given kernel object. \end{DoxyCompactList}\item 
+access\+\_\+token$<$ access\+\_\+rights\+::token\+::all\+\_\+access, process$<$$>$ $>$ \mbox{\hyperlink{namespacedistant_1_1kernel__objects_a1e4c8c67d58793b7290c032e8e882aa1}{distant\+::kernel\+\_\+objects\+::get\+\_\+access\+\_\+token}} () noexcept
+\begin{DoxyCompactList}\small\item\em Retrieve the access token of the current process. \end{DoxyCompactList}\end{DoxyCompactItemize}

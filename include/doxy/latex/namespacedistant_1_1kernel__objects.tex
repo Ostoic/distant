@@ -1,0 +1,214 @@
+\hypertarget{namespacedistant_1_1kernel__objects}{}\section{distant\+:\+:kernel\+\_\+objects Namespace Reference}
+\label{namespacedistant_1_1kernel__objects}\index{distant\+::kernel\+\_\+objects@{distant\+::kernel\+\_\+objects}}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \mbox{\hyperlink{namespacedistant_1_1kernel__objects_1_1detail}{detail}}
+\end{DoxyCompactItemize}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1access__token}{access\+\_\+token}}
+\item 
+class \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1kernel__object}{kernel\+\_\+object}}
+\begin{DoxyCompactList}\small\item\em Base class for kernel objects. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1memory__status}{memory\+\_\+status}}
+\begin{DoxyCompactList}\small\item\em A class containing memory information about a process. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1module}{module}}
+\item 
+class \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}
+\begin{DoxyCompactList}\small\item\em distant\+::process represents a process, and has static type checking on the process access rights. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base}{process\+\_\+base}}
+\begin{DoxyCompactList}\small\item\em Base type of distant\+::process This version does not have static \mbox{\hyperlink{structdistant_1_1access__rights}{access\+\_\+rights}} checking. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1securable}{securable}}
+\item 
+class \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1snapshot}{snapshot}}
+\begin{DoxyCompactList}\small\item\em A snapshot is a read-\/only copy of the current state of one or more of the following lists that reside in system memory\+: processes, threads, modules, and heaps. snapshot is a range modelling \href{http://en.cppreference.com/w/cpp/experimental/ranges/range/InputRange}{\tt Input\+Range} whose elements consist of valid instances of the specified {\itshape Kernel\+Object}. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1snapshot__iterator}{snapshot\+\_\+iterator}}
+\item 
+class \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1thread}{thread}}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$access\+\_\+rights\+::token Access, typename Kernel\+Object , typename  = std\+::enable\+\_\+if\+\_\+t$<$detail\+::has\+\_\+token\+\_\+access$<$\+Kernel\+Object$>$\+::value, Kernel\+Object$>$$>$ }\\\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1access__token}{access\+\_\+token}}$<$ Access, Kernel\+Object $>$ \mbox{\hyperlink{namespacedistant_1_1kernel__objects_a3729729dfaad90c6567da506deef03cf}{get\+\_\+access\+\_\+token}} (const Kernel\+Object \&) noexcept
+\begin{DoxyCompactList}\small\item\em Retrieves the access token of the given kernel object. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Kernel\+Object , typename  = std\+::enable\+\_\+if\+\_\+t$<$detail\+::has\+\_\+token\+\_\+access$<$\+Kernel\+Object$>$\+::value, Kernel\+Object$>$$>$ }\\\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1access__token}{access\+\_\+token}}$<$ \mbox{\hyperlink{structdistant_1_1access__rights_a6b4d9e837868c8c15cf407e4c80d7f3ca59c6fe46f212dd4d2514e1777e707c98}{access\+\_\+rights\+::token\+::adjust\+\_\+privileges}}$\vert$\mbox{\hyperlink{structdistant_1_1access__rights_a6b4d9e837868c8c15cf407e4c80d7f3ca1b1cc7f086b3f074da452bc3129981eb}{access\+\_\+rights\+::token\+::query}}, Kernel\+Object $>$ \mbox{\hyperlink{namespacedistant_1_1kernel__objects_a183f62d57b0b3641d56100f0483242f7}{get\+\_\+access\+\_\+token}} (const Kernel\+Object \&) noexcept
+\begin{DoxyCompactList}\small\item\em Retrieves the access token of the given kernel object. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1access__token}{access\+\_\+token}}$<$ \mbox{\hyperlink{structdistant_1_1access__rights_a6b4d9e837868c8c15cf407e4c80d7f3ca87233263ddd52f3e3067eafc32d3b7a6}{access\+\_\+rights\+::token\+::all\+\_\+access}}, \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$$>$ $>$ \mbox{\hyperlink{namespacedistant_1_1kernel__objects_a1e4c8c67d58793b7290c032e8e882aa1}{get\+\_\+access\+\_\+token}} () noexcept
+\begin{DoxyCompactList}\small\item\em Retrieve the access token of the current process. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Kernel\+Object , typename $>$ }\\\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1access__token}{access\+\_\+token}}$<$ \mbox{\hyperlink{structdistant_1_1access__rights_a6b4d9e837868c8c15cf407e4c80d7f3ca59c6fe46f212dd4d2514e1777e707c98}{token\+\_\+rights\+::adjust\+\_\+privileges}}$\vert$\mbox{\hyperlink{structdistant_1_1access__rights_a6b4d9e837868c8c15cf407e4c80d7f3ca1b1cc7f086b3f074da452bc3129981eb}{token\+\_\+rights\+::query}}, Kernel\+Object $>$ \mbox{\hyperlink{namespacedistant_1_1kernel__objects_a5ca2dd66f4f6f35a0879195cfffce9c2}{get\+\_\+access\+\_\+token}} (const Kernel\+Object \&object) noexcept
+\begin{DoxyCompactList}\small\item\em Retrieves the access token of the given kernel object. \end{DoxyCompactList}\item 
+{\footnotesize template$<$access\+\_\+rights\+::process T$>$ }\\\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ T $>$ \mbox{\hyperlink{namespacedistant_1_1kernel__objects_aa666b1f055c5bb805240da3191333474}{current\+\_\+process}} () noexcept
+\begin{DoxyCompactList}\small\item\em Get the current process. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{namespacedistant_1_1kernel__objects_adcdcd364a4d3ab5561ce31824df94ca9}{operator==}} (const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base}{process\+\_\+base}} \&lhs, const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base}{process\+\_\+base}} \&rhs) noexcept
+\item 
+bool \mbox{\hyperlink{namespacedistant_1_1kernel__objects_a2e6f4583a00607b24493c0fa59f49169}{operator!=}} (const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base}{process\+\_\+base}} \&lhs, const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base}{process\+\_\+base}} \&rhs) noexcept
+\item 
+bool \mbox{\hyperlink{namespacedistant_1_1kernel__objects_a9121f78e4d532eac74b90cf977abc971}{operator==}} (const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1thread}{thread}} \&lhs, const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1thread}{thread}} \&rhs) noexcept
+\item 
+bool \mbox{\hyperlink{namespacedistant_1_1kernel__objects_aafd262e02cb9a8ef360e55bdb6b05704}{operator!=}} (const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1thread}{thread}} \&lhs, const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1thread}{thread}} \&rhs) noexcept
+\item 
+{\footnotesize template$<$access\+\_\+rights\+::process T, typename  = std\+::enable\+\_\+if\+\_\+t$<$(\+T $>$= memory\+\_\+status\+::required\+\_\+status\+\_\+access$>$ }\\auto \mbox{\hyperlink{namespacedistant_1_1kernel__objects_a02d495947c0d42362c2b0c22c7279c73}{get\+\_\+memory\+\_\+status}} (const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ T $>$ \&p)
+\begin{DoxyCompactList}\small\item\em Create a status object for the given process. \end{DoxyCompactList}\item 
+{\footnotesize template$<$process\+\_\+rights A1, process\+\_\+rights A2$>$ }\\bool \mbox{\hyperlink{namespacedistant_1_1kernel__objects_a1276316b66c4c95a1eed35e2c6778216}{operator==}} (const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ A1 $>$ \&lhs, const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ A2 $>$ \&rhs) noexcept
+\item 
+{\footnotesize template$<$process\+\_\+rights A1, process\+\_\+rights A2$>$ }\\bool \mbox{\hyperlink{namespacedistant_1_1kernel__objects_a0039fde5cf2f6b4e5d863a45b835c0e8}{operator!=}} (const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ A1 $>$ \&lhs, const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ A2 $>$ \&rhs) noexcept
+\item 
+{\footnotesize template$<$process\+\_\+rights Access$>$ }\\\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ Access $>$ \mbox{\hyperlink{namespacedistant_1_1kernel__objects_a4f266ac49d365b14ca51b09160e19f47}{launch}} ()
+\begin{DoxyCompactList}\small\item\em Create a new process. \end{DoxyCompactList}\item 
+{\footnotesize template$<$process\+\_\+rights Access = process\+\_\+rights\+::all\+\_\+access$>$ }\\\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ Access $>$ \mbox{\hyperlink{namespacedistant_1_1kernel__objects_a45b5fb9ff08d50ed36f83bcedf01272b}{current\+\_\+process}} () noexcept
+\begin{DoxyCompactList}\small\item\em Get the current process. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{namespacedistant_1_1kernel__objects_a45b5fb9ff08d50ed36f83bcedf01272b}\label{namespacedistant_1_1kernel__objects_a45b5fb9ff08d50ed36f83bcedf01272b}} 
+\index{distant\+::kernel\+\_\+objects@{distant\+::kernel\+\_\+objects}!current\+\_\+process@{current\+\_\+process}}
+\index{current\+\_\+process@{current\+\_\+process}!distant\+::kernel\+\_\+objects@{distant\+::kernel\+\_\+objects}}
+\subsubsection{\texorpdfstring{current\+\_\+process()}{current\_process()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$process\+\_\+rights Access = process\+\_\+rights\+::all\+\_\+access$>$ \\
+\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$Access$>$ distant\+::kernel\+\_\+objects\+::current\+\_\+process (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+
+
+Get the current process. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Access} & the desired access rights to the process. \\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyReturn}{Returns}
+distant\+::process\+: a process object representing the current process.
+
+distant\+::process\+: a process object representing the current process with the highest {\itshape Access\+Rights}. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{namespacedistant_1_1kernel__objects_aa666b1f055c5bb805240da3191333474}\label{namespacedistant_1_1kernel__objects_aa666b1f055c5bb805240da3191333474}} 
+\index{distant\+::kernel\+\_\+objects@{distant\+::kernel\+\_\+objects}!current\+\_\+process@{current\+\_\+process}}
+\index{current\+\_\+process@{current\+\_\+process}!distant\+::kernel\+\_\+objects@{distant\+::kernel\+\_\+objects}}
+\subsubsection{\texorpdfstring{current\+\_\+process()}{current\_process()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$access\+\_\+rights\+::process T$>$ \\
+\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ \mbox{\hyperlink{structdistant_1_1access__rights_ae153052a690584111c46ec7a78d1ef81a87233263ddd52f3e3067eafc32d3b7a6}{process\+\_\+rights\+::all\+\_\+access}} $>$ distant\+::kernel\+\_\+objects\+::current\+\_\+process (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+
+
+Get the current process. 
+
+\begin{DoxyReturn}{Returns}
+distant\+::process\+: a process object representing the current process with the highest {\itshape Access\+Rights}. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{namespacedistant_1_1kernel__objects_a3729729dfaad90c6567da506deef03cf}\label{namespacedistant_1_1kernel__objects_a3729729dfaad90c6567da506deef03cf}} 
+\index{distant\+::kernel\+\_\+objects@{distant\+::kernel\+\_\+objects}!get\+\_\+access\+\_\+token@{get\+\_\+access\+\_\+token}}
+\index{get\+\_\+access\+\_\+token@{get\+\_\+access\+\_\+token}!distant\+::kernel\+\_\+objects@{distant\+::kernel\+\_\+objects}}
+\subsubsection{\texorpdfstring{get\+\_\+access\+\_\+token()}{get\_access\_token()}\hspace{0.1cm}{\footnotesize\ttfamily [1/4]}}
+{\footnotesize\ttfamily template$<$access\+\_\+rights\+::token Access, typename Kernel\+Object , typename  = std\+::enable\+\_\+if\+\_\+t$<$detail\+::has\+\_\+token\+\_\+access$<$\+Kernel\+Object$>$\+::value, Kernel\+Object$>$$>$ \\
+\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1access__token}{access\+\_\+token}}$<$ Access, Kernel\+Object $>$ distant\+::kernel\+\_\+objects\+::get\+\_\+access\+\_\+token (\begin{DoxyParamCaption}\item[{const Kernel\+Object \&}]{object }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [noexcept]}}
+
+
+
+Retrieves the access token of the given kernel object. 
+
+\begin{DoxyReturn}{Returns}
+the primary access token of the kernel object is a process, or it returns an impersonation access token if the kernel object is a thread. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{namespacedistant_1_1kernel__objects_a183f62d57b0b3641d56100f0483242f7}\label{namespacedistant_1_1kernel__objects_a183f62d57b0b3641d56100f0483242f7}} 
+\index{distant\+::kernel\+\_\+objects@{distant\+::kernel\+\_\+objects}!get\+\_\+access\+\_\+token@{get\+\_\+access\+\_\+token}}
+\index{get\+\_\+access\+\_\+token@{get\+\_\+access\+\_\+token}!distant\+::kernel\+\_\+objects@{distant\+::kernel\+\_\+objects}}
+\subsubsection{\texorpdfstring{get\+\_\+access\+\_\+token()}{get\_access\_token()}\hspace{0.1cm}{\footnotesize\ttfamily [2/4]}}
+{\footnotesize\ttfamily template$<$typename Kernel\+Object , typename  = std\+::enable\+\_\+if\+\_\+t$<$detail\+::has\+\_\+token\+\_\+access$<$\+Kernel\+Object$>$\+::value, Kernel\+Object$>$$>$ \\
+\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1access__token}{access\+\_\+token}}$<$\mbox{\hyperlink{structdistant_1_1access__rights_a6b4d9e837868c8c15cf407e4c80d7f3ca59c6fe46f212dd4d2514e1777e707c98}{access\+\_\+rights\+::token\+::adjust\+\_\+privileges}} $\vert$ \mbox{\hyperlink{structdistant_1_1access__rights_a6b4d9e837868c8c15cf407e4c80d7f3ca1b1cc7f086b3f074da452bc3129981eb}{access\+\_\+rights\+::token\+::query}}, Kernel\+Object$>$ distant\+::kernel\+\_\+objects\+::get\+\_\+access\+\_\+token (\begin{DoxyParamCaption}\item[{const Kernel\+Object \&}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [noexcept]}}
+
+
+
+Retrieves the access token of the given kernel object. 
+
+\begin{DoxyReturn}{Returns}
+the primary access token of the kernel object is a process, or it returns an impersonation access token if the kernel object is a thread. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{namespacedistant_1_1kernel__objects_a1e4c8c67d58793b7290c032e8e882aa1}\label{namespacedistant_1_1kernel__objects_a1e4c8c67d58793b7290c032e8e882aa1}} 
+\index{distant\+::kernel\+\_\+objects@{distant\+::kernel\+\_\+objects}!get\+\_\+access\+\_\+token@{get\+\_\+access\+\_\+token}}
+\index{get\+\_\+access\+\_\+token@{get\+\_\+access\+\_\+token}!distant\+::kernel\+\_\+objects@{distant\+::kernel\+\_\+objects}}
+\subsubsection{\texorpdfstring{get\+\_\+access\+\_\+token()}{get\_access\_token()}\hspace{0.1cm}{\footnotesize\ttfamily [3/4]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1access__token}{access\+\_\+token}}$<$ \mbox{\hyperlink{structdistant_1_1access__rights_a6b4d9e837868c8c15cf407e4c80d7f3ca87233263ddd52f3e3067eafc32d3b7a6}{token\+\_\+rights\+::all\+\_\+access}}, \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$$>$ $>$ distant\+::kernel\+\_\+objects\+::get\+\_\+access\+\_\+token (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+
+
+Retrieve the access token of the current process. 
+
+\begin{DoxyReturn}{Returns}
+the primary access token of the current process. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{namespacedistant_1_1kernel__objects_a5ca2dd66f4f6f35a0879195cfffce9c2}\label{namespacedistant_1_1kernel__objects_a5ca2dd66f4f6f35a0879195cfffce9c2}} 
+\index{distant\+::kernel\+\_\+objects@{distant\+::kernel\+\_\+objects}!get\+\_\+access\+\_\+token@{get\+\_\+access\+\_\+token}}
+\index{get\+\_\+access\+\_\+token@{get\+\_\+access\+\_\+token}!distant\+::kernel\+\_\+objects@{distant\+::kernel\+\_\+objects}}
+\subsubsection{\texorpdfstring{get\+\_\+access\+\_\+token()}{get\_access\_token()}\hspace{0.1cm}{\footnotesize\ttfamily [4/4]}}
+{\footnotesize\ttfamily template$<$typename Kernel\+Object , typename $>$ \\
+\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1access__token}{access\+\_\+token}}$<$\mbox{\hyperlink{structdistant_1_1access__rights_a6b4d9e837868c8c15cf407e4c80d7f3ca59c6fe46f212dd4d2514e1777e707c98}{token\+\_\+rights\+::adjust\+\_\+privileges}} $\vert$ \mbox{\hyperlink{structdistant_1_1access__rights_a6b4d9e837868c8c15cf407e4c80d7f3ca1b1cc7f086b3f074da452bc3129981eb}{token\+\_\+rights\+::query}}, Kernel\+Object$>$ distant\+::kernel\+\_\+objects\+::get\+\_\+access\+\_\+token (\begin{DoxyParamCaption}\item[{const Kernel\+Object \&}]{object }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [noexcept]}}
+
+
+
+Retrieves the access token of the given kernel object. 
+
+\begin{DoxyReturn}{Returns}
+the primary access token of the kernel object is a process, or it returns an impersonation access token if the kernel object is a thread. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{namespacedistant_1_1kernel__objects_a02d495947c0d42362c2b0c22c7279c73}\label{namespacedistant_1_1kernel__objects_a02d495947c0d42362c2b0c22c7279c73}} 
+\index{distant\+::kernel\+\_\+objects@{distant\+::kernel\+\_\+objects}!get\+\_\+memory\+\_\+status@{get\+\_\+memory\+\_\+status}}
+\index{get\+\_\+memory\+\_\+status@{get\+\_\+memory\+\_\+status}!distant\+::kernel\+\_\+objects@{distant\+::kernel\+\_\+objects}}
+\subsubsection{\texorpdfstring{get\+\_\+memory\+\_\+status()}{get\_memory\_status()}}
+{\footnotesize\ttfamily template$<$access\+\_\+rights\+::process T, typename  = std\+::enable\+\_\+if\+\_\+t$<$(\+T $>$= memory\+\_\+status\+::required\+\_\+status\+\_\+access$>$ \\
+auto distant\+::kernel\+\_\+objects\+::get\+\_\+memory\+\_\+status (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ T $>$ \&}]{p }\end{DoxyParamCaption})}
+
+
+
+Create a status object for the given process. 
+
+\mbox{\Hypertarget{namespacedistant_1_1kernel__objects_a4f266ac49d365b14ca51b09160e19f47}\label{namespacedistant_1_1kernel__objects_a4f266ac49d365b14ca51b09160e19f47}} 
+\index{distant\+::kernel\+\_\+objects@{distant\+::kernel\+\_\+objects}!launch@{launch}}
+\index{launch@{launch}!distant\+::kernel\+\_\+objects@{distant\+::kernel\+\_\+objects}}
+\subsubsection{\texorpdfstring{launch()}{launch()}}
+{\footnotesize\ttfamily template$<$process\+\_\+rights Access$>$ \\
+\mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$Access$>$ distant\+::kernel\+\_\+objects\+::launch (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Create a new process. 
+
+\mbox{\Hypertarget{namespacedistant_1_1kernel__objects_aafd262e02cb9a8ef360e55bdb6b05704}\label{namespacedistant_1_1kernel__objects_aafd262e02cb9a8ef360e55bdb6b05704}} 
+\index{distant\+::kernel\+\_\+objects@{distant\+::kernel\+\_\+objects}!operator"!=@{operator"!=}}
+\index{operator"!=@{operator"!=}!distant\+::kernel\+\_\+objects@{distant\+::kernel\+\_\+objects}}
+\subsubsection{\texorpdfstring{operator"!=()}{operator!=()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily bool distant\+::kernel\+\_\+objects\+::operator!= (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1thread}{thread}} \&}]{lhs,  }\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1thread}{thread}} \&}]{rhs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+\mbox{\Hypertarget{namespacedistant_1_1kernel__objects_a0039fde5cf2f6b4e5d863a45b835c0e8}\label{namespacedistant_1_1kernel__objects_a0039fde5cf2f6b4e5d863a45b835c0e8}} 
+\index{distant\+::kernel\+\_\+objects@{distant\+::kernel\+\_\+objects}!operator"!=@{operator"!=}}
+\index{operator"!=@{operator"!=}!distant\+::kernel\+\_\+objects@{distant\+::kernel\+\_\+objects}}
+\subsubsection{\texorpdfstring{operator"!=()}{operator!=()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily template$<$process\+\_\+rights A1, process\+\_\+rights A2$>$ \\
+bool distant\+::kernel\+\_\+objects\+::operator!= (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ A1 $>$ \&}]{lhs,  }\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ A2 $>$ \&}]{rhs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [noexcept]}}
+
+\mbox{\Hypertarget{namespacedistant_1_1kernel__objects_a2e6f4583a00607b24493c0fa59f49169}\label{namespacedistant_1_1kernel__objects_a2e6f4583a00607b24493c0fa59f49169}} 
+\index{distant\+::kernel\+\_\+objects@{distant\+::kernel\+\_\+objects}!operator"!=@{operator"!=}}
+\index{operator"!=@{operator"!=}!distant\+::kernel\+\_\+objects@{distant\+::kernel\+\_\+objects}}
+\subsubsection{\texorpdfstring{operator"!=()}{operator!=()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily bool distant\+::kernel\+\_\+objects\+::operator!= (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base}{process\+\_\+base}} \&}]{lhs,  }\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base}{process\+\_\+base}} \&}]{rhs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+\mbox{\Hypertarget{namespacedistant_1_1kernel__objects_a9121f78e4d532eac74b90cf977abc971}\label{namespacedistant_1_1kernel__objects_a9121f78e4d532eac74b90cf977abc971}} 
+\index{distant\+::kernel\+\_\+objects@{distant\+::kernel\+\_\+objects}!operator==@{operator==}}
+\index{operator==@{operator==}!distant\+::kernel\+\_\+objects@{distant\+::kernel\+\_\+objects}}
+\subsubsection{\texorpdfstring{operator==()}{operator==()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily bool distant\+::kernel\+\_\+objects\+::operator== (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1thread}{thread}} \&}]{lhs,  }\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1thread}{thread}} \&}]{rhs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+\mbox{\Hypertarget{namespacedistant_1_1kernel__objects_a1276316b66c4c95a1eed35e2c6778216}\label{namespacedistant_1_1kernel__objects_a1276316b66c4c95a1eed35e2c6778216}} 
+\index{distant\+::kernel\+\_\+objects@{distant\+::kernel\+\_\+objects}!operator==@{operator==}}
+\index{operator==@{operator==}!distant\+::kernel\+\_\+objects@{distant\+::kernel\+\_\+objects}}
+\subsubsection{\texorpdfstring{operator==()}{operator==()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily template$<$process\+\_\+rights A1, process\+\_\+rights A2$>$ \\
+bool distant\+::kernel\+\_\+objects\+::operator== (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ A1 $>$ \&}]{lhs,  }\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process}{process}}$<$ A2 $>$ \&}]{rhs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [noexcept]}}
+
+\mbox{\Hypertarget{namespacedistant_1_1kernel__objects_adcdcd364a4d3ab5561ce31824df94ca9}\label{namespacedistant_1_1kernel__objects_adcdcd364a4d3ab5561ce31824df94ca9}} 
+\index{distant\+::kernel\+\_\+objects@{distant\+::kernel\+\_\+objects}!operator==@{operator==}}
+\index{operator==@{operator==}!distant\+::kernel\+\_\+objects@{distant\+::kernel\+\_\+objects}}
+\subsubsection{\texorpdfstring{operator==()}{operator==()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily bool distant\+::kernel\+\_\+objects\+::operator== (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base}{process\+\_\+base}} \&}]{lhs,  }\item[{const \mbox{\hyperlink{classdistant_1_1kernel__objects_1_1process__base}{process\+\_\+base}} \&}]{rhs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+

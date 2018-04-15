@@ -1,0 +1,11 @@
+var searchData=
+[
+  ['value',['value',['../structdistant_1_1get__access__rights_3_01kernel__objects_1_1process_3_01_access_01_4_01_4.html#a3d0fb6e2482b01322d332af09eecb34c',1,'distant::get_access_rights&lt; kernel_objects::process&lt; Access &gt; &gt;::value()'],['../structdistant_1_1kernel__objects_1_1detail_1_1has__token__access_3_01process_3_01_a_01_4_01_4.html#a8e5a5e4e0c4e6b3d2786f89ea293812b',1,'distant::kernel_objects::detail::has_token_access&lt; process&lt; A &gt; &gt;::value()'],['../structdistant_1_1memory_1_1detail_1_1required__vm__access.html#ac0f150a75b4fed1af0193654cfb014dc',1,'distant::memory::detail::required_vm_access::value()'],['../structdistant_1_1is__kernel__object.html#a1addaa93158a790ca5bda1532b4f6c8a',1,'distant::is_kernel_object::value()'],['../structstd_1_1tuple__size_3_01distant_1_1utility_1_1meta_1_1map_3_01_key_00_01_value_00_01_size_01_4_01_4.html#a341d096836568e90d3a65d0c623dadb5',1,'std::tuple_size&lt; distant::utility::meta::map&lt; Key, Value, Size &gt; &gt;::value()']]],
+  ['vm_5faccess',['vm_access',['../classdistant_1_1memory_1_1virtual__ptr.html#a1dacaef418accf1e994d51d25f734f65',1,'distant::memory::virtual_ptr::vm_access()'],['../structdistant_1_1memory_1_1virtual__traits_3_01virtual__ptr_3_01_element_00_01_address_t_01_4_01_4.html#ac7737f243d20ae767ae91db79add8c1b',1,'distant::memory::virtual_traits&lt; virtual_ptr&lt; Element, AddressT &gt; &gt;::vm_access()'],['../classdistant_1_1memory_1_1virtual__reference.html#a35d50a515cc6b37dd7372b28ba6e163c',1,'distant::memory::virtual_reference::vm_access()']]],
+  ['vm_5fop',['vm_op',['../namespacedistant.html#af02d4223cd2f509cc373ac9d83655f19',1,'distant']]],
+  ['vm_5fr_5fop',['vm_r_op',['../namespacedistant.html#a22f555d49d1219029220e53628459768',1,'distant']]],
+  ['vm_5fread',['vm_read',['../namespacedistant.html#a671e87e004e808bfc0d54a4e816981df',1,'distant']]],
+  ['vm_5frw_5fop',['vm_rw_op',['../namespacedistant.html#a2548084ad7c93b3e70d1f9e3d3f3cb2c',1,'distant']]],
+  ['vm_5fw_5fop',['vm_w_op',['../namespacedistant.html#a6312277824ed2f04c414a61f24c135bb',1,'distant']]],
+  ['vm_5fwrite',['vm_write',['../namespacedistant.html#a615d59c8cd8088e5d008fe35512e6d5e',1,'distant']]]
+];

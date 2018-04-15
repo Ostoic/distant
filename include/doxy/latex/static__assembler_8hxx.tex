@@ -1,0 +1,20 @@
+\hypertarget{static__assembler_8hxx}{}\section{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/assembly/impl/static\+\_\+assembler.hxx File Reference}
+\label{static__assembler_8hxx}\index{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/assembly/impl/static\+\_\+assembler.\+hxx@{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/assembly/impl/static\+\_\+assembler.\+hxx}}
+{\ttfamily \#include $<$distant/assembly/static\+\_\+assembler.\+hpp$>$}\newline
+{\ttfamily \#include $<$distant/types.\+hpp$>$}\newline
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \mbox{\hyperlink{namespacedistant_1_1assembly}{distant\+::assembly}}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$std\+::size\+\_\+t F, std\+::size\+\_\+t FI, std\+::size\+\_\+t S$>$ }\\constexpr static\+\_\+assembler$<$ F+S, FI+1 $>$ \mbox{\hyperlink{namespacedistant_1_1assembly_a1fc4551ec9708ff19592019305e09983}{distant\+::assembly\+::operator+}} (const static\+\_\+assembler$<$ F, FI $>$ \&first, const static\+\_\+assembler$<$ S, 1 $>$ \&second) noexcept
+\item 
+{\footnotesize template$<$typename... Bytes, typename $>$ }\\constexpr auto \mbox{\hyperlink{namespacedistant_1_1assembly_a1e6310ecc2d9bbb403adb7bd8b933c09}{distant\+::assembly\+::make\+\_\+instruction}} (opcode op, Bytes \&\&... bytes) noexcept
+\item 
+constexpr auto \mbox{\hyperlink{namespacedistant_1_1assembly_a9c99faffef3ae358ebb79a499415f770}{distant\+::assembly\+::make\+\_\+instruction}} (opcode op) noexcept
+\item 
+{\footnotesize template$<$std\+::size\+\_\+t N, std\+::size\+\_\+t Size, std\+::size\+\_\+t Instr\+Count$>$ }\\constexpr auto \mbox{\hyperlink{namespacedistant_1_1assembly_ab015590dc9e6ba7cb1e14307dff5b11a}{distant\+::assembly\+::get}} (const static\+\_\+assembler$<$ Size, Instr\+Count $>$ \&a) noexcept
+\begin{DoxyCompactList}\small\item\em Access the nth instruction of the given assembler. \end{DoxyCompactList}\end{DoxyCompactItemize}

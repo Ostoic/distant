@@ -1,0 +1,73 @@
+\hypertarget{access__rights_8hpp}{}\section{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/access\+\_\+rights.hpp File Reference}
+\label{access__rights_8hpp}\index{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/access\+\_\+rights.\+hpp@{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/access\+\_\+rights.\+hpp}}
+{\ttfamily \#include $<$distant/utility/enum\+\_\+operators.\+hpp$>$}\newline
+{\ttfamily \#include $<$boost/winapi/access\+\_\+rights.\+hpp$>$}\newline
+{\ttfamily \#include $<$boost/winapi/handle\+\_\+info.\+hpp$>$}\newline
+{\ttfamily \#include $<$distant/support/winapi/process.\+hpp$>$}\newline
+{\ttfamily \#include $<$distant/support/winapi/token.\+hpp$>$}\newline
+{\ttfamily \#include $<$boost/winapi/process.\+hpp$>$}\newline
+{\ttfamily \#include $<$boost/winapi/page\+\_\+protection\+\_\+flags.\+hpp$>$}\newline
+{\ttfamily \#include \char`\"{}impl/access\+\_\+rights.\+hxx\char`\"{}}\newline
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structdistant_1_1access__rights}{distant\+::access\+\_\+rights}}
+\end{DoxyCompactItemize}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \mbox{\hyperlink{namespacedistant}{distant}}
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+using \mbox{\hyperlink{namespacedistant_a095c3f8e5fe6b6f524c18b63e4ba7aaa}{distant\+::token\+\_\+rights}} = access\+\_\+rights\+::token
+\item 
+using \mbox{\hyperlink{namespacedistant_ad7e4772f7cb4a98274a1db27d150bb3f}{distant\+::process\+\_\+rights}} = access\+\_\+rights\+::process
+\item 
+using \mbox{\hyperlink{namespacedistant_a8271b0fb08b7c0b4f0e1420ef3734393}{distant\+::standard\+\_\+rights}} = access\+\_\+rights\+::standard
+\item 
+using \mbox{\hyperlink{namespacedistant_a05f6dcaa035f968ca53579be93fe1157}{distant\+::page\+\_\+protection}} = access\+\_\+rights\+::page\+\_\+protection
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespacedistant_a82b047769466b9f5ea2d440e5453ce21}{distant\+::\+D\+E\+F\+I\+N\+E\+\_\+\+C\+O\+N\+S\+T\+E\+X\+P\+R\+\_\+\+E\+N\+U\+M\+\_\+\+F\+L\+A\+G\+\_\+\+O\+P\+E\+R\+A\+T\+O\+RS}} (token\+\_\+rights)
+\item 
+\mbox{\hyperlink{namespacedistant_a83ab6b342d31b05345e670023fca66a8}{distant\+::\+D\+E\+F\+I\+N\+E\+\_\+\+C\+O\+N\+S\+T\+E\+X\+P\+R\+\_\+\+E\+N\+U\+M\+\_\+\+F\+L\+A\+G\+\_\+\+O\+P\+E\+R\+A\+T\+O\+RS}} (process\+\_\+rights)
+\item 
+\mbox{\hyperlink{namespacedistant_a3471fede06d16523e3c5745c52d85381}{distant\+::\+D\+E\+F\+I\+N\+E\+\_\+\+C\+O\+N\+S\+T\+E\+X\+P\+R\+\_\+\+E\+N\+U\+M\+\_\+\+F\+L\+A\+G\+\_\+\+O\+P\+E\+R\+A\+T\+O\+RS}} (standard\+\_\+rights)
+\item 
+\mbox{\hyperlink{namespacedistant_a5578babfaeeea06d1bfb00d9a845b02b}{distant\+::\+D\+E\+F\+I\+N\+E\+\_\+\+C\+O\+N\+S\+T\+E\+X\+P\+R\+\_\+\+E\+N\+U\+M\+\_\+\+F\+L\+A\+G\+\_\+\+O\+P\+E\+R\+A\+T\+O\+RS}} (page\+\_\+protection)
+\item 
+\mbox{\hyperlink{namespacedistant_acf01a4e7c5971b8a11a3a95285b4606f}{distant\+::\+D\+E\+F\+I\+N\+E\+\_\+\+C\+O\+N\+S\+T\+E\+X\+P\+R\+\_\+\+E\+N\+U\+M\+\_\+\+F\+L\+A\+G\+\_\+\+P\+A\+R\+T\+I\+A\+L\+\_\+\+O\+R\+D\+ER}} (token\+\_\+rights)
+\item 
+\mbox{\hyperlink{namespacedistant_affe5b625c0cadbcf7dfee2ee7d2c3c6f}{distant\+::\+D\+E\+F\+I\+N\+E\+\_\+\+C\+O\+N\+S\+T\+E\+X\+P\+R\+\_\+\+E\+N\+U\+M\+\_\+\+F\+L\+A\+G\+\_\+\+P\+A\+R\+T\+I\+A\+L\+\_\+\+O\+R\+D\+ER}} (process\+\_\+rights)
+\item 
+\mbox{\hyperlink{namespacedistant_ae901ac9900a1f0263ed3c16fd9ec0877}{distant\+::\+D\+E\+F\+I\+N\+E\+\_\+\+C\+O\+N\+S\+T\+E\+X\+P\+R\+\_\+\+E\+N\+U\+M\+\_\+\+F\+L\+A\+G\+\_\+\+P\+A\+R\+T\+I\+A\+L\+\_\+\+O\+R\+D\+ER}} (standard\+\_\+rights)
+\item 
+\mbox{\hyperlink{namespacedistant_ad18c01cdb15ac30cc3dcbd2049b62e33}{distant\+::\+D\+E\+F\+I\+N\+E\+\_\+\+C\+O\+N\+S\+T\+E\+X\+P\+R\+\_\+\+E\+N\+U\+M\+\_\+\+F\+L\+A\+G\+\_\+\+P\+A\+R\+T\+I\+A\+L\+\_\+\+O\+R\+D\+ER}} (page\+\_\+protection)
+\item 
+constexpr bool \mbox{\hyperlink{namespacedistant_ad196fc4c5f60612f687d662f2c6b4362}{distant\+::check\+\_\+permission}} (const process\+\_\+rights given, const process\+\_\+rights check) noexcept
+\begin{DoxyCompactList}\small\item\em Check if we have permission to perform the given action. \end{DoxyCompactList}\item 
+constexpr bool \mbox{\hyperlink{namespacedistant_ab4c8d0b26c0d701a24aa376f1a3f72d1}{distant\+::check\+\_\+permission}} (const token\+\_\+rights given, const token\+\_\+rights check) noexcept
+\begin{DoxyCompactList}\small\item\em Check if we have permission to perform the given action. \end{DoxyCompactList}\item 
+constexpr bool \mbox{\hyperlink{namespacedistant_a05d464175f86520364e566dd7ee21dc4}{distant\+::check\+\_\+permission}} (const standard\+\_\+rights given, const standard\+\_\+rights check) noexcept
+\begin{DoxyCompactList}\small\item\em Check if we have permission to perform the given action. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename CharT , typename TraitsT $>$ }\\std\+::basic\+\_\+ostream$<$ CharT, TraitsT $>$ \& \mbox{\hyperlink{namespacedistant_adc41c1da8271c21baad8dd69328f8066}{distant\+::operator$<$$<$}} (std\+::basic\+\_\+ostream$<$ CharT, TraitsT $>$ \&stream, process\+\_\+rights access)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+constexpr auto \mbox{\hyperlink{namespacedistant_af02d4223cd2f509cc373ac9d83655f19}{distant\+::vm\+\_\+op}} = access\+\_\+rights\+::process\+::vm\+\_\+operation
+\begin{DoxyCompactList}\small\item\em Shortcut for defining vm\+\_\+operation process\+\_\+rights. \end{DoxyCompactList}\item 
+constexpr auto \mbox{\hyperlink{namespacedistant_a671e87e004e808bfc0d54a4e816981df}{distant\+::vm\+\_\+read}} = access\+\_\+rights\+::process\+::vm\+\_\+read
+\begin{DoxyCompactList}\small\item\em Shortcut for defining vm\+\_\+read process\+\_\+rights. \end{DoxyCompactList}\item 
+constexpr auto \mbox{\hyperlink{namespacedistant_a615d59c8cd8088e5d008fe35512e6d5e}{distant\+::vm\+\_\+write}} = access\+\_\+rights\+::process\+::vm\+\_\+write
+\begin{DoxyCompactList}\small\item\em Shortcut for defining vm\+\_\+write process\+\_\+rights. \end{DoxyCompactList}\item 
+constexpr auto \mbox{\hyperlink{namespacedistant_a22f555d49d1219029220e53628459768}{distant\+::vm\+\_\+r\+\_\+op}} = vm\+\_\+read $\vert$ vm\+\_\+op
+\begin{DoxyCompactList}\small\item\em Shortcut for defining vm\+\_\+read $\vert$ vm\+\_\+operation process\+\_\+rights. \end{DoxyCompactList}\item 
+constexpr auto \mbox{\hyperlink{namespacedistant_a6312277824ed2f04c414a61f24c135bb}{distant\+::vm\+\_\+w\+\_\+op}} = vm\+\_\+write $\vert$ vm\+\_\+op
+\begin{DoxyCompactList}\small\item\em Shortcut for defining vm\+\_\+write $\vert$ vm\+\_\+operation process\+\_\+rights. \end{DoxyCompactList}\item 
+constexpr auto \mbox{\hyperlink{namespacedistant_a2548084ad7c93b3e70d1f9e3d3f3cb2c}{distant\+::vm\+\_\+rw\+\_\+op}} = vm\+\_\+r\+\_\+op $\vert$ vm\+\_\+write
+\begin{DoxyCompactList}\small\item\em Shortcut for defining vm\+\_\+read $\vert$ vm\+\_\+write $\vert$ vm\+\_\+operation process\+\_\+rights. \end{DoxyCompactList}\end{DoxyCompactItemize}

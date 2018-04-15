@@ -1,0 +1,22 @@
+\hypertarget{bytes_8hxx}{}\section{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/utility/meta/impl/bytes.hxx File Reference}
+\label{bytes_8hxx}\index{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/utility/meta/impl/bytes.\+hxx@{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/utility/meta/impl/bytes.\+hxx}}
+{\ttfamily \#include \char`\"{}../bytes.\+hpp\char`\"{}}\newline
+{\ttfamily \#include $<$distant/utility/meta/algorithm.\+hpp$>$}\newline
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \mbox{\hyperlink{namespacedistant_1_1utility_1_1meta}{distant\+::utility\+::meta}}
+\item 
+ \mbox{\hyperlink{namespacedistant_1_1utility_1_1meta_1_1detail}{distant\+::utility\+::meta\+::detail}}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename Return , std\+::size\+\_\+t S$>$ }\\constexpr auto \mbox{\hyperlink{namespacedistant_1_1utility_1_1meta_ac986b206bd7b64c88fd00a12ad54b350}{distant\+::utility\+::meta\+::compose\+\_\+bytes}} (const std\+::array$<$ unsigned char, S $>$ \&array) noexcept
+\item 
+{\footnotesize template$<$typename T , std\+::size\+\_\+t... Is$>$ }\\constexpr auto \mbox{\hyperlink{namespacedistant_1_1utility_1_1meta_1_1detail_a4382d186581307ddda4aaa043514844b}{distant\+::utility\+::meta\+::detail\+::byte\+\_\+array\+\_\+from\+\_\+impl}} (const T \&data, std\+::index\+\_\+sequence$<$ Is... $>$ sequence) noexcept
+\item 
+{\footnotesize template$<$typename T  = std\+::enable\+\_\+if\+\_\+t$<$std\+::is\+\_\+pod\+\_\+v$<$\+T$>$, T$>$$>$ }\\constexpr auto \mbox{\hyperlink{namespacedistant_1_1utility_1_1meta_ad4b386756299c909869531eda15be187}{distant\+::utility\+::meta\+::byte\+\_\+array\+\_\+from}} (const T \&) noexcept
+\item 
+{\footnotesize template$<$std\+::size\+\_\+t N, typename T $>$ }\\constexpr unsigned char \mbox{\hyperlink{namespacedistant_1_1utility_1_1meta_a0a2d71eeab17d5976879049bba34d777}{distant\+::utility\+::meta\+::get}} (const T \&bytes) noexcept
+\end{DoxyCompactItemize}

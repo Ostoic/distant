@@ -1,0 +1,53 @@
+\hypertarget{classdistant_1_1assembly_1_1static__assembler}{}\section{distant\+:\+:assembly\+:\+:static\+\_\+assembler$<$ Size, Instr\+Count $>$ Class Template Reference}
+\label{classdistant_1_1assembly_1_1static__assembler}\index{distant\+::assembly\+::static\+\_\+assembler$<$ Size, Instr\+Count $>$@{distant\+::assembly\+::static\+\_\+assembler$<$ Size, Instr\+Count $>$}}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classdistant_1_1assembly_1_1static__assembler_a6844acc5b4275fdfa8e792ccc2c9d752}\label{classdistant_1_1assembly_1_1static__assembler_a6844acc5b4275fdfa8e792ccc2c9d752}} 
+using {\bfseries iterator} = \mbox{\hyperlink{classdistant_1_1assembly_1_1static__assembler__iterator}{static\+\_\+assembler\+\_\+iterator}}$<$ Size, Instr\+Count $>$
+\item 
+\mbox{\Hypertarget{classdistant_1_1assembly_1_1static__assembler_aaa3429d102c44944957fbd42671409b7}\label{classdistant_1_1assembly_1_1static__assembler_aaa3429d102c44944957fbd42671409b7}} 
+using {\bfseries const\+\_\+iterator} = \mbox{\hyperlink{classdistant_1_1assembly_1_1static__assembler__iterator}{iterator}}
+\item 
+\mbox{\Hypertarget{classdistant_1_1assembly_1_1static__assembler_a777c4da52660a04ea2cc8bc498577933}\label{classdistant_1_1assembly_1_1static__assembler_a777c4da52660a04ea2cc8bc498577933}} 
+using {\bfseries index} = std\+::size\+\_\+t
+\item 
+\mbox{\Hypertarget{classdistant_1_1assembly_1_1static__assembler_a14772cbaaa951decb64dcb6b98e33aeb}\label{classdistant_1_1assembly_1_1static__assembler_a14772cbaaa951decb64dcb6b98e33aeb}} 
+using {\bfseries opcode\+\_\+length} = std\+::size\+\_\+t
+\item 
+\mbox{\Hypertarget{classdistant_1_1assembly_1_1static__assembler_afd4e2df1cd2795194c011036327bf595}\label{classdistant_1_1assembly_1_1static__assembler_afd4e2df1cd2795194c011036327bf595}} 
+using {\bfseries instruction\+\_\+length} = std\+::size\+\_\+t
+\item 
+\mbox{\Hypertarget{classdistant_1_1assembly_1_1static__assembler_ab6e0b98d80d6094fce23502f2010ffba}\label{classdistant_1_1assembly_1_1static__assembler_ab6e0b98d80d6094fce23502f2010ffba}} 
+using {\bfseries instruction\+\_\+ptr} = std\+::tuple$<$ index, opcode\+\_\+length, instruction\+\_\+length $>$
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classdistant_1_1assembly_1_1static__assembler_ada840b6ad572d0d5786826ba9b3531d0}\label{classdistant_1_1assembly_1_1static__assembler_ada840b6ad572d0d5786826ba9b3531d0}} 
+constexpr \mbox{\hyperlink{classdistant_1_1assembly_1_1static__assembler__iterator}{iterator}} {\bfseries begin} () const
+\item 
+\mbox{\Hypertarget{classdistant_1_1assembly_1_1static__assembler_a0354fc20fba2022df2a0346698fe7605}\label{classdistant_1_1assembly_1_1static__assembler_a0354fc20fba2022df2a0346698fe7605}} 
+constexpr \mbox{\hyperlink{classdistant_1_1assembly_1_1static__assembler__iterator}{iterator}} {\bfseries end} () const
+\item 
+\mbox{\Hypertarget{classdistant_1_1assembly_1_1static__assembler_a26df9749ddfd9040b7def347ba50435c}\label{classdistant_1_1assembly_1_1static__assembler_a26df9749ddfd9040b7def347ba50435c}} 
+constexpr {\bfseries static\+\_\+assembler} (const std\+::array$<$ byte, Size $>$ \&bytes, const std\+::array$<$ instruction\+\_\+ptr, Instr\+Count $>$ \&instruction\+\_\+ptrs) noexcept
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classdistant_1_1assembly_1_1static__assembler_a9604961da7981a7989f42842bd1273b8}\label{classdistant_1_1assembly_1_1static__assembler_a9604961da7981a7989f42842bd1273b8}} 
+{\footnotesize template$<$std\+::size\+\_\+t S, std\+::size\+\_\+t IC$>$ }\\class {\bfseries static\+\_\+instruction}
+\item 
+\mbox{\Hypertarget{classdistant_1_1assembly_1_1static__assembler_a4dac94e37604f6ccf8734bdc7c336ea9}\label{classdistant_1_1assembly_1_1static__assembler_a4dac94e37604f6ccf8734bdc7c336ea9}} 
+{\footnotesize template$<$std\+::size\+\_\+t S, std\+::size\+\_\+t IC$>$ }\\class {\bfseries static\+\_\+assembler\+\_\+iterator}
+\item 
+\mbox{\Hypertarget{classdistant_1_1assembly_1_1static__assembler_a340e6bcde814c6003c7bba5a0a9da5c3}\label{classdistant_1_1assembly_1_1static__assembler_a340e6bcde814c6003c7bba5a0a9da5c3}} 
+{\footnotesize template$<$std\+::size\+\_\+t First, std\+::size\+\_\+t First\+Count, std\+::size\+\_\+t Second$>$ }\\constexpr \mbox{\hyperlink{classdistant_1_1assembly_1_1static__assembler}{static\+\_\+assembler}}$<$ First+Second, First\+Count+1 $>$ {\bfseries operator+} (const \mbox{\hyperlink{classdistant_1_1assembly_1_1static__assembler}{static\+\_\+assembler}}$<$ First, First\+Count $>$ \&first, const \mbox{\hyperlink{classdistant_1_1assembly_1_1static__assembler}{static\+\_\+assembler}}$<$ Second, 1 $>$ \&second) noexcept
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/assembly/static\+\_\+assembler.\+hpp\item 
+C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/assembly/impl/static\+\_\+assembler.\+hxx\end{DoxyCompactItemize}

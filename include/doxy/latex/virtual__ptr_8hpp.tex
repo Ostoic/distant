@@ -1,0 +1,46 @@
+\hypertarget{virtual__ptr_8hpp}{}\section{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/memory/virtual\+\_\+ptr.hpp File Reference}
+\label{virtual__ptr_8hpp}\index{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/memory/virtual\+\_\+ptr.\+hpp@{C\+:/\+Users/dinne/source/repos/distant dev/distant dev/include/distant/memory/virtual\+\_\+ptr.\+hpp}}
+{\ttfamily \#include $<$boost/iterator/iterator\+\_\+adaptor.\+hpp$>$}\newline
+{\ttfamily \#include $<$distant/memory/address.\+hpp$>$}\newline
+{\ttfamily \#include $<$distant/memory/fwd.\+hpp$>$}\newline
+{\ttfamily \#include $<$distant/memory/type\+\_\+traits.\+hpp$>$}\newline
+{\ttfamily \#include \char`\"{}impl/virtual\+\_\+ptr.\+hxx\char`\"{}}\newline
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classdistant_1_1memory_1_1virtual__ptr}{distant\+::memory\+::virtual\+\_\+ptr$<$ Element, Address\+T $>$}}
+\item 
+struct \mbox{\hyperlink{structdistant_1_1memory_1_1virtual__traits_3_01virtual__ptr_3_01_element_00_01_address_t_01_4_01_4}{distant\+::memory\+::virtual\+\_\+traits$<$ virtual\+\_\+ptr$<$ Element, Address\+T $>$ $>$}}
+\item 
+struct \mbox{\hyperlink{structstd_1_1pointer__traits_3_01distant_1_1memory_1_1virtual__ptr_3_01_element_00_01_address_t_01_4_01_4}{std\+::pointer\+\_\+traits$<$ distant\+::memory\+::virtual\+\_\+ptr$<$ Element, Address\+T $>$ $>$}}
+\item 
+struct \mbox{\hyperlink{structstd_1_1pointer__traits_3_01distant_1_1memory_1_1virtual__ptr_3_01_element_00_01_address_t_01_4_01_4_1_1rebind}{std\+::pointer\+\_\+traits$<$ distant\+::memory\+::virtual\+\_\+ptr$<$ Element, Address\+T $>$ $>$\+::rebind$<$ U $>$}}
+\item 
+struct \mbox{\hyperlink{structstd_1_1iterator__traits_3_01distant_1_1memory_1_1virtual__ptr_3_01_element_00_01_address_t_01_4_01_4}{std\+::iterator\+\_\+traits$<$ distant\+::memory\+::virtual\+\_\+ptr$<$ Element, Address\+T $>$ $>$}}
+\end{DoxyCompactItemize}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \mbox{\hyperlink{namespacedistant}{distant}}
+\item 
+ \mbox{\hyperlink{namespacedistant_1_1memory}{distant\+::memory}}
+\item 
+ \mbox{\hyperlink{namespacestd}{std}}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename Element , typename AddressT  = dword$>$ }\\bool \mbox{\hyperlink{namespacedistant_1_1memory_a266da479d4c10610b10d6ad71986cf39}{distant\+::memory\+::operator==}} (virtual\+\_\+ptr$<$ Element, AddressT $>$ lhs, nullptr\+\_\+t)
+\item 
+{\footnotesize template$<$typename Element , typename AddressT  = dword$>$ }\\bool \mbox{\hyperlink{namespacedistant_1_1memory_a8b98e15c5d137dd94c604799bce5279a}{distant\+::memory\+::operator==}} (nullptr\+\_\+t, virtual\+\_\+ptr$<$ Element, AddressT $>$ rhs)
+\item 
+{\footnotesize template$<$typename Element , typename AddressT  = dword$>$ }\\bool \mbox{\hyperlink{namespacedistant_1_1memory_a70bc692ecf97f1b944d73cb9499d5afd}{distant\+::memory\+::operator!=}} (virtual\+\_\+ptr$<$ Element, AddressT $>$ lhs, nullptr\+\_\+t)
+\item 
+{\footnotesize template$<$typename Element , typename AddressT  = dword$>$ }\\bool \mbox{\hyperlink{namespacedistant_1_1memory_a94b18e6bb8f8d8d45be25433fa3f3549}{distant\+::memory\+::operator!=}} (nullptr\+\_\+t, virtual\+\_\+ptr$<$ Element, AddressT $>$ rhs)
+\item 
+{\footnotesize template$<$typename Element , typename AddressT $>$ }\\virtual\+\_\+ptr$<$ Element, AddressT $>$ \mbox{\hyperlink{namespacedistant_1_1memory_a960d8c20d10f2451ed596b4de4498bcd}{distant\+::memory\+::make\+\_\+virtual\+\_\+ptr}} (const process$<$ detail\+::required\+\_\+vm\+\_\+access$<$ Element $>$\+::value $>$ \&p, const address$<$ AddressT $>$ address=nullptr) noexcept
+\item 
+{\footnotesize template$<$typename Element $>$ }\\virtual\+\_\+ptr$<$ Element, dword $>$ \mbox{\hyperlink{namespacedistant_1_1memory_acb30dfca8c04ed8d001247c5073067e0}{distant\+::memory\+::make\+\_\+virtual\+\_\+ptr}} (const process$<$ detail\+::required\+\_\+vm\+\_\+access$<$ Element $>$\+::value $>$ \&p, const address$<$ dword $>$ address=0) noexcept
+\item 
+{\footnotesize template$<$typename T , typename AddressT , typename CharT , typename Traits $>$ }\\std\+::basic\+\_\+ostream$<$ CharT, Traits $>$ \& \mbox{\hyperlink{namespacedistant_1_1memory_a9fa01f25df79ff7c22a84d717fdb4539}{distant\+::memory\+::operator$<$$<$}} (std\+::basic\+\_\+ostream$<$ CharT, Traits $>$ \&stream, virtual\+\_\+ptr$<$ T, AddressT $>$ p)
+\end{DoxyCompactItemize}
