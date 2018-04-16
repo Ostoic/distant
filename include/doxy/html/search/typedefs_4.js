@@ -1,6 +1,0 @@
-var searchData=
-[
-  ['element_5ftype',['element_type',['../classdistant_1_1memory_1_1virtual__ptr.html#ac3e54c3aeee6754a34e24e4a197e7f28',1,'distant::memory::virtual_ptr::element_type()'],['../structstd_1_1pointer__traits_3_01distant_1_1memory_1_1virtual__ptr_3_01_element_00_01_address_t_01_4_01_4.html#aae4043c377c927cc41710ef77db00698',1,'std::pointer_traits&lt; distant::memory::virtual_ptr&lt; Element, AddressT &gt; &gt;::element_type()']]],
-  ['entry_5ftype',['entry_type',['../structdistant_1_1kernel__objects_1_1detail_1_1snapshot__dispatcher_3_01kernel__objects_1_1process_3_01access_01_4_01_4.html#a64f7138cf29ff85be19dab0eb6603789',1,'distant::kernel_objects::detail::snapshot_dispatcher&lt; kernel_objects::process&lt; access &gt; &gt;::entry_type()'],['../structdistant_1_1kernel__objects_1_1detail_1_1snapshot__dispatcher_3_01kernel__objects_1_1process__base_01_4.html#a8bbf162cfc2b881188438a8f433e8296',1,'distant::kernel_objects::detail::snapshot_dispatcher&lt; kernel_objects::process_base &gt;::entry_type()']]],
-  ['error_5ftype',['error_type',['../classdistant_1_1kernel__objects_1_1process__base.html#af6e123be2cae7818d2695fd98a904f1e',1,'distant::kernel_objects::process_base::error_type()'],['../structdistant_1_1kernel__object__traits.html#a5dba6e5dfc0831aea1e024edd4cfb7d3',1,'distant::kernel_object_traits::error_type()']]]
-];
