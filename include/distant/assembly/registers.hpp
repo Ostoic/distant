@@ -8,7 +8,7 @@
 
 namespace distant::assembly
 {
-	enum class x86_register : distant::byte
+	enum class x86_register : byte
 	{
 		// Data segment
 		eax,
@@ -22,5 +22,21 @@ namespace distant::assembly
 		// Stack segment
 		ebp,
 		esp,
+	};
+
+	enum class x64_register : byte
+	{
+		// Data segment
+		rax,
+		rbx,
+		rcx,
+		rdx,
+		rsi,
+		rdi,
+		rip,
+
+		// Stack segment
+		rbp,
+		rsp,
 	};
 }

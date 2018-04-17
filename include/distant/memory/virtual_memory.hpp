@@ -79,4 +79,4 @@ namespace distant
 } // namespace memory
 
 // Implementation:
-#include <distant/memory/impl/virtual_memory.hxx>
+#include "impl/virtual_memory.hxx"

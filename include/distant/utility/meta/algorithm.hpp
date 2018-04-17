@@ -26,7 +26,7 @@ namespace distant::utility::meta
 	using generator_function = decltype(std::declval<T>()(0));
 
 	template <std::size_t Size, typename Generator, typename = std::enable_if_t<is_detected<generator_function, Generator>::value>>
-	constexpr auto generate(Generator&& generator) noexcept;
+	constexpr auto generate_array(Generator&& generator) noexcept;
 
 	template<class Tuple, class Func> 
 	void for_each_tuple(Tuple&& tuple, Func f) noexcept;

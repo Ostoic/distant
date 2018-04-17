@@ -13,34 +13,41 @@ namespace distant::assembly
 //{ctor}:
 	template <std::size_t C, std::size_t I>
 	constexpr static_assembler<C, I>::static_assembler(
-		const std::array<distant::byte, C>& instructions, 
-		const std::array<std::tuple<index, opcode_length, instruction_length>, I>& instruction_ptrs) noexcept
-			: bytes_(instructions)
-			, instruction_ptrs_(instruction_ptrs) 
+		std::array<byte, C> bytes,
+		std::array<index_t, I> instruction_ptrs) noexcept
+			: bytes(std::move(bytes))
+			, instruction_ptrs_(std::move(instruction_ptrs)) 
 	{}
 
 //interface:
 	template <std::size_t S, std::size_t C>
 	constexpr typename static_assembler<S, C>::iterator
-	static_assembler<S, C>::begin() const
+		static_assembler<S, C>::begin() const
 	{
 		return iterator{*this, 0};
 	}
 
 	template <std::size_t S, std::size_t C>
 	constexpr typename static_assembler<S, C>::iterator
-	static_assembler<S, C>::end() const
+		static_assembler<S, C>::end() const
 	{
 		return iterator{*this, C};
 	}
 
+	template <std::size_t S, std::size_t C>
+	constexpr auto static_assembler<S, C>::operator[](const index_t index) const noexcept
+	{
+		return static_instruction<S, C>(*this, index);
+	}
+
 //free:
 	template <std::size_t F, std::size_t FI, std::size_t S>
-	constexpr static_assembler<F + S, FI + 1> operator+(const static_assembler<F, FI>& first, const static_assembler<S, 1>& second) noexcept
+	constexpr static_assembler<F + S, FI + 1> 
+		operator+(const static_assembler<F, FI>& first, const static_assembler<S, 1>& second) noexcept
 	{
 		return {
-			utility::meta::append(first.bytes_, second.bytes_),
-			utility::meta::append(first.instruction_ptrs_, utility::meta::make_array(std::make_pair(F, S)))
+			utility::meta::append(first.bytes, second.bytes),
+			utility::meta::append(first.instruction_ptrs_, {F})
 		};
 	}
 
@@ -48,43 +55,36 @@ namespace distant::assembly
 	constexpr auto make_instruction(opcode op, Bytes&&... bytes) noexcept
 	{
 		using under = std::underlying_type_t<opcode>;
-		using index = std::size_t;
-		using length = std::size_t;
-		using op_length = std::size_t;
+		using utility::meta::make_array;
 		using distant::get_byte;
 
-		// The opcode can be represented by a byte
-		return static_assembler<sizeof...(Bytes) + sizeof(opcode), 1> {
-			std::array<distant::byte, sizeof...(Bytes) + opcode_length(op)> {
-				get_byte<0>(static_cast<under>(op)),
-				get_byte<1>(static_cast<under>(op)),
-				static_cast<distant::byte>(bytes)...
-			},
+		const auto bytes_array = make_array(
+			get_byte<0>(static_cast<under>(op)),
+			get_byte<1>(static_cast<under>(op)),
+			static_cast<byte>(bytes)...
+		);
 
-			{std::make_tuple(0, opcode_length(op), sizeof...(Bytes) + 2)}
-		};
+		// The opcode is represented by bytes_array.
+		return static_assembler<sizeof...(Bytes) + sizeof(opcode), 1>(bytes_array, {0});
 	}
 
 	constexpr auto make_instruction(opcode op) noexcept
 	{
-		using index = std::size_t;
-		using length = std::size_t;
 		using under = std::underlying_type_t<opcode>;
+		using utility::meta::make_array;
 		using distant::get_byte;
 
-		return static_assembler<sizeof(opcode), 1> {
-			{
-				static_cast<distant::byte>(get_byte<0>(static_cast<under>(op))),
-				static_cast<distant::byte>(get_byte<1>(static_cast<under>(op)))
-			},
+		const auto bytes_array = make_array(
+			static_cast<byte>(get_byte<0>(static_cast<under>(op))),
+			static_cast<byte>(get_byte<1>(static_cast<under>(op)))
+		);
 
-			{std::make_tuple(0, opcode_length(op), 2)}
-		};
+		return static_assembler<sizeof(opcode), 1>(bytes_array, {0});
 	}
 
-	template <std::size_t N, std::size_t Size, std::size_t InstrCount>
-	constexpr auto get(const static_assembler<Size, InstrCount>& a) noexcept
+	template <std::size_t N, std::size_t Size, std::size_t InstructionCount>
+	constexpr auto get_instruction(const static_assembler<Size, InstructionCount>& assembler) noexcept
 	{
-		return *(a.begin() + N);
+		return *(assembler.begin() + N);
 	}
 }

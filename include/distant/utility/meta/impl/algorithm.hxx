@@ -30,21 +30,20 @@ namespace distant::utility::meta
 		}
 
 		template <typename Generator, std::size_t... Is>
-		constexpr auto generate_impl(Generator&& gen, std::index_sequence<Is...>) noexcept
+		constexpr auto generate_array_impl(Generator&& gen, std::index_sequence<Is...>) noexcept
 		{
 			return make_array(
 				std::forward<Generator>(gen)(Is)...
 			);
 		}
 
-		template<class Tuple, class Func, size_t... Is>
-		void for_n_tuple_element_impl(Tuple&& tuple, Func f, const std::index_sequence<Is...>) noexcept
+		template<typename Tuple, typename Func, size_t... Is>
+		void for_n_tuple_element_impl(Tuple&& tuple, Func fn, const std::index_sequence<Is...>) noexcept
 		{
 			// Unpack variadic trick
-			int ignored[] = {
-				(static_cast<void>(f(
-					std::get<Is>(std::forward<Tuple>(tuple))
-				)), 0)...
+			int ignored[] = {(static_cast<void>(
+				fn(std::get<Is>(std::forward<Tuple>(tuple)))
+				), 0)...
 			};
 
 			(void)ignored;
@@ -80,12 +79,12 @@ namespace distant::utility::meta
 	}
 
 	template <std::size_t Size, typename Generator, typename>
-	constexpr auto generate(Generator&& generator) noexcept 
+	constexpr auto generate_array(Generator&& generator) noexcept 
 	{
-		return detail::generate_impl(std::forward<Generator>(generator), std::make_index_sequence<Size>{});
+		return detail::generate_array_impl(std::forward<Generator>(generator), std::make_index_sequence<Size>{});
 	}
 
-	template<class Tuple, class Func>
+	template<typename Tuple, typename Func>
 	void for_each_tuple(Tuple&& tuple, Func f) noexcept
 	{
 		detail::for_n_tuple_element_impl(
@@ -95,14 +94,14 @@ namespace distant::utility::meta
 		);
 	}
 
-	template<std::size_t N, class Tuple, class Func>
-	void for_n_tuple(Tuple&& tuple, Func f) noexcept
+	template<std::size_t N, typename Tuple, typename Func>
+	void for_n_tuple(Tuple&& tuple, Func fn) noexcept
 	{
 		static_assert(N < std::tuple_size<Tuple>::value, "Index past the range of tuple_size");
 
 		detail::for_n_tuple_element_impl(
 			std::forward<Tuple>(tuple),
-			f,
+			fn,
 			N
 		);
 	}

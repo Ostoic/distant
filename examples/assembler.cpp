@@ -6,27 +6,43 @@
 #include <distant/assembly/ops.hpp>
 #include <distant/assembly/static_assembler.hpp>
 
+void test()
+{
+	int x;
+}
+
 int main()
 {
 	namespace ops = distant::assembly::ops;
 	using distant::assembly::x86_register;
+	using ops::dword_ptr;
+	using distant::assembly::opcode;
 
 	constexpr distant::address entry_point = 0x400000;
 	constexpr auto assembler =
-		ops::pushad(); 
+		ops::mov(x86_register::esp, x86_register::esp) +
+		ops::push(x86_register::ebp) +
+		ops::mov(x86_register::edx, distant::address()) +
+		ops::call(x86_register::edx) +
+		//ops::sub(x86_register::esp, 4) +
+		ops::pop(x86_register::ebp);
+		//ops::
 
-	/*+
-		ops::push(2) +
-		ops::pop(x86_register::eax) +
-		ops::mov(x86_register::edx, ops::dword_ptr(x86_register::eax)) +
-		ops::mov(x86_register::ecx, 2) +
-		ops::popad() +
-		ops::nop();*/
+	distant::word a = 0xA1B1;
 
-	//for (const auto& instr : assembler)
-		//std::cout << instr << '\n';
-	std::cout << '\n';
-		
+	std::cout << "Byte = " << std::hex << static_cast<int>(distant::get_byte<1>(a)) << '\n';
+
+	distant::memory::write<opcode>(distant::current_process(), test, opcode::mov_eax_ptr_ebp);
+	std::cout << test << '\n';
+
+	for (const auto instr : assembler)
+		std::cout << instr << '\n';
+
+	//for (const auto instruction : assembler)
+		//std::cout << "Instruction size = " << instruction.size() << '\n';
+
+	//std::cout << '\n';
+	std::cin.ignore();
 	return 0;
 }
 

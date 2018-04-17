@@ -6,6 +6,7 @@
 
 #include <boost/winapi/basic_types.hpp>
 
+#include <distant/detail/config.hpp>
 #include <cstddef>
 
 namespace distant
@@ -20,6 +21,11 @@ namespace distant
 	//enum class byte : unsigned char {};
 	using byte = unsigned char;
 
+	using index_t = unsigned int;
+
+	template <typename Scalar, typename = std::enable_if_t<std::is_scalar<Scalar>::value>>
+	constexpr byte get_byte(index_t index, Scalar scalar) noexcept;
+
 	template <std::size_t N>
 	constexpr byte get_byte(distant::word bytes) noexcept;
 
@@ -28,6 +34,9 @@ namespace distant
 
 	template <std::size_t N>
 	constexpr byte get_byte(distant::qword bytes) noexcept;
+
+	template <typename Scalar>
+	constexpr Scalar reverse_bytes(Scalar scalar) noexcept;
 
 	template <typename... Bytes, typename = std::enable_if_t<sizeof...(Bytes) <= sizeof(distant::word)>>
 	constexpr word make_word(Bytes&&... bytes) noexcept;

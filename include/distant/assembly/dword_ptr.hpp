@@ -5,7 +5,7 @@
 #pragma once
 
 #include <distant/memory/address.hpp>
-#include <distant/assembly/x86_register.hpp>
+#include <distant/assembly/registers.hpp>
 
 namespace distant::assembly
 {

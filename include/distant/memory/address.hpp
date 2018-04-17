@@ -60,7 +60,7 @@ namespace distant
 		};
 
 		template <typename CharT, typename TraitsT, typename AddressT>
-		std::basic_ostream<CharT, TraitsT>& operator<<(std::basic_ostream<CharT, TraitsT>& stream, const distant::memory::address<AddressT> address);
+		std::basic_ostream<CharT, TraitsT>& operator<<(std::basic_ostream<CharT, TraitsT>& stream, address<AddressT> address);
 
 		template <std::size_t N, typename A>
 		constexpr byte get_byte(address<A>) noexcept;

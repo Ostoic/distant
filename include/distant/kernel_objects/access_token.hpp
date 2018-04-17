@@ -47,8 +47,6 @@ namespace distant
 
 			explicit access_token(const KernelObject& k) noexcept;
 
-			access_token(access_token&&) noexcept = default;
-
 		protected:
 			// Expose implementation to other access token types
 			template <access_rights::token, class>
@@ -58,18 +56,19 @@ namespace distant
 		/// @brief Retrieves the access token of the given kernel object.
 		/// @return the primary access token of the kernel object is a process, or it returns an impersonation access token if the kernel object is a thread.
 		template <access_rights::token Access, typename KernelObject, typename = std::enable_if_t<detail::has_token_access<KernelObject>::value, KernelObject>>
-		access_token<Access, KernelObject> get_access_token(const KernelObject&) noexcept;
+		access_token<Access, KernelObject> 
+			get_access_token(const KernelObject&) noexcept;
 
 		/// @brief Retrieves the access token of the given kernel object.
 		/// @return the primary access token of the kernel object is a process, or it returns an impersonation access token if the kernel object is a thread.
 		template <typename KernelObject, typename = std::enable_if_t<detail::has_token_access<KernelObject>::value, KernelObject>>
 		access_token<access_rights::token::adjust_privileges | access_rights::token::query, KernelObject>
-		get_access_token(const KernelObject&) noexcept;
+			get_access_token(const KernelObject&) noexcept;
 
 		/// @brief Retrieve the access token of the current process.
 		/// @return the primary access token of the current process.
 		access_token<access_rights::token::all_access, process<>>
-		get_access_token() noexcept;
+			get_access_token() noexcept;
 	} // namespace kernel_objects
 
 	using kernel_objects::access_token;

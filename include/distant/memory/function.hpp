@@ -26,11 +26,12 @@ namespace memory
 	public:
 		function() noexcept = default;
 
+		function(nullptr_t) : ptr_(nullptr) {}
+
 		//template <typename Fn, typename = std::enable_if_t<std::is_function<Fn>::value>>
 		//function(Fn&& fn) const noexcept;
 
-		explicit function(virtual_ptr<R(*)(Args...), AddressT> fn_ptr) 
-			: ptr_(fn_ptr) {}
+		explicit function(virtual_ptr<R(*)(Args...), AddressT> fn_ptr) : ptr_(fn_ptr) {}
 
 		R operator()(Args... args);
 

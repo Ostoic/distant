@@ -3,49 +3,43 @@
 // (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
 
 #pragma once
-#include <distant/memory/virtual_memory.hpp>
+#include "../virtual_memory.hpp"
 
 #include <distant/memory/type_traits.hpp>
+#include <distant/memory/customize_memory.hpp>
 
 namespace distant::memory
 {
-	template <typename T, typename AddressT>
-	void write(const process<vm_w_op>& proc, const address<AddressT> address, T x)
+		template <typename T, typename AddressT>
+	BOOST_FORCEINLINE
+		void write(const process<vm_w_op>& proc, const address<AddressT> address, T x)
 	{
-		SIZE_T bytes_read = 0;
-		T buffer = std::move(x);
-		if (!::WriteProcessMemory(proc.handle().native_handle(), reinterpret_cast<LPVOID>(static_cast<AddressT>(address)), &buffer, sizeof(T), &bytes_read))
-			throw windows_error("[memory::write] WriteProcessMemory failed, " + std::to_string(bytes_read) + " bytes written");
+		customize::write<T>::template 
+			invoke<AddressT>(proc, address, x);
 	}
 
 	template <typename T>
-	void write(const process<vm_w_op>& proc, const address<dword> address, T x)
+	BOOST_FORCEINLINE
+		void write(const process<vm_w_op>& proc, const address<dword> address, T x)
 	{
-		SIZE_T bytes_read = 0;
-		T buffer = std::move(x);
-		if (!::WriteProcessMemory(proc.handle().native_handle(), reinterpret_cast<LPVOID>(static_cast<dword>(address)), &buffer, sizeof(T), &bytes_read))
-			throw windows_error("[memory::write] WriteProcessMemory failed, " + std::to_string(bytes_read) + " bytes written");
+		customize::write<T>::template
+			invoke<dword>(proc, address, x);
 	}
 
 	template <typename T, typename AddressT>
-	T read(const process<vm_read>& process, const address<AddressT> address)
+	BOOST_FORCEINLINE
+		T read(const process<vm_read>& process, const address<AddressT> address)
 	{
-		T result;
-		SIZE_T bytes_read = 0;
-
-		if (!::ReadProcessMemory(process.handle().native_handle(), 
-								 reinterpret_cast<LPVOID>(static_cast<AddressT>(address)), 
-								 &result, sizeof(T), &bytes_read
-		))
-			throw windows_error("[memory::read] ReadProcessMemory failed, " + std::to_string(bytes_read) + " bytes read");
-
-		return result;
+		return customize::read<T>::template
+			invoke<AddressT>(process, address);
 	}
 
 	template <typename T>
-	T read(const process<vm_read>& proc, const address<dword> address)
+	BOOST_FORCEINLINE
+		T read(const process<vm_read>& process, const address<dword> address)
 	{
-		return read<T, dword>(proc, address);
+		return customize::read<T>::template
+			invoke<dword>(process, address);
 	}
 
 	template <typename AddressT>
