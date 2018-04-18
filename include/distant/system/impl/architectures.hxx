@@ -1,6 +1,8 @@
 #pragma once
 #include "../architectures.hpp"
 
+#include <distant/utility/meta/map.hpp>
+
 namespace distant::system
 {
 	namespace detail

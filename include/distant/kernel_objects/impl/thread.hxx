@@ -75,7 +75,7 @@ namespace distant::kernel_objects
 	{}
 
 	template <typename Fn, typename... Args>
-	thread::thread(const process<required_access>& process, memory::function<int> fn, Args&&... args)
+	thread::thread(const process<process_access>& process, memory::function<int> fn, Args&&... args)
 	{
 		//CreateRemoteThread(process.handle().native_handle(), nullptr, 0, , , ,)
 		// Remote thread launch on distant::function

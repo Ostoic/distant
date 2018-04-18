@@ -10,7 +10,7 @@ namespace kernel_objects
 	class thread
 	{
 	public:
-		static constexpr auto required_access = process_rights::create_thread | process_rights::query_information | vm_rw_op;
+		static constexpr auto process_access = process_rights::create_thread | process_rights::query_information | vm_rw_op;
 
 		static unsigned int hardware_concurrency() noexcept;
 
@@ -31,7 +31,7 @@ namespace kernel_objects
 		thread() noexcept;
 
 		template <typename Fn, typename... Args>
-		explicit thread(const process<required_access>&, function<int>, Args&&... args);
+		explicit thread(const process<process_access>&, function<int>, Args&&... args);
 
 		thread(thread&& other) noexcept;
 		thread& operator=(thread&& other) noexcept;

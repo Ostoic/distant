@@ -17,8 +17,8 @@ namespace distant::assembly
 	class static_assembler
 	{
 	public:
-		using iterator = static_assembler_iterator<ByteCount, InstructionCount>;
-		using const_iterator = iterator;
+		using const_iterator = static_assembler_iterator<ByteCount, InstructionCount>;
+		using iterator = const_iterator;
 
 	public: // {ctor}
 		constexpr static_assembler() = default;

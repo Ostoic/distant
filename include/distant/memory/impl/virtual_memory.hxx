@@ -6,7 +6,7 @@
 #include "../virtual_memory.hpp"
 
 #include <distant/memory/type_traits.hpp>
-#include <distant/memory/customize_memory.hpp>
+#include <distant/memory/customize_operations.hpp>
 
 namespace distant::memory
 {
