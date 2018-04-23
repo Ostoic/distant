@@ -28,7 +28,7 @@ namespace distant::memory
 			static_assert(std::is_standard_layout<T>::value);
 
 			template <typename AddressT>
-			T invoke(const process<vm_read>& process, const address<AddressT> address)
+			static T invoke(const process<vm_read>& process, const address<AddressT> address)
 			{
 				T result;
 				SIZE_T bytes_read = 0;

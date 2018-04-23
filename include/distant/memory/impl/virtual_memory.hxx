@@ -10,7 +10,7 @@
 
 namespace distant::memory
 {
-		template <typename T, typename AddressT>
+	template <typename T, typename AddressT>
 	BOOST_FORCEINLINE
 		void write(const process<vm_w_op>& proc, const address<AddressT> address, T x)
 	{
