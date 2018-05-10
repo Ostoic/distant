@@ -13,10 +13,10 @@ namespace distant::kernel_objects {
 	snapshot<O>::snapshot()
 		: handle_(kernel_objects::detail::get_snapshot_handle<object_type, snapshot>())
 	{
-		static_assert(
+		/*static_assert(
 			is_kernel_object<O>::value,
 			"[snapshot::{ctor}] Unable to take system snapshot of nonkernel object"
-		);
+		);*/
 
 		if (handle_ == nullptr)
 			throw windows_error("[snapshot::{ctor}] Invalid handle");

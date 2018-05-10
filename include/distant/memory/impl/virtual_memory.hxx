@@ -28,18 +28,18 @@ namespace distant::memory
 
 	template <typename T, typename AddressT>
 	BOOST_FORCEINLINE
-		T read(const process<vm_read>& process, const address<AddressT> address)
+		T read(const process<vm_read>& process, const address<AddressT> address, std::size_t size)
 	{
 		return customize::read<T>::template
-			invoke<AddressT>(process, address);
+			invoke<AddressT>(process, address, size);
 	}
 
 	template <typename T>
 	BOOST_FORCEINLINE
-		T read(const process<vm_read>& process, const address<dword> address)
+		T read(const process<vm_read>& process, const address<dword> address, std::size_t size)
 	{
 		return customize::read<T>::template
-			invoke<dword>(process, address);
+			invoke<dword>(process, address, size);
 	}
 
 	template <typename AddressT>

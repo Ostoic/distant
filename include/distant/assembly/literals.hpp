@@ -27,6 +27,7 @@ namespace distant::assembly
 		}
 
 		// Todo: Return static assembler somehow
+
 		constexpr opcode operator""_assm(const char* string, const std::size_t length)
 		{
 			return parse_op(string, length);

@@ -29,14 +29,14 @@ namespace distant
 	template <std::size_t N>
 	constexpr byte get_byte(const dword bytes) noexcept
 	{
-		static_assert(N < sizeof(word), "[distant::get_byte<dword>] Byte index out of range");
+		static_assert(N < sizeof(dword), "[distant::get_byte<dword>] Byte index out of range");
 		return get_byte(N, bytes);
 	}
 
 	template <std::size_t N>
 	constexpr byte get_byte(const qword bytes) noexcept
 	{
-		static_assert(N < sizeof(word), "[distant::get_byte<qword>] Byte index out of range");
+		static_assert(N < sizeof(qword), "[distant::get_byte<qword>] Byte index out of range");
 		return get_byte(N, bytes);
 	}
 

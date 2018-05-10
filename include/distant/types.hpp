@@ -49,7 +49,6 @@ namespace distant
 
 	template <typename Integer, typename... Bytes>
 	constexpr Integer make_integer(Bytes&&... bytes) noexcept;
-
 }
 
 #include <distant/impl/types.hxx>

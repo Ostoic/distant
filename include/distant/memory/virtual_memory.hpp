@@ -19,10 +19,10 @@ namespace distant
 		void write(const process<vm_w_op>& proc, address<dword> address, T x);
 
 		template <typename T, typename AddressT>
-		T read(const process<vm_read>& proc, address<AddressT> address);
+		T read(const process<vm_read>& process, address<AddressT> address, std::size_t size = sizeof(T));
 
 		template <typename T>
-		T read(const process<vm_read>& proc, address<dword> address);
+		T read(const process<vm_read>& proc, address<dword> address, std::size_t size = sizeof(T));
 
 		page_protection virtual_protect(const process<vm_op>& process, address<dword> address, page_protection protection, std::size_t size);
 
