@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <distant/detail/config.hpp>
+#include <distant/config.hpp>
 #include <distant/memory/virtual_memory.hpp>
 #include <distant/memory/virtual_allocator.hpp>
 #include <distant/memory/function.hpp>

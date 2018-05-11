@@ -6,7 +6,7 @@
 
 #include <string>
 #include <distant/security/luid.hpp>
-#include <distant/detail/config.hpp>
+#include <distant/config.hpp>
 
 #include <distant/support/winapi/privilege.hpp>
 #include <distant/support/winapi/token.hpp>

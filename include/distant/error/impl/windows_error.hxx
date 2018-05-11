@@ -12,7 +12,7 @@
 #include <boost/winapi/local_memory.hpp>
 #include <boost/winapi/limits.hpp>
 
-#include <distant/detail/config.hpp>
+#include <distant/config.hpp>
 #include <distant/support/winapi/last_error.hpp>
 
 namespace distant {

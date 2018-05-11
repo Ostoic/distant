@@ -6,7 +6,7 @@
 
 #include <boost/winapi/basic_types.hpp>
 
-#include <distant/detail/config.hpp>
+#include <distant/config.hpp>
 #include <cstddef>
 
 namespace distant

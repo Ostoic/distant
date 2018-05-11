@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <distant/config.hpp>
+
 #ifndef DISTANT_FILESYSTEM_CONFIG
 #	define DISTANT_FILESYSTEM_CONFIG
 #	ifdef __cpp_lib_filesystem
