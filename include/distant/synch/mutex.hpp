@@ -15,18 +15,18 @@ namespace synch   {
 	public:
 		/// @brief Default construct an anonymous mutex.
 		/// The mutex is not initially locked.
-		/// @exception Throws a std::system_error in the event an API call fails.
+		/// @exception Throws a windows_error in the event an API call fails.
 		mutex();
 
 		/// @brief Construct a named mutex that can be newly created, or opens an existing mutex.
 		/// The mutex is not initially locked.
 		/// @param name the name of the mutex.
 		/// @param create_new specifies whether or not to create a new mutex, or to open an existing one.
-		/// @exception Throws a std::system_error in the event an API call fails.
+		/// @exception Throws a windows_error in the event an API call fails.
 		explicit mutex(const std::wstring& name, bool create_new = true);
 
-		/// @brief Lock the mutex.
-		/// @exception Throws a std::system_error in the event an API call fails.
+		/// @brief Lock the mutex (blocking).
+		/// @exception Throws a windows_error in the event an API call fails.
 		void lock();
 
 		/// @brief Unlock the mutex.
@@ -34,7 +34,7 @@ namespace synch   {
 
 		/// @brief Nonblocking lock that immediately returns.
 		/// @return true if the lock was successful, false otherwise.
-		/// @exception Throws a std::system_error in the event an API call fails.
+		/// @exception Throws a windows_error in the event an API call fails.
 		bool try_lock();
 
 		/// @brief Get the handle to the mutex.

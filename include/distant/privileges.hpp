@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <distant/detail/config.hpp>
+#include <distant/config.hpp>
 #include <distant/security/privileges.hpp>
 
 namespace distant

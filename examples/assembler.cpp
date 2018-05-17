@@ -19,6 +19,9 @@ int main()
 	using distant::assembly::opcode;
 
 	constexpr distant::address entry_point = 0x400000;
+
+	// use user-defined literals for assembly instructions?
+	// "mov esp, esp"_r ?
 	constexpr auto assembler =
 		ops::mov(x86_register::esp, x86_register::esp) +
 		ops::push(x86_register::ebp) +

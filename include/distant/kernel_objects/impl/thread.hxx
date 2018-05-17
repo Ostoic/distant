@@ -14,9 +14,9 @@ namespace distant::kernel_objects
 	inline void thread::join()
 	{
 		if (!this->joinable())
-			throw std::invalid_argument("[thread::join] Invalid join on non-joinable thread");
+			throw std::invalid_argument("[thread::join] Invalid join on unjoinable thread");
 
-		if (this->id_ == GetCurrentThreadId())
+		if (id_ == GetCurrentThreadId())
 			throw std::invalid_argument("[thread::join] Join on current thread, deadlock would occur");
 
 		namespace winapi = boost::winapi;
@@ -63,10 +63,9 @@ namespace distant::kernel_objects
 		return handle_;
 	}
 
-
 	inline unsigned int thread::id() const noexcept
 	{
-		return this->id_;
+		return id_;
 	}
 
 	inline thread::thread() noexcept
@@ -74,12 +73,22 @@ namespace distant::kernel_objects
 		, id_(0)
 	{}
 
+	inline thread::thread(distant::handle<thread>&& handle) noexcept
+		: handle_(std::move(handle))
+		, id_(GetThreadId(handle.native_handle()))
+	{}
+
 	template <typename Fn, typename... Args>
 	thread::thread(const process<process_access>& process, memory::function<int> fn, Args&&... args)
 	{
+		address start_address = 0;
 		//CreateRemoteThread(process.handle().native_handle(), nullptr, 0, , , ,)
 		// Remote thread launch on distant::function
-		handle_ = ::CreateRemoteThread(process.handle().native_handle(), nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(static_cast<dword>(fn.address())), nullptr, 0, &id_);
+		// Todo: CreateRemoteThread or RtlCreateUserThread to start a thread in the process at the start of some executable memory (start_address).
+		// Todo: Write each argument in the variadic pack to a section of the allocated memory.
+		// Todo: Pass in the parameters according to the calling convetion specified by fn.
+		// Todo: The thread will then call the desired function fn with the given parameters.
+		handle_ = ::CreateRemoteThread(process.handle().native_handle(), nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(static_cast<dword>(start_address)), nullptr, 0, &id_);
 		
 	}
 

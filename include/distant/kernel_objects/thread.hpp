@@ -30,6 +30,8 @@ namespace kernel_objects
 	public:
 		thread() noexcept;
 
+		explicit thread(distant::handle<thread>&& handle) noexcept;
+
 		template <typename Fn, typename... Args>
 		explicit thread(const process<process_access>&, function<int>, Args&&... args);
 

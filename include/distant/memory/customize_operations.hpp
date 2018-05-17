@@ -88,7 +88,7 @@ namespace distant::memory
 				))
 					throw windows_error("[memory::read<std::string>] ReadProcessMemory failed, " + std::to_string(bytes_read) + " bytes read");
 
-				return buffer;
+				return buffer.c_str();
 			}
 		};
 	}

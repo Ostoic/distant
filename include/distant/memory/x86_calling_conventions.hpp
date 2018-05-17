@@ -6,6 +6,7 @@
 
 namespace distant::memory::x86_calling_conventions
 {
+	// Todo: Traits classes? or what
 	struct cdeclcall
 	{
 
