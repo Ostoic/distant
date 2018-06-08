@@ -14,7 +14,8 @@
 
 namespace distant::kernel_objects
 {
-	// snapshot_iterator models the InputIterator concept
+	/// @brief An iterator that lazily traverses the specifeid system snapshot upon being incremented.
+	/// @remark snapshot_iterator models the InputIterator concept
 	template <typename KernelObject>
 	class snapshot_iterator :
 		public boost::iterator_facade<

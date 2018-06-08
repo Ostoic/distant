@@ -6,3 +6,4 @@
 
 #include <distant/config.hpp>
 #include <distant/system/information.hpp>
+#include <distant/system/performance_information.hpp>

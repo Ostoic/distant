@@ -86,7 +86,7 @@ namespace distant::system
 		}
 	}
 
-	inline unsigned int processor_type() noexcept
+	inline uint processor_type() noexcept
 	{ return detail::get_system_info_impl().dwProcessorType; }
 
 	inline std::size_t page_size() noexcept
@@ -98,7 +98,7 @@ namespace distant::system
 	inline std::size_t intallocation_granularity() noexcept
 	{ return detail::get_system_info_impl().dwAllocationGranularity; }
 
-	inline unsigned int number_of_processors() noexcept
+	inline uint number_of_processors() noexcept
 	{ return detail::get_system_info_impl().dwNumberOfProcessors; }
 
 	inline processor_architecture architecture() noexcept

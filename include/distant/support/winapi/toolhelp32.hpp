@@ -11,6 +11,9 @@
 struct PROCESSENTRY32;
 struct PROCESSENTRY32W;
 
+struct THREADENTRY32;
+struct THREADENTRY32W;
+
 BOOST_SYMBOL_IMPORT boost::winapi::BOOL_ WINAPI Process32FirstW(
 	boost::winapi::HANDLE_ hSnapshot,
 	::PROCESSENTRY32W* lppe

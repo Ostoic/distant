@@ -25,7 +25,7 @@ namespace distant
 			using object_type = KernelObject;
 			using handle_type = handle<snapshot>;
 
-			using iterator = snapshot_iterator<KernelObject>;
+			using iterator		 = snapshot_iterator<KernelObject>;
 			using const_iterator = snapshot_iterator<KernelObject>;
 
 		public: // interface

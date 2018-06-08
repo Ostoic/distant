@@ -89,10 +89,10 @@ namespace distant::detail {
 
 //free:
 	// CompareObjectHandles is only available with the Windows 10 SDK or higher. 
-	inline constexpr bool operator ==(const handle_base& lhs, const handle_base& rhs) noexcept
+	constexpr bool operator ==(const handle_base& lhs, const handle_base& rhs) noexcept
 	{ return lhs.native_handle_ == rhs.native_handle_; }
 
-	inline constexpr bool operator !=(const handle_base& lhs, const handle_base& rhs) noexcept
+	constexpr bool operator !=(const handle_base& lhs, const handle_base& rhs) noexcept
 	{ return !operator==(lhs, rhs); }
 
 } // end namespace distant

@@ -11,7 +11,7 @@ namespace distant::memory
 	{
 	public:
 		page(address<AddressT> address) noexcept
-			: base_(address - (address % system::page_size()))
+			: base_(address - (address % this->size()))
 		{}
 
 		address<AddressT> base() const noexcept { return base_; }

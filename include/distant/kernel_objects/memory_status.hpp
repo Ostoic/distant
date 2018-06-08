@@ -58,7 +58,7 @@ namespace kernel_objects
 
 using kernel_objects::get_memory_status;
 
-} // end namespace kernel_objects
+} // namespace kernel_objects
 
 // Implementation:
 #include "impl/memory_status.hxx"

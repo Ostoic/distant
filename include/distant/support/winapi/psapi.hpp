@@ -9,11 +9,19 @@
 #if !defined (BOOST_USE_WINDOWS_H)
 
 struct PROCESS_MEMORY_COUNTERS;
+struct PERFORMANCE_INFORMATION;
 
 BOOST_SYMBOL_IMPORT boost::winapi::BOOL_ WINAPI K32GetProcessMemoryInfo(
 	boost::winapi::HANDLE_ Process,
 	::PROCESS_MEMORY_COUNTERS* ppsmemCounters,
-	boost::winapi::DWORD_ cb);
+	boost::winapi::DWORD_ cb
+);
+
+BOOST_SYMBOL_IMPORT boost::winapi::BOOL_ WINAPI GetPerformanceInfo(
+	_Out_ ::PERFORMANCE_INFORMATION* pPerformanceInformation,
+	_In_  DWORD                    cb
+);
+
 #endif // !defined BOOST_USE_WINDOWS_H
 
 namespace boost  {
@@ -32,6 +40,23 @@ namespace winapi {
 		boost::winapi::SIZE_T_ PeakPagefileUsage;
 	} PROCESS_MEMORY_COUNTERS_;
 	typedef PROCESS_MEMORY_COUNTERS_ *PPROCESS_MEMORY_COUNTERS_;
+
+	typedef struct _PERFORMANCE_INFORMATION_ {
+		DWORD_  cb;
+		SIZE_T_ CommitTotal;
+		SIZE_T_ CommitLimit;
+		SIZE_T_ CommitPeak;
+		SIZE_T_ PhysicalTotal;
+		SIZE_T_ PhysicalAvailable;
+		SIZE_T_ SystemCache;
+		SIZE_T_ KernelTotal;
+		SIZE_T_ KernelPaged;
+		SIZE_T_ KernelNonpaged;
+		SIZE_T_ PageSize;
+		DWORD_  HandleCount;
+		DWORD_  ProcessCount;
+		DWORD_  ThreadCount;
+	} PERFORMANCE_INFORMATION_, *PPERFORMANCE_INFORMATION_;
 
 #if BOOST_USE_WINAPI_VERSION >= BOOST_WINAPI_VERSION_WINXP
 	typedef struct _PROCESS_MEMORY_COUNTERS_EX_ {
@@ -59,7 +84,18 @@ namespace winapi {
 		return ::K32GetProcessMemoryInfo(
 			Process,
 			reinterpret_cast<::PROCESS_MEMORY_COUNTERS*>(ppsmemCounters),
-			cb);
+			cb
+		);
+	}
+
+	BOOST_FORCEINLINE bool get_performance_info(
+		PERFORMANCE_INFORMATION_* performance_information,
+		DWORD_ cb)
+	{
+		return ::GetPerformanceInfo(
+			reinterpret_cast<::PERFORMANCE_INFORMATION*>(performance_information),
+			cb
+		);
 	}
 
 } // namespace winapi
