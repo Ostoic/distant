@@ -1,6 +1,6 @@
 #pragma once
 
-namespace distant::synch
+namespace distant::sync
 {
 	class mutex;
 

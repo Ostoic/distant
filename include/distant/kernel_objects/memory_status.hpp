@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <distant/config.hpp>
 #include <distant/kernel_objects/process.hpp>
 #include <distant/support/winapi/psapi.hpp>
 
@@ -54,6 +55,7 @@ namespace kernel_objects
 	{
 		return memory_status(p);
 	}
+
 } // namespace kernel_objects
 
 using kernel_objects::get_memory_status;

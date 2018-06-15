@@ -9,7 +9,8 @@
 
 #include <string>
 
-namespace distant::system {
+namespace distant::system 
+{
 
 	const filesystem::path& windows_path();
 
@@ -19,13 +20,13 @@ namespace distant::system {
 
 	std::wstring username();
 
-	uint processor_type() noexcept;
+	unsigned int processor_type() noexcept;
 
 	std::size_t page_size() noexcept;
 
 	std::size_t allocation_granularity() noexcept;
 
-	uint number_of_processors() noexcept;
+	unsigned int number_of_processors() noexcept;
 
 	processor_architecture architecture() noexcept;
 

@@ -4,8 +4,8 @@
 
 #include <boost/winapi/wait.hpp>
 
-namespace distant {
-namespace synch   {
+namespace distant::sync 
+{
 	/// @brief A system-wide mutex satisfying the [Lockable](http://en.cppreference.com/w/cpp/concept/Lockable) concept.
 	class mutex
 	{
@@ -66,11 +66,9 @@ namespace synch   {
 		Mutex& mutex_;
 	};
 
-} // namespace synch
+} // namespace distant::sync
 
-	using synch::mutex;
-
-} // namespace distant
+namespace distant { using sync::mutex; }
 
 // Implementation
 #include "impl/mutex.hxx"

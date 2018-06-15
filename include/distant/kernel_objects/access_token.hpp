@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <distant/config.hpp>
 #include <distant/type_traits.hpp>
 #include <distant/kernel_objects/type_traits.hpp>
 #include <distant/handle.hpp>

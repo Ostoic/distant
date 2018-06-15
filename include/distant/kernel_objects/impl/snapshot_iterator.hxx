@@ -61,6 +61,7 @@ namespace distant::kernel_objects
 		namespace snapshot_entry = detail::snapshot_entry;
 
 		// Continue iterating until we obtain a valid kernel_object handle, or until the API call fails.
+		// Note: entry_ is reused internally, so a new \a entry_type is not created after each iterator increment.
 		while (snapshot_entry::next<K>(native_snap_, *entry_))
 		{
 			// Check if we received a valid handle

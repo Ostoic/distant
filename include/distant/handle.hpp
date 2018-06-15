@@ -4,18 +4,18 @@
 
 #pragma once
 
-#include <distant/detail/handle_base.hpp>
 #include <distant/type_traits.hpp>
+#include <distant/unsafe_handle.hpp>
 
 namespace distant
 {		
 	// Todo: Closure policies for different types of handles CloseHandle, 
 	/// Type-safe handle for windows objects
 	template <typename ObjectT>
-	class handle : public detail::handle_base
+	class handle : public unsafe_handle
 	{
 	private:
-		using handle_base = handle_base;
+		using handle_base = unsafe_handle;
 
 	public:
 		using object_type = ObjectT;
@@ -72,5 +72,4 @@ namespace distant
 } // end namespace distant
 
 
-
-#include <distant/impl/handle.hxx>
+#include "impl/handle.hxx"

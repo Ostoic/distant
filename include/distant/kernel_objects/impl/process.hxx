@@ -22,9 +22,10 @@ namespace distant::kernel_objects
 		static_assert(
 			check_permission(T, process_rights::terminate),
 			"Invalid access_rights (process::terminate): "
-			"Process must have terminate access right");
+			"Process must have terminate access right"
+		);
 
-		process_base::kill();
+		unsafe_process::kill();
 		return;
 	}
 
@@ -37,25 +38,27 @@ namespace distant::kernel_objects
 		static_assert(
 			check_permission(T, process_rights::query_limited_information),
 			"Invalid access_rights (process::terminate): "
-			"Process must have terminate access right");
+			"Process must have terminate access right"
+		);
 
-		return process_base::handle_count();
+		return unsafe_process::handle_count();
 	}
 
 	template <access_rights::process T>
 	template <typename Return>
 	auto process<T>::is_active() const
-		-> require_permission<process_rights::synchronize, Return>
+		-> require_permission<process_rights::syncronize, Return>
 	{
 		using access_rights = access_rights::process;
 
 		// The WaitForSingleObject API call requires the following access rights.
 		static_assert(
-			check_permission(T, access_rights::synchronize),
+			check_permission(T, access_rights::syncronize),
 			"[process::is_active] Invalid access rights: "
-			"Process must have synchronize access right");
+			"Process must have syncronize access right"
+		);
 
-		return process_base::is_active();
+		return unsafe_process::is_active();
 	}
 
 	template <access_rights::process T>
@@ -68,9 +71,10 @@ namespace distant::kernel_objects
 			check_permission(T, process_rights::query_information) ||
 			check_permission(T, process_rights::query_limited_information),
 			"[process::is_32bit] Invalid access rights: "
-			"Process must have query_information or query_limited_information access rights");
+			"Process must have query_information or query_limited_information access rights"
+		);
 
-		return process_base::is_32bit();
+		return unsafe_process::is_32bit();
 	}
 
 	template <access_rights::process T>
@@ -83,9 +87,10 @@ namespace distant::kernel_objects
 			check_permission(T, process_rights::query_information) ||
 			check_permission(T, process_rights::query_limited_information),
 			"[process::is_64bit] Invalid access rights: "
-			"Process must have query_information or query_limited_information access rights");
+			"Process must have query_information or query_limited_information access rights"
+		);
 
-		return process_base::is_64bit();
+		return unsafe_process::is_64bit();
 	}
 
 	template <access_rights::process T>
@@ -98,9 +103,10 @@ namespace distant::kernel_objects
 			check_permission(T, process_rights::query_information) ||
 			check_permission(T, process_rights::query_limited_information),
 			"Invalid access rights (process::name): "
-			"Process must have query_information or query_limited_information access rights");
+			"Process must have query_information or query_limited_information access rights"
+		);
 
-		return process_base::name();
+		return unsafe_process::name();
 	}
 
 	template <access_rights::process T>
@@ -113,9 +119,10 @@ namespace distant::kernel_objects
 			check_permission(T, process_rights::query_information) ||
 			check_permission(T, process_rights::query_limited_information),
 			"Invalid access rights (process::file_path): "
-			"Process must have query_information or query_limited_information access rights");
+			"Process must have query_information or query_limited_information access rights"
+		);
 
-		return process_base::file_path();
+		return unsafe_process::file_path();
 	}
 	
 	template <access_rights::process T>
@@ -129,12 +136,12 @@ namespace distant::kernel_objects
 	{ return *reinterpret_cast<const process<OtherAccess>*>(this); }
 
 	/*template <access_rights::process T>
-	process<T>::operator const process_base&() const noexcept
-	{ return *reinterpret_cast<const process_base*>(this); }
+	process<T>::operator const unsafe_process&() const noexcept
+	{ return *reinterpret_cast<const unsafe_process*>(this); }
 
 	template <access_rights::process T>
-	process<T>::operator process_base&() noexcept
-	{ return *reinterpret_cast<process_base*>(this); }*/
+	process<T>::operator unsafe_process&() noexcept
+	{ return *reinterpret_cast<unsafe_process*>(this); }*/
 
 //=========================//
 // Process ctors and dtor  //
@@ -142,31 +149,31 @@ namespace distant::kernel_objects
 // Empty initialize process
 	template <access_rights::process T>
 	constexpr process<T>::process() noexcept
-		: process_base()
+		: unsafe_process()
 	{}
 
 	// Open process by id
 	template <access_rights::process T>
 	process<T>::process(const std::size_t id) noexcept
-		: process_base(id, T)
+		: unsafe_process(id, T)
 	{}
 
 	// Take possession of process handle. It is ensured to be a convertible process handle
 	// due to encoded type in handle.
 	template <access_rights::process T>
 	process<T>::process(distant::handle<process>&& handle) noexcept
-		: process_base(std::move(handle), T)
+		: unsafe_process(std::move(handle), T)
 	{}
 
 	template <access_rights::process T>
 	process<T>::process(process&& other) noexcept
-		: process_base(std::move(other))
+		: unsafe_process(std::move(other))
 	{}
 
 	template <access_rights::process T>
 	process<T>& process<T>::operator=(process&& other) noexcept
 	{
-		process_base::operator=(std::move(other));
+		unsafe_process::operator=(std::move(other));
 		return *this;
 	}
 

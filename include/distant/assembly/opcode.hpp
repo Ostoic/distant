@@ -302,7 +302,8 @@ namespace distant::memory::customize
 		static void invoke(const process<vm_w_op>& proc, const address<AddressT> address, const assembly::opcode opcode)
 		{
 			using under_t = std::underlying_type_t<assembly::opcode>;
-			//if (opcode_length(opcode) == 1)
+
+			// Write the bytes of the given opcode in reverse due to endianness
 			write<under_t>::invoke<AddressT>(proc, address, reverse_bytes(static_cast<under_t>(opcode)));
 		}
 	};

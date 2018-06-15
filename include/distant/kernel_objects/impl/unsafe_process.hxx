@@ -3,10 +3,10 @@
 // (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
 
 #pragma once
-#include <distant/kernel_objects/process_base.hpp>
+#include "../unsafe_process.hpp"
 
 // Implementation header of distant::kernel_objects::process
-#include <distant/synch/wait.hpp>
+#include <distant/sync/wait.hpp>
 
 #include <distant/support/filesystem.hpp>
 #include <distant/support/winapi/process.hpp>
@@ -20,10 +20,10 @@
 
 namespace distant::kernel_objects
 {
-	//protected:
-	inline process_base::handle_type process_base::open(const std::size_t pid, access_rights_t access) noexcept
+//protected:
+	inline unsafe_process::handle_type unsafe_process::open(const std::size_t pid, process_rights access) noexcept
 	{
-		using flag_t = std::underlying_type_t<flag_type>;
+		using flag_t = std::underlying_type_t<process_rights>;
 
 #pragma warning(push)
 #pragma warning(disable:4267)
@@ -32,46 +32,46 @@ namespace distant::kernel_objects
 		return handle_type(result);
 	}
 
-	inline std::size_t process_base::get_pid(const handle_type& h) noexcept
+	inline std::size_t unsafe_process::get_pid(const handle_type& h) noexcept
 	{
-		const auto id = GetProcessId(h.native_handle());
+		const auto id = boost::winapi::GetProcessId(h.native_handle());
 		return static_cast<std::size_t>(id);
 	}
 
-	inline void process_base::kill()
+	inline void unsafe_process::kill()
 	{
-		BOOST_ASSERT_MSG(this->valid(), "[process_base::kill] invalid process handle");
+		BOOST_ASSERT_MSG(this->valid(), "[unsafe_process::kill] invalid process handle");
 
 		const unsigned int exit_code = 0;
 		boost::winapi::TerminateProcess(this->handle_.native_handle(), exit_code);
 	}
 
-	inline std::size_t process_base::handle_count() const
+	inline std::size_t unsafe_process::handle_count() const
 	{
-		BOOST_ASSERT_MSG(this->valid(), "[process_base::handle_count] invalid process handle");
+		BOOST_ASSERT_MSG(this->valid(), "[unsafe_process::handle_count] invalid process handle");
 
 		boost::winapi::DWORD_ count = 0;
 		if (!::GetProcessHandleCount(this->handle_.native_handle(), &count))
-			throw windows_error("[process_base::handle_count] GetProcessHandleCount failed");
+			throw windows_error("[unsafe_process::handle_count] GetProcessHandleCount failed");
 
 		return static_cast<std::size_t>(count);
 	}
 
-	inline bool process_base::is_active() const
+	inline bool unsafe_process::is_active() const
 	{
 		if (!this->valid()) return false;
 
-		const synch::wait wait_for;
+		const sync::wait wait_for;
 
 		// Return immediately
 		const auto result = wait_for(*this, 0);
 
-		return result == synch::wait::state::timeout;
+		return result == sync::wait::state::timeout;
 	}
 
-	inline bool process_base::is_32bit() const
+	inline bool unsafe_process::is_32bit() const
 	{
-		BOOST_ASSERT_MSG(this->valid(), "[process_base::is_32bit] invalid process handle");
+		BOOST_ASSERT_MSG(this->valid(), "[unsafe_process::is_32bit] invalid process handle");
 
 		// Note: Using bool here on some systems can corrupt the stack since
 		// sizeof(bool) != sizeof(BOOL).
@@ -84,17 +84,17 @@ namespace distant::kernel_objects
 		return result;
 	}
 
-	inline bool process_base::is_64bit() const
+	inline bool unsafe_process::is_64bit() const
 	{
 		return !this->is_32bit();
 	}
 
-	inline bool process_base::is_being_debugged() const
+	inline bool unsafe_process::is_being_debugged() const
 	{
-		BOOST_ASSERT_MSG(this->valid(), "[process_base::is_being_debugged] invalid process handle");
+		BOOST_ASSERT_MSG(this->valid(), "[unsafe_process::is_being_debugged] invalid process handle");
 
 		// If we are considering the current process, use IsDebuggerPresent.
-		if (this->id_ == GetCurrentProcessId())
+		if (this->id() == GetCurrentProcessId())
 			return IsDebuggerPresent();
 
 		// Otherwise use CheckRemoteDebuggerPresent.
@@ -103,7 +103,7 @@ namespace distant::kernel_objects
 		return result;
 	}
 
-	inline bool process_base::is_zombie() const
+	inline bool unsafe_process::is_zombie() const
 	{
 		/* Use of GetProcessVersion:
 		** I ran into a bug where OpenProcess would return a "valid" handle that did not refer to any process.
@@ -116,38 +116,35 @@ namespace distant::kernel_objects
 
 #pragma warning(push)
 #pragma warning(disable:4267)
-		return handle_ != nullptr && GetProcessVersion(this->id_) == 0;
+		return handle_ != nullptr && GetProcessVersion(this->id()) == 0;
 #pragma warning(pop)
 	}
 
-	inline std::wstring process_base::name() const
+	inline std::wstring unsafe_process::name() const
 	{
 		return this->file_path().filename().wstring();
 	}
 
-	inline filesystem::path process_base::file_path() const
+	inline filesystem::path unsafe_process::file_path() const
 	{
-		BOOST_ASSERT_MSG(this->valid(), "[process_base::file_path] invalid process handle");
+		BOOST_ASSERT_MSG(this->valid(), "[unsafe_process::file_path] invalid process handle");
 		
 		wchar_t buffer[boost::winapi::max_path];
 		boost::winapi::DWORD_ max_path = boost::winapi::max_path;
 
 		if (!boost::winapi::query_full_process_image_name(this->handle_.native_handle(), 0, buffer, &max_path))
-			throw windows_error("[process_base::file_path] query_full_process_image_name failed");
+			throw windows_error("[unsafe_process::file_path] query_full_process_image_name failed");
 
 		return buffer;
 	}
 
 //public:
-	inline bool process_base::valid() const noexcept
+	inline bool unsafe_process::valid() const noexcept
 	{
-		return
-			handle_.valid() &&
-			!this->is_zombie() &&
-			id_ != std::numeric_limits<std::size_t>::infinity();
+		return handle_.valid() && !this->is_zombie();
 	}
 
-	inline process_base::operator bool() const noexcept
+	inline unsafe_process::operator bool() const noexcept
 	{
 		return this->valid();
 	}
@@ -156,47 +153,40 @@ namespace distant::kernel_objects
 // Process ctors and dtor  //
 //=========================//
 	// Empty initialize process
-	inline process_base::process_base() noexcept
+	inline unsafe_process::unsafe_process() noexcept
 		: handle_()
-		, id_(std::numeric_limits<std::size_t>::infinity())
 		, access_rights_()
 	{}
 
-	inline process_base::process_base(const std::size_t id, const access_rights_t access) noexcept
+	inline unsafe_process::unsafe_process(const std::size_t id, const process_rights access) noexcept
 		: handle_(this->open(id, access))
-		, id_(id)
 		, access_rights_(access)
 	{}
 
-	inline process_base::process_base(process_base&& other) noexcept
+	inline unsafe_process::unsafe_process(unsafe_process&& other) noexcept
 		: handle_(std::move(other.handle_))
-		, id_(other.id_)
 		, access_rights_(other.access_rights_)	
 	{}
 
-	inline process_base::process_base(distant::handle<process_base>&& h, const access_rights_t access) noexcept
+	inline unsafe_process::unsafe_process(distant::handle<unsafe_process>&& h, const process_rights access) noexcept
 		: handle_(std::move(h))
-		, id_(GetProcessId(handle_.native_handle()))
 		, access_rights_(access)
 	{}
 
-	inline process_base& process_base::operator=(process_base&& other) noexcept
+	inline unsafe_process& unsafe_process::operator=(unsafe_process&& other) noexcept
 	{
 		handle_ = std::move(other.handle_);
 		access_rights_ = other.access_rights_;
-		id_ = other.id_;
 		return *this;
 	}
 
 	//free:
-	inline bool operator ==(const process_base& lhs, const process_base& rhs) noexcept
+	inline bool operator ==(const unsafe_process& lhs, const unsafe_process& rhs) noexcept
 	{
-		return /*lhs.handle_ == rhs.handle_ &&*/
-			lhs.id_ == rhs.id_;
-		//lhs.m_access == rhs.m_access;
+		return lhs.id() == rhs.id();
 	}
 
-	inline bool operator !=(const process_base& lhs, const process_base& rhs) noexcept
+	inline bool operator !=(const unsafe_process& lhs, const unsafe_process& rhs) noexcept
 	{
 		return !operator==(lhs, rhs);
 	}

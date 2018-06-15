@@ -5,10 +5,10 @@
 
 namespace distant::system
 {
-	class performance_information
+	class performance_info
 	{
 	public:
-		performance_information();
+		performance_info();
 
 		/// @brief The number of pages currently committed by the system. 
 		uint commited_pages() const;
@@ -57,4 +57,4 @@ namespace distant::system
 }
 
 // impl:
-#include "impl/performance_information.hxx"
+#include "impl/performance_info.hxx"

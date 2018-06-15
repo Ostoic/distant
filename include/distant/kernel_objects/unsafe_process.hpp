@@ -7,34 +7,33 @@
 #include <cstddef>
 #include <string>
 
-#include <distant/kernel_objects/kernel_object.hpp>
+#include <distant/config.hpp>
 #include <distant/type_traits.hpp>
-
+#include <distant/handle.hpp>
 #include <distant/support/filesystem.hpp>
 
-//#include <distant\memory\vm.h>
+namespace distant
+{
+	using kernel_objects::unsafe_process;
 
-namespace distant {
-namespace kernel_objects  {
+	template <>
+	struct kernel_object_traits<unsafe_process>
+		: default_kernel_object_traits<unsafe_process>
+	{};
+}
 
+namespace distant::kernel_objects 
+{
 	/// @brief Base type of distant::process
 	/// This version does not have static access_rights checking
-	class process_base
+	class unsafe_process
 	{
 	public:
 		// Object type information
-		using base_type = kernel_object;
-
-		using error_type		 = kernel_object_traits<process_base>::error_type;
-		using handle_type		 = kernel_object_traits<process_base>::handle_type;
-		using native_handle_type = kernel_object_traits<process_base>::native_handle_type;
-		using access_rights_t	 = process_rights;
-
-		// Process type information
-		using flag_type = access_rights_t;
+		using handle_type = kernel_object_traits<unsafe_process>::handle_type;
 
 	protected:
-		static handle_type open(std::size_t, access_rights_t) noexcept;
+		static handle_type open(std::size_t, process_rights) noexcept;
 
 		static std::size_t get_pid(const handle_type&) noexcept;
 
@@ -81,13 +80,13 @@ namespace kernel_objects  {
 
 		/// @brief Retrieve the process id.
 		/// @return the process id.
-		std::size_t id() const noexcept { return id_; }
+		std::size_t id() const noexcept { return unsafe_process::get_pid(handle_); }
 
-		const distant::handle<process_base>& handle() const noexcept { return handle_; }
+		const handle_type& handle() const noexcept { return handle_; }
 
 		/// @brief Get the access rights that were used to open the current process
 		/// @return process access_rights indicating the level of access we have to the process.
-		flag_type access_rights() const noexcept { return access_rights_; }
+		process_rights access_rights() const noexcept { return access_rights_; }
 		
 		/// @brief Test if the process kernel_object is valid
 		/// @return true if the process is valid, false otherwise.
@@ -95,33 +94,31 @@ namespace kernel_objects  {
 
 		/// @brief Test if the process kernel_object is valid
 		/// @return true if the process is valid, false otherwise.
-		operator bool() const noexcept;
+		explicit operator bool() const noexcept;
 
 	public: // {ctor}
 		/// @brief Construct an empty process
-		process_base() noexcept;
+		unsafe_process() noexcept;
 
 		/// @brief Open process by id
 		/// @param id the pid (process id) of the process to open.
 		/// @param access the requested access rights to open the process with.
-		explicit process_base(std::size_t id, access_rights_t access = access_rights_t::all_access) noexcept;
+		explicit unsafe_process(std::size_t id, process_rights access = process_rights::all_access) noexcept;
 
-		process_base(process_base&& other) noexcept; // move constructible
-		process_base& operator=(process_base&& other) noexcept; // move assignable
+		unsafe_process(unsafe_process&& other) noexcept; // move constructible
+		unsafe_process& operator=(unsafe_process&& other) noexcept; // move assignable
 
-		explicit process_base(distant::handle<process_base>&& handle, access_rights_t) noexcept;
+		explicit unsafe_process(distant::handle<unsafe_process>&& handle, process_rights) noexcept;
 
 	private:
-		friend bool operator ==(const process_base&, const process_base&) noexcept;
-		friend bool operator !=(const process_base&, const process_base&) noexcept;
+		friend bool operator ==(const unsafe_process&, const unsafe_process&) noexcept;
+		friend bool operator !=(const unsafe_process&, const unsafe_process&) noexcept;
 
 	protected:
-		distant::handle<process_base> handle_;
-		std::size_t id_;
-		access_rights_t access_rights_;
+		handle_type handle_;
+		process_rights access_rights_;
 	}; // end class process
 
-} // namespace kernel_objects
-} // namespace distant
+} // namespace distant::kernel_objects
 
-#include <distant/kernel_objects/impl/process_base.hxx>
+#include "impl/unsafe_process.hxx"

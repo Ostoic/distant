@@ -10,14 +10,15 @@ namespace distant
 {
 	namespace memory
 	{
-		template <typename Element, typename AddressT = dword>
+		template <typename Element, typename AddressT, process_rights AccessRights>
 		class virtual_reference
 		{
 		public:
-			using pointer    = typename std::pointer_traits<virtual_ptr<Element, AddressT>>::pointer;
-			using value_type = typename std::pointer_traits<virtual_ptr<Element, AddressT>>::element_type;
+			using pointer    = typename std::pointer_traits<virtual_ptr<Element, AddressT, AccessRights>>::pointer;
+			using value_type = typename std::pointer_traits<virtual_ptr<Element, AddressT, AccessRights>>::element_type;
 
 			static constexpr auto vm_access = virtual_traits<virtual_reference>::vm_access;
+			using process_type = typename pointer::process_type;
 
 			template <typename T>
 			using require_vm_access_to = std::enable_if_t<detail::required_vm_access<T>::value >= vm_access>;
@@ -28,16 +29,16 @@ namespace distant
 			template <
 				typename OtherElement,
 				typename OtherAddressT,
-				typename = require_vm_access_to<OtherElement>
+				process_rights OtherAccess
 			>
-			virtual_reference(virtual_reference<OtherElement, OtherAddressT> other) noexcept;
+			virtual_reference(virtual_reference<OtherElement, OtherAddressT, OtherAccess> other) noexcept;
 
 			template <
 				typename OtherElement,
-				typename OtherAddressT,
-				typename = require_vm_access_to<OtherElement>
+				typename OtherAddressT, 
+				process_rights OtherAccess
 			>
-			virtual_reference& operator=(virtual_reference<OtherElement, OtherAddressT> other) noexcept;
+			virtual_reference& operator=(virtual_reference<OtherElement, OtherAddressT, OtherAccess> other) noexcept;
 
 			template <
 				typename Value, 
@@ -83,32 +84,31 @@ namespace distant
 
 			virtual_reference& operator^=(const value_type& rhs);
 
+			process_type& process() const noexcept { return ptr_.process(); }
+			process_type& process()		  noexcept { return ptr_.process(); }
+
 		private:
-			template <typename E, typename Ad>
+			template <typename E, typename Ad, process_rights R>
 			friend class virtual_reference;
 
-			template <typename E, typename Ad>
+			template <typename E, typename Ad, process_rights R>
 			friend class virtual_ptr;
 
 			pointer ptr_;
 
 		}; // class virtual_reference
 
-		template <typename Element, typename AddressT, process_rights Access,
-			typename = std::enable_if_t<Access >= detail::required_vm_access<Element>::value>
-		>
+		template <typename Element, typename AddressT, process_rights Access>
 		auto make_virtual_reference(const process<Access>& process, const address<AddressT> address) noexcept
 		{ return *make_virtual_ptr<Element, AddressT>(process, address);}
 
-		template <typename Element, process_rights Access,
-			typename = std::enable_if_t<Access >= detail::required_vm_access<Element>::value>
-		>
+		template <typename Element, process_rights Access>
 		auto make_virtual_reference(const process<Access>& process, const address<dword> address) noexcept
 		{ return *make_virtual_ptr<Element, dword>(process, address);}
 
-		template <typename Element, typename AddressT>
-		struct virtual_traits<virtual_reference<Element, AddressT>>
-			 : virtual_traits<virtual_ptr<Element, AddressT>>
+		template <typename Element, typename AddressT, process_rights Access>
+		struct virtual_traits<virtual_reference<Element, AddressT, Access>>
+			 : virtual_traits<virtual_ptr<Element, AddressT, Access>>
 		{};
 
 	} // namespace memory

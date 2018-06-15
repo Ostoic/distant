@@ -9,10 +9,10 @@
 
 namespace distant::memory
 {
-	template <typename Element, typename AddressT>
+	template <typename Element, typename AddressT, process_rights AccessRights>
 	class virtual_ptr;
 
-	template <typename Element, typename AddressT>
+	template <typename Element, typename AddressT, process_rights AccessRights>
 	class virtual_reference;
 
 	template <typename AddressT>
@@ -24,6 +24,6 @@ namespace distant::memory
 	template <typename AddressT>
 	class page;
 
-	template <typename Signature, typename CallingConv, typename AddressT>
+	template <typename Signature, typename CallingConv, typename AddressT, process_rights AccessRights>
 	class function;
 }

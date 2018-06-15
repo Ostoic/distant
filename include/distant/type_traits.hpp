@@ -6,7 +6,7 @@
 
 #include <type_traits>
 
-#include <distant/kernel_objects/fwd.hpp>
+#include <distant/fwd.hpp>
 
 namespace distant {
 
@@ -34,13 +34,14 @@ namespace distant {
 	};
 
 	/// Contains kernel_object traits
-	template <class T>
-	struct kernel_object_traits 
+	template <typename KernelObject>
+	struct kernel_object_traits;
+
+	template <typename KernelObject>
+	struct default_kernel_object_traits
 	{
-		using handle_type = handle<T>;
-		using native_handle_type = void*;
-		using error_type  = error::windows_error_code;
-		using object_type = T;
+		using handle_type = distant::handle<KernelObject>;
+		using native_handle_type = boost::winapi::HANDLE_;
 	};
 
 	template <typename Object>

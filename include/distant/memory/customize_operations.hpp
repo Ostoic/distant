@@ -8,6 +8,7 @@ namespace distant::memory
 	/// @brief Provides customization points for memory operations.
 	namespace customize
 	{
+		/// Todo: Make this as one traits class and specialize for each needed customization
 		/// @brief memory::write standard layout customization point.
 		template <typename T>
 		struct write
@@ -15,10 +16,10 @@ namespace distant::memory
 			static_assert(std::is_standard_layout<T>::value);
 
 			template <typename AddressT>
-			static void invoke(const process<vm_w_op>& proc, const address<AddressT> address, T x)
+			static void invoke(const process<vm_w_op>& proc, const address<AddressT> address, T&& x)
 			{
 				SIZE_T bytes_written = 0;
-				T buffer = std::move(x);
+				T buffer = std::forward<T>(x);
 				if (!::WriteProcessMemory(proc.handle().native_handle(), reinterpret_cast<LPVOID>(static_cast<AddressT>(address)), &buffer, sizeof(T), &bytes_written))
 					throw windows_error("[memory::write] WriteProcessMemory failed, " + std::to_string(bytes_written) + " bytes written");
 			}
@@ -50,7 +51,7 @@ namespace distant::memory
 			static_assert(std::is_standard_layout<T>::value);
 
 			template <typename AddressT>
-			static T invoke(const process<vm_read>& process, const address<AddressT> address, std::size_t size)
+			static T invoke(const process<vm_read>& process, const address<AddressT> address, const std::size_t size)
 			{
 				T result;
 				SIZE_T bytes_read = 0;
@@ -73,7 +74,7 @@ namespace distant::memory
 		struct read<std::string>
 		{
 			template <typename AddressT>
-			static std::string invoke(const process<vm_read>& process, const address<AddressT> address, std::size_t size)
+			static std::string invoke(const process<vm_read>& process, const address<AddressT> address, const std::size_t size)
 			{
 				std::string buffer(size, 0);
 				SIZE_T bytes_read = 0;

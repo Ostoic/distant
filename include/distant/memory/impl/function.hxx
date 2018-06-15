@@ -3,8 +3,8 @@
 
 namespace distant::memory
 {
-	template <typename R, typename... As, typename CC, typename A>
-	R function<R(As...), CC, A>::operator()(As... args)
+	template <typename R, typename... Args, typename CallingConv, typename AddressT, process_rights AccessRights>
+	R function<R(Args...), CallingConv, AddressT, AccessRights>::operator()(Args&&... args)
 	{
 		// Todo:
 		// Require that a thread's entry point exists already?
@@ -20,10 +20,10 @@ namespace distant::memory
 		return R{};
 	}
 
-	template <typename R, typename... As, typename CC, typename A>
-	void function<R(As...), CC, A>::set_process(const process<required_process_rights>& process) noexcept
+	template <typename R, typename... Args, typename CallingConv, typename AddressT, process_rights AccessRights>
+	void function<R(Args...), CallingConv, AddressT, AccessRights>::set_process(process<AccessRights>& process) noexcept
 	{
-		ptr_ = make_virtual_ptr<R(*)(As...), A>(process, ptr_.get());
+		ptr_ = make_virtual_ptr<R(*)(Args...), AddressT, AccessRights>(process, ptr_.get());
 	}
 	
 } // namespace distant::memory

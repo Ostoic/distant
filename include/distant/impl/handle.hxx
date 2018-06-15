@@ -3,7 +3,7 @@
 // (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
 
 #pragma once
-#include <distant/handle.hpp>
+#include "../handle.hpp"
 
 #include <distant/utility/asserts.hpp>
 
@@ -44,8 +44,8 @@ namespace distant
 		utility::assert_compatible<T, U>();
 
 		return operator==(
-			static_cast<const detail::handle_base&>(lhs),
-			static_cast<const detail::handle_base&>(rhs));
+			static_cast<const unsafe_handle&>(lhs),
+			static_cast<const unsafe_handle&>(rhs));
 	}
 
 	template <typename T, typename U>

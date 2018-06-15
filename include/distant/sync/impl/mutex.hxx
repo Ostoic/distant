@@ -6,32 +6,32 @@
 #include <boost/winapi/wait.hpp>
 #include <boost/winapi/mutex.hpp> 
 
-namespace distant::synch
+namespace distant::sync
 {
 // class mutex
 	inline mutex::mutex()
 		: handle_(boost::winapi::create_anonymous_mutex(nullptr, false))
 	{
 		if (this->handle_ == nullptr)
-			throw windows_error("[synch::mutex::{ctor}] Unnamed CreateMutex failed");
+			throw windows_error("[sync::mutex::{ctor}] Unnamed CreateMutex failed");
 	}
 
 	inline mutex::mutex(const std::wstring& name, const bool create_new)
 		: handle_(
 			create_new ? 
 				boost::winapi::create_mutex(nullptr, false, name.data()) : 
-				boost::winapi::open_mutex(static_cast<boost::winapi::DWORD_>(standard_rights::synchronize), false, name.data())
+				boost::winapi::open_mutex(static_cast<boost::winapi::DWORD_>(standard_rights::syncronize), false, name.data())
 		)
 	{
 		if (this->handle_ == nullptr)
-			throw windows_error("[synch::mutex::{ctor}] Unnamed CreateMutex failed"); 
+			throw windows_error("[sync::mutex::{ctor}] Unnamed CreateMutex failed"); 
 	}
 
 	inline void mutex::lock()
 	{
 		const auto result = boost::winapi::WaitForSingleObject(this->handle_.native_handle(), boost::winapi::infinite);
 		if (result != boost::winapi::wait_object_0)
-			throw windows_error("[synch::mutex::lock] Unable to lock mutex, WaitForSingleObject failed");
+			throw windows_error("[sync::mutex::lock] Unable to lock mutex, WaitForSingleObject failed");
 	}
 
 	inline bool mutex::try_lock()
@@ -42,7 +42,7 @@ namespace distant::synch
 			return true;
 
 		if (result == boost::winapi::wait_failed)
-			throw windows_error("[synch::mutex::try_lock] Unable to lock mutex, WaitForSingleObject failed");
+			throw windows_error("[sync::mutex::try_lock] Unable to lock mutex, WaitForSingleObject failed");
 
 		return false;
 	}

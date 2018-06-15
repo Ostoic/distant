@@ -6,11 +6,13 @@
 
 #include <type_traits>
 
+#include <distant/config.hpp>
 #include <distant/error/windows_error.hpp>
 
 #include <distant/handle.hpp>
 
 #include <distant/utility/boolean_validator.hpp>
+#include "fwd.hpp"
 
 namespace distant::kernel_objects
 {

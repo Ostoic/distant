@@ -24,7 +24,7 @@ namespace distant
 		{
 			delete_ = boost::winapi::DELETE_,
 			read_control = boost::winapi::READ_CONTROL_,
-			synchronize = boost::winapi::SYNCHRONIZE_,
+			syncronize = boost::winapi::SYNCHRONIZE_,
 			write_dac = boost::winapi::WRITE_DAC_,
 			writer_owner = boost::winapi::WRITE_OWNER_
 		};
@@ -51,7 +51,7 @@ namespace distant
 			query_limited_information = boost::winapi::PROCESS_QUERY_LIMITED_INFORMATION_,
 			query_information = boost::winapi::PROCESS_QUERY_INFORMATION_,
 
-			synchronize = boost::winapi::SYNCHRONIZE_,
+			syncronize = boost::winapi::SYNCHRONIZE_,
 		};
 
 		enum class token
@@ -153,8 +153,8 @@ namespace distant
 	/// Check if we have permission to perform the given action
 	constexpr bool check_permission(const standard_rights given, const standard_rights check) noexcept
 	{ return (given & check) == check; }
-	
-	/// @brief Shortcut for defining vm_operation process_rights.
+
+		/// @brief Shortcut for defining vm_operation process_rights.
 	constexpr auto vm_op = access_rights::process::vm_operation;
 
 	/// @brief Shortcut for defining vm_read process_rights.
@@ -171,6 +171,9 @@ namespace distant
 
 	/// @brief Shortcut for defining vm_read | vm_write | vm_operation process_rights.
 	constexpr auto vm_rw_op = vm_r_op | vm_write;
+
+	constexpr auto process_read = vm_r_op;
+	constexpr auto process_write = vm_rw_op;
 
 	// Todo: Generalize using traits and compile-time dispatch to the correct map.
 	template <typename CharT, typename TraitsT>

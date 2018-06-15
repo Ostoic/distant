@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <distant/config.hpp>
 #include <distant/handle.hpp>
 
 #include <distant/kernel_objects/snapshot_iterator.hpp>

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <distant/config.hpp>
 #include <distant/memory/address.hpp>
 
 namespace distant		 {

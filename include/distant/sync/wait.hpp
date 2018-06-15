@@ -13,7 +13,7 @@
 #include <chrono>
 #include <utility>
 
-namespace distant::synch 
+namespace distant::sync 
 {
 	// TODO: Revise heavily
 	// XX Consider moving into distant::handle as a member/free function.
@@ -40,14 +40,12 @@ namespace distant::synch
 		using time_type = boost::winapi::DWORD_;
 
 	public:
-		// Wait for synchronizable object for the given amount of time
+		// Wait for syncronizable object for the given amount of time
 		template <typename KernelObject>
 		wait::state operator ()(const KernelObject& obj, const time_type time) const
 		{
 			// XX Consider making free and including std::lock_guard or something
 			// XX Or just the usual below 
-			using expose = distant::detail::attorney::to_handle<wait>;
-
 			const auto handle = obj.handle().native_handle();
 			const auto result = boost::winapi::WaitForSingleObject(handle, time);
 
@@ -55,7 +53,7 @@ namespace distant::synch
 		}
 
 		// Multiple object wait
-		// Wait for synchronizable object for the given amount of time
+		// Wait for syncronizable object for the given amount of time
 		// XXX WaitFor...Object has a particular gle syntax. Look into this.
 		//wait::state operator ()(const std::vector<object_type>& objects, time_type time) const
 		//{

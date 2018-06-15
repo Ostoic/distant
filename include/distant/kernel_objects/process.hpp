@@ -8,16 +8,16 @@
  * @file Contains the interface for distant::process.
  */
 
-#include <distant/kernel_objects/process_base.hpp>
+#include <distant/config.hpp>
+#include <distant/kernel_objects/unsafe_process.hpp>
 
-namespace distant		 {
-namespace kernel_objects {
-
+namespace distant::kernel_objects 
+{
 	/// @brief distant::process represents a process, and has static type checking on the process access rights.
 	/// @tparam AccessRights the desired permissions to open the process with.
 	/// @see process_rights
 	template <process_rights AccessRights = process_rights::all_access>
-	class process : private process_base
+	class process : private unsafe_process
 	{
 	private:
 		/// @brief SFINAE for access permissions
@@ -25,14 +25,14 @@ namespace kernel_objects {
 		using require_permission = std::enable_if_t<check_permission(AccessRights, Required), Return>;
 
 	public: // interface
-		// Import the process_base interface.
-		using process_base::operator bool;
-		using process_base::is_being_debugged;
-		using process_base::access_rights;
-		using process_base::handle;
-		using process_base::is_zombie;
-		using process_base::valid;
-		using process_base::id;
+		// Import the unsafe_process interface.
+		using unsafe_process::operator bool;
+		using unsafe_process::is_being_debugged;
+		using unsafe_process::access_rights;
+		using unsafe_process::handle;
+		using unsafe_process::is_zombie;
+		using unsafe_process::valid;
+		using unsafe_process::id;
 
 		/// @brief Terminate the process.
 		/// @see process_rights
@@ -52,10 +52,10 @@ namespace kernel_objects {
 		/// @brief Query the process handle to see if it is still active
 		/// @see process_rights
 		/// @return bool: \a true if the process is active, and \a false otherwise
-		/// @remark Requires \a AccessRights >= \a synchronize.
+		/// @remark Requires \a AccessRights >= \a syncronize.
 		template <typename Return = bool>
 		auto is_active() const
-			-> require_permission<process_rights::synchronize, Return>;
+			-> require_permission<process_rights::syncronize, Return>;
 
 		/// @brief Test if the process is running under the WOW64 emulator.
 		/// <br> If the process has been compiled to run on 32-bit system and
@@ -99,8 +99,8 @@ namespace kernel_objects {
 		template <process_rights OtherAccess, typename = std::enable_if_t<(OtherAccess <= AccessRights)>>
 		operator const process<OtherAccess>&() const noexcept;
 
-		/*explicit operator const process_base&() const noexcept;
-		explicit operator		process_base&() noexcept;*/
+		/*explicit operator const unsafe_process&() const noexcept;
+		explicit operator		unsafe_process&() noexcept;*/
 
 	public: // {ctor}
 		/// @brief Default process constructor
@@ -144,17 +144,24 @@ namespace kernel_objects {
 	/// @return distant::process: a process object representing the current process with the highest \a AccessRights.
 	process<process_rights::all_access> current_process() noexcept;
 
-} // namespace kernel_objects
+} // namespace distant::kernel_objects
+
+namespace distant
+{
+	using kernel_objects::process;
+	using kernel_objects::current_process;
 
 	template <process_rights Access>
-	struct get_access_rights<kernel_objects::process<Access>>
+	struct kernel_object_traits<process<Access>>
+		: default_kernel_object_traits<process<Access>>
+	{};
+
+	template <process_rights Access>
+	struct get_access_rights<process<Access>>
 	{
 		static constexpr auto value = Access;
 	};
-
-	using kernel_objects::process;
-	using kernel_objects::current_process;
-} // namespace distant
+}
 
 // Implementation 
 #include <distant/kernel_objects/impl/process.hxx>

@@ -7,64 +7,77 @@
 
 namespace distant::memory
 {
-	template <typename E, typename Ad>
-	virtual_ptr<E, Ad>::virtual_ptr(nullptr_t) noexcept
+	template <typename E, typename Ad, process_rights A>
+	virtual_ptr<E, Ad, A>
+	::virtual_ptr(nullptr_t) noexcept
 		: virtual_ptr()
 	{}
 
-	template <typename E, typename Ad>
-	virtual_ptr<E, Ad>::virtual_ptr(const kernel_objects::process<vm_access>& process, address<Ad> address) noexcept
-		: process_(reinterpret_cast<decltype(process_)>(&process)), address_(address)
+	template <typename E, typename Ad, process_rights A>
+	virtual_ptr<E, Ad, A>
+	::virtual_ptr(process_type& process, address<Ad> address) noexcept
+		: process_(&process), address_(address)
 	{}
 
-	template <typename E, typename Ad>
-	template <typename OtherT, typename OtherAddressT, typename>
-	virtual_ptr<E, Ad>::virtual_ptr(virtual_ptr<OtherT, OtherAddressT> pointer) noexcept
+	template <typename E, typename Ad, process_rights A>
+	template <typename OtherT, typename OtherAddressT, process_rights OtherAccess>
+	virtual_ptr<E, Ad, A>
+	::virtual_ptr(virtual_ptr<OtherT, OtherAddressT, OtherAccess> pointer) noexcept
 		: process_(reinterpret_cast<decltype(process_)>(pointer.process_)), address_(pointer.address_)
-	{}
+	{
+		static_assert(require_vm_access_to<OtherT>::value, "[virtual_ptr::{ctor}] Conversion loses const qualifier");
+	}
 
-	template <typename E, typename Ad>
-	void virtual_ptr<E, Ad>::increment() noexcept
+	template <typename E, typename Ad, process_rights A>
+	void virtual_ptr<E, Ad, A>
+		::increment() noexcept
 	{
 		address_ += sizeof(E);
 	}
 
-	template <typename E, typename Ad>
-	void virtual_ptr<E, Ad>::decrement() noexcept
+	template <typename E, typename Ad, process_rights A>
+	void virtual_ptr<E, Ad, A>
+		::decrement() noexcept
 	{
 		address_ -= sizeof(E);
 	}
 
-	template <typename E, typename Ad>
-	typename virtual_ptr<E, Ad>::reference
-	virtual_ptr<E, Ad>::dereference() const noexcept
+	template <typename E, typename Ad, process_rights A>
+	typename virtual_ptr<E, Ad, A>::reference
+	virtual_ptr<E, Ad, A>
+		::dereference() const noexcept
 	{
 		return reference(*this);
 	}
 
-	template <typename E, typename Ad>
-	void virtual_ptr<E, Ad>::advance(const difference_type n) noexcept
+	template <typename E, typename Ad, process_rights A>
+	void virtual_ptr<E, Ad, A>
+		::advance(const difference_type n) noexcept
 	{
 		address_ += sizeof(E) * n;
 	}
 
-	template <typename E, typename Ad>
-	template <typename OtherT, typename OtherAddressT, typename>
-	bool virtual_ptr<E, Ad>::equal(virtual_ptr<OtherT, OtherAddressT> other) const noexcept
+	template <typename E, typename Ad, process_rights A>
+	template <typename OtherT, typename OtherAddressT, process_rights OtherAccess>
+	bool virtual_ptr<E, Ad, A>
+		::equal(virtual_ptr<OtherT, OtherAddressT, OtherAccess> other) const noexcept
 	{
+		static_assert(require_vm_access_to<OtherT>::value, "[virtual_ptr::equal] Conversion loses const qualifier");
 		return address_ == other.address_ && *process_ == *other.process_;
 	}
 
-	template <typename E, typename Ad>
-	template <typename OtherT, typename OtherAddressT, typename>
-	typename virtual_ptr<E, Ad>::difference_type 
-	virtual_ptr<E, Ad>::distance_to(virtual_ptr<OtherT, OtherAddressT> other) const noexcept
+	template <typename E, typename Ad, process_rights A>
+	template <typename OtherT, typename OtherAddressT, process_rights OtherAccess>
+	typename virtual_ptr<E, Ad, A>::difference_type virtual_ptr<E, Ad, A>
+		::distance_to(virtual_ptr<OtherT, OtherAddressT, OtherAccess> other) const noexcept
 	{
-		return other.address_ - address_;
+		static_assert(require_vm_access_to<OtherT>::value, "[virtual_ptr::distance_to] Conversion loses const qualifier");
+		return static_cast<Ad>(other.address_ - address_);
 	}
 
-	template <typename E, typename Ad>
-	address<Ad> virtual_ptr<E, Ad>::get() const noexcept
+	template <typename E, typename Ad, process_rights A>
+	address<Ad> virtual_ptr<E, Ad, A>
+		::get() const noexcept
 	{
 		return address_;
 	}

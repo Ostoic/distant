@@ -14,11 +14,12 @@
 namespace distant {
 namespace memory 
 {
-	template <typename Signature, typename CallingConv = x86_calling_conventions::cdeclcall, typename AddressT = dword>
+	// Todo: Figure out order for template parameters so that default template parameters makes sense.
+	template <typename Signature, typename CallingConv = x86_calling_conventions::cdeclcall, typename AddressT = dword, process_rights AccessRights = process_rights::all_access>
 	class function;
 
-	template <typename R, typename... Args, typename CallingConv, typename AddressT>
-	class function<R(Args...), CallingConv, AddressT>
+	template <typename R, typename... Args, typename CallingConv, typename AddressT, process_rights AccessRights>
+	class function<R(Args...), CallingConv, AddressT, AccessRights>
 	{
 	public:
 		static constexpr auto required_process_rights = process_rights::all_access;
@@ -31,22 +32,25 @@ namespace memory
 		//template <typename Fn, typename = std::enable_if_t<std::is_function<Fn>::value>>
 		//function(Fn&& fn) const noexcept;
 
-		explicit function(virtual_ptr<R(*)(Args...), AddressT> fn_ptr) : ptr_(fn_ptr) {}
+		explicit function(virtual_ptr<R(*)(Args...), AddressT, AccessRights> fn_ptr) : ptr_(fn_ptr) {}
 
-		R operator()(Args... args);
+		R operator()(Args&&... args);
 
-		void set_process(const process<required_process_rights>& process) noexcept;
+		//const process<required_process_rights>& process() const noexcept;
+			  //process<required_process_rights>& process() noexcept;
+
+		void set_process(process<AccessRights>& process) noexcept;
 
 	private:
-		virtual_ptr<R(*)(Args...), AddressT> ptr_;
+		virtual_ptr<R(*)(Args...), AddressT, AccessRights> ptr_;
 	};
 
 } // namespace memory
 
 using memory::function;
 
-template <typename R, typename... Args, typename CallingConv, typename AddressT>
-struct function_traits<function<R(Args...), CallingConv, AddressT>>
+template <typename R, typename... Args, typename CallingConv, typename AddressT, process_rights AccessRights>
+struct function_traits<function<R(Args...), CallingConv, AddressT, AccessRights>>
 {
 	using return_type = R;
 	static constexpr std::size_t arity = sizeof...(Args);

@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <distant/config.hpp>
 #include <boost/iterator/iterator_facade.hpp>
 #include <boost/winapi/basic_types.hpp>
 

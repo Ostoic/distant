@@ -6,7 +6,6 @@
 
 #include <distant/access_rights.hpp>
 
-#include <distant/detail/attorney.hpp>
 #include <distant/utility/boolean_validator.hpp>
 
 #include <boost/winapi/config.hpp>
@@ -15,13 +14,12 @@
 #include <bitset>
 
 namespace distant {
-namespace detail  {
 
 	// Forward declare invalid handle literal
 	class invalid_t;
 
 	// Implements the interface of handle
-	class handle_base : public utility::boolean_validator<handle_base>
+	class unsafe_handle : public utility::boolean_validator<unsafe_handle>
 	{
 	public:
 		// Underlying handle type. This is macro'd in Windows to be void* == (HANDLE)
@@ -32,31 +30,31 @@ namespace detail  {
 		/// Construct using native handle.
 		/// @param h the native handle value
 		/// @param flags handle flags 
-		explicit constexpr handle_base(native_type h, flag_type flags = flag_type::inherit, bool closed = false) noexcept;
+		explicit constexpr unsafe_handle(native_type h, flag_type flags = flag_type::inherit, bool closed = false) noexcept;
 
 		/// Construct an invalid handle.
 		/// This allows handles to be comparable with nullptr.
 		/// @param h the nullptr.
-		constexpr handle_base(nullptr_t h) noexcept;
+		constexpr unsafe_handle(nullptr_t h) noexcept;
 
 		/// Construct invalid handle.
 		/// This calls the nullptr constructor.
-		constexpr handle_base() noexcept;
+		constexpr unsafe_handle() noexcept;
 
 		/// Move copyable
-		handle_base(handle_base&&) noexcept;
+		unsafe_handle(unsafe_handle&&) noexcept;
 
 		/// Move assignable
-		handle_base& operator=(handle_base&&) noexcept;
+		unsafe_handle& operator=(unsafe_handle&&) noexcept;
 
 		// If we allow copy ctor/assignment, then multiple copies will eventually attempt 
 		// to close the same handle, which is not desirable.
-		handle_base(const handle_base&) = delete;
-		handle_base& operator =(const handle_base&) = delete;
+		unsafe_handle(const unsafe_handle&) = delete;
+		unsafe_handle& operator =(const unsafe_handle&) = delete;
 
 		/// Close handle to windows object.
 		/// Handle must be weakly valid in order to close the handle.
-		~handle_base() noexcept { this->close(); }
+		~unsafe_handle() noexcept { this->close(); }
 		
 	public:
 		/// Checks the if the native handle is valid
@@ -84,7 +82,7 @@ namespace detail  {
 		// From "Windows Via C\C++" by Jeffrey Richter,
 		// setting the handle to null is preferable to invalid_handle
 		// after closing the handle. This is probably because some API
-		// calls consider invalid_handle as the current process.
+		// calls consider invalid_handle as the current process/thread.
 		/// Numerically invalidate and close protect our handle.
 		void invalidate() noexcept;
 
@@ -105,14 +103,13 @@ namespace detail  {
 		std::bitset<3> flags_;
 		
 	public:
-		friend constexpr bool operator ==(const handle_base&, const handle_base&) noexcept;
-		friend constexpr bool operator !=(const handle_base&, const handle_base&) noexcept;
+		friend constexpr bool operator ==(const unsafe_handle&, const unsafe_handle&) noexcept;
+		friend constexpr bool operator !=(const unsafe_handle&, const unsafe_handle&) noexcept;
 	};
 
-} // end namespace detail
 } // end namespace distant
 
-#include <distant/impl/handle_base.hxx>
+#include "impl/unsafe_handle.hxx"
 
   // Remarks:
   //		Process-local handle table starts at entry 4, hence the null ( == 0) 

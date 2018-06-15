@@ -10,7 +10,7 @@
 #include <distant/error/fwd.hpp>
 #include <distant/memory/fwd.hpp>
 #include <distant/system/fwd.hpp>
-#include <distant/synch/fwd.hpp>
+#include <distant/sync/fwd.hpp>
 
 namespace distant 
 {

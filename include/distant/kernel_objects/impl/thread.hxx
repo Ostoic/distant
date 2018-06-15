@@ -3,12 +3,13 @@
 
 #include <boost/winapi/thread.hpp>
 #include <boost/winapi/wait.hpp>
+#include <distant/support/winapi/thread.hpp>
 
 namespace distant::kernel_objects
 {
 	inline unsigned int thread::hardware_concurrency() noexcept
 	{
-		return distant::system::number_of_processors();
+		return system::number_of_processors();
 	}
 
 	inline void thread::join()
@@ -16,7 +17,7 @@ namespace distant::kernel_objects
 		if (!this->joinable())
 			throw std::invalid_argument("[thread::join] Invalid join on unjoinable thread");
 
-		if (id_ == GetCurrentThreadId())
+		if (this->get_id() == thread::id(GetCurrentThreadId()))
 			throw std::invalid_argument("[thread::join] Join on current thread, deadlock would occur");
 
 		namespace winapi = boost::winapi;
@@ -33,7 +34,7 @@ namespace distant::kernel_objects
 				handle_.native_handle(),
 				&exit_code) 
 			== 0
-		)
+		) 
 			throw windows_error("[thread::join] GetExitCodeThread failed");
 
 		this->detach_unchecked();
@@ -50,7 +51,6 @@ namespace distant::kernel_objects
 	inline void thread::swap(thread& other) noexcept
 	{
 		handle_.swap(other.handle_);
-		std::swap(id_, other.id_);
 	}
 
 	inline bool thread::joinable() const noexcept
@@ -58,28 +58,27 @@ namespace distant::kernel_objects
 		return handle_ != nullptr;
 	}
 
+	inline const process<thread::required_process_rights>& thread::process() const noexcept
+	{
+		return *process_;
+	}
+
 	inline const distant::handle<thread>& thread::handle() const noexcept
 	{
 		return handle_;
 	}
 
-	inline unsigned int thread::id() const noexcept
+	inline thread::id thread::get_id() const noexcept
 	{
-		return id_;
+		return thread::id{ boost::winapi::GetThreadId(handle_.native_handle()) };
 	}
-
-	inline thread::thread() noexcept
-		: handle_()
-		, id_(0)
-	{}
 
 	inline thread::thread(distant::handle<thread>&& handle) noexcept
 		: handle_(std::move(handle))
-		, id_(GetThreadId(handle.native_handle()))
 	{}
 
 	template <typename Fn, typename... Args>
-	thread::thread(const process<process_access>& process, memory::function<int> fn, Args&&... args)
+	thread::thread(memory::function<int> fn, Args&&... args)
 	{
 		address start_address = 0;
 		//CreateRemoteThread(process.handle().native_handle(), nullptr, 0, , , ,)
@@ -89,18 +88,15 @@ namespace distant::kernel_objects
 		// Todo: Pass in the parameters according to the calling convetion specified by fn.
 		// Todo: The thread will then call the desired function fn with the given parameters.
 		handle_ = ::CreateRemoteThread(process.handle().native_handle(), nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(static_cast<dword>(start_address)), nullptr, 0, &id_);
-		
 	}
 
 	inline thread::thread(thread&& other) noexcept
 		: handle_(std::move(other.handle_))
-		, id_(other.id_)
 	{}
 
 	inline thread& thread::operator=(thread&& other) noexcept
 	{
 		handle_ = std::move(other.handle_);
-		id_ = other.id_;
 		return *this;
 	}
 
@@ -116,9 +112,19 @@ namespace distant::kernel_objects
 	}
 
 //free:
+	inline bool operator==(const thread::id& lhs, const thread::id& rhs) noexcept
+	{
+		return lhs.id_ == rhs.id_;
+	}
+
+	inline bool operator!=(const thread::id& lhs, const thread::id& rhs) noexcept
+	{
+		return !operator==(lhs, rhs);
+	}
+
 	inline bool operator==(const thread& lhs, const thread& rhs) noexcept
 	{
-		return lhs.id() == rhs.id();
+		return lhs.get_id() == rhs.get_id();
 	}
 
 	inline bool operator!=(const thread& lhs, const thread& rhs) noexcept

@@ -26,12 +26,12 @@ namespace distant::kernel_objects
 		};
 
 		template <>
-		struct dispatcher<process_base>
+		struct dispatcher<unsafe_process>
 		{
 			using dispatch = distant::detail::process_base_tag;
 		};
 
-		inline HANDLE_ get_token_impl(const process_base& process, const DWORD_ access,
+		inline HANDLE_ get_token_impl(const unsafe_process& process, const DWORD_ access,
 		                              const distant::detail::process_base_tag tag) noexcept
 		{
 			static_cast<void>(tag);
@@ -47,7 +47,7 @@ namespace distant::kernel_objects
 			using access_rights = access_rights::process;
 
 			static_cast<void>(tag);
-			return get_token_impl(reinterpret_cast<const process_base&>(process), access, distant::detail::process_base_tag{});
+			return get_token_impl(reinterpret_cast<const unsafe_process&>(process), access, distant::detail::process_base_tag{});
 		}
 
 		/*inline HANDLE_ get_token_impl(const kernel_objects::thread_base& thread, DWORD_ access, bool self) noexcept

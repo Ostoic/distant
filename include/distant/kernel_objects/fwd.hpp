@@ -9,7 +9,7 @@
 namespace distant::kernel_objects
 {
 	class kernel_object;
-	class process_base;
+	class unsafe_process;
 
 	template <process_rights R>
 	class process;
@@ -19,4 +19,6 @@ namespace distant::kernel_objects
 
 	template <typename>
 	class snapshot;
+
+	class thread;
 }

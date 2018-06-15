@@ -7,7 +7,7 @@
 #include <distant/support/winapi/toolhelp32.hpp>
 
 #include <distant/detail/tags.hpp>
-#include "distant/kernel_objects/process_base.hpp"
+#include "distant/kernel_objects/unsafe_process.hpp"
 
 namespace distant::kernel_objects::detail {
 	
@@ -22,7 +22,7 @@ namespace distant::kernel_objects::detail {
 	};
 
 	template <>
-	struct snapshot_dispatcher<kernel_objects::process_base>
+	struct snapshot_dispatcher<kernel_objects::unsafe_process>
 	{
 		using dispatch = distant::detail::process_tag;
 		using entry_type = boost::winapi::PROCESSENTRY32_;

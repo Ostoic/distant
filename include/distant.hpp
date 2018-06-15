@@ -10,5 +10,5 @@
 #include <distant/kernel_objects/access_token.hpp>
 #include <distant/snapshot.hpp>
 #include <distant/system.hpp>
-#include <distant/synch.hpp>
+#include <distant/sync.hpp>
 #include <distant/virtual_memory.hpp>
