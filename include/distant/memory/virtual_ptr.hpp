@@ -117,17 +117,17 @@ namespace distant::memory
 
 	template <typename Element, typename AddressT, process_rights AccessRights>
 	virtual_ptr<Element, AddressT, AccessRights>
-		make_virtual_ptr(const process<AccessRights>& p, const address<AddressT> address = nullptr) noexcept
+		make_virtual_ptr(process<AccessRights>& p, const address<AddressT> address = nullptr) noexcept
 	{
 		virtual_ptr<Element, AddressT, AccessRights> result(p, address);
 		return result;
 	}
 
-	template <typename Element, process_rights AccessRights>
-	virtual_ptr<Element, dword, AccessRights>
-		make_virtual_ptr(const process<AccessRights>& p, const address<dword> address = 0) noexcept
+	template <typename Element, typename AddressT, process_rights AccessRights>
+	virtual_ptr<Element, AddressT, AccessRights>
+		make_virtual_ptr(const process<AccessRights>& p, const address<AddressT> address = nullptr) noexcept
 	{
-		virtual_ptr<Element, dword, AccessRights> result(p, address);
+		virtual_ptr<Element, AddressT, AccessRights> result(p, address);
 		return result;
 	}
 

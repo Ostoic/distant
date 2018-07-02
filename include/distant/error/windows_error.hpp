@@ -11,8 +11,7 @@
 
 #include <boost/winapi/basic_types.hpp>
 
-namespace distant {
-namespace error   {
+namespace distant::error {
 
 	class windows_category : public std::error_category
 	{
@@ -28,6 +27,8 @@ namespace error   {
 	/// Windows error code
 	class windows_error_code : public std::error_code
 	{
+		using base = std::error_code;
+
 	public:
 		/// Construct an error code with the given code.
 		explicit windows_error_code(boost::winapi::DWORD_ code) noexcept;
@@ -43,13 +44,14 @@ namespace error   {
 
 		void set_success() noexcept;
 
-		void set(boost::winapi::DWORD_ code) noexcept;
+		void set_last(boost::winapi::DWORD_ code) noexcept;
 	};
 
 	class windows_error : public std::system_error
 	{
 	public:
 		windows_error();
+		windows_error(const windows_error_code code) : std::system_error(code) {}
 		explicit windows_error(const std::string& message);
 	};
 
@@ -62,14 +64,22 @@ namespace error   {
 	/// @param error the windows error to write.
 	/// @return the modified output stream.
 	template <typename CharT, typename CharTraits>
+	std::basic_ostream<CharT, CharTraits>& operator<<(std::basic_ostream<CharT, CharTraits>& stream, const windows_error& error);
+
+	/// @brief Write a windows error to an output stream.
+	/// @param stream the output stream.
+	/// @param error the windows error to write.
+	/// @return the modified output stream.
+	template <typename CharT, typename CharTraits>
 	std::basic_ostream<CharT, CharTraits>& operator<<(std::basic_ostream<CharT, CharTraits>& stream, const windows_error_code& error);
 
-} // end namespace error 
+} // end namespace distant::error
 
-using error::last_error;
-using windows_error = error::windows_error;
-
-} // end namespace distant
+namespace distant
+{
+	using error::last_error;
+	using error::windows_error;
+}
 
 // Implementation:
-#include <distant/error/impl/windows_error.hxx>
+#include "impl/windows_error.hxx"

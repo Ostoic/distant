@@ -47,13 +47,13 @@ namespace distant::kernel_objects
 	template <access_rights::process T>
 	template <typename Return>
 	auto process<T>::is_active() const
-		-> require_permission<process_rights::syncronize, Return>
+		-> require_permission<process_rights::synchronize, Return>
 	{
 		using access_rights = access_rights::process;
 
 		// The WaitForSingleObject API call requires the following access rights.
 		static_assert(
-			check_permission(T, access_rights::syncronize),
+			check_permission(T, access_rights::synchronize),
 			"[process::is_active] Invalid access rights: "
 			"Process must have syncronize access right"
 		);
@@ -161,7 +161,7 @@ namespace distant::kernel_objects
 	// Take possession of process handle. It is ensured to be a convertible process handle
 	// due to encoded type in handle.
 	template <access_rights::process T>
-	process<T>::process(distant::handle<process>&& handle) noexcept
+	process<T>::process(distant::unsafe_handle&& handle) noexcept
 		: unsafe_process(std::move(handle), T)
 	{}
 
@@ -187,7 +187,7 @@ namespace distant::kernel_objects
 	inline process<> current_process() noexcept
 	{
 		return process<>(
-			handle<process<>>(GetCurrentProcess(), access_rights::handle::close_protected)
+			unsafe_handle(GetCurrentProcess(), access_rights::handle::close_protected)
 		);
 	}
 

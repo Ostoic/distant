@@ -14,8 +14,8 @@ namespace distant
 		class virtual_reference
 		{
 		public:
-			using pointer    = typename std::pointer_traits<virtual_ptr<Element, AddressT, AccessRights>>::pointer;
-			using value_type = typename std::pointer_traits<virtual_ptr<Element, AddressT, AccessRights>>::element_type;
+			using pointer      = typename std::pointer_traits<virtual_ptr<Element, AddressT, AccessRights>>::pointer;
+			using element_type = typename std::pointer_traits<virtual_ptr<Element, AddressT, AccessRights>>::element_type;
 
 			static constexpr auto vm_access = virtual_traits<virtual_reference>::vm_access;
 			using process_type = typename pointer::process_type;
@@ -43,7 +43,7 @@ namespace distant
 			template <
 				typename Value, 
 				typename = std::enable_if_t<
-					std::is_convertible<Value, value_type>::value && 
+					std::is_convertible<Value, element_type>::value && 
 					!std::is_const<Value>::value
 				>
 			>
@@ -51,38 +51,38 @@ namespace distant
 
 			pointer operator&() const noexcept;
 			
-			operator value_type() const;
+			operator element_type() const;
 
 			void swap(virtual_reference& other);
 
 			// These operators can't rely on an implicitly converted implementation since they act on the class and return another instance of the class.
 			virtual_reference& operator++();
 
-			value_type operator++(int);
+			element_type operator++(int);
 
 			virtual_reference& operator--();
 
-			value_type operator--(int);
+			element_type operator--(int);
 
-			virtual_reference& operator+=(const value_type& rhs);
+			virtual_reference& operator+=(const element_type& rhs);
 
-			virtual_reference& operator-=(const value_type& rhs);
+			virtual_reference& operator-=(const element_type& rhs);
 
-			virtual_reference& operator*=(const value_type& rhs);
+			virtual_reference& operator*=(const element_type& rhs);
 
-			virtual_reference& operator/=(const value_type& rhs);
+			virtual_reference& operator/=(const element_type& rhs);
 
-			virtual_reference& operator%=(const value_type& rhs);
+			virtual_reference& operator%=(const element_type& rhs);
 
-			virtual_reference& operator<<=(const value_type& rhs);
+			virtual_reference& operator<<=(const element_type& rhs);
 
-			virtual_reference& operator>>=(const value_type& rhs);
+			virtual_reference& operator>>=(const element_type& rhs);
 
-			virtual_reference& operator&=(const value_type& rhs);
+			virtual_reference& operator&=(const element_type& rhs);
 
-			virtual_reference& operator|=(const value_type& rhs);
+			virtual_reference& operator|=(const element_type& rhs);
 
-			virtual_reference& operator^=(const value_type& rhs);
+			virtual_reference& operator^=(const element_type& rhs);
 
 			process_type& process() const noexcept { return ptr_.process(); }
 			process_type& process()		  noexcept { return ptr_.process(); }
@@ -99,12 +99,12 @@ namespace distant
 		}; // class virtual_reference
 
 		template <typename Element, typename AddressT, process_rights Access>
-		auto make_virtual_reference(const process<Access>& process, const address<AddressT> address) noexcept
+		auto make_virtual_reference(process<Access>& process, const address<AddressT> address) noexcept
 		{ return *make_virtual_ptr<Element, AddressT>(process, address);}
 
-		template <typename Element, process_rights Access>
-		auto make_virtual_reference(const process<Access>& process, const address<dword> address) noexcept
-		{ return *make_virtual_ptr<Element, dword>(process, address);}
+		template <typename Element, typename AddressT, process_rights Access>
+		auto make_virtual_reference(const process<Access>& process, const address<AddressT> address) noexcept
+		{ return *make_virtual_ptr<Element, AddressT>(process, address);}
 
 		template <typename Element, typename AddressT, process_rights Access>
 		struct virtual_traits<virtual_reference<Element, AddressT, Access>>

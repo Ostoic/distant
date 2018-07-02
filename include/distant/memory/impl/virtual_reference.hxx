@@ -24,7 +24,7 @@ namespace distant::memory
 	template <typename OE, typename OT, process_rights OR>
 	virtual_reference<E, T, R>& virtual_reference<E, T, R>::operator=(virtual_reference<OE, OT, OR> other) noexcept
 	{
-		this->ptr_ = other.ptr_;
+		ptr_ = other.ptr_;
 		return *this;
 	}
 
@@ -34,13 +34,13 @@ namespace distant::memory
 	{
 		static_assert(
 			R >= vm_w_op, 
-			"[virtual_reference::operator value_type] The specified process rights do not permit writing of virtual memory."
+			"[virtual_reference::operator element_type] The specified process rights do not permit writing of virtual memory."
 		);
 
-		memory::write<std::remove_cv_t<value_type>, T>(
-			*(this->ptr_.process_), 
-			this->ptr_.address_, 
-			static_cast<value_type>(x)
+		memory::write(
+			*(ptr_.process_),
+			ptr_.address_,
+			static_cast<element_type>(x)
 		);
 
 		return *this;
@@ -50,24 +50,24 @@ namespace distant::memory
 	typename virtual_reference<E, T, R>::pointer 
 	virtual_reference<E, T, R>::operator&() const noexcept
 	{
-		return this->ptr_;
+		return ptr_;
 	}
 
 	template <typename E,  typename T, process_rights R>
-	virtual_reference<E, T, R>::operator value_type() const
+	virtual_reference<E, T, R>::operator element_type() const
 	{
 		static_assert(
 			R >= process_rights::vm_read, 
-			"[virtual_reference::operator value_type] The specified process rights do not permit reading of virtual memory."
+			"[virtual_reference::operator element_type] The specified process rights do not permit reading of virtual memory."
 		);
 
-		return memory::read<std::remove_cv_t<value_type>>(*(this->ptr_.process_), this->ptr_.address_);
+		return memory::read<std::remove_cv_t<element_type>>(*(ptr_.process_), ptr_.address_);
 	}
 
 	template <typename E,  typename T, process_rights R>
 	void virtual_reference<E, T, R>::swap(virtual_reference& other)
 	{
-		value_type temp = *this;
+		element_type temp = *this;
 		*this = other;
 		return *this;
 	}
@@ -75,26 +75,26 @@ namespace distant::memory
 	template <typename E,  typename T, process_rights R>
 	virtual_reference<E, T, R>& virtual_reference<E, T, R>::operator++()
 	{
-		value_type temp = *this;
+		element_type temp = *this;
 		++temp;
 		*this = temp;
 		return *this;
 	}
 
 	template <typename E,  typename T, process_rights R>
-	typename virtual_reference<E, T, R>::value_type
+	typename virtual_reference<E, T, R>::element_type
 	virtual_reference<E, T, R>::operator++(int)
 	{
-		value_type temp = *this;
-		value_type result = temp++;
+		element_type temp = *this;
+		element_type result = temp++;
 		*this = temp;
 		return result;
 	}
 
 	template <typename E,  typename T, process_rights R>
-	virtual_reference<E, T, R>& virtual_reference<E, T, R>::operator+=(const value_type& rhs)
+	virtual_reference<E, T, R>& virtual_reference<E, T, R>::operator+=(const element_type& rhs)
 	{
-		value_type temp = *this;
+		element_type temp = *this;
 		temp += rhs;
 		*this = temp;
 		return *this;
@@ -103,34 +103,34 @@ namespace distant::memory
 	template <typename E,  typename T, process_rights R>
 	virtual_reference<E, T, R>& virtual_reference<E, T, R>::operator--()
 	{
-		value_type temp = *this;
+		element_type temp = *this;
 		--temp;
 		return *this;
 	}
 
 	template <typename E,  typename T, process_rights R>
-	typename virtual_reference<E, T, R>::value_type
+	typename virtual_reference<E, T, R>::element_type
 	virtual_reference<E, T, R>::operator--(int)
 	{
-		value_type temp = *this;
-		value_type result = temp++;
+		element_type temp = *this;
+		element_type result = temp++;
 		*this = temp;
 		return result;
 	}
 
 	template <typename E,  typename T, process_rights R>
-	virtual_reference<E, T, R>& virtual_reference<E, T, R>::operator-=(const value_type& rhs)
+	virtual_reference<E, T, R>& virtual_reference<E, T, R>::operator-=(const element_type& rhs)
 	{
-		value_type temp = *this;
+		element_type temp = *this;
 		temp -= rhs;
 		*this = temp;
 		return *this;
 	}
 
 	template <typename E,  typename T, process_rights R>
-	virtual_reference<E, T, R>& virtual_reference<E, T, R>::operator*=(const value_type& rhs)
+	virtual_reference<E, T, R>& virtual_reference<E, T, R>::operator*=(const element_type& rhs)
 	{
-		value_type temp = *this;
+		element_type temp = *this;
 		temp *= rhs;
 
 		*this = temp;
@@ -138,9 +138,9 @@ namespace distant::memory
 	}
 
 	template <typename E,  typename T, process_rights R>
-	virtual_reference<E, T, R>& virtual_reference<E, T, R>::operator/=(const value_type& rhs)
+	virtual_reference<E, T, R>& virtual_reference<E, T, R>::operator/=(const element_type& rhs)
 	{
-		value_type temp = *this;
+		element_type temp = *this;
 		temp /= rhs;
 
 		*this = temp;
@@ -148,9 +148,9 @@ namespace distant::memory
 	}
 
 	template <typename E,  typename T, process_rights R>
-	virtual_reference<E, T, R>& virtual_reference<E, T, R>::operator%=(const value_type& rhs)
+	virtual_reference<E, T, R>& virtual_reference<E, T, R>::operator%=(const element_type& rhs)
 	{
-		value_type temp = *this;
+		element_type temp = *this;
 		temp %= rhs;
 
 		*this = temp;
@@ -158,9 +158,9 @@ namespace distant::memory
 	}
 
 	template <typename E,  typename T, process_rights R>
-	virtual_reference<E, T, R>& virtual_reference<E, T, R>::operator<<=(const value_type& rhs)
+	virtual_reference<E, T, R>& virtual_reference<E, T, R>::operator<<=(const element_type& rhs)
 	{
-		value_type temp = *this;
+		element_type temp = *this;
 		temp <<= rhs;
 
 		*this = temp;
@@ -168,9 +168,9 @@ namespace distant::memory
 	}
 
 	template <typename E,  typename T, process_rights R>
-	virtual_reference<E, T, R>& virtual_reference<E, T, R>::operator>>=(const value_type& rhs)
+	virtual_reference<E, T, R>& virtual_reference<E, T, R>::operator>>=(const element_type& rhs)
 	{
-		value_type temp = *this;
+		element_type temp = *this;
 		temp >>= rhs;
 
 		*this = temp;
@@ -178,9 +178,9 @@ namespace distant::memory
 	}
 
 	template <typename E,  typename T, process_rights R>
-	virtual_reference<E, T, R>& virtual_reference<E, T, R>::operator&=(const value_type& rhs)
+	virtual_reference<E, T, R>& virtual_reference<E, T, R>::operator&=(const element_type& rhs)
 	{
-		value_type temp = *this;
+		element_type temp = *this;
 		temp &= rhs;
 
 		*this = temp;
@@ -188,9 +188,9 @@ namespace distant::memory
 	}
 
 	template <typename E,  typename T, process_rights R>
-	virtual_reference<E, T, R>& virtual_reference<E, T, R>::operator|=(const value_type& rhs)
+	virtual_reference<E, T, R>& virtual_reference<E, T, R>::operator|=(const element_type& rhs)
 	{
-		value_type temp = *this;
+		element_type temp = *this;
 		temp |= rhs;
 
 		*this = temp;
@@ -198,9 +198,9 @@ namespace distant::memory
 	}
 
 	template <typename E,  typename T, process_rights R>
-	virtual_reference<E, T, R>& virtual_reference<E, T, R>::operator^=(const value_type& rhs)
+	virtual_reference<E, T, R>& virtual_reference<E, T, R>::operator^=(const element_type& rhs)
 	{
-		value_type temp = *this;
+		element_type temp = *this;
 		temp ^= rhs;
 
 		*this = temp;

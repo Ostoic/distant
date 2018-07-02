@@ -7,7 +7,6 @@
 #include <distant/kernel_objects/process.hpp>
 #include <distant/memory/virtual_ptr.hpp>
 #include <distant/memory/virtual_reference.hpp>
-#include <distant/access_rights.hpp>
 
 namespace distant::memory
 {
@@ -69,6 +68,9 @@ namespace distant::memory
 		}
 
 	private:
+		template <typename U, typename A, process_rights R>
+		friend class virtual_allocator;
+
 		template <typename Allocator>
 		friend struct std::allocator_traits;
 

@@ -5,11 +5,11 @@
 #pragma once
 
 #include <distant/config.hpp>
-#include <distant/handle.hpp>
+#include <distant/unsafe_handle.hpp>
 
 #include <distant/kernel_objects/snapshot_iterator.hpp>
 
-#include <distant/utility/boolean_validator.hpp>
+#include <distant/concepts/boolean_validator.hpp>
 
 namespace distant 
 {
@@ -20,11 +20,13 @@ namespace distant
 		/// \a KernelObject.
 		/// @tparam KernelObject must be one of the following: process, thread, heap, module.
 		template <typename KernelObject>
-		class snapshot : public utility::boolean_validator<snapshot<KernelObject>>
+		class snapshot : public kernel_object
 		{
+			using base = kernel_object;
+
 		public:
 			using object_type = KernelObject;
-			using handle_type = handle<snapshot>;
+			using handle_type = unsafe_handle;
 
 			using iterator		 = snapshot_iterator<KernelObject>;
 			using const_iterator = snapshot_iterator<KernelObject>;
@@ -66,8 +68,6 @@ namespace distant
 
 		private:
 			friend class iterator;
-
-			handle<snapshot> handle_;
 		};
 
 	} // namespace system

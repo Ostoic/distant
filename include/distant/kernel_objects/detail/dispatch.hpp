@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <distant/handle.hpp>
+#include <distant/unsafe_handle.hpp>
 
 #include <distant/type_traits.hpp>
 #include <distant/kernel_objects/fwd.hpp>
@@ -17,7 +17,7 @@ namespace distant::kernel_objects::detail {
 
 	// get_snapshot process tag implementation
 	template <typename Object_t, typename Snapshot_t>
-	handle<Snapshot_t> get_snapshot_handle(distant::detail::process_tag tag) noexcept
+	unsafe_handle get_snapshot_handle(distant::detail::process_tag tag) noexcept
 	{
 		static_cast<void>(tag);
 
@@ -26,12 +26,12 @@ namespace distant::kernel_objects::detail {
 		if (native_handle == boost::winapi::INVALID_HANDLE_VALUE_)
 			return nullptr;
 
-		return handle<Snapshot_t>{native_handle};
+		return unsafe_handle{native_handle};
 	}
 	
 	// get_snapshot main tag dispatcher
 	template <typename Object_t, typename Snapshot_t>
-	handle<Snapshot_t> get_snapshot_handle() noexcept
+	unsafe_handle get_snapshot_handle() noexcept
 	{
 		using dispatch = typename snapshot_dispatcher<Object_t>::dispatch;
 		return get_snapshot_handle<Object_t, Snapshot_t>(dispatch{});

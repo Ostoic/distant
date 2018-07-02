@@ -21,7 +21,7 @@
 namespace distant::kernel_objects
 {
 //protected:
-	inline unsafe_process::handle_type unsafe_process::open(const std::size_t pid, process_rights access) noexcept
+	inline unsafe_handle unsafe_process::open(const std::size_t pid, process_rights access) noexcept
 	{
 		using flag_t = std::underlying_type_t<process_rights>;
 
@@ -29,10 +29,10 @@ namespace distant::kernel_objects
 #pragma warning(disable:4267)
 		const auto result = boost::winapi::OpenProcess(static_cast<flag_t>(access), false, pid);
 #pragma warning(pop)
-		return handle_type(result);
+		return unsafe_handle(result);
 	}
 
-	inline std::size_t unsafe_process::get_pid(const handle_type& h) noexcept
+	inline std::size_t unsafe_process::get_pid(const unsafe_handle& h) noexcept
 	{
 		const auto id = boost::winapi::GetProcessId(h.native_handle());
 		return static_cast<std::size_t>(id);
@@ -168,7 +168,7 @@ namespace distant::kernel_objects
 		, access_rights_(other.access_rights_)	
 	{}
 
-	inline unsafe_process::unsafe_process(distant::handle<unsafe_process>&& h, const process_rights access) noexcept
+	inline unsafe_process::unsafe_process(unsafe_handle&& h, const process_rights access) noexcept
 		: handle_(std::move(h))
 		, access_rights_(access)
 	{}

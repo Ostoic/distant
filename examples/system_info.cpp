@@ -17,4 +17,11 @@ int main()
 		<< "Number of Processors: "   << distant::system::number_of_processors() << '\n'
 		<< "Processor Architecture: " << distant::system::architecture() << '\n'
 		<< "Processor type: "		  << distant::system::processor_type() << '\n';
+
+	distant::system::performance_info system_performance;
+
+	//std::cout << "Usermode process count = " << distant::snapshot<distant::unsafe_process>{}.as<std::vector>().size() << '\n';
+	std::cout << "Process count = " << system_performance.process_count() << '\n';
+	std::cout << "Thread count = " << system_performance.thread_count() << '\n';
+	std::cout << "(Page size, Page size) = (" << system_performance.page_size() << ", " << distant::system::page_size() << ")\n";
 }

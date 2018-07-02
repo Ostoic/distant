@@ -8,13 +8,11 @@ namespace distant::memory
 	/// @brief Provides customization points for memory operations.
 	namespace customize
 	{
-		/// Todo: Make this as one traits class and specialize for each needed customization
+		/// Todo: Make this a single traits class and specialize for each needed customization
 		/// @brief memory::write standard layout customization point.
 		template <typename T>
 		struct write
 		{
-			static_assert(std::is_standard_layout<T>::value);
-
 			template <typename AddressT>
 			static void invoke(const process<vm_w_op>& proc, const address<AddressT> address, T&& x)
 			{

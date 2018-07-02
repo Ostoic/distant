@@ -8,7 +8,6 @@
  * @file Contains the interface for distant::process.
  */
 
-#include <distant/config.hpp>
 #include <distant/kernel_objects/unsafe_process.hpp>
 
 namespace distant::kernel_objects 
@@ -55,7 +54,7 @@ namespace distant::kernel_objects
 		/// @remark Requires \a AccessRights >= \a syncronize.
 		template <typename Return = bool>
 		auto is_active() const
-			-> require_permission<process_rights::syncronize, Return>;
+			-> require_permission<process_rights::synchronize, Return>;
 
 		/// @brief Test if the process is running under the WOW64 emulator.
 		/// <br> If the process has been compiled to run on 32-bit system and
@@ -115,7 +114,7 @@ namespace distant::kernel_objects
 		/// @brief Move assignable
 		process& operator=(process&& other) noexcept;
 
-		explicit process(distant::handle<process>&& handle) noexcept;
+		explicit process(distant::unsafe_handle&& handle) noexcept;
 
 	private:
 		friend class memory_status;

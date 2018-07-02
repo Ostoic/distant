@@ -14,7 +14,6 @@
 
 namespace distant 
 {
-	template <typename>
-	class handle;
+	class unsafe_handle;
 
 } // namespace distant

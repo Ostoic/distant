@@ -3,7 +3,7 @@
 // (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
 
 #pragma once
-#include <distant/error/windows_error.hpp>
+#include "../windows_error.hpp"
 
 #include <boost/winapi/basic_types.hpp>
 #include <boost/winapi/error_codes.hpp>
@@ -15,8 +15,7 @@
 #include <distant/config.hpp>
 #include <distant/support/winapi/last_error.hpp>
 
-namespace distant {
-namespace error   {
+namespace distant::error {
 
 /******************/
 //windows_category:
@@ -63,7 +62,7 @@ namespace error   {
 	inline windows_error_code::windows_error_code() noexcept
 		: windows_error_code(boost::winapi::NO_ERROR_) {}
 
-	inline windows_error_code::windows_error_code(gle g) noexcept
+	inline windows_error_code::windows_error_code(const gle g) noexcept
 		: windows_error_code(boost::winapi::GetLastError()) { static_cast<void>(g); }
 
 	inline windows_error_code::windows_error_code(const boost::winapi::DWORD_ code) noexcept
@@ -71,15 +70,15 @@ namespace error   {
 
 	inline void windows_error_code::update_last() noexcept
 	{
-		this->set(boost::winapi::GetLastError());
+		this->set_last(boost::winapi::GetLastError());
 	}
 
 	inline void windows_error_code::set_success() noexcept
 	{
-		this->set(boost::winapi::NO_ERROR_);
+		this->set_last(boost::winapi::NO_ERROR_);
 	}
 
-	inline void windows_error_code::set(const boost::winapi::DWORD_ code) noexcept
+	inline void windows_error_code::set_last(const boost::winapi::DWORD_ code) noexcept
 	{
 		boost::winapi::SetLastError(code);
 		this->assign(code, this->category());
@@ -87,7 +86,7 @@ namespace error   {
 
 	inline windows_error_code last_error() noexcept
 	{
-		return windows_error_code(gle());
+		return windows_error_code{gle{}};
 	}
 
 // class windows_error
@@ -107,5 +106,11 @@ namespace error   {
 		return stream;
 	}
 
-} // namespace error 
-} // namespace distant
+	template <typename CharT, typename CharTraits>
+	std::basic_ostream<CharT, CharTraits>& operator<<(std::basic_ostream<CharT, CharTraits>& stream, const windows_error_code& code)
+	{
+		stream << windows_error{ code };
+		return stream;
+	}
+
+} // namespace distant::error

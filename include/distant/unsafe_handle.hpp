@@ -6,7 +6,7 @@
 
 #include <distant/access_rights.hpp>
 
-#include <distant/utility/boolean_validator.hpp>
+#include <distant/concepts/boolean_validator.hpp>
 
 #include <boost/winapi/config.hpp>
 #include <boost/winapi/basic_types.hpp>
@@ -19,7 +19,7 @@ namespace distant {
 	class invalid_t;
 
 	// Implements the interface of handle
-	class unsafe_handle : public utility::boolean_validator<unsafe_handle>
+	class unsafe_handle : public concepts::boolean_validator<unsafe_handle>
 	{
 	public:
 		// Underlying handle type. This is macro'd in Windows to be void* == (HANDLE)

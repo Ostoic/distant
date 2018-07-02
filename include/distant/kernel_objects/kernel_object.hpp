@@ -9,28 +9,20 @@
 #include <distant/config.hpp>
 #include <distant/error/windows_error.hpp>
 
-#include <distant/handle.hpp>
+#include <distant/unsafe_handle.hpp>
 
-#include <distant/utility/boolean_validator.hpp>
+#include <distant/concepts/boolean_validator.hpp>
 #include "fwd.hpp"
 
 namespace distant::kernel_objects
 {
 	/// @brief Base class for kernel objects
-	class kernel_object : public utility::boolean_validator<kernel_object>
+	class kernel_object : public concepts::boolean_validator<kernel_object>
 	{
-	public:
-		using handle_type = handle<kernel_object>;
-
 	public: // interface
-		/// @brief Bivariant type cast for kernel objects
-		template <typename KernelObject,
-		          typename = std::enable_if_t<std::is_convertible<KernelObject, kernel_object>::value>>
-		const distant::handle<KernelObject>& handle() const noexcept;
-
 		/// @brief Get a handle to the kernel_object.
 		/// @return a type-safe handle to the kernel_object.
-		const distant::handle<kernel_object>& handle() const noexcept;
+		const unsafe_handle& handle() const noexcept;
 
 		/// @brief Check if the kernel_object is valid
 		/// @return true if the kernel_object is valid.
@@ -43,7 +35,7 @@ namespace distant::kernel_objects
 		/// @brief Invalid handle default constructor
 		kernel_object() noexcept;
 
-		explicit kernel_object(handle_type&& handle) noexcept;
+		explicit kernel_object(unsafe_handle&& handle) noexcept;
 
 		/// @brief Move constructible
 		kernel_object(kernel_object&& other) noexcept = default;
@@ -52,8 +44,8 @@ namespace distant::kernel_objects
 		kernel_object& operator=(kernel_object&& other) noexcept = default;
 
 	protected:
-		handle_type handle_;
+		unsafe_handle handle_;
 	};
 } // end namespace distant::kernel_objects
 
-#include <distant/kernel_objects/impl/kernel_object.hxx>
+#include "impl/kernel_object.hxx"

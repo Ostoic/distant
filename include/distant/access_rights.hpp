@@ -24,7 +24,7 @@ namespace distant
 		{
 			delete_ = boost::winapi::DELETE_,
 			read_control = boost::winapi::READ_CONTROL_,
-			syncronize = boost::winapi::SYNCHRONIZE_,
+			synchronize = boost::winapi::SYNCHRONIZE_,
 			write_dac = boost::winapi::WRITE_DAC_,
 			writer_owner = boost::winapi::WRITE_OWNER_
 		};
@@ -51,7 +51,7 @@ namespace distant
 			query_limited_information = boost::winapi::PROCESS_QUERY_LIMITED_INFORMATION_,
 			query_information = boost::winapi::PROCESS_QUERY_INFORMATION_,
 
-			syncronize = boost::winapi::SYNCHRONIZE_,
+			synchronize = boost::winapi::SYNCHRONIZE_,
 		};
 
 		enum class token

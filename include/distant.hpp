@@ -5,7 +5,7 @@
 #pragma once
 
 #include <distant/types.hpp>
-#include <distant/handle.hpp>
+#include <distant/unsafe_handle.hpp>
 #include <distant/process.hpp>
 #include <distant/kernel_objects/access_token.hpp>
 #include <distant/snapshot.hpp>

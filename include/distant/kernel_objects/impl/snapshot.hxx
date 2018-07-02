@@ -11,7 +11,7 @@ namespace distant::kernel_objects {
 
 	template <typename O>
 	snapshot<O>::snapshot()
-		: handle_(kernel_objects::detail::get_snapshot_handle<object_type, snapshot>())
+		: base(kernel_objects::detail::get_snapshot_handle<object_type, snapshot>())
 	{
 		/*static_assert(
 			is_kernel_object<O>::value,
@@ -23,23 +23,23 @@ namespace distant::kernel_objects {
 	}
 
 	template <typename O>
-	typename snapshot<O>::iterator
-	snapshot<O>::begin() const
+	typename snapshot<O>::iterator snapshot<O>
+		::begin() const
 	{ return iterator{*this}; }
 
 	template <typename O>
-	typename snapshot<O>::iterator
-	snapshot<O>::end() const
+	typename snapshot<O>::iterator snapshot<O>
+		::end() const
 	{ return iterator{}; }
 
 	template <typename O>
-	typename snapshot<O>::iterator
-	snapshot<O>::begin()
+	typename snapshot<O>::iterator snapshot<O>
+		::begin()
 	{ return iterator{ *this }; }
 
 	template <typename O>
-	typename snapshot<O>::iterator
-	snapshot<O>::end()
+	typename snapshot<O>::iterator snapshot<O>
+		::end()
 	{ return iterator{}; }
 
 	template <typename O>

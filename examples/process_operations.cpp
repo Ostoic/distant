@@ -16,7 +16,7 @@ distant::process_rights::terminate;
 constexpr auto retrieve_path_flags =
 	distant::process_rights::vm_read	 | 
 	distant::process_rights::synchronize | 
-	distant::process_rights::query_information;
+	distant::process_rights::query_information | distant::process_rights::query_limited_information;
 
 // By specifying the function parameter's access rights, this forces any process passed to at least
 // have the required access rights. distant::process performs any necessary permission checks.
@@ -27,27 +27,16 @@ void typesafe_kill(distant::process<terminate_flags>& p)
 
 void display_info(const distant::process<retrieve_path_flags>& p)
 {
-	std::string_view active_string = (p.is_active()) ? "Active" : "Inactive";
+	const std::string_view active_string = (p.is_active()) ? "Active" : "Inactive";
 
 	// Display process information
 	std::cout << "Process " << p.id() << '\n';
 	std::cout << "State: " << active_string << '\n';
-	std::wcout << "Name: " << p.filename() << '\n';
+	std::wcout << "Name: " << p.name() << '\n';
 	std::wcout << "File Path: " << p.file_path() << '\n';
-
-	// XX Consider memory_status(process) instead of p.memory_status
-	/*const auto ms = p.memory_status();
-	std::cout << "Private Usage: " << ms.private_usage() << " kb \n";
-	std::cout << "Peak Private Usage: " << ms.peak_private_usage() << " kb \n";
-
-	std::cout << "Working Set: " << ms.working_set() << " kb \n";
-	std::cout << "Peak Working Set: " << ms.peak_working_set() << " kb \n";
-
-	std::cout << "Number of Page Faults: " << ms.page_fault_count() << '\n';
-	std::cout << "Number of Active Handles: " << ms.handle_count() << '\n';*/
 }
 
-auto find_process(std::string_view name)
+auto find_process(std::wstring_view name)
 {
 	using process = distant::process<retrieve_path_flags>;
 	distant::snapshot<process> snapshot;
@@ -56,7 +45,7 @@ auto find_process(std::string_view name)
 	{
 		const auto it = std::find_if(snapshot.begin(), snapshot.end(), [&](const auto p)
 		{
-			return p.filename() == name;
+			return p.name() == name;
 		});
 
 		if (it != snapshot.end()) return *it;
@@ -67,12 +56,12 @@ auto find_process(std::string_view name)
 
 int main()
 {
-	std::string processName = "taskmgr.exe";
-	std::cout << "Looking for " << processName << "...\n";
+	const std::wstring process_name = L"Taskmgr.exe";
+	std::wcout << "Looking for " << process_name << "...\n";
 
 	try
 	{
-		const auto process = find_process(processName);
+		const auto process = find_process(process_name);
 
 		if (process)
 		{
@@ -80,7 +69,7 @@ int main()
 			display_info(process);
 		}
 		else
-			std::cout << "Could not find " << processName << "!\n";
+			std::wcout << "Could not find " << process_name << "!\n";
 	}
 	catch (std::system_error& e)
 	{

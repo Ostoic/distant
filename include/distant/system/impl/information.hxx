@@ -95,7 +95,7 @@ namespace distant::system
 		return page_size_;
 	}
 
-	inline std::size_t intallocation_granularity() noexcept
+	inline std::size_t allocation_granularity() noexcept
 	{ return detail::get_system_info_impl().dwAllocationGranularity; }
 
 	inline unsigned int number_of_processors() noexcept

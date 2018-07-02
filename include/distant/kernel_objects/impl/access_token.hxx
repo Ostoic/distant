@@ -3,10 +3,9 @@
 // (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
 
 #pragma once
-#include <distant/kernel_objects/access_token.hpp>
+#include "../access_token.hpp"
 
 #include <distant/detail/tags.hpp>
-
 #include <distant/support/winapi/token.hpp>
 
 namespace distant::kernel_objects
@@ -63,14 +62,15 @@ namespace distant::kernel_objects
 	//public:
 	template <access_rights::token A, typename K>
 	access_token<A, K>::access_token(const K& k) noexcept
-		: Base(
-			distant::handle<access_token>{
+		: base(
+			distant::unsafe_handle{
 				detail::get_token_impl(k, static_cast<boost::winapi::DWORD_>(A), detail::dispatcher<K>::dispatch{})
 			}) 
 	{}
 
 	template <access_rights::token A, typename K>
-	bool access_token<A, K>::has_privilege(const security::privilege& p) const noexcept
+	bool access_token<A, K>
+		::has_privilege(const security::privilege& p) const noexcept
 	{
 		if (!p) return false;
 
@@ -82,7 +82,8 @@ namespace distant::kernel_objects
 	}
 
 	template <access_rights::token A, typename K>
-	bool access_token<A, K>::set_privilege(const security::privilege& p,
+	bool access_token<A, K>
+		::set_privilege(const security::privilege& p,
 	                                       security::privilege::attributes attribute) noexcept
 	{
 		if (!p) return false;
@@ -103,7 +104,8 @@ namespace distant::kernel_objects
 	}
 
 	template <access_rights::token A, typename K>
-	bool access_token<A, K>::remove_privilege(const security::privilege& p) noexcept
+	bool access_token<A, K>
+		::remove_privilege(const security::privilege& p) noexcept
 	{
 		return this->set_privilege(p, security::privilege::attributes::removed);
 	}
@@ -111,20 +113,20 @@ namespace distant::kernel_objects
 //free:
 	template <token_rights Access, typename KernelObject, typename>
 	access_token<Access, KernelObject>
-	get_access_token(const KernelObject& object) noexcept
+		get_access_token(const KernelObject& object) noexcept
 	{
 		return access_token<Access, KernelObject>{object};
 	}
 
 	template <typename KernelObject, typename>
 	access_token<token_rights::adjust_privileges | token_rights::query, KernelObject>
-	get_access_token(const KernelObject& object) noexcept
+		get_access_token(const KernelObject& object) noexcept
 	{
 		return get_access_token<token_rights::adjust_privileges | token_rights::query>(object);
 	}
 
 	inline access_token<token_rights::all_access, process<>>
-	get_access_token() noexcept
+		get_access_token() noexcept
 	{
 		return get_access_token<token_rights::all_access>(kernel_objects::current_process());
 	}

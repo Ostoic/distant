@@ -7,10 +7,11 @@
 #include <distant/config.hpp>
 #include <distant/type_traits.hpp>
 #include <distant/kernel_objects/type_traits.hpp>
-#include <distant/handle.hpp>
+#include <distant/unsafe_handle.hpp>
 
 #include <distant/security/privilege.hpp>
 #include <distant/kernel_objects/process.hpp>
+#include <distant/concepts/boolean_validator.hpp>
 
 namespace distant
 {
@@ -18,12 +19,10 @@ namespace distant
 	{
 		// Container-like object for privileges, SIDs, and other security stuff.
 		// TODO: Make into a range that enumerates enabled privileges.
-		template <access_rights::token Access, typename KernelObject>
+		template <access_rights::token Access, class KernelObject>
 		class access_token : public kernel_object
 		{
-		private: // subtypes
-			using object_type = typename kernel_object_traits<KernelObject>::object_type;
-			using Base = kernel_object;
+			using base = kernel_object;
 
 		public: // interface
 			/// Check if the given privilege is in the access token's list of privileges.
@@ -76,4 +75,4 @@ namespace distant
 	using kernel_objects::get_access_token;
 } // namespace distant
 
-#include <distant/kernel_objects/impl/access_token.hxx>
+#include "impl/access_token.hxx"

@@ -9,7 +9,7 @@
 
 #include <distant/config.hpp>
 #include <distant/type_traits.hpp>
-#include <distant/handle.hpp>
+#include <distant/unsafe_handle.hpp>
 #include <distant/support/filesystem.hpp>
 
 namespace distant
@@ -26,16 +26,12 @@ namespace distant::kernel_objects
 {
 	/// @brief Base type of distant::process
 	/// This version does not have static access_rights checking
-	class unsafe_process
+	class unsafe_process : public concepts::boolean_validator<unsafe_process>
 	{
-	public:
-		// Object type information
-		using handle_type = kernel_object_traits<unsafe_process>::handle_type;
-
 	protected:
-		static handle_type open(std::size_t, process_rights) noexcept;
+		static unsafe_handle open(std::size_t, process_rights) noexcept;
 
-		static std::size_t get_pid(const handle_type&) noexcept;
+		static std::size_t get_pid(const unsafe_handle&) noexcept;
 
 	public: // interface
 
@@ -82,7 +78,7 @@ namespace distant::kernel_objects
 		/// @return the process id.
 		std::size_t id() const noexcept { return unsafe_process::get_pid(handle_); }
 
-		const handle_type& handle() const noexcept { return handle_; }
+		const unsafe_handle& handle() const noexcept { return handle_; }
 
 		/// @brief Get the access rights that were used to open the current process
 		/// @return process access_rights indicating the level of access we have to the process.
@@ -108,14 +104,14 @@ namespace distant::kernel_objects
 		unsafe_process(unsafe_process&& other) noexcept; // move constructible
 		unsafe_process& operator=(unsafe_process&& other) noexcept; // move assignable
 
-		explicit unsafe_process(distant::handle<unsafe_process>&& handle, process_rights) noexcept;
+		explicit unsafe_process(unsafe_handle&& handle, process_rights) noexcept;
 
 	private:
 		friend bool operator ==(const unsafe_process&, const unsafe_process&) noexcept;
 		friend bool operator !=(const unsafe_process&, const unsafe_process&) noexcept;
 
 	protected:
-		handle_type handle_;
+		unsafe_handle handle_;
 		process_rights access_rights_;
 	}; // end class process
 

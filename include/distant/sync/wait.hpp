@@ -70,7 +70,7 @@ namespace distant::sync
 
 		//	for (const auto& obj : objects)
 		//	{
-		//		auto value = detail::attorney::to_handle<wait>::get_value(obj.handle()); // Get handle value (void *)
+		//		auto value = detail::attorney::to_unsafe_handle::get_value(obj.handle()); // Get handle value (void *)
 		//		auto result = WaitForSingleObject(value, time);
 		//	}
 

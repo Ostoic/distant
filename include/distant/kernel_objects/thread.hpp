@@ -47,12 +47,12 @@ namespace distant::kernel_objects
 
 		const distant::process<required_process_rights>& process() const noexcept;
 
-		const distant::handle<thread>& handle() const noexcept;
+		const distant::unsafe_handle& handle() const noexcept;
 
 	public:
 		thread() noexcept = default;
 
-		explicit thread(distant::handle<thread>&& handle) noexcept;
+		explicit thread(distant::unsafe_handle&& handle) noexcept;
 
 		template <typename Fn, typename... Args>
 		explicit thread(function<int>, Args&&... args);

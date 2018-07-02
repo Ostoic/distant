@@ -20,7 +20,7 @@ namespace distant::sync
 		: handle_(
 			create_new ? 
 				boost::winapi::create_mutex(nullptr, false, name.data()) : 
-				boost::winapi::open_mutex(static_cast<boost::winapi::DWORD_>(standard_rights::syncronize), false, name.data())
+				boost::winapi::open_mutex(static_cast<boost::winapi::DWORD_>(standard_rights::synchronize), false, name.data())
 		)
 	{
 		if (this->handle_ == nullptr)
@@ -52,7 +52,7 @@ namespace distant::sync
 		boost::winapi::ReleaseMutex(this->handle_.native_handle());
 	}
 
-	inline const distant::handle<mutex>& mutex::handle() const noexcept
+	inline const distant::unsafe_handle& mutex::handle() const noexcept
 	{
 		return this->handle_;
 	}

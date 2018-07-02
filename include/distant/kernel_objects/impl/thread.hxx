@@ -63,7 +63,7 @@ namespace distant::kernel_objects
 		return *process_;
 	}
 
-	inline const distant::handle<thread>& thread::handle() const noexcept
+	inline const distant::unsafe_handle& thread::handle() const noexcept
 	{
 		return handle_;
 	}
@@ -73,7 +73,7 @@ namespace distant::kernel_objects
 		return thread::id{ boost::winapi::GetThreadId(handle_.native_handle()) };
 	}
 
-	inline thread::thread(distant::handle<thread>&& handle) noexcept
+	inline thread::thread(distant::unsafe_handle&& handle) noexcept
 		: handle_(std::move(handle))
 	{}
 

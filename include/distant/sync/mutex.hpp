@@ -1,6 +1,6 @@
 #pragma once
 
-#include <distant/handle.hpp>
+#include <distant/unsafe_handle.hpp>
 
 #include <boost/winapi/wait.hpp>
 
@@ -39,13 +39,13 @@ namespace distant::sync
 
 		/// @brief Get the handle to the mutex.
 		/// @return the handle.
-		const distant::handle<mutex>& handle() const noexcept;
+		const distant::unsafe_handle& handle() const noexcept;
 
 		mutex(const mutex&) = delete;
 		mutex& operator=(const mutex&) = delete;
 
 	private:
-		distant::handle<mutex> handle_;
+		distant::unsafe_handle handle_;
 	};
 
 	template <typename Mutex>

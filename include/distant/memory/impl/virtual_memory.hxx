@@ -10,20 +10,13 @@
 
 namespace distant::memory
 {
-	template <typename T, typename AddressT>
+	// Note: AddressT is specified first to allow for universal reference type deduction 
+	template <typename AddressT, typename T>
 	BOOST_FORCEINLINE
 	void write(process<vm_w_op>& proc, const address<AddressT> address, T&& x)
 	{
 		customize::write<T>::template 
 			invoke<AddressT>(proc, address, std::forward<T>(x));
-	}
-
-	template <typename T>
-	BOOST_FORCEINLINE
-	void write(process<vm_w_op>& proc, const address<dword> address, T&& x)
-	{
-		customize::write<T>::template
-			invoke<dword>(proc, address, std::forward<T>(x));
 	}
 
 	template <typename T, typename AddressT>
@@ -34,12 +27,16 @@ namespace distant::memory
 			invoke<AddressT>(process, address, size);
 	}
 
-	template <typename T>
+	template <page_protection Protection, typename AddressT>
 	BOOST_FORCEINLINE
-	T read(const process<vm_read>& process, const address<dword> address, std::size_t size)
+	page_protection virtual_protect(process<vm_op>& process, const address<AddressT> address, const std::size_t size)
 	{
-		return customize::read<T>::template
-			invoke<dword>(process, address, size);
+		static_assert(
+			detail::has_virtual_protect_support(Protection),
+			"[memory::virtual_protect] Selected page_protection is not supported"
+		);
+
+		return virtual_protect(process, address, Protection, size);
 	}
 
 	template <typename AddressT>
@@ -57,30 +54,6 @@ namespace distant::memory
 			throw windows_error("[memory::virtual_protect] VirtualProtectEx failed");
 
 		return static_cast<page_protection>(old);
-	}
-
-	template <page_protection Protection>
-	BOOST_FORCEINLINE
-	page_protection virtual_protect(process<vm_op>& process, const address<dword> address, const std::size_t size)
-	{
-		return virtual_protect<Protection, dword>(process, address, size);
-	}
-
-	template <page_protection Protection, typename AddressT>
-	BOOST_FORCEINLINE
-	page_protection virtual_protect(process<vm_op>& process, const address<AddressT> address, const std::size_t size)
-	{
-		static_assert(
-			detail::has_virtual_protect_support(Protection),
-			"[memory::virtual_protect] Selected page_protection is not supported"
-		);
-
-		return virual_protect<AddressT>(process, address, Protection, size);
-	}
-
-	inline page_protection virtual_protect(process<vm_op>& process, const address<dword> address, const page_protection protection, const std::size_t size)
-	{
-		return virtual_protect<dword>(process, address, protection, size);
 	}
 
 	template <typename AddressT>
@@ -123,7 +96,8 @@ namespace distant::memory
 		return ::VirtualFreeEx(
 			process.handle().native_handle(), 
 			reinterpret_cast<void*>(static_cast<AddressT>(pointer.get())),
-			0, MEM_RELEASE
+			0, 
+			MEM_RELEASE
 		);
 	}
 }

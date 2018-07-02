@@ -50,7 +50,7 @@ void remove_debug_privileges()
 		if (token.remove_privilege(distant::privileges::debug))
 		{
 			std::cout << "Successfully removed debug privileges!\n";
-			std::cout << token.has_privilege(distant::privileges::debug) << '\n';
+			std::cout << "Do we have debug privileges? " << token.has_privilege(distant::privileges::debug) << '\n';
 		}
 		else
 			std::cerr
@@ -70,17 +70,17 @@ int main()
 	// work as expected.
 	std::cout << "Process count before debug privileges = " << distant::snapshot<process>{}.as<std::vector>().size() << '\n';
 	enable_debug_privileges();
+
 	std::cout << "Process count after enabling debug privileges = " << distant::snapshot<process>{}.as<std::vector>().size() << '\n';
 	remove_debug_privileges();
-	std::cout << "Process count after removing debug privileges = " << distant::snapshot<process>{}.as<std::vector>().size() << "\n\n";
 
+	std::cout << "Process count after removing debug privileges = " << distant::snapshot<process>{}.as<std::vector>().size() << "\n\n";
 	for (const auto p : distant::snapshot<process>{})
 	{
 		if (distant::get_access_token(p).has_privilege(distant::privileges::debug))
 			std::wcout
-			<< "Found process with debug privileges: " << p.file_path() << " (" << p.id() << ")\n\n";
+				<< "Found process with debug privileges: " << p.file_path() << " (" << p.id() << ")\n\n";
 	}
 
-	std::cin.ignore();
 	return 0;
 }

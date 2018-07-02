@@ -40,7 +40,7 @@ namespace distant {
 	template <typename KernelObject>
 	struct default_kernel_object_traits
 	{
-		using handle_type = distant::handle<KernelObject>;
+		using handle_type = distant::unsafe_handle;
 		using native_handle_type = boost::winapi::HANDLE_;
 	};
 

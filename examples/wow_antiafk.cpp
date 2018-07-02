@@ -14,7 +14,7 @@ int main()
 
 	// Open the process with pid 137016.
 	// For simplicity, this is assumed to be the target wow.exe, version 3.3.5 123450.
-	const distant::process<distant::vm_rw_op> wow(184512); 
+	distant::process<distant::vm_rw_op> wow(50872); 
 
 	if (!wow)
 	{
@@ -29,7 +29,7 @@ int main()
 	// Get a reference to the last time we moved the mouse in-game
 	auto last_action = distant::make_virtual_reference<int>(wow, last_action_address);
 
-	// Get a reference to the current wow time
+	// Get a read-only reference to the current wow time
 	// Note that timestamp is a constant reference, which means writing is not permitted.
 	const auto timestamp = distant::make_virtual_reference<const int>(wow, timestamp_address);
 
@@ -42,19 +42,20 @@ int main()
 
 			// Read the current time
 			int current_time = timestamp;
+			std::cout << "Previous last_action: " << last_action << '\n';
 			// This amounts to the following code: current_time = distant::memory::read<int>(wow, timestamp_address);
 
 			// Write the current time to the last action.
 			last_action = current_time;
 			// This amounts to the following code: distant::memory::write<int>(wow, last_action_address, current_time);
 
-			std::cout << "Last action: " << last_action << '\n';
+			std::cout << "Modified last_action: " << last_action << '\n';
 			std::cout << "Timestamp: " << timestamp << "\n\n";
 		}
 	}
-	catch (std::system_error& e)
+	catch (distant::windows_error& e)
 	{
-		std::cout << e.what() << e.code() << '\n';
+		std::cout << e.what() << '\n';
 	}
 }
 

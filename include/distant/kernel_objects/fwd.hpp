@@ -9,6 +9,7 @@
 namespace distant::kernel_objects
 {
 	class kernel_object;
+
 	class unsafe_process;
 
 	template <process_rights R>
