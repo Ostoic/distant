@@ -6,12 +6,13 @@
 
 #include <distant/config.hpp>
 #include <distant/type_traits.hpp>
-#include <distant/kernel_objects/type_traits.hpp>
 #include <distant/unsafe_handle.hpp>
 
 #include <distant/security/privilege.hpp>
 #include <distant/kernel_objects/process.hpp>
 #include <distant/concepts/boolean_validator.hpp>
+
+#include <distant/kernel_objects/detail/token_access.hpp>
 
 namespace distant
 {
@@ -55,24 +56,24 @@ namespace distant
 
 		/// @brief Retrieves the access token of the given kernel object.
 		/// @return the primary access token of the kernel object is a process, or it returns an impersonation access token if the kernel object is a thread.
-		template <access_rights::token Access, typename KernelObject, typename = std::enable_if_t<detail::has_token_access<KernelObject>::value, KernelObject>>
+		template <access_rights::token Access, class KernelObject>
 		access_token<Access, KernelObject> 
-			get_access_token(const KernelObject&) noexcept;
+			primary_access_token(const KernelObject&) noexcept;
 
 		/// @brief Retrieves the access token of the given kernel object.
 		/// @return the primary access token of the kernel object is a process, or it returns an impersonation access token if the kernel object is a thread.
-		template <typename KernelObject, typename = std::enable_if_t<detail::has_token_access<KernelObject>::value, KernelObject>>
+		template <class KernelObject>
 		access_token<access_rights::token::adjust_privileges | access_rights::token::query, KernelObject>
-			get_access_token(const KernelObject&) noexcept;
+			primary_access_token(const KernelObject&) noexcept;
 
 		/// @brief Retrieve the access token of the current process.
 		/// @return the primary access token of the current process.
 		access_token<access_rights::token::all_access, process<>>
-			get_access_token() noexcept;
+			primary_access_token() noexcept;
 	} // namespace kernel_objects
 
 	using kernel_objects::access_token;
-	using kernel_objects::get_access_token;
+	using kernel_objects::primary_access_token;
 } // namespace distant
 
 #include "impl/access_token.hxx"

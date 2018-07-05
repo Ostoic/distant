@@ -55,22 +55,22 @@ namespace distant::sync
 		// Multiple object wait
 		// Wait for syncronizable object for the given amount of time
 		// XXX WaitFor...Object has a particular gle syntax. Look into this.
-		//wait::state operator ()(const std::vector<object_type>& objects, time_type time) const
+		//wait::state operator ()(const std::vector<object_t>& objects, time_type time) const
 		//{
-		//	using handle_type = object_type::handle_type;
-		//	using value_type = handle_type::value_type;
+		//	using handle_t = object_t::handle_t;
+		//	using value_type = handle_t::value_type;
 
 		//	const std::size_t size = objects.size();
 
-		//	std::array<handle_type, size> handles;
+		//	std::array<handle_t, size> handles;
 
-		//	handle_type handles[size];
+		//	handle_t handles[size];
 
 		//  WaitForMultipleObjects?
 
 		//	for (const auto& obj : objects)
 		//	{
-		//		auto value = detail::attorney::to_unsafe_handle::get_value(obj.handle()); // Get handle value (void *)
+		//		auto value = detail::attorney::to_handle:get_value(obj.handle()); // Get handle value (void *)
 		//		auto result = WaitForSingleObject(value, time);
 		//	}
 

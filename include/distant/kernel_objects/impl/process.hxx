@@ -135,14 +135,6 @@ namespace distant::kernel_objects
 	process<T>::operator const process<OtherAccess>&() const noexcept
 	{ return *reinterpret_cast<const process<OtherAccess>*>(this); }
 
-	/*template <access_rights::process T>
-	process<T>::operator const unsafe_process&() const noexcept
-	{ return *reinterpret_cast<const unsafe_process*>(this); }
-
-	template <access_rights::process T>
-	process<T>::operator unsafe_process&() noexcept
-	{ return *reinterpret_cast<unsafe_process*>(this); }*/
-
 //=========================//
 // Process ctors and dtor  //
 //=========================//
@@ -154,15 +146,8 @@ namespace distant::kernel_objects
 
 	// Open process by id
 	template <access_rights::process T>
-	process<T>::process(const std::size_t id) noexcept
+	process<T>::process(const typename process::id id) noexcept
 		: unsafe_process(id, T)
-	{}
-
-	// Take possession of process handle. It is ensured to be a convertible process handle
-	// due to encoded type in handle.
-	template <access_rights::process T>
-	process<T>::process(distant::unsafe_handle&& handle) noexcept
-		: unsafe_process(std::move(handle), T)
 	{}
 
 	template <access_rights::process T>
@@ -177,6 +162,12 @@ namespace distant::kernel_objects
 		return *this;
 	}
 
+//private:
+	template <access_rights::process T>
+	process<T>::process(kernel_handle&& handle) noexcept
+		: unsafe_process(std::move(handle), T)
+	{}
+
 //free:
 	template <access_rights::process T>
 	process<T> current_process() noexcept
@@ -186,9 +177,10 @@ namespace distant::kernel_objects
 
 	inline process<> current_process() noexcept
 	{
-		return process<>(
-			unsafe_handle(GetCurrentProcess(), access_rights::handle::close_protected)
-		);
+		return process<>{kernel_handle{ 
+			GetCurrentProcess() ,
+			access_rights::handle::close_protected
+		}};
 	}
 
 } // end namespace distant::kernel_objects

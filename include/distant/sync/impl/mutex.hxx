@@ -52,9 +52,9 @@ namespace distant::sync
 		boost::winapi::ReleaseMutex(this->handle_.native_handle());
 	}
 
-	inline const distant::unsafe_handle& mutex::handle() const noexcept
+	inline const kernel_handle& mutex::handle() const noexcept
 	{
-		return this->handle_;
+		return handle_;
 	}
 
 // class lock_guard

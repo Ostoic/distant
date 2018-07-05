@@ -63,7 +63,7 @@ namespace distant::kernel_objects
 	template <access_rights::token A, typename K>
 	access_token<A, K>::access_token(const K& k) noexcept
 		: base(
-			distant::unsafe_handle{
+			distant::kernel_handle{
 				detail::get_token_impl(k, static_cast<boost::winapi::DWORD_>(A), detail::dispatcher<K>::dispatch{})
 			}) 
 	{}
@@ -83,8 +83,7 @@ namespace distant::kernel_objects
 
 	template <access_rights::token A, typename K>
 	bool access_token<A, K>
-		::set_privilege(const security::privilege& p,
-	                                       security::privilege::attributes attribute) noexcept
+		::set_privilege(const security::privilege& p, security::privilege::attributes attribute) noexcept
 	{
 		if (!p) return false;
 
@@ -111,23 +110,28 @@ namespace distant::kernel_objects
 	}
 
 //free:
-	template <token_rights Access, typename KernelObject, typename>
+	template <token_rights Access, typename KernelObject>
 	access_token<Access, KernelObject>
-		get_access_token(const KernelObject& object) noexcept
+		primary_access_token(const KernelObject& object) noexcept
 	{
+		static_assert(
+			detail::has_token_access<KernelObject>(),
+			"[primary_access_token] insuficient access to KernelObject"
+		);
+
 		return access_token<Access, KernelObject>{object};
 	}
 
-	template <typename KernelObject, typename>
+	template <typename KernelObject>
 	access_token<token_rights::adjust_privileges | token_rights::query, KernelObject>
-		get_access_token(const KernelObject& object) noexcept
+		primary_access_token(const KernelObject& object) noexcept
 	{
-		return get_access_token<token_rights::adjust_privileges | token_rights::query>(object);
+		return primary_access_token<token_rights::adjust_privileges | token_rights::query>(object);
 	}
 
 	inline access_token<token_rights::all_access, process<>>
-		get_access_token() noexcept
+		primary_access_token() noexcept
 	{
-		return get_access_token<token_rights::all_access>(kernel_objects::current_process());
+		return primary_access_token<token_rights::all_access>(kernel_objects::current_process());
 	}
 } // namespace distant::kernel_objects

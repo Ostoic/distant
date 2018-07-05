@@ -16,7 +16,9 @@ namespace distant::kernel_objects
 	/// @tparam AccessRights the desired permissions to open the process with.
 	/// @see process_rights
 	template <process_rights AccessRights = process_rights::all_access>
-	class process : private unsafe_process
+	class process 
+		: private unsafe_process
+		, concepts::equality_comparable<process<AccessRights>>
 	{
 	private:
 		/// @brief SFINAE for access permissions
@@ -31,7 +33,9 @@ namespace distant::kernel_objects
 		using unsafe_process::handle;
 		using unsafe_process::is_zombie;
 		using unsafe_process::valid;
-		using unsafe_process::id;
+		using unsafe_process::equals;
+		using unsafe_process::get_id;
+		using id = unsafe_process::id;
 
 		/// @brief Terminate the process.
 		/// @see process_rights
@@ -40,7 +44,7 @@ namespace distant::kernel_objects
 		auto kill()
 			-> require_permission<process_rights::terminate, Return>;
 
-		/// @brief Get number of handles opened in the process
+		/// @brief Get number of handle s opened in the process
 		/// @see process_rights
 		/// @return unsigned int: the number of handles
 		/// @remark Requires \a AccessRights >= \a query_limited_information.
@@ -98,15 +102,12 @@ namespace distant::kernel_objects
 		template <process_rights OtherAccess, typename = std::enable_if_t<(OtherAccess <= AccessRights)>>
 		operator const process<OtherAccess>&() const noexcept;
 
-		/*explicit operator const unsafe_process&() const noexcept;
-		explicit operator		unsafe_process&() noexcept;*/
-
 	public: // {ctor}
 		/// @brief Default process constructor
 		constexpr process() noexcept;
 
 		/// @brief Open process by id
-		explicit process(std::size_t id) noexcept;
+		explicit process(typename process::id id) noexcept;
 
 		/// @brief Move constructible
 		process(process&& other) noexcept;
@@ -114,19 +115,13 @@ namespace distant::kernel_objects
 		/// @brief Move assignable
 		process& operator=(process&& other) noexcept;
 
-		explicit process(distant::unsafe_handle&& handle) noexcept;
-
 	private:
+		explicit process(kernel_handle&& handle) noexcept;
+
 		friend class memory_status;
+		friend process<> current_process() noexcept;
+
 	}; // class process
-
-	template <process_rights A1, process_rights A2>
-	bool operator==(const process<A1>& lhs, const process<A2>& rhs) noexcept 
-	{ return lhs.id() == rhs.id(); }
-
-	template <process_rights A1, process_rights A2>
-	bool operator!=(const process<A1>& lhs, const process<A2>& rhs) noexcept 
-	{ return lhs.id() != rhs.id(); }
 
 	/// @brief Create a new process
 	// Todo: Implement
@@ -152,13 +147,18 @@ namespace distant
 
 	template <process_rights Access>
 	struct kernel_object_traits<process<Access>>
-		: default_kernel_object_traits<process<Access>>
-	{};
-
-	template <process_rights Access>
-	struct get_access_rights<process<Access>>
+		: detail::process_traits
 	{
-		static constexpr auto value = Access;
+		using id_t = typename process<Access>::id;
+
+		using process_traits::access_rights_t;
+		using process_traits::access_rights;
+		using process_traits::get_id;
+		using process_traits::is_valid_handle;
+		using process_traits::open;
+
+		static constexpr access_rights_t access_rights(const process<Access>&) noexcept
+		{ return process_traits::access_rights(); }
 	};
 }
 

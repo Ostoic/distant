@@ -12,7 +12,6 @@ struct PROCESSENTRY32;
 struct PROCESSENTRY32W;
 
 struct THREADENTRY32;
-struct THREADENTRY32W;
 
 BOOST_SYMBOL_IMPORT boost::winapi::BOOL_ WINAPI Process32FirstW(
 	boost::winapi::HANDLE_ hSnapshot,
@@ -35,6 +34,14 @@ BOOST_SYMBOL_IMPORT boost::winapi::BOOL_ WINAPI Process32First(
 BOOST_SYMBOL_IMPORT boost::winapi::BOOL_ WINAPI Process32Next(
 	boost::winapi::HANDLE_ hSnapshot,
 	::PROCESSENTRY32* lppe);
+
+BOOST_SYMBOL_IMPORT boost::winapi::BOOL_ WINAPI Thread32First(
+	boost::winapi::HANDLE_ hSnapshot,
+	::THREADENTRY32* lpte);
+
+BOOST_SYMBOL_IMPORT boost::winapi::BOOL_ WINAPI Thread32Next(
+	boost::winapi::HANDLE_ hSnapshot,
+	::THREADENTRY32* lpte);
 
 #endif
 
@@ -71,8 +78,23 @@ namespace winapi {
 		DWORD_   dwFlags;
 		CHAR_    szExeFile[boost::winapi::max_path];    // Path
 	} PROCESSENTRY32_;
+
 	typedef PROCESSENTRY32_ *  PPROCESSENTRY32_;
 	typedef PROCESSENTRY32_ *  LPPROCESSENTRY32_;
+
+	typedef struct tagTHREADENTRY32_
+	{
+		DWORD_   dwSize;
+		DWORD_   cntUsage;
+		DWORD_   th32ThreadID;       // this thread
+		DWORD_   th32OwnerProcessID; // Process this thread is associated with
+		LONG_    tpBasePri;
+		LONG_    tpDeltaPri;
+		DWORD_   dwFlags;
+	} THREADENTRY32_;
+
+	typedef THREADENTRY32_ *  PTHREADENTRY32_;
+	typedef THREADENTRY32_ *  LPTHREADENTRY32_;
 
 	constexpr DWORD_ TH32CS_SNAPHEAPLIST_ = 0x00000001;
 	constexpr DWORD_ TH32CS_SNAPPROCESS_ = 0x00000002;
@@ -92,6 +114,11 @@ namespace winapi {
 	using PROCESSENTRY32_ = ::PROCESSENTRY32;
 	using PPROCESSENTRY32_ = ::PPROCESSENTRY32;
 	using LPPROCESSENTRY32_ = ::LPPROCESSENTRY32;
+
+	using tagTHREADENTRY32_ = ::tagTHREADENTRY32;
+	using THREADENTRY32_ = ::THREADENTRY32;
+	using PTHREADENTRY32_ = ::PTHREADENTRY32;
+	using LPTHREADENTRY32_ = ::LPTHREADENTRY32;
 
 	constexpr DWORD_ TH32CS_SNAPHEAPLIST_ = TH32CS_SNAPHEAPLIST;
 	constexpr DWORD_ TH32CS_SNAPPROCESS_ = TH32CS_SNAPPROCESS;
@@ -116,6 +143,20 @@ namespace winapi {
 		boost::winapi::PROCESSENTRY32_* lppe)
 	{
 		return ::Process32First(hSnapshot, reinterpret_cast<::PROCESSENTRY32*>(lppe));
+	}
+
+	BOOST_FORCEINLINE boost::winapi::BOOL_ thread32_next(
+		boost::winapi::HANDLE_ hSnapshot,
+		boost::winapi::THREADENTRY32_* lppe)
+	{
+		return ::Thread32Next(hSnapshot, reinterpret_cast<::THREADENTRY32*>(lppe));
+	}
+
+	BOOST_FORCEINLINE boost::winapi::BOOL_ thread32_first(
+		boost::winapi::HANDLE_ hSnapshot,
+		boost::winapi::THREADENTRY32_* lppe)
+	{
+		return ::Thread32First(hSnapshot, reinterpret_cast<::THREADENTRY32*>(lppe));
 	}
 
 } // namespace winapi

@@ -15,11 +15,11 @@ using token_rights = distant::access_rights::token;
 
 int test_distant()
 {
-	distant::snapshot<distant::process<>> processList;
-
 	int count = 0;
+	const distant::snapshot<distant::process<>> snapshot;
 
-	for (const auto process : processList)
+	//std::count_if(snapshot.begin(), snapshot.end(), [](
+	for (const auto& process : snapshot)
 		count++;
 
 	return count;
@@ -61,12 +61,9 @@ int test_distant_pidb()
 {
 	int count = 0;
 
-	std::cout << "Max = " << std::numeric_limits<DWORD>::max() << '\n';
 	for (int pid = 4; pid <= 0x4E1C; pid += 4)
 	{
-		const distant::process<> process(pid);
-
-		if (process)
+		if (distant::process<>(pid))
 			count++;
 	}
 
@@ -122,10 +119,15 @@ int main()
 		std::cout << "Pidb: " << pidbCount << " handles in " << timerPidb.microseconds() << "us\n";
 		std::cout << "TH: " << toolhelpCount << " handles in " << timerTH.microseconds() << "us\n";
 
+		std::cin.ignore();
+
+		for (const auto& process : distant::snapshot<distant::process<>>{})
+			std::wcout << "Process " << process.name() << " (" << process.get_id() << ")\n";
+
 	}
-	catch (std::system_error& e)
+	catch (distant::windows_error& e)
 	{
-		std::cerr << e.what() << " (" << e.code() << ")\n";
+		std::cerr << e << '\n';
 	}
 	catch (std::exception& e)
 	{

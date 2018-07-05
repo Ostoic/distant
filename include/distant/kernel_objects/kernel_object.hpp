@@ -22,7 +22,7 @@ namespace distant::kernel_objects
 	public: // interface
 		/// @brief Get a handle to the kernel_object.
 		/// @return a type-safe handle to the kernel_object.
-		const unsafe_handle& handle() const noexcept;
+		const kernel_handle& handle() const noexcept;
 
 		/// @brief Check if the kernel_object is valid
 		/// @return true if the kernel_object is valid.
@@ -35,7 +35,7 @@ namespace distant::kernel_objects
 		/// @brief Invalid handle default constructor
 		kernel_object() noexcept;
 
-		explicit kernel_object(unsafe_handle&& handle) noexcept;
+		explicit kernel_object(distant::kernel_handle& handle) noexcept;
 
 		/// @brief Move constructible
 		kernel_object(kernel_object&& other) noexcept = default;
@@ -44,8 +44,15 @@ namespace distant::kernel_objects
 		kernel_object& operator=(kernel_object&& other) noexcept = default;
 
 	protected:
-		unsafe_handle handle_;
+		kernel_handle handle_;
 	};
+
+	template <typename KernelObject>
+	bool is_valid(const KernelObject& object) noexcept
+	{
+		return object.valid();
+	}
+
 } // end namespace distant::kernel_objects
 
 #include "impl/kernel_object.hxx"

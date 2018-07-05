@@ -39,13 +39,13 @@ namespace distant::sync
 
 		/// @brief Get the handle to the mutex.
 		/// @return the handle.
-		const distant::unsafe_handle& handle() const noexcept;
+		const kernel_handle& handle() const noexcept;
 
 		mutex(const mutex&) = delete;
 		mutex& operator=(const mutex&) = delete;
 
 	private:
-		distant::unsafe_handle handle_;
+		kernel_handle handle_;
 	};
 
 	template <typename Mutex>
@@ -62,6 +62,7 @@ namespace distant::sync
 
 		lock_guard(const lock_guard&) = delete;
 		lock_guard& operator=(const lock_guard&) = delete;
+
 	private:
 		Mutex& mutex_;
 	};

@@ -8,7 +8,7 @@
 #include <boost/iterator/iterator_facade.hpp>
 #include <boost/winapi/basic_types.hpp>
 
-#include <distant/kernel_objects/detail/dispatch.hpp>
+#include <distant/kernel_objects/detail/snapshot_traits.hpp>
 #include <distant/kernel_objects/fwd.hpp>
 
 #include <memory>
@@ -28,7 +28,8 @@ namespace distant::kernel_objects
 	{
 	private: // subtypes
 		using snapshot_type = snapshot<KernelObject>;
-		using entry_type = typename detail::snapshot_dispatcher<KernelObject>::entry_type;
+		using snapshot_traits = detail::snapshot_traits<KernelObject>;
+		using entry_t = typename snapshot_traits::entry_t;
 
 	public: // {ctor}
 		explicit snapshot_iterator(const snapshot_type& snapshot);
@@ -40,7 +41,7 @@ namespace distant::kernel_objects
 
 		struct enabler {};
 
-		bool current_valid();
+		bool check_current_validity();
 
 		bool next();
 
@@ -56,7 +57,7 @@ namespace distant::kernel_objects
 		boost::winapi::HANDLE_ object_handle_;
 
 		/// ToolHelp entry type
-		std::shared_ptr<entry_type> entry_;
+		std::shared_ptr<entry_t> entry_;
 	};
 } // end namespace distant::system
 

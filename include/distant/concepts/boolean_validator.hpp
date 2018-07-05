@@ -10,5 +10,8 @@ namespace distant::concepts
 		{
 			return static_cast<const Derived*>(this)->valid();
 		}
+
+	protected:
+		boolean_validator() = default;
 	};
 }

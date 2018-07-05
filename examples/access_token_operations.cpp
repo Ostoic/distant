@@ -11,7 +11,7 @@
 void enable_debug_privileges()
 {
 	// Retrieve the primary access token for the current process.
-	auto token = distant::get_access_token();
+	auto token = distant::primary_access_token();
 
 	// Check if debug privileges are enabled for the current process.
 	if (token.has_privilege(distant::privileges::debug))
@@ -39,7 +39,7 @@ void enable_debug_privileges()
 void remove_debug_privileges()
 {
 	// Retrieve the primary access token for the current process.
-	auto token = distant::get_access_token();
+	auto token = distant::primary_access_token();
 
 	// Check if debug privileges are enabled for the current process.
 	if (token.has_privilege(distant::privileges::debug))
@@ -77,9 +77,9 @@ int main()
 	std::cout << "Process count after removing debug privileges = " << distant::snapshot<process>{}.as<std::vector>().size() << "\n\n";
 	for (const auto p : distant::snapshot<process>{})
 	{
-		if (distant::get_access_token(p).has_privilege(distant::privileges::debug))
+		if (distant::primary_access_token(p).has_privilege(distant::privileges::debug))
 			std::wcout
-				<< "Found process with debug privileges: " << p.file_path() << " (" << p.id() << ")\n\n";
+				<< "Found process with debug privileges: " << p.file_path() << " (" << p.get_id() << ")\n\n";
 	}
 
 	return 0;

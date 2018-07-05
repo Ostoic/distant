@@ -6,27 +6,18 @@
 #include <distant/memory/function.hpp>
 #include <distant/type_traits.hpp>
 
+#include <distant/concepts/equality_comparable.hpp>
+#include <distant/support/winapi/thread.hpp>
+
 #include <thread>
 #include <iosfwd>
 #include "fwd.hpp"
 
-namespace distant
-{
-	using kernel_objects::thread;
-
-	template <>
-	struct kernel_object_traits<thread>
-		: default_kernel_object_traits<thread>
-	{};
-}
-
 namespace distant::kernel_objects 
 {
-	class thread
+	class thread 
+		: public concepts::equality_comparable<thread>
 	{
-	public:
-		using handle_type = typename kernel_object_traits<thread>::handle_type;
-
 	public:
 		static constexpr auto required_process_rights = process_rights::create_thread | process_rights::query_information | vm_rw_op;
 
@@ -35,6 +26,8 @@ namespace distant::kernel_objects
 		class id;
 
 	public:
+		void kill();
+
 		void join();
 
 		void detach();
@@ -45,14 +38,17 @@ namespace distant::kernel_objects
 
 		bool joinable() const noexcept;
 
-		const distant::process<required_process_rights>& process() const noexcept;
+		template <process_rights Access>
+		process<Access> process();
 
-		const distant::unsafe_handle& handle() const noexcept;
+		const kernel_handle& handle() const noexcept;
+
+		bool equals(const thread& other) const noexcept;
 
 	public:
-		thread() noexcept = default;
+		constexpr thread() noexcept {}
 
-		explicit thread(distant::unsafe_handle&& handle) noexcept;
+		explicit thread(thread::id id) noexcept;
 
 		template <typename Fn, typename... Args>
 		explicit thread(function<int>, Args&&... args);
@@ -69,43 +65,70 @@ namespace distant::kernel_objects
 		void detach_unchecked();
 
 	private:
-		handle_type handle_;
-		distant::process<required_process_rights>* process_;
+		kernel_handle handle_;
 	};
 
-	class thread::id
+	class thread::id 
+		: public concepts::equality_comparable<thread::id>
 	{
 	public:
 		id() noexcept : id_(0) {}
 
-	private:
-		explicit id(const uint id) : id_(id) {}
+		bool equals(const id other) const noexcept { return id_ == other.id_; }
+
+		id(const uint id) : id_(id) {}
+
+		explicit operator uint() const noexcept { return id_; }
+
+		template <typename CharT, typename TraitsT>
+		friend std::basic_ostream<CharT, TraitsT>& operator<<(std::basic_ostream<CharT, TraitsT>& stream, const id id)
+		{ return (stream << static_cast<uint>(id)); }
 
 	private:
 		uint id_;
-
-		friend class thread;
-
-		template <typename CharT, typename TraitsT>
-		friend std::basic_ostream<CharT, TraitsT>& operator<<(std::basic_ostream<CharT, TraitsT>& stream, thread::id id);
-
-		friend bool operator==(const thread::id& lhs, const thread::id& rhs) noexcept;
 	};
 
-	template <typename CharT, typename TraitsT>
-	std::basic_ostream<CharT, TraitsT>& operator<<(std::basic_ostream<CharT, TraitsT>& stream, const thread::id id)
-	{
-		stream << id.id_;
-		return stream;
-	}
-
-	bool operator==(const thread::id& lhs, const thread::id& rhs) noexcept;
-	bool operator!=(const thread::id& lhs, const thread::id& rhs) noexcept;
-
-	bool operator==(const thread& lhs, const thread& rhs) noexcept;
-	bool operator!=(const thread& lhs, const thread& rhs) noexcept;
-	
 } // namespace distant::kernel_objects
+
+namespace distant
+{
+	using kernel_objects::thread;
+
+	template <>
+	struct kernel_object_traits<thread>
+		: default_kernel_object_traits
+	{
+		using id_t = thread::id;
+
+		using access_rights_t = thread_rights;
+
+		static constexpr access_rights_t access_rights() noexcept
+		{
+			return thread_rights::all_access;
+		}
+
+		static constexpr access_rights_t access_rights(const thread&) noexcept
+		{
+			return access_rights();
+		}
+
+		static uint get_id(const native_handle_t native_handle) noexcept
+		{
+			return boost::winapi::GetThreadId(native_handle);
+		}
+
+		static bool is_valid_handle(const native_handle_t native_handle) noexcept
+		{
+			return native_handle != nullptr;
+		}
+
+		static native_handle_t open(const boost::winapi::DWORD_ id, access_rights_t access = access_rights()) noexcept
+		{
+			using under_t = std::underlying_type_t<access_rights_t>;
+			return boost::winapi::OpenThread(static_cast<under_t>(access), false, id);
+		}
+	};
+}
 
 // Implementation
 #include "impl/thread.hxx"

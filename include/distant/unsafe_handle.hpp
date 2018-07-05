@@ -5,32 +5,31 @@
 #pragma once
 
 #include <distant/access_rights.hpp>
-
+#include <distant/type_traits.hpp>
 #include <distant/concepts/boolean_validator.hpp>
 
 #include <boost/winapi/config.hpp>
 #include <boost/winapi/basic_types.hpp>
+#include <boost/winapi/handles.hpp>
 
 #include <bitset>
 
-namespace distant {
-
-	// Forward declare invalid handle literal
-	class invalid_t;
-
-	// Implements the interface of handle
-	class unsafe_handle : public concepts::boolean_validator<unsafe_handle>
+namespace distant 
+{
+	template <typename HandleTraits>
+	class unsafe_handle : public concepts::boolean_validator<unsafe_handle<HandleTraits>>
 	{
 	public:
 		// Underlying handle type. This is macro'd in Windows to be void* == (HANDLE)
-		using native_type = boost::winapi::HANDLE_;
-		using flag_type = access_rights::handle;
+		using native_t = typename handle_traits<unsafe_handle>::native_t;
+		using traits_t = HandleTraits;
+		using flag_t = access_rights::handle;
 
 	public:
 		/// Construct using native handle.
 		/// @param h the native handle value
 		/// @param flags handle flags 
-		explicit constexpr unsafe_handle(native_type h, flag_type flags = flag_type::inherit, bool closed = false) noexcept;
+		explicit constexpr unsafe_handle(native_t h, flag_t flags = flag_t::inherit, bool closed = false) noexcept;
 
 		/// Construct an invalid handle.
 		/// This allows handles to be comparable with nullptr.
@@ -76,14 +75,17 @@ namespace distant {
 
 		/// Get the value of the native handle
 		/// @return value of the native handle
-		native_type native_handle() const noexcept;
+		native_t native_handle() const noexcept;
+
+		template <typename OtherClose>
+		constexpr bool equals(const unsafe_handle<OtherClose>& other) const noexcept;
 
 	protected:
 		// From "Windows Via C\C++" by Jeffrey Richter,
 		// setting the handle to null is preferable to invalid_handle
 		// after closing the handle. This is probably because some API
 		// calls consider invalid_handle as the current process/thread.
-		/// Numerically invalidate and close protect our handle.
+		/// Numerically invalidate and close-protect our handle.
 		void invalidate() noexcept;
 
 		/// Protect the handle from being closed
@@ -91,21 +93,50 @@ namespace distant {
 
 		/// Get the handle's flag type
 		/// @return distant::access_rights::handle flag type
-		flag_type flags() const noexcept;
+		flag_t flags() const noexcept;
 
 	protected:
 		/// native HANDLE value
-		native_type native_handle_;
+		native_t native_handle_;
 
 		// If we somehow attempt to call CloseHandle multiple times,
 		// this will help prevent further unnecessary calls.
 		/// Switch to check if closure was observed 
 		std::bitset<3> flags_;
 		
-	public:
-		friend constexpr bool operator ==(const unsafe_handle&, const unsafe_handle&) noexcept;
-		friend constexpr bool operator !=(const unsafe_handle&, const unsafe_handle&) noexcept;
+		template <typename OtherClose>
+		friend class unsafe_handle;
 	};
+
+	struct kernel_handle_traits
+	{
+		using native_t = boost::winapi::HANDLE_;
+
+		static bool close(const native_t native_handle) noexcept
+		{
+			return boost::winapi::CloseHandle(native_handle);
+		}
+	};
+
+	template <typename Traits>
+	struct handle_traits<unsafe_handle<Traits>>
+		: Traits {};
+
+	using kernel_handle = unsafe_handle<kernel_handle_traits>;
+
+	constexpr bool operator==(const kernel_handle& lhs, const kernel_handle& rhs) noexcept
+	{ return lhs.equals(rhs); }
+
+	constexpr bool operator!=(const kernel_handle& lhs, const kernel_handle& rhs) noexcept
+	{ return !(lhs == rhs); }
+
+	template <typename LeftClose, typename RightClose>
+	constexpr bool operator==(const unsafe_handle<LeftClose>& lhs, const unsafe_handle<RightClose>& rhs) noexcept
+	{ return lhs.equals(rhs); }
+
+	template <typename LeftClose, typename RightClose>
+	constexpr bool operator!=(const unsafe_handle<LeftClose>& lhs, const unsafe_handle<RightClose>& rhs) noexcept
+	{ return !(lhs == rhs); }
 
 } // end namespace distant
 

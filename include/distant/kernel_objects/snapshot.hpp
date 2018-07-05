@@ -8,6 +8,7 @@
 #include <distant/unsafe_handle.hpp>
 
 #include <distant/kernel_objects/snapshot_iterator.hpp>
+#include <distant/kernel_objects/detail/snapshot_traits.hpp>
 
 #include <distant/concepts/boolean_validator.hpp>
 
@@ -25,8 +26,8 @@ namespace distant
 			using base = kernel_object;
 
 		public:
-			using object_type = KernelObject;
-			using handle_type = unsafe_handle;
+			using object_t = KernelObject;
+			using snapshot_traits = detail::snapshot_traits<KernelObject>;
 
 			using iterator		 = snapshot_iterator<KernelObject>;
 			using const_iterator = snapshot_iterator<KernelObject>;
@@ -34,11 +35,11 @@ namespace distant
 		public: // interface
 			/// @brief Retrieve the start of the snapshot.
 			/// @return A \a snapshot_iterator pointing to the first element in the snapshot.
-			iterator begin() const;
+			const_iterator begin() const;
 
 			/// @brief The end of the snapshot.
 			/// @return a \a snapshot_iterator indicating an element past-the-end of the snapshot.
-			iterator end() const;
+			const_iterator end() const;
 
 			/// @brief Retrieve the start of the snapshot.
 			/// @return A \a snapshot_iterator pointing to the first element in the snapshot.
@@ -64,7 +65,8 @@ namespace distant
 			snapshot();
 
 			/// @brief Construct a snapshot of \a KernelObjects owned by the given process.
-			snapshot(const process<>&);
+			template <typename OwnerObject>
+			explicit snapshot(const OwnerObject& owner);
 
 		private:
 			friend class iterator;

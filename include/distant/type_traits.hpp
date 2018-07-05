@@ -33,18 +33,17 @@ namespace distant {
 		static constexpr bool value = result::value;
 	};
 
+	template <typename Handle>
+	struct handle_traits;
+
 	/// Contains kernel_object traits
 	template <typename KernelObject>
 	struct kernel_object_traits;
 
-	template <typename KernelObject>
 	struct default_kernel_object_traits
 	{
-		using handle_type = distant::unsafe_handle;
-		using native_handle_type = boost::winapi::HANDLE_;
+		using handle_t = kernel_handle;
+		using native_handle_t = boost::winapi::HANDLE_;
 	};
-
-	template <typename Object>
-	struct get_access_rights;
 
 } // end namespace distant

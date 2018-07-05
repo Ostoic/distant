@@ -12,6 +12,12 @@ namespace distant::kernel_objects
 		return system::number_of_processors();
 	}
 
+	inline void thread::kill()
+	{
+		if (this->joinable())
+			::TerminateThread(handle_.native_handle(), 0); // TerminateThread?
+	}
+
 	inline void thread::join()
 	{
 		if (!this->joinable())
@@ -50,7 +56,8 @@ namespace distant::kernel_objects
 
 	inline void thread::swap(thread& other) noexcept
 	{
-		handle_.swap(other.handle_);
+		using std::swap;
+		swap(handle_, other.handle_);
 	}
 
 	inline bool thread::joinable() const noexcept
@@ -58,29 +65,36 @@ namespace distant::kernel_objects
 		return handle_ != nullptr;
 	}
 
-	inline const process<thread::required_process_rights>& thread::process() const noexcept
+	template <process_rights Access>
+	process<Access> thread::process()
 	{
-		return *process_;
+		return process<Access>{::GetProcessIdOfThread(handle_.native_handle())};
 	}
 
-	inline const distant::unsafe_handle& thread::handle() const noexcept
+	inline const distant::kernel_handle& thread::handle() const noexcept
 	{
 		return handle_;
 	}
 
-	inline thread::id thread::get_id() const noexcept
+	inline bool thread::equals(const thread& other) const noexcept
 	{
-		return thread::id{ boost::winapi::GetThreadId(handle_.native_handle()) };
+		return this->get_id() == other.get_id();
 	}
 
-	inline thread::thread(distant::unsafe_handle&& handle) noexcept
-		: handle_(std::move(handle))
+	inline thread::id thread::get_id() const noexcept
+	{
+		using traits = kernel_object_traits<thread>;
+		return thread::id{ traits::get_id(handle_.native_handle()) };
+	}
+
+	inline thread::thread(const thread::id id) noexcept
+		: handle_(kernel_object_traits<thread>::open(static_cast<uint>(id)))
 	{}
 
 	template <typename Fn, typename... Args>
 	thread::thread(memory::function<int> fn, Args&&... args)
 	{
-		address start_address = 0;
+		const address start_address = 0;
 		//CreateRemoteThread(process.handle().native_handle(), nullptr, 0, , , ,)
 		// Remote thread launch on distant::function
 		// Todo: CreateRemoteThread or RtlCreateUserThread to start a thread in the process at the start of some executable memory (start_address).
@@ -102,34 +116,13 @@ namespace distant::kernel_objects
 
 	inline thread::~thread() noexcept
 	{
-		if (this->joinable())
-			TerminateThread(handle_.native_handle(), 0); // TerminateThread?
+		//if (this->joinable())
+			//::TerminateThread(handle_.native_handle(), 0); // TerminateThread?
 	}
 
 	inline void thread::detach_unchecked()
 	{
 		handle_.close();
-	}
-
-//free:
-	inline bool operator==(const thread::id& lhs, const thread::id& rhs) noexcept
-	{
-		return lhs.id_ == rhs.id_;
-	}
-
-	inline bool operator!=(const thread::id& lhs, const thread::id& rhs) noexcept
-	{
-		return !operator==(lhs, rhs);
-	}
-
-	inline bool operator==(const thread& lhs, const thread& rhs) noexcept
-	{
-		return lhs.get_id() == rhs.get_id();
-	}
-
-	inline bool operator!=(const thread& lhs, const thread& rhs) noexcept
-	{
-		return !(lhs == rhs);
 	}
 	
 } // namespace distant::kernel_objects

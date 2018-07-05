@@ -5,6 +5,7 @@
 #pragma once
 
 #include <boost/winapi/basic_types.hpp>
+#include <boost/winapi/process.hpp>
 
 #if !defined (BOOST_USE_WINDOWS_H)
 

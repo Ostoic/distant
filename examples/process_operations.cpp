@@ -30,7 +30,8 @@ void display_info(const distant::process<retrieve_path_flags>& p)
 	const std::string_view active_string = (p.is_active()) ? "Active" : "Inactive";
 
 	// Display process information
-	std::cout << "Process " << p.id() << '\n';
+	std::cout << "Handle value = " << p.handle().native_handle() << '\n';
+	std::cout << "Process " << p.get_id() << '\n';
 	std::cout << "State: " << active_string << '\n';
 	std::wcout << "Name: " << p.name() << '\n';
 	std::wcout << "File Path: " << p.file_path() << '\n';
@@ -43,7 +44,7 @@ auto find_process(std::wstring_view name)
 
 	if (snapshot)
 	{
-		const auto it = std::find_if(snapshot.begin(), snapshot.end(), [&](const auto p)
+		const auto it = std::find_if(snapshot.begin(), snapshot.end(), [&](const auto& p)
 		{
 			return p.name() == name;
 		});
@@ -54,35 +55,42 @@ auto find_process(std::wstring_view name)
 	return process{};
 }
 
-int main()
+void test()
 {
 	const std::wstring process_name = L"Taskmgr.exe";
 	std::wcout << "Looking for " << process_name << "...\n";
 
-	try
-	{
-		const auto process = find_process(process_name);
+	const auto process = find_process(process_name);
 
-		if (process)
-		{
-			std::cout << "Found it!\n\n";
-			display_info(process);
-		}
-		else
-			std::wcout << "Could not find " << process_name << "!\n";
-	}
-	catch (std::system_error& e)
+	if (process)
 	{
-		std::cout << "System error " << e.code() << " occured: " << e.what() << '\n';
+		std::cout << "Found it!\n\n";
+		display_info(process);
 	}
-	catch (std::exception& e)
-	{
-		std::cout << "Exception occured: " << e.what() << '\n';
-	}
+	else
+		std::wcout << "Could not find " << process_name << "!\n";
 
+	//std::cin.ignore();
 	// Kill the current process.
 	// Note that distant::current_process() returns the type-unsafe version of distant::process, namely process_base,
 	// whereas distant::current_process<>() denotes the function templated version with default access rights (all access).
-	typesafe_kill(distant::current_process<>());
-	std::cout << "No one should see this\n";
+	//typesafe_kill(distant::current_process());
+	//std::cout << "No one should see this\n";
+}
+
+int main()
+{
+	try
+	{
+		for (int i = 0; i < 1000; ++i)
+			test();
+	}
+	catch (const distant::windows_error& e)
+	{
+		std::cout << "System error " << e << '\n';
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "Exception occured: " << e.what() << '\n';
+	}
 }

@@ -11,24 +11,26 @@ namespace distant::kernel_objects {
 
 	template <typename O>
 	snapshot<O>::snapshot()
-		: base(kernel_objects::detail::get_snapshot_handle<object_type, snapshot>())
+		: base(snapshot_traits::create_snapshot_handle())
 	{
-		/*static_assert(
-			is_kernel_object<O>::value,
-			"[snapshot::{ctor}] Unable to take system snapshot of nonkernel object"
-		);*/
-
 		if (handle_ == nullptr)
 			throw windows_error("[snapshot::{ctor}] Invalid handle");
 	}
 
+	/// @brief Construct a snapshot of \a KernelObjects owned by the given process.
 	template <typename O>
-	typename snapshot<O>::iterator snapshot<O>
+	template <typename Ow>
+	snapshot<O>::snapshot(const Ow& owner)
+		: base(snapshot_traits::create_snapshot_handle())
+	{}
+
+	template <typename O>
+	typename snapshot<O>::const_iterator snapshot<O>
 		::begin() const
 	{ return iterator{*this}; }
 
 	template <typename O>
-	typename snapshot<O>::iterator snapshot<O>
+	typename snapshot<O>::const_iterator snapshot<O>
 		::end() const
 	{ return iterator{}; }
 
@@ -49,7 +51,7 @@ namespace distant::kernel_objects {
 		OutContainer<O, std::allocator<O>> output;
 		std::copy_if(this->begin(), this->end(), std::back_inserter(output), [](auto&& element)
 		{
-			return element.valid();
+			return element;
 		});
 
 		return output;

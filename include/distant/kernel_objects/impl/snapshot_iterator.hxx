@@ -15,16 +15,13 @@ namespace distant::kernel_objects
 	snapshot_iterator<K>::snapshot_iterator(const snapshot_type& snapshot)
 		: native_snap_(snapshot.handle_.native_handle())
 		, object_handle_(nullptr)
-		, entry_(std::make_shared<entry_type>())
+		, entry_(std::make_shared<entry_t>())
 	{
-		// Bring the snapshot_entry dispatcher functions into scope
-		namespace snapshot_entry = detail::snapshot_entry;
-
-		entry_->dwSize = sizeof(entry_type);
-		if (!snapshot_entry::first<K>(native_snap_, *entry_))
+		entry_->dwSize = sizeof(entry_t);
+		if (!snapshot_traits::first(native_snap_, *entry_))
 			object_handle_ = nullptr;
 
-		if (!this->current_valid())
+		if (!this->check_current_validity())
 			if (!this->next())
 				object_handle_ = nullptr;
 	}
@@ -38,34 +35,33 @@ namespace distant::kernel_objects
 
 //private:
 	template <typename K>
-	bool snapshot_iterator<K>::current_valid()
+	bool snapshot_iterator<K>
+		::check_current_validity()
 	{
-		namespace snapshot_entry = detail::snapshot_entry;
+		using object_traits = kernel_object_traits<K>;
+		using handle_traits = handle_traits<typename object_traits::handle_t>;
 
 		// Open a handle to the kernel_object
-		object_handle_ = snapshot_entry::open_object<K>(
-			snapshot_entry::get_id<K>(*entry_),
-			static_cast<boost::winapi::DWORD_>(
-				get_access_rights<K>::value)
-		);
+		object_handle_ = object_traits::open(snapshot_traits::get_id(*entry_));
 
-		// If the handle is valid, then close it, since this only tests the validity of the object.
-		boost::winapi::CloseHandle(object_handle_);
-		return object_handle_ != nullptr;
+		const bool result = object_traits::is_valid_handle(object_handle_);
+
+		if (result)
+			handle_traits::close(object_handle_);
+
+		return result;
 	}
 
 	template <typename K>
-	bool snapshot_iterator<K>::next()
+	bool snapshot_iterator<K>
+		::next()
 	{
-		// Bring the snapshot_entry dispatcher function into scope
-		namespace snapshot_entry = detail::snapshot_entry;
-
 		// Continue iterating until we obtain a valid kernel_object handle, or until the API call fails.
 		// Note: entry_ is reused internally, so a new \a entry_type is not created after each iterator increment.
-		while (snapshot_entry::next<K>(native_snap_, *entry_))
+		while (snapshot_traits::next(native_snap_, *entry_))
 		{
 			// Check if we received a valid handle
-			if (this->current_valid())
+			if (this->check_current_validity())
 				return true;
 		}
 
@@ -73,24 +69,24 @@ namespace distant::kernel_objects
 	}
 
 	template <typename K>
-	void snapshot_iterator<K>::increment()
+	void snapshot_iterator<K>
+		::increment()
 	{
 		if (!this->next())
 			object_handle_ = nullptr;
 	}
 
 	template <typename K>
-	K snapshot_iterator<K>::dereference() const
+	K snapshot_iterator<K>
+		::dereference() const
 	{
-		// Bring the snapshot_entry dispatcher function into scope
-		namespace snapshot_entry = detail::snapshot_entry;
-
-		const auto id = snapshot_entry::get_id<K>(*this->entry_);
-		return K{id};
+		using id_t = typename kernel_object_traits<K>::id_t;
+		return K{ id_t{ snapshot_traits::get_id(*entry_) } };
 	}
 
 	template <typename K>
-	bool snapshot_iterator<K>::equal(const snapshot_iterator& other) const
+	bool snapshot_iterator<K>
+		::equal(const snapshot_iterator& other) const
 	{
 		return object_handle_ == other.object_handle_;
 	}

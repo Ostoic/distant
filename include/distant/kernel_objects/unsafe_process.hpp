@@ -8,30 +8,20 @@
 #include <string>
 
 #include <distant/config.hpp>
+#include <distant/concepts/equality_comparable.hpp>
 #include <distant/type_traits.hpp>
 #include <distant/unsafe_handle.hpp>
 #include <distant/support/filesystem.hpp>
-
-namespace distant
-{
-	using kernel_objects::unsafe_process;
-
-	template <>
-	struct kernel_object_traits<unsafe_process>
-		: default_kernel_object_traits<unsafe_process>
-	{};
-}
 
 namespace distant::kernel_objects 
 {
 	/// @brief Base type of distant::process
 	/// This version does not have static access_rights checking
-	class unsafe_process : public concepts::boolean_validator<unsafe_process>
+	class unsafe_process 
+		: public concepts::boolean_validator<unsafe_process>
 	{
-	protected:
-		static unsafe_handle open(std::size_t, process_rights) noexcept;
-
-		static std::size_t get_pid(const unsafe_handle&) noexcept;
+	public:
+		class id;
 
 	public: // interface
 
@@ -70,15 +60,15 @@ namespace distant::kernel_objects
 		/// @return true if the process is a zombie.
 		bool is_zombie() const;
 
-		/// Get number of handles opened in the process
+		/// Get number of handle s opened in the process
 		/// @return the number of handles
 		std::size_t handle_count() const;
 
 		/// @brief Retrieve the process id.
 		/// @return the process id.
-		std::size_t id() const noexcept { return unsafe_process::get_pid(handle_); }
+		unsafe_process::id get_id() const noexcept;
 
-		const unsafe_handle& handle() const noexcept { return handle_; }
+		const kernel_handle& handle() const noexcept { return handle_; }
 
 		/// @brief Get the access rights that were used to open the current process
 		/// @return process access_rights indicating the level of access we have to the process.
@@ -89,32 +79,102 @@ namespace distant::kernel_objects
 		bool valid() const noexcept;
 
 		/// @brief Test if the process kernel_object is valid
-		/// @return true if the process is valid, false otherwise.
-		explicit operator bool() const noexcept;
+		/// @return true if the process is valid, false otherwise
+		bool equals(const unsafe_process& other) const noexcept;
 
 	public: // {ctor}
 		/// @brief Construct an empty process
-		unsafe_process() noexcept;
+		constexpr unsafe_process() noexcept;
 
 		/// @brief Open process by id
 		/// @param id the pid (process id) of the process to open.
 		/// @param access the requested access rights to open the process with.
-		explicit unsafe_process(std::size_t id, process_rights access = process_rights::all_access) noexcept;
+		explicit unsafe_process(unsafe_process::id id, process_rights access = process_rights::all_access) noexcept;
 
 		unsafe_process(unsafe_process&& other) noexcept; // move constructible
 		unsafe_process& operator=(unsafe_process&& other) noexcept; // move assignable
 
-		explicit unsafe_process(unsafe_handle&& handle, process_rights) noexcept;
+	protected:
+		explicit unsafe_process(kernel_handle&& handle, process_rights access) noexcept;
+
+		kernel_handle handle_;
+		process_rights access_rights_;
+
+	}; // class unsafe_process
+
+	class unsafe_process::id
+		: public concepts::equality_comparable<unsafe_process::id>
+	{
+	public:
+		id() noexcept : id_(0) {}
+
+		explicit operator uint() const noexcept { return id_; }
+
+		bool equals(const id other) const noexcept { return id_ == other.id_; }
+
+		id(const uint id) : id_(id) {}
+		
+		template <typename CharT, typename TraitsT>
+		friend std::basic_ostream<CharT, TraitsT>& operator<<(std::basic_ostream<CharT, TraitsT>& stream, const id id)
+		{ return (stream << static_cast<uint>(id)); }
 
 	private:
-		friend bool operator ==(const unsafe_process&, const unsafe_process&) noexcept;
-		friend bool operator !=(const unsafe_process&, const unsafe_process&) noexcept;
+		uint id_;
 
-	protected:
-		unsafe_handle handle_;
-		process_rights access_rights_;
-	}; // end class process
-
+		friend class unsafe_process;
+	};
+	
 } // namespace distant::kernel_objects
+
+namespace distant
+{
+	namespace detail
+	{
+		struct process_traits : public default_kernel_object_traits
+		{
+			using access_rights_t = process_rights;
+
+			static constexpr access_rights_t access_rights() noexcept
+			{
+				return access_rights_t::all_access;
+			}
+
+			static uint get_id(const native_handle_t native_handle) noexcept
+			{
+				return boost::winapi::GetProcessId(native_handle);
+			}
+
+			static bool is_valid_handle(const native_handle_t native_handle) noexcept
+			{
+				// snapshot_iterator uses this to test for zombies during iterator increments.
+				return native_handle != nullptr && GetProcessVersion(get_id(native_handle)) != 0;
+			}
+
+			static native_handle_t open(const boost::winapi::DWORD_ id, const access_rights_t access = access_rights()) noexcept
+			{
+				using under_t = std::underlying_type_t<access_rights_t>;
+				return boost::winapi::OpenProcess(static_cast<under_t>(access), false, id);
+			}
+		};
+	}
+
+	template <>
+	struct kernel_object_traits<kernel_objects::unsafe_process>
+		: public detail::process_traits
+	{
+		using id_t = kernel_objects::unsafe_process::id;
+
+		using process_traits::access_rights_t;
+		using process_traits::access_rights;
+		using process_traits::get_id;
+		using process_traits::is_valid_handle;
+		using process_traits::open;
+
+		static constexpr access_rights_t access_rights(const kernel_objects::unsafe_process& process) noexcept
+		{
+			return process.access_rights();
+		}
+	};
+}
 
 #include "impl/unsafe_process.hxx"

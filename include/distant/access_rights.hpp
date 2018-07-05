@@ -11,7 +11,7 @@
 
 #include <distant/support/winapi/process.hpp>
 #include <distant/support/winapi/token.hpp>
-#include <boost/winapi/process.hpp>
+#include <distant/support/winapi/thread.hpp>
 #include <boost/winapi/page_protection_flags.hpp>
 
 namespace distant
@@ -50,6 +50,25 @@ namespace distant
 			// boost::winapi doesn't have query_limited_information?
 			query_limited_information = boost::winapi::PROCESS_QUERY_LIMITED_INFORMATION_,
 			query_information = boost::winapi::PROCESS_QUERY_INFORMATION_,
+
+			synchronize = boost::winapi::SYNCHRONIZE_,
+		};
+
+		enum class thread
+		{
+			all_access = boost::winapi::THREAD_ALL_ACCESS_,
+
+			set_information			= boost::winapi::THREAD_SET_INFORMATION_,
+			set_limited_information = boost::winapi::THREAD_SET_LIMITED_INFORMATION_,
+
+			direct_impersonation		= boost::winapi::THREAD_DIRECT_IMPERSONATION_,
+			get_context					= boost::winapi::THREAD_GET_CONTEXT_,
+			impersonate					= boost::winapi::THREAD_IMPERSONATE_,
+			query_limited_information	= boost::winapi::THREAD_QUERY_LIMITED_INFORMATION_,
+			set_context					= boost::winapi::THREAD_SET_CONTEXT_,
+			set_thread_token			= boost::winapi::THREAD_SET_THREAD_TOKEN_,
+			suspend_resume				= boost::winapi::THREAD_SUSPEND_RESUME_,
+			terminate					= boost::winapi::THREAD_TERMINATE_,
 
 			synchronize = boost::winapi::SYNCHRONIZE_,
 		};
@@ -122,11 +141,12 @@ namespace distant
 			// Child process will inherit kernel_object handle
 
 			close_protected = boost::winapi::HANDLE_FLAG_PROTECT_FROM_CLOSE_,
-			// Prevent CloseHandle from closing handle
+			// Prevent CloseHandle from closing 
 		};
 	};
 
 	using token_rights = access_rights::token;
+	using thread_rights = access_rights::thread;
 	using process_rights = access_rights::process;
 	using standard_rights = access_rights::standard;
 	using page_protection = access_rights::page_protection;
@@ -134,11 +154,13 @@ namespace distant
 	// Define flag operators for use with conforming access_rights
 	DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(token_rights);
 	DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(process_rights);
+	DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(thread_rights);
 	DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(standard_rights);
 	DEFINE_CONSTEXPR_ENUM_FLAG_OPERATORS(page_protection);
 
 	DEFINE_CONSTEXPR_ENUM_FLAG_PARTIAL_ORDER(token_rights);
 	DEFINE_CONSTEXPR_ENUM_FLAG_PARTIAL_ORDER(process_rights);
+	DEFINE_CONSTEXPR_ENUM_FLAG_PARTIAL_ORDER(thread_rights);
 	DEFINE_CONSTEXPR_ENUM_FLAG_PARTIAL_ORDER(standard_rights);
 	DEFINE_CONSTEXPR_ENUM_FLAG_PARTIAL_ORDER(page_protection);
 
