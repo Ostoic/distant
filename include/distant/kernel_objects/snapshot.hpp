@@ -5,71 +5,60 @@
 #pragma once
 
 #include <distant/config.hpp>
-#include <distant/unsafe_handle.hpp>
+#include <distant/scoped_handle.hpp>
 
-#include <distant/kernel_objects/snapshot_iterator.hpp>
 #include <distant/kernel_objects/detail/snapshot_traits.hpp>
 
+#include <distant/kernel_objects/detail/snapshot_base.hpp>
 #include <distant/concepts/boolean_validator.hpp>
 
-namespace distant 
+namespace distant
 {
-	namespace kernel_objects  
+	namespace kernel_objects
 	{
 		/// @brief A snapshot is a read-only copy of the current state of one or more of the following lists that reside in system memory: processes, threads, modules, and heaps.
 		/// snapshot is a range modelling [InputRange](http://en.cppreference.com/w/cpp/experimental/ranges/range/InputRange) whose elements consist of valid instances of the specified
 		/// \a KernelObject.
 		/// @tparam KernelObject must be one of the following: process, thread, heap, module.
-		template <typename KernelObject>
-		class snapshot : public kernel_object
+		template <class KernelObject>
+		class snapshot
+			: private detail::snapshot_base<KernelObject>
+			, public concepts::boolean_validator<snapshot<KernelObject>>
 		{
-			using base = kernel_object;
+			using base = detail::snapshot_base<KernelObject>;
 
 		public:
 			using object_t = KernelObject;
-			using snapshot_traits = detail::snapshot_traits<KernelObject>;
 
-			using iterator		 = snapshot_iterator<KernelObject>;
-			using const_iterator = snapshot_iterator<KernelObject>;
+			using base::iterator;
+			using base::const_iterator;
+
+			using base::begin;
+			using base::end;
 
 		public: // interface
-			/// @brief Retrieve the start of the snapshot.
-			/// @return A \a snapshot_iterator pointing to the first element in the snapshot.
-			const_iterator begin() const;
-
-			/// @brief The end of the snapshot.
-			/// @return a \a snapshot_iterator indicating an element past-the-end of the snapshot.
-			const_iterator end() const;
-
-			/// @brief Retrieve the start of the snapshot.
-			/// @return A \a snapshot_iterator pointing to the first element in the snapshot.
-			iterator begin();
-
-			/// @brief The end of the snapshot.
-			/// @return a \a snapshot_iterator pointing past-the-end of the last element in the snapshot.
-			iterator end();
-
 			/// @brief Store a permanent copy of the snapshot as a container
-			template <template <typename, typename> class OutContainer>
+			template <template <class, class> class OutContainer>
 			OutContainer<KernelObject, std::allocator<KernelObject>> as() const;
 
 			/// @brief Store a permanent copy of the snapshot as a container whose elements satisfy the given \a Predicate.
 			/// @tparam Predicate the \a Predicate function \a KernelObjects of the \a OutContainer must satisfy.
 			/// @tparam OutContainer the container in which to store the \a KernelObjects.
-			template <template <typename, typename> class OutContainer, typename Predicate>
+			template <template <class, class> class OutContainer, class Predicate>
 			OutContainer<KernelObject, std::allocator<KernelObject>> as(Predicate) const;
+
+			bool valid() const noexcept
+			{ return base::handle.valid(); }
 
 		public: // {ctor}
 
 			/// @brief Default construct a snapshot of all \a KernelObjects at the current time.
-			snapshot();
+			snapshot() = default;
+			snapshot(snapshot&& other) noexcept = default;
 
 			/// @brief Construct a snapshot of \a KernelObjects owned by the given process.
-			template <typename OwnerObject>
+			template <class OwnerObject>
 			explicit snapshot(const OwnerObject& owner);
-
-		private:
-			friend class iterator;
 		};
 
 	} // namespace system

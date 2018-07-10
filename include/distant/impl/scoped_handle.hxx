@@ -3,36 +3,36 @@
 // (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
 
 #pragma once
-#include "../unsafe_handle.hpp"
+#include "../scoped_handle.hpp"
 
 namespace distant 
 {
 //public:
 	// Only allow native coversion via explicit cast/ctor 
 	template <class C>
-	constexpr unsafe_handle<C>::unsafe_handle(const native_t h, flag_t flags, const bool closed) noexcept
+	constexpr scoped_handle<C>::scoped_handle(const native_t h, flag_t flags, const bool closed) noexcept
 		: native_handle_(h)
 		, flags_(static_cast<int>(flags)) {}
 
 	template <class C>
-	constexpr unsafe_handle<C>::unsafe_handle(nullptr_t) noexcept
-		: unsafe_handle(nullptr, flag_t::close_protected, false) {}
+	constexpr scoped_handle<C>::scoped_handle(nullptr_t) noexcept
+		: scoped_handle(nullptr, flag_t::close_protected, false) {}
 	template <class C>
 
-	constexpr unsafe_handle<C>::unsafe_handle() noexcept
-		: unsafe_handle(nullptr) {}
+	constexpr scoped_handle<C>::scoped_handle() noexcept
+		: scoped_handle(nullptr) {}
 
 	// Move constructor
 	template <class C>
-	unsafe_handle<C>::unsafe_handle(unsafe_handle&& other) noexcept
+	scoped_handle<C>::scoped_handle(scoped_handle&& other) noexcept
 		: native_handle_(other.native_handle_)
 		, flags_(other.flags_)
 	{ other.invalidate(); }
 
 	// Move assignment
 	template <class C>
-	unsafe_handle<C>& unsafe_handle<C>
-		::operator=(unsafe_handle&& other) noexcept
+	scoped_handle<C>& scoped_handle<C>
+		::operator=(scoped_handle&& other) noexcept
 	{
 		// Ensure we don't have a handle leak
 		this->close();
@@ -46,23 +46,23 @@ namespace distant
 	}
 
 	template <class C>
-	bool unsafe_handle<C>
+	bool scoped_handle<C>
 		::valid() const noexcept
 	{ return native_handle_ != 0; }
 
 	template <class C>
-	bool unsafe_handle<C>
+	bool scoped_handle<C>
 		::close_protected() const noexcept
 	{ return flags_ == static_cast<int>(flag_t::close_protected); }
 
 	// Test if the closed bit has been set.
 	template <class C>
-	bool unsafe_handle<C>
+	bool scoped_handle<C>
 		::closed() const noexcept
 	{ return flags_.test(0); }
 
 	template <class C>
-	bool unsafe_handle<C>
+	bool scoped_handle<C>
 		::close() noexcept
 	{
 		// Close the handle if it is weakly valid and its closure wasn't observed
@@ -80,7 +80,7 @@ namespace distant
 
 //protected:
 	template <class C>
-	void unsafe_handle<C>
+	void scoped_handle<C>
 		::invalidate() noexcept
 	{
 		this->protect();
@@ -88,7 +88,7 @@ namespace distant
 	}
 
 	template <class C>
-	void unsafe_handle<C>
+	void scoped_handle<C>
 		::protect() noexcept
 	{
 		flags_.set(static_cast<int>(flag_t::close_protected), true);
@@ -96,21 +96,21 @@ namespace distant
 	}
 
 	template <class C>
-	typename unsafe_handle<C>::native_t unsafe_handle<C>
+	typename scoped_handle<C>::native_t scoped_handle<C>
 		::native_handle() const noexcept
 	{ return native_handle_; }
 
 
 	template <class C>
 	template <typename OtherClose>
-	constexpr bool unsafe_handle<C>
-		::equals(const unsafe_handle<OtherClose>& other) const noexcept
+	constexpr bool scoped_handle<C>
+		::equals(const scoped_handle<OtherClose>& other) const noexcept
 	{
 		return native_handle_ == other.native_handle_;
 	}
 
 	template <class C>
-	typename unsafe_handle<C>::flag_t unsafe_handle<C>
+	typename scoped_handle<C>::flag_t scoped_handle<C>
 		::flags() const noexcept
 	{ return (flags_.test(1))? static_cast<flag_t>(flags_[1]) : static_cast<flag_t>(flags_[2]); }
 

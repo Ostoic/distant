@@ -15,7 +15,7 @@ namespace distant::kernel_objects
 	template <process_rights R>
 	class process;
 
-	template <token_rights R, typename Object>
+	template <token_rights R, class KernelObject>
 	class access_token;
 
 	template <typename>

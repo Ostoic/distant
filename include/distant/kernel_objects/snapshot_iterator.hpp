@@ -17,7 +17,7 @@ namespace distant::kernel_objects
 {
 	/// @brief An iterator that lazily traverses the specifeid system snapshot upon being incremented.
 	/// @remark snapshot_iterator models the InputIterator concept
-	template <typename KernelObject>
+	template <class KernelObject>
 	class snapshot_iterator :
 		public boost::iterator_facade<
 			snapshot_iterator<KernelObject> // Derived class
@@ -27,12 +27,12 @@ namespace distant::kernel_objects
 		>									// The rest is use_default
 	{
 	private: // subtypes
-		using snapshot_type = snapshot<KernelObject>;
 		using snapshot_traits = detail::snapshot_traits<KernelObject>;
 		using entry_t = typename snapshot_traits::entry_t;
 
 	public: // {ctor}
-		explicit snapshot_iterator(const snapshot_type& snapshot);
+		template <class Snapshot>
+		explicit snapshot_iterator(const Snapshot& snapshot);
 
 		constexpr snapshot_iterator();
 

@@ -5,6 +5,8 @@
 #pragma once
 #include "../hash.hpp"
 
+#include <distant/types.hpp>
+
 namespace distant::utility::meta
 {
 	namespace detail
@@ -34,18 +36,21 @@ namespace distant::utility::meta
 
 			std::size_t result = offset_basis;
 			for (std::size_t i = 0; i < S; ++i)
-			{	
+			{
 				result ^= static_cast<std::size_t>(bytes[i]);
 				result *= prime;
 			}
 
 			return result;
 		}
+
+	} // namespace detail
+
+	template <class T, class K>
+	constexpr std::size_t hash<T, K>
+		::operator()(const T& key) const noexcept
+	{
+		return detail::hash_bytes(byte_array_from(key));
 	}
 
-	template <typename T>
-	constexpr std::size_t hash<T>::operator()(const T& key) const noexcept
-	{
-		return detail::hash_bytes(meta::byte_array_from(key));
-	}
 } // namespace distant::utility::meta

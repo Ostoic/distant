@@ -27,14 +27,14 @@ namespace distant::utility {
 
 	// This allows the defined literals to be compared with a related literal
 	template <
-		typename T, 
+		typename T,
 		typename L/*,
 		typename = std::enable_if_t<is_literal_type<T>::value>*/>
 	constexpr bool operator==(const T& lhs, const literal<L>& rhs)
 	{
-		constexpr L literal;
+		constexpr L literal = L{};
 
-		// T possibly does not support constexpr construction, so we cannot create the temp constexpr 
+		// T possibly does not support constexpr construction, so we cannot create the temp constexpr
 		T temp(literal);
 
 		return temp == lhs;
@@ -51,5 +51,5 @@ namespace distant::utility {
 	// literal on right, type on left
 	template <typename T, typename L>
 	constexpr bool operator!=(const T& lhs, const literal<T>& rhs) { return !operator==(lhs, rhs); }
-	
+
 } // end namespace distant::utility

@@ -14,6 +14,8 @@
 #include <distant/support/winapi/wow64.hpp>
 #include <boost/winapi/limits.hpp>
 
+#include <distant/error/windows_error.hpp>
+
 #include <boost/assert.hpp>
 
 #define FORBID_INLINE __declspec(noinline)
@@ -29,6 +31,49 @@ namespace distant::kernel_objects
 		boost::winapi::TerminateProcess(this->handle_.native_handle(), exit_code);
 	}
 
+	inline void unsafe_process::join()
+	{
+		if (!this->joinable())
+			throw std::invalid_argument("[unsafe_process::join] Join called on unjoinable process");
+
+		if (this->id() == unsafe_process::id_t(::GetCurrentProcessId()))
+			throw std::invalid_argument("[unsafe_process::join] Join on current process, deadlock would occur");
+
+		namespace winapi = boost::winapi;
+		if (winapi::WaitForSingleObjectEx(
+				handle_.native_handle(),
+				winapi::infinite,
+				false)
+			== winapi::wait_failed
+		)
+			throw windows_error("[unsafe_process::join] WaitForSingleObjectEx failed");
+
+		winapi::DWORD_ exit_code;
+		if (GetExitCodeThread(
+				handle_.native_handle(),
+				&exit_code)
+			== 0
+		)
+			throw windows_error("[unsafe_process::join] GetExitCodeThread failed");
+
+		this->detach_unchecked();
+	}
+
+	inline void unsafe_process::detach()
+	{
+		if (!this->joinable())
+			throw std::invalid_argument("[unsafe_process::join] Detach called on unjoinable process");
+
+		this->detach_unchecked();
+	}
+
+	inline bool unsafe_process::joinable() const noexcept
+	{
+		BOOST_ASSERT_MSG(this->valid(), "[unsafe_process::joinable] invalid process handle");
+
+		return handle_ != nullptr;
+	}
+
 	inline std::size_t unsafe_process::handle_count() const
 	{
 		BOOST_ASSERT_MSG(this->valid(), "[unsafe_process::handle_count] invalid process handle");
@@ -38,24 +83,20 @@ namespace distant::kernel_objects
 			throw windows_error("[unsafe_process::handle_count] GetProcesshandle Count failed");
 
 		return static_cast<std::size_t>(count);
-	} 
-	
-	inline unsafe_process::id unsafe_process::get_id() const noexcept
+	}
+
+	inline unsafe_process::id_t unsafe_process::id() const noexcept
 	{
 		using traits = kernel_object_traits<unsafe_process>;
-		return unsafe_process::id{ traits::get_id(handle_.native_handle()) };
+		return unsafe_process::id_t{ traits::get_id(handle_.native_handle()) };
 	}
 
 	inline bool unsafe_process::is_active() const
 	{
 		if (!this->valid()) return false;
 
-		const sync::wait wait_for;
-
-		// Return immediately
-		const auto result = wait_for(*this, 0);
-
-		return result == sync::wait::state::timeout;
+		using namespace std::chrono;
+		return wait(*this, milliseconds(0)) == sync::state::timeout;
 	}
 
 	inline bool unsafe_process::is_32bit() const
@@ -83,7 +124,7 @@ namespace distant::kernel_objects
 		BOOST_ASSERT_MSG(this->valid(), "[unsafe_process::is_being_debugged] invalid process handle");
 
 		// If we are considering the current process, use IsDebuggerPresent.
-		if (static_cast<uint>(this->get_id()) == GetCurrentProcessId())
+		if (static_cast<uint>(this->id()) == GetCurrentProcessId())
 			return IsDebuggerPresent();
 
 		// Otherwise use CheckRemoteDebuggerPresent.
@@ -94,7 +135,7 @@ namespace distant::kernel_objects
 
 	inline bool unsafe_process::is_zombie() const
 	{
-		return this->valid() && GetProcessVersion(static_cast<uint>(this->get_id())) == 0;
+		return this->valid() && GetProcessVersion(static_cast<uint>(this->id())) == 0;
 	}
 
 	inline std::wstring unsafe_process::name() const
@@ -107,18 +148,23 @@ namespace distant::kernel_objects
 		if (!this->valid())
 		{
 			std::cout << "Handle value = " << this->handle().native_handle() << '\n';
-			std::cout << "Pid = " << this->get_id() << '\n';
-			std::cout << "Process version = " << GetProcessVersion(static_cast<uint>(this->get_id())) << '\n';
+			std::cout << "Pid = " << this->id() << '\n';
+			std::cout << "Process version = " << GetProcessVersion(static_cast<uint>(this->id())) << '\n';
 		}
 		BOOST_ASSERT_MSG(this->valid(), "[unsafe_process::file_path] invalid process handle");
-		
+
 		wchar_t buffer[boost::winapi::max_path];
-		boost::winapi::DWORD_ max_path = boost::winapi::max_path;
+		auto max_path = boost::winapi::max_path;
 
 		if (!boost::winapi::query_full_process_image_name(this->handle_.native_handle(), 0, buffer, &max_path))
 			throw windows_error("[unsafe_process::file_path] query_full_process_image_name failed");
 
 		return buffer;
+	}
+
+	inline void unsafe_process::detach_unchecked() noexcept
+	{
+		handle_.close();
 	}
 
 //public:
@@ -130,7 +176,7 @@ namespace distant::kernel_objects
 
 	inline bool unsafe_process::equals(const unsafe_process& other) const noexcept
 	{
-		return this->get_id() == other.get_id();
+		return this->id() == other.id();
 	}
 
 //=========================//
@@ -142,14 +188,14 @@ namespace distant::kernel_objects
 		, access_rights_(process_rights::all_access)
 	{}
 
-	inline unsafe_process::unsafe_process(const unsafe_process::id id, const process_rights access) noexcept
+	inline unsafe_process::unsafe_process(const unsafe_process::id_t id, const process_rights access) noexcept
 		: handle_(kernel_object_traits<unsafe_process>::open(static_cast<uint>(id), access))
 		, access_rights_(access)
 	{}
 
 	inline unsafe_process::unsafe_process(unsafe_process&& other) noexcept
 		: handle_(std::move(other.handle_))
-		, access_rights_(other.access_rights_)	
+		, access_rights_(other.access_rights_)
 	{}
 
 	inline unsafe_process::unsafe_process(kernel_handle&& h, const process_rights access) noexcept

@@ -3,56 +3,27 @@
 // (See accompanying file LICENSE.md or copy at https://opensource.org/licenses/MIT)
 
 #pragma once
-#include <distant/kernel_objects/snapshot.hpp>
+#include "../snapshot.hpp"
+
+#include <distant/kernel_objects/interface.hpp>
 
 #include <stdexcept>
 
 namespace distant::kernel_objects {
 
-	template <typename O>
-	snapshot<O>::snapshot()
-		: base(snapshot_traits::create_snapshot_handle())
-	{
-		if (handle_ == nullptr)
-			throw windows_error("[snapshot::{ctor}] Invalid handle");
-	}
-
 	/// @brief Construct a snapshot of \a KernelObjects owned by the given process.
 	template <typename O>
 	template <typename Ow>
 	snapshot<O>::snapshot(const Ow& owner)
-		: base(snapshot_traits::create_snapshot_handle())
+		: base(owner)
 	{}
-
-	template <typename O>
-	typename snapshot<O>::const_iterator snapshot<O>
-		::begin() const
-	{ return iterator{*this}; }
-
-	template <typename O>
-	typename snapshot<O>::const_iterator snapshot<O>
-		::end() const
-	{ return iterator{}; }
-
-	template <typename O>
-	typename snapshot<O>::iterator snapshot<O>
-		::begin()
-	{ return iterator{ *this }; }
-
-	template <typename O>
-	typename snapshot<O>::iterator snapshot<O>
-		::end()
-	{ return iterator{}; }
 
 	template <typename O>
 	template <template <typename, typename> class OutContainer>
 	OutContainer<O, std::allocator<O>> snapshot<O>::as() const
 	{
 		OutContainer<O, std::allocator<O>> output;
-		std::copy_if(this->begin(), this->end(), std::back_inserter(output), [](auto&& element)
-		{
-			return element;
-		});
+		std::copy(this->begin(), this->end(), std::back_inserter(output));
 
 		return output;
 	}
@@ -62,9 +33,7 @@ namespace distant::kernel_objects {
 	OutContainer<O, std::allocator<O>> snapshot<O>::as(Predicate predicate) const
 	{
 		OutContainer<O, std::allocator<O>> output;
-		for (auto&& element : *this)
-			if (element && predicate(element))
-				output.emplace_back(std::move(element));
+		std::copy_if(this->begin(), this->end(), std::back_inserter(output), predicate);
 
 		return output;
 	}

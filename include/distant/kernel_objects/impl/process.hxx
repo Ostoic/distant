@@ -31,6 +31,22 @@ namespace distant::kernel_objects
 
 	template <access_rights::process T>
 	template <typename Return>
+	auto process<T>::join()
+		-> require_permission<process_rights::synchronize, Return>
+	{
+		// The WaitForSingleObjectEx API call requires the following access rights.
+		static_assert(
+			check_permission(T, process_rights::synchronize),
+			"Invalid access_rights (process::synchronize): "
+			"Process must have synchronize access right"
+		);
+
+		unsafe_process::join();
+		return;
+	}
+
+	template <access_rights::process T>
+	template <typename Return>
 	auto process<T>::handle_count() const
 		-> require_permission<process_rights::query_limited_information, Return>
 	{
@@ -124,12 +140,12 @@ namespace distant::kernel_objects
 
 		return unsafe_process::file_path();
 	}
-	
+
 	template <access_rights::process T>
 	template <process_rights OtherAccess, typename>
 	process<T>::operator process<OtherAccess>&() noexcept
 	{ return *reinterpret_cast<process<OtherAccess>*>(this); }
-	
+
 	template <access_rights::process T>
 	template <process_rights OtherAccess, typename>
 	process<T>::operator const process<OtherAccess>&() const noexcept
@@ -146,7 +162,7 @@ namespace distant::kernel_objects
 
 	// Open process by id
 	template <access_rights::process T>
-	process<T>::process(const typename process::id id) noexcept
+	process<T>::process(const typename process::id_t id) noexcept
 		: unsafe_process(id, T)
 	{}
 
@@ -177,7 +193,7 @@ namespace distant::kernel_objects
 
 	inline process<> current_process() noexcept
 	{
-		return process<>{kernel_handle{ 
+		return process<>{kernel_handle{
 			GetCurrentProcess() ,
 			access_rights::handle::close_protected
 		}};

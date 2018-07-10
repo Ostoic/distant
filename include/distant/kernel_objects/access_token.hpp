@@ -6,7 +6,7 @@
 
 #include <distant/config.hpp>
 #include <distant/type_traits.hpp>
-#include <distant/unsafe_handle.hpp>
+#include <distant/scoped_handle.hpp>
 
 #include <distant/security/privilege.hpp>
 #include <distant/kernel_objects/process.hpp>

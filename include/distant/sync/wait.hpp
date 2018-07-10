@@ -4,89 +4,96 @@
 
 #pragma once
 
-#include <distant/kernel_objects/kernel_object.hpp>
-#include <distant/utility/literal.hpp>
+#include <distant/kernel_objects/interface.hpp>
 
 #include <boost/winapi/wait.hpp>
+#include <distant/utility/meta/array.hpp>
+#include <distant/utility/meta/tuple.hpp>
 
-#include <limits>
 #include <chrono>
-#include <utility>
+#include <tuple>
 
-namespace distant::sync 
+namespace distant::sync
 {
-	// TODO: Revise heavily
-	// XX Consider moving into distant::handle as a member/free function.
-	// XX Look at injectory's wait interface.
-	class wait
+	namespace detail
 	{
-	public:
-		// Windows wait codes
-		enum class state : long long int
+		template <class... Ts>
+		struct uniform_tuple
 		{
-			abandoned = boost::winapi::WAIT_ABANDONED_, // Wait abandoned
-			signaled = boost::winapi::WAIT_OBJECT_0_,	// Object returned from wait
-			timeout = boost::winapi::WAIT_TIMEOUT_,		// Wait timed out
-			failed = boost::winapi::WAIT_FAILED_,		// Bad call
+			constexpr uniform_tuple(Ts&&... ts) noexcept
+				: tuple_(std::forward<Ts>(ts)...)
+			{}
 
-			//io_completion = boost::winapi::WAIT_IO_COMPLETION_, // APC ended call
+		private:
+			std::tuple<Ts&&...> tuple_;
 		};
-		
-	public:
-		// Infinite amount of time literal
-		class infinite : public distant::utility::literal<wait> {};
+	}
 
-	public:
-		using time_type = boost::winapi::DWORD_;
-
-	public:
-		// Wait for syncronizable object for the given amount of time
-		template <typename KernelObject>
-		wait::state operator ()(const KernelObject& obj, const time_type time) const
-		{
-			// XX Consider making free and including std::lock_guard or something
-			// XX Or just the usual below 
-			const auto handle = obj.handle().native_handle();
-			const auto result = boost::winapi::WaitForSingleObject(handle, time);
-
-			return static_cast<state>(result);
-		}
-
-		// Multiple object wait
-		// Wait for syncronizable object for the given amount of time
-		// XXX WaitFor...Object has a particular gle syntax. Look into this.
-		//wait::state operator ()(const std::vector<object_t>& objects, time_type time) const
-		//{
-		//	using handle_t = object_t::handle_t;
-		//	using value_type = handle_t::value_type;
-
-		//	const std::size_t size = objects.size();
-
-		//	std::array<handle_t, size> handles;
-
-		//	handle_t handles[size];
-
-		//  WaitForMultipleObjects?
-
-		//	for (const auto& obj : objects)
-		//	{
-		//		auto value = detail::attorney::to_handle:get_value(obj.handle()); // Get handle value (void *)
-		//		auto result = WaitForSingleObject(value, time);
-		//	}
-
-		//	this->update_gle();
-		//	return static_cast<state>(result);
-		//}
-
-		// Wait on kernel object until the object is done executing
-		template <typename KernelObject>
-		wait::state operator ()(const KernelObject& obj, wait::infinite tag) const
-		{ 
-			static_cast<void>(tag);
-			return this->operator()(obj, boost::winapi::INFINITE_); 
-		}
-
-		//wait::state operator()
+	// Windows wait codes
+	enum class state : long long int
+	{
+		abandoned = boost::winapi::WAIT_ABANDONED_, // Wait abandoned
+		signaled = boost::winapi::WAIT_OBJECT_0_,	// Object returned from wait
+		timeout = boost::winapi::WAIT_TIMEOUT_,		// Wait timed out
+		failed = boost::winapi::WAIT_FAILED_,		// Bad call
+													//io_completion = boost::winapi::WAIT_IO_COMPLETION_, // APC ended call
 	};
 
+	template <class KernelObject, typename Rep, typename Period>
+	state wait(const KernelObject& object, const std::chrono::duration<Rep, Period>& time)
+	{
+		using namespace std::chrono;
+
+#pragma warning(push)
+#pragma warning(disable:4244)
+		return static_cast<state>(boost::winapi::WaitForSingleObject(
+			native_handle_of(object),
+			duration_cast<milliseconds>(time).count())
+		);
+#pragma warning(pop)
+	}
+
+	template <typename Rep, typename Period, class... KernelObjects>
+	state wait(const std::tuple<KernelObjects...>& objects, bool wait_for_all, const std::chrono::duration<Rep, Period>& time)
+	{
+		using namespace std::chrono;
+		namespace meta = utility::meta;
+
+		const auto tuple = meta::tuple_transform(objects, [](const auto& object)
+		{
+			return native_handle_of(object);
+		});
+
+		auto handles = meta::to_array(tuple);
+
+#pragma warning(push)
+#pragma warning(disable:4244)
+		return static_cast<state>(boost::winapi::WaitForMultipleObjects(
+			handles.size(),
+			handles.data(),
+			false,
+			duration_cast<milliseconds>(time).count())
+		);
+#pragma warning(pop)
+	}
+
+	template <typename Rep, typename Period, class... KernelObjects>
+	state wait_all(const std::tuple<KernelObjects...>& tuple, const std::chrono::duration<Rep, Period>& time)
+	{
+		return wait(tuple, true, time);
+	}
+
+	template <typename Rep, typename Period, class... KernelObjects>
+	state wait_any(const std::tuple<KernelObjects...>& tuple, const std::chrono::duration<Rep, Period>& time)
+	{
+		return wait(tuple, false, time);
+	}
+
 } // end namespace distant
+
+namespace distant
+{
+	using sync::wait;
+	using sync::wait_all;
+	using sync::wait_any;
+}

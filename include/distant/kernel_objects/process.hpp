@@ -10,13 +10,13 @@
 
 #include <distant/kernel_objects/unsafe_process.hpp>
 
-namespace distant::kernel_objects 
+namespace distant::kernel_objects
 {
 	/// @brief distant::process represents a process, and has static type checking on the process access rights.
 	/// @tparam AccessRights the desired permissions to open the process with.
 	/// @see process_rights
 	template <process_rights AccessRights = process_rights::all_access>
-	class process 
+	class process
 		: private unsafe_process
 		, concepts::equality_comparable<process<AccessRights>>
 	{
@@ -34,8 +34,8 @@ namespace distant::kernel_objects
 		using unsafe_process::is_zombie;
 		using unsafe_process::valid;
 		using unsafe_process::equals;
-		using unsafe_process::get_id;
-		using id = unsafe_process::id;
+		using unsafe_process::id;
+		using id_t = unsafe_process::id_t;
 
 		/// @brief Terminate the process.
 		/// @see process_rights
@@ -43,6 +43,11 @@ namespace distant::kernel_objects
 		template <typename Return = void>
 		auto kill()
 			-> require_permission<process_rights::terminate, Return>;
+
+		template <typename Return = void>
+		auto join()
+			-> require_permission<process_rights::synchronize, Return>;
+
 
 		/// @brief Get number of handle s opened in the process
 		/// @see process_rights
@@ -107,7 +112,7 @@ namespace distant::kernel_objects
 		constexpr process() noexcept;
 
 		/// @brief Open process by id
-		explicit process(typename process::id id) noexcept;
+		explicit process(typename process::id_t id) noexcept;
 
 		/// @brief Move constructible
 		process(process&& other) noexcept;
@@ -149,7 +154,7 @@ namespace distant
 	struct kernel_object_traits<process<Access>>
 		: detail::process_traits
 	{
-		using id_t = typename process<Access>::id;
+		using id_t = typename process<Access>::id_t;
 
 		using process_traits::access_rights_t;
 		using process_traits::access_rights;
@@ -162,5 +167,5 @@ namespace distant
 	};
 }
 
-// Implementation 
+// Implementation
 #include <distant/kernel_objects/impl/process.hxx>

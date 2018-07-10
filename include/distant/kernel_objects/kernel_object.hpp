@@ -9,7 +9,7 @@
 #include <distant/config.hpp>
 #include <distant/error/windows_error.hpp>
 
-#include <distant/unsafe_handle.hpp>
+#include <distant/scoped_handle.hpp>
 
 #include <distant/concepts/boolean_validator.hpp>
 #include "fwd.hpp"
@@ -46,12 +46,6 @@ namespace distant::kernel_objects
 	protected:
 		kernel_handle handle_;
 	};
-
-	template <typename KernelObject>
-	bool is_valid(const KernelObject& object) noexcept
-	{
-		return object.valid();
-	}
 
 } // end namespace distant::kernel_objects
 

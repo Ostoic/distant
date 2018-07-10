@@ -5,12 +5,12 @@
 #pragma once
 
 #include <utility>
+#include <type_traits>
 
-#include "bytes.hpp"
 
 namespace distant::utility::meta
 {
-	template <typename T = std::enable_if_t<std::is_pod_v<T>, T>>
+	template <class T, class = std::enable_if_t<std::is_pod_v<T>, T>>
 	struct hash
 	{
 		constexpr std::size_t operator()(const T& key) const noexcept;

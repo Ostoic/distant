@@ -10,23 +10,30 @@
 #include <distant/config.hpp>
 #include <distant/concepts/equality_comparable.hpp>
 #include <distant/type_traits.hpp>
-#include <distant/unsafe_handle.hpp>
+#include <distant/scoped_handle.hpp>
 #include <distant/support/filesystem.hpp>
 
-namespace distant::kernel_objects 
+namespace distant::kernel_objects
 {
 	/// @brief Base type of distant::process
 	/// This version does not have static access_rights checking
-	class unsafe_process 
+	class unsafe_process
 		: public concepts::boolean_validator<unsafe_process>
+		, public concepts::equality_comparable<unsafe_process>
 	{
 	public:
-		class id;
+		class id_t;
 
 	public: // interface
 
 		/// @brief Terminate the process
 		void kill();
+
+		void join();
+
+		void detach();
+
+		bool joinable() const noexcept;
 
 		/// @brief Query the process handle to see if it is still active
 		/// @return true if the process is active, false otherwise.
@@ -66,14 +73,14 @@ namespace distant::kernel_objects
 
 		/// @brief Retrieve the process id.
 		/// @return the process id.
-		unsafe_process::id get_id() const noexcept;
+		unsafe_process::id_t id() const noexcept;
 
 		const kernel_handle& handle() const noexcept { return handle_; }
 
 		/// @brief Get the access rights that were used to open the current process
 		/// @return process access_rights indicating the level of access we have to the process.
 		process_rights access_rights() const noexcept { return access_rights_; }
-		
+
 		/// @brief Test if the process kernel_object is valid
 		/// @return true if the process is valid, false otherwise.
 		bool valid() const noexcept;
@@ -89,10 +96,13 @@ namespace distant::kernel_objects
 		/// @brief Open process by id
 		/// @param id the pid (process id) of the process to open.
 		/// @param access the requested access rights to open the process with.
-		explicit unsafe_process(unsafe_process::id id, process_rights access = process_rights::all_access) noexcept;
+		explicit unsafe_process(unsafe_process::id_t id, process_rights access = process_rights::all_access) noexcept;
 
 		unsafe_process(unsafe_process&& other) noexcept; // move constructible
 		unsafe_process& operator=(unsafe_process&& other) noexcept; // move assignable
+
+	private:
+		void detach_unchecked() noexcept;
 
 	protected:
 		explicit unsafe_process(kernel_handle&& handle, process_rights access) noexcept;
@@ -102,20 +112,20 @@ namespace distant::kernel_objects
 
 	}; // class unsafe_process
 
-	class unsafe_process::id
-		: public concepts::equality_comparable<unsafe_process::id>
+	class unsafe_process::id_t
+		: public concepts::equality_comparable<unsafe_process::id_t>
 	{
 	public:
-		id() noexcept : id_(0) {}
+		id_t() noexcept : id_(0) {}
 
 		explicit operator uint() const noexcept { return id_; }
 
-		bool equals(const id other) const noexcept { return id_ == other.id_; }
+		bool equals(const id_t other) const noexcept { return id_ == other.id_; }
 
-		id(const uint id) : id_(id) {}
-		
+		id_t(const uint id) : id_(id) {}
+
 		template <typename CharT, typename TraitsT>
-		friend std::basic_ostream<CharT, TraitsT>& operator<<(std::basic_ostream<CharT, TraitsT>& stream, const id id)
+		friend std::basic_ostream<CharT, TraitsT>& operator<<(std::basic_ostream<CharT, TraitsT>& stream, const id_t id)
 		{ return (stream << static_cast<uint>(id)); }
 
 	private:
@@ -123,7 +133,7 @@ namespace distant::kernel_objects
 
 		friend class unsafe_process;
 	};
-	
+
 } // namespace distant::kernel_objects
 
 namespace distant
@@ -162,7 +172,7 @@ namespace distant
 	struct kernel_object_traits<kernel_objects::unsafe_process>
 		: public detail::process_traits
 	{
-		using id_t = kernel_objects::unsafe_process::id;
+		using id_t = kernel_objects::unsafe_process::id_t;
 
 		using process_traits::access_rights_t;
 		using process_traits::access_rights;

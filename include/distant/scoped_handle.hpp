@@ -13,48 +13,49 @@
 #include <boost/winapi/handles.hpp>
 
 #include <bitset>
+#include <memory>
 
-namespace distant 
+namespace distant
 {
-	template <typename HandleTraits>
-	class unsafe_handle : public concepts::boolean_validator<unsafe_handle<HandleTraits>>
+	template <class HandleTraits>
+	class scoped_handle : public concepts::boolean_validator<scoped_handle<HandleTraits>>
 	{
 	public:
 		// Underlying handle type. This is macro'd in Windows to be void* == (HANDLE)
-		using native_t = typename handle_traits<unsafe_handle>::native_t;
+		using native_t = typename handle_traits<scoped_handle>::native_t;
 		using traits_t = HandleTraits;
 		using flag_t = access_rights::handle;
 
 	public:
 		/// Construct using native handle.
 		/// @param h the native handle value
-		/// @param flags handle flags 
-		explicit constexpr unsafe_handle(native_t h, flag_t flags = flag_t::inherit, bool closed = false) noexcept;
+		/// @param flags handle flags
+		explicit constexpr scoped_handle(native_t h, flag_t flags = flag_t::inherit, bool closed = false) noexcept;
 
 		/// Construct an invalid handle.
 		/// This allows handles to be comparable with nullptr.
 		/// @param h the nullptr.
-		constexpr unsafe_handle(nullptr_t h) noexcept;
+		constexpr scoped_handle(nullptr_t h) noexcept;
 
 		/// Construct invalid handle.
 		/// This calls the nullptr constructor.
-		constexpr unsafe_handle() noexcept;
+		constexpr scoped_handle() noexcept;
 
 		/// Move copyable
-		unsafe_handle(unsafe_handle&&) noexcept;
+		scoped_handle(scoped_handle&&) noexcept;
 
 		/// Move assignable
-		unsafe_handle& operator=(unsafe_handle&&) noexcept;
+		scoped_handle& operator=(scoped_handle&&) noexcept;
 
-		// If we allow copy ctor/assignment, then multiple copies will eventually attempt 
+		// If we allow copy ctor/assignment, then multiple copies will eventually attempt
 		// to close the same handle, which is not desirable.
-		unsafe_handle(const unsafe_handle&) = delete;
-		unsafe_handle& operator =(const unsafe_handle&) = delete;
+		scoped_handle(const scoped_handle&) = delete;
+		scoped_handle& operator =(const scoped_handle&) = delete;
 
 		/// Close handle to windows object.
 		/// Handle must be weakly valid in order to close the handle.
-		~unsafe_handle() noexcept { this->close(); }
-		
+		~scoped_handle() noexcept { this->close(); }
+
 	public:
 		/// Checks the if the native handle is valid
 		/// @return true if the native_handle is not NULL, and false otherwise
@@ -78,7 +79,7 @@ namespace distant
 		native_t native_handle() const noexcept;
 
 		template <typename OtherClose>
-		constexpr bool equals(const unsafe_handle<OtherClose>& other) const noexcept;
+		constexpr bool equals(const scoped_handle<OtherClose>& other) const noexcept;
 
 	protected:
 		// From "Windows Via C\C++" by Jeffrey Richter,
@@ -101,11 +102,11 @@ namespace distant
 
 		// If we somehow attempt to call CloseHandle multiple times,
 		// this will help prevent further unnecessary calls.
-		/// Switch to check if closure was observed 
+		/// Switch to check if closure was observed
 		std::bitset<3> flags_;
-		
+
 		template <typename OtherClose>
-		friend class unsafe_handle;
+		friend class scoped_handle;
 	};
 
 	struct kernel_handle_traits
@@ -119,10 +120,10 @@ namespace distant
 	};
 
 	template <typename Traits>
-	struct handle_traits<unsafe_handle<Traits>>
+	struct handle_traits<scoped_handle<Traits>>
 		: Traits {};
 
-	using kernel_handle = unsafe_handle<kernel_handle_traits>;
+	using kernel_handle = scoped_handle<kernel_handle_traits>;
 
 	constexpr bool operator==(const kernel_handle& lhs, const kernel_handle& rhs) noexcept
 	{ return lhs.equals(rhs); }
@@ -131,18 +132,18 @@ namespace distant
 	{ return !(lhs == rhs); }
 
 	template <typename LeftClose, typename RightClose>
-	constexpr bool operator==(const unsafe_handle<LeftClose>& lhs, const unsafe_handle<RightClose>& rhs) noexcept
+	constexpr bool operator==(const scoped_handle<LeftClose>& lhs, const scoped_handle<RightClose>& rhs) noexcept
 	{ return lhs.equals(rhs); }
 
 	template <typename LeftClose, typename RightClose>
-	constexpr bool operator!=(const unsafe_handle<LeftClose>& lhs, const unsafe_handle<RightClose>& rhs) noexcept
+	constexpr bool operator!=(const scoped_handle<LeftClose>& lhs, const scoped_handle<RightClose>& rhs) noexcept
 	{ return !(lhs == rhs); }
 
 } // end namespace distant
 
-#include "impl/unsafe_handle.hxx"
+#include "impl/scoped_handle.hxx"
 
   // Remarks:
-  //		Process-local handle table starts at entry 4, hence the null ( == 0) 
+  //		Process-local handle table starts at entry 4, hence the null ( == 0)
   // entry is not a valid one. WINAPI functions tend to return NULL, though some
   // of them return INVALID_HANDLE_VALUE.

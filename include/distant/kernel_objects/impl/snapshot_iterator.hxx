@@ -11,9 +11,10 @@ namespace distant::kernel_objects
 {
 //class snapshot_iterator <KernelObject>:
 //public:
-	template <typename K>
-	snapshot_iterator<K>::snapshot_iterator(const snapshot_type& snapshot)
-		: native_snap_(snapshot.handle_.native_handle())
+	template <class K>
+	template <class Snapshot>
+	snapshot_iterator<K>::snapshot_iterator(const Snapshot& snapshot)
+		: native_snap_(snapshot.handle.native_handle())
 		, object_handle_(nullptr)
 		, entry_(std::make_shared<entry_t>())
 	{
@@ -29,7 +30,7 @@ namespace distant::kernel_objects
 	template <typename K>
 	constexpr snapshot_iterator<K>::snapshot_iterator()
 		: native_snap_(boost::winapi::INVALID_HANDLE_VALUE_)
-		, object_handle_(nullptr) 
+		, object_handle_(nullptr)
 		, entry_(nullptr)
 	{}
 

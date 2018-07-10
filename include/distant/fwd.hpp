@@ -15,10 +15,10 @@
 namespace distant 
 {
 	template <typename HandleTraits>
-	class unsafe_handle;
+	class scoped_handle;
 
 	struct kernel_handle_traits;
 
-	using kernel_handle = unsafe_handle<kernel_handle_traits>;
+	using kernel_handle = scoped_handle<kernel_handle_traits>;
 
 } // namespace distant

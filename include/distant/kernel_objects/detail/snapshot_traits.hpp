@@ -5,16 +5,13 @@
 #pragma once
 
 #include <distant/support/winapi/toolhelp32.hpp>
-#include <distant/support/winapi/process.hpp>
-#include <distant/support/winapi/thread.hpp>
-
-#include <distant/detail/tags.hpp>
 #include <distant/kernel_objects/thread.hpp>
-#include <distant/kernel_objects/unsafe_process.hpp>
+#include <distant/kernel_objects/process.hpp>
 
-namespace distant::kernel_objects::detail 
+namespace distant::kernel_objects::detail
 {
-	template <typename KernelObject>
+	template <class KernelObject>
+
 	struct snapshot_traits {};
 
 	struct process_snapshot_traits

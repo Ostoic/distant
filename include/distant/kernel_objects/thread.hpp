@@ -13,9 +13,9 @@
 #include <iosfwd>
 #include "fwd.hpp"
 
-namespace distant::kernel_objects 
+namespace distant::kernel_objects
 {
-	class thread 
+	class thread
 		: public concepts::equality_comparable<thread>
 	{
 	public:
@@ -23,7 +23,7 @@ namespace distant::kernel_objects
 
 		static unsigned int hardware_concurrency() noexcept;
 
-		class id;
+		class id_t;
 
 	public:
 		void kill();
@@ -34,7 +34,9 @@ namespace distant::kernel_objects
 
 		void swap(thread& other) noexcept;
 
-		id get_id() const noexcept;
+		id_t id() const noexcept;
+
+		bool is_active() const noexcept;
 
 		bool joinable() const noexcept;
 
@@ -48,7 +50,8 @@ namespace distant::kernel_objects
 	public:
 		constexpr thread() noexcept {}
 
-		explicit thread(thread::id id) noexcept;
+		explicit thread(std::thread::id id) noexcept;
+		explicit thread(thread::id_t id) noexcept;
 
 		template <typename Fn, typename... Args>
 		explicit thread(function<int>, Args&&... args);
@@ -62,26 +65,26 @@ namespace distant::kernel_objects
 		thread& operator=(const thread&) = delete;
 
 	private:
-		void detach_unchecked();
+		void detach_unchecked() noexcept;
 
 	private:
 		kernel_handle handle_;
 	};
 
-	class thread::id 
-		: public concepts::equality_comparable<thread::id>
+	class thread::id_t
+		: public concepts::equality_comparable<thread::id_t>
 	{
 	public:
-		id() noexcept : id_(0) {}
+		id_t() noexcept : id_(0) {}
 
-		bool equals(const id other) const noexcept { return id_ == other.id_; }
+		bool equals(const id_t other) const noexcept { return id_ == other.id_; }
 
-		id(const uint id) : id_(id) {}
+		id_t(const uint id) : id_(id) {}
 
 		explicit operator uint() const noexcept { return id_; }
 
 		template <typename CharT, typename TraitsT>
-		friend std::basic_ostream<CharT, TraitsT>& operator<<(std::basic_ostream<CharT, TraitsT>& stream, const id id)
+		friend std::basic_ostream<CharT, TraitsT>& operator<<(std::basic_ostream<CharT, TraitsT>& stream, const id_t id)
 		{ return (stream << static_cast<uint>(id)); }
 
 	private:
@@ -98,7 +101,7 @@ namespace distant
 	struct kernel_object_traits<thread>
 		: default_kernel_object_traits
 	{
-		using id_t = thread::id;
+		using id_t = thread::id_t;
 
 		using access_rights_t = thread_rights;
 

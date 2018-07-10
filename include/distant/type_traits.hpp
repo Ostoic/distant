@@ -11,7 +11,7 @@
 namespace distant {
 
 	template <class A, class B>
-	using is_quasiconvertible = 
+	using is_quasiconvertible =
 		std::conditional_t<
 			std::is_convertible<A, B>::value ||	// If A is convertible to B,
 			std::is_convertible<B, A>::value,	// or if B is convertible to A,
@@ -23,7 +23,7 @@ namespace distant {
 	template <class T>
 	struct is_kernel_object
 	{
-		using result = 
+		using result =
 			std::conditional_t<
 				std::is_convertible<T, kernel_objects::kernel_object>::value, // If T derives from kernel_objects::kernel_object,
 					std::true_type,					  // return true.
