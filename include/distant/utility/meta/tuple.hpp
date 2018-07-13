@@ -14,9 +14,11 @@ namespace distant::utility::meta
 	template <class Tuple, class Value, class BinaryOp>
 	constexpr Value tuple_accumulate(Tuple&& tuple, Value value, BinaryOp fn);
 
-		template <class Tuple>
+	template <class Tuple>
 	constexpr auto to_array(Tuple&& tuple) noexcept;
 
+	template <class Tuple>
+	constexpr auto forward(Tuple&& tuple) noexcept;
 }
 
 #include "impl/tuple.hxx"

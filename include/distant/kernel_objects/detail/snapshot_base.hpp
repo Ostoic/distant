@@ -11,9 +11,9 @@ namespace distant::kernel_objects::detail
 		explicit id_predicate(const uint id) : id_(id) {}
 
 		template <typename T>
-		bool operator()(const T& t) const noexcept
+		bool operator()(T&& t) const noexcept
 		{
-			return ::GetProcessIdOfThread(native_handle_of(t)) == id_;
+			return ::GetProcessIdOfThread(native_handle_of(std::forward<T>(t))) == id_;
 		}
 
 	private:
@@ -34,7 +34,7 @@ namespace distant::kernel_objects::detail
 			: handle(snapshot_traits::create_snapshot_handle())
 		{
 			if (handle == nullptr)
-				throw windows_error("[snapshot::{ctor}] Invalid handle");
+				throw winapi_error("[snapshot::{ctor}] Invalid handle");
 		}
 
 		snapshot_base(snapshot_base&& other) noexcept = default;
@@ -72,7 +72,9 @@ namespace distant::kernel_objects::detail
 		iterator end()
 		{ return iterator{}; }
 
-		kernel_handle handle;
+		auto native_handle() const { return handle.native_handle(); }
+
+		mutable kernel_handle handle;
 	};
 
 	template <>
@@ -91,7 +93,7 @@ namespace distant::kernel_objects::detail
 			, parent_id(0)
 		{
 			if (handle == nullptr)
-				throw windows_error("[snapshot::{ctor}] Invalid handle");
+				throw winapi_error("[snapshot::{ctor}] Invalid handle");
 		}
 
 		snapshot_base(snapshot_base&& other) noexcept = default;
@@ -154,7 +156,9 @@ namespace distant::kernel_objects::detail
 			};
 		}
 
-		kernel_handle handle;
+		auto native_handle() const { return handle.native_handle(); }
+
+		mutable kernel_handle handle;
 		uint parent_id;
 	};
 }

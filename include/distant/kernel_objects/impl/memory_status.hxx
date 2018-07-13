@@ -13,7 +13,7 @@ namespace distant::kernel_objects {
 		: memory_counters_()
 	{
 		if (!boost::winapi::get_process_memory_info(process.handle().native_handle(), &memory_counters_, sizeof(memory_counters_)))
-			throw windows_error("[memory_status::{ctor}] K32GetProcessMemoryInfo failed");
+			throw winapi_error("[memory_status::{ctor}] K32GetProcessMemoryInfo failed");
 	}
 
 	inline std::size_t memory_status::private_usage() const noexcept

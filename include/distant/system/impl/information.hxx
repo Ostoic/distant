@@ -6,7 +6,7 @@
 #include <distant/system/information.hpp>
 
 #include <distant/support/winapi/sysinfo.hpp>
-#include <distant/error/windows_error.hpp>
+#include <distant/error/winapi_error.hpp>
 
 namespace distant::system 
 {
@@ -19,7 +19,7 @@ namespace distant::system
 			boost::winapi::WCHAR_ buffer[boost::winapi::max_path];
 
 			if (boost::winapi::GetWindowsDirectoryW(reinterpret_cast<boost::winapi::LPWSTR_>(&buffer), boost::winapi::max_path) == 0)
-				throw windows_error("[system::windows_path] Unable to get windows directory");
+				throw winapi_error("[system::windows_path] Unable to get windows directory");
 
 			path = buffer;
 		}
@@ -36,7 +36,7 @@ namespace distant::system
 			boost::winapi::WCHAR_ buffer[boost::winapi::max_path];
 
 			if (GetSystemDirectory(reinterpret_cast<boost::winapi::LPWSTR_>(&buffer), boost::winapi::max_path) == 0)
-				throw windows_error("[system::windows_path] Unable to get windows directory");
+				throw winapi_error("[system::windows_path] Unable to get windows directory");
 
 			path = buffer;
 		}
@@ -50,7 +50,7 @@ namespace distant::system
 		boost::winapi::WCHAR_ buffer[boost::winapi::MAX_COMPUTERNAME_LENGTH_ + 1];
 
 		if (!boost::winapi::GetComputerNameW(reinterpret_cast<boost::winapi::LPWSTR_>(buffer), reinterpret_cast<boost::winapi::LPDWORD_>(&size)))
-			throw windows_error("[system::computer_name] Unable to get computer name");
+			throw winapi_error("[system::computer_name] Unable to get computer name");
 
 		return {buffer};
 	}
@@ -61,7 +61,7 @@ namespace distant::system
 		boost::winapi::WCHAR_ buffer[boost::winapi::UNLEN_ + 1];
 
 		if (!boost::winapi::GetUserNameW(reinterpret_cast<boost::winapi::LPWSTR_>(buffer), reinterpret_cast<boost::winapi::LPDWORD_>(&size)))
-			throw windows_error("[system::username] GetUserName failed");
+			throw winapi_error("[system::username] GetUserName failed");
 
 		return {buffer};
 	}

@@ -6,7 +6,7 @@
 #include <distant/security/privilege.hpp>
 
 #include <distant/support/winapi/privilege.hpp>
-#include <distant/error/windows_error.hpp>
+#include <distant/error/winapi_error.hpp>
 
 #include <string>
 
@@ -81,7 +81,7 @@ namespace distant::security {
 		std::wstring buffer(size, 0);
 
 		if (!boost::winapi::lookup_privilege_name(nullptr, &luid, buffer.data(), &size))
-			throw windows_error("[security::lookup_name] Privilege name lookup failed.");
+			throw winapi_error("[security::lookup_name] Privilege name lookup failed.");
 
 		return buffer;
 	}

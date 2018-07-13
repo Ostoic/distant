@@ -5,10 +5,10 @@
 #pragma once
 #include "../scoped_handle.hpp"
 
-namespace distant 
+namespace distant
 {
 //public:
-	// Only allow native coversion via explicit cast/ctor 
+	// Only allow native coversion via explicit cast/ctor
 	template <class C>
 	constexpr scoped_handle<C>::scoped_handle(const native_t h, flag_t flags, const bool closed) noexcept
 		: native_handle_(h)

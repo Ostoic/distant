@@ -110,4 +110,10 @@ namespace distant::utility::meta
 		return std::apply(make_array, std::forward<Tuple>(tuple));
 	}
 
+	template <class... Ts>
+	constexpr auto forward(Ts&&... ts) noexcept
+	{
+		return std::forward_as_tuple(std::forward<Ts>(ts));
+	}
+
 } // namespace distant::utility::meta

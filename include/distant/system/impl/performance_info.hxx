@@ -2,14 +2,14 @@
 
 #include "../performance_info.hpp"
 
-#include <distant/error/windows_error.hpp>
+#include <distant/error/winapi_error.hpp>
 
 namespace distant::system
 {
 	inline performance_info::performance_info()
 	{
 		if (!boost::winapi::get_performance_info(&info_, sizeof(info_)))
-			throw windows_error("[performance_info::{ctor}] GetPerformanceInfo failed");
+			throw winapi_error("[performance_info::{ctor}] GetPerformanceInfo failed");
 	}
 
 	inline uint performance_info::commited_pages() const

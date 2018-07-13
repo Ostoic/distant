@@ -51,7 +51,7 @@ namespace distant::memory
 
 		template <
 			typename OtherT,
-			typename OtherAddressT, 
+			typename OtherAddressT,
 			process_rights OtherAccess
 		>
 		virtual_ptr(virtual_ptr<OtherT, OtherAddressT, OtherAccess> pointer) noexcept;
@@ -71,7 +71,7 @@ namespace distant::memory
 		void decrement() noexcept;
 
 		reference dereference() const noexcept;
-			
+
 		template <
 			typename OtherT,
 			typename OtherAddressT,
@@ -132,7 +132,7 @@ namespace distant::memory
 	}
 
 	template<typename T, typename AddressT, typename CharT, typename Traits, process_rights AccessRights>
-	std::basic_ostream<CharT, Traits>& 
+	std::basic_ostream<CharT, Traits>&
 		operator<<(std::basic_ostream<CharT, Traits>& stream, virtual_ptr<T, AddressT, AccessRights> p)
 	{
 		stream << std::hex << reinterpret_cast<void*>(static_cast<AddressT>(p.get()));
@@ -144,17 +144,17 @@ namespace distant::memory
 	{
 		static constexpr auto vm_access = detail::required_vm_access<Element>::value;
 
-		using process_type = std::conditional_t<std::is_const<Element>::value, 
-			const process<AccessRights>, 
+		using process_type = std::conditional_t<std::is_const<Element>::value,
+			const process<AccessRights>,
 				  process<AccessRights>
 		>;
 	};
-	
+
 } // namespace distant::memory
 
 namespace distant
 {
-	using memory::virtual_ptr; 
+	using memory::virtual_ptr;
 	using memory::make_virtual_ptr;
 }
 
@@ -178,7 +178,7 @@ namespace std
 		{
 			using type = vptr_t<U>;
 		};
-			
+
 		static pointer pointer_to(distant::memory::virtual_reference<element_type, AddressT, AccessRights> reference)
 		{
 			return pointer{reference.ptr_};

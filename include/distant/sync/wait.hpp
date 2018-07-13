@@ -39,54 +39,100 @@ namespace distant::sync
 													//io_completion = boost::winapi::WAIT_IO_COMPLETION_, // APC ended call
 	};
 
-	template <class KernelObject, typename Rep, typename Period>
-	state wait(const KernelObject& object, const std::chrono::duration<Rep, Period>& time)
+	namespace detail
 	{
-		using namespace std::chrono;
-
-#pragma warning(push)
-#pragma warning(disable:4244)
-		return static_cast<state>(boost::winapi::WaitForSingleObject(
-			native_handle_of(object),
-			duration_cast<milliseconds>(time).count())
-		);
-#pragma warning(pop)
-	}
-
-	template <typename Rep, typename Period, class... KernelObjects>
-	state wait(const std::tuple<KernelObjects...>& objects, bool wait_for_all, const std::chrono::duration<Rep, Period>& time)
-	{
-		using namespace std::chrono;
-		namespace meta = utility::meta;
-
-		const auto tuple = meta::tuple_transform(objects, [](const auto& object)
+		template <class KernelObject, class Time>
+		state wait_single_impl(KernelObject&& object, const Time time)
 		{
-			return native_handle_of(object);
-		});
+			using namespace std::chrono;
+			using kernel_objects::native_handle_of;
 
-		auto handles = meta::to_array(tuple);
+			const auto handle = native_handle_of(std::forward<KernelObject>(object));
+
+			if (handle == nullptr)
+				throw std::invalid_argument("[sync::wait] Invalid handle");
 
 #pragma warning(push)
 #pragma warning(disable:4244)
-		return static_cast<state>(boost::winapi::WaitForMultipleObjects(
-			handles.size(),
-			handles.data(),
-			false,
-			duration_cast<milliseconds>(time).count())
-		);
+			return static_cast<state>(boost::winapi::WaitForSingleObject(
+				handle,
+				time
+			));
 #pragma warning(pop)
+		}
+
+		template <class Time, class... KernelObjects>
+		state wait_multiple_impl(const std::tuple<KernelObjects...>& objects, bool wait_for_all, const Time time)
+		{
+			using namespace std::chrono;
+			namespace meta = utility::meta;
+
+			const auto result = meta::tuple_transform(objects, [](const auto& object)
+			{
+				return native_handle_of(object);
+			});
+
+			auto handles = meta::to_array(result);
+
+#pragma warning(push)
+#pragma warning(disable:4244)
+			return static_cast<state>(boost::winapi::WaitForMultipleObjects(
+				handles.size(),
+				handles.data(),
+				false,
+				static_cast<boost::winapi::DWORD_>(time)
+			));
+#pragma warning(pop)
+		}
 	}
 
-	template <typename Rep, typename Period, class... KernelObjects>
-	state wait_all(const std::tuple<KernelObjects...>& tuple, const std::chrono::duration<Rep, Period>& time)
+	template <class KernelObject, class Rep, class Period>
+	state wait(KernelObject&& object, const std::chrono::duration<Rep, Period> time)
 	{
-		return wait(tuple, true, time);
+		using namespace std::chrono;
+		return detail::wait_single_impl(std::forward<KernelObject>(object), duration_cast<milliseconds>(time).count());
 	}
 
-	template <typename Rep, typename Period, class... KernelObjects>
-	state wait_any(const std::tuple<KernelObjects...>& tuple, const std::chrono::duration<Rep, Period>& time)
+	template <class KernelObject>
+	state wait(KernelObject&& object)
 	{
-		return wait(tuple, false, time);
+		using namespace std::chrono;
+		return detail::wait_single_impl(std::forward<KernelObject>(object), boost::winapi::infinite);
+	}
+
+	template <class Rep, class Period, class... KernelObjects>
+	state wait(const std::tuple<KernelObjects...>& tuple, bool wait_for_all, const std::chrono::duration<Rep, Period> time)
+	{
+		using namespace std::chrono;
+		return detail::wait_multiple_impl(tuple, wait_for_all, duration_cast<milliseconds>(time).count());
+	}
+
+	template <class... KernelObjects>
+	state wait_all(const std::tuple<KernelObjects...>& tuple)
+	{
+		using namespace std::chrono;
+		return detail::wait_multiple_impl(tuple, true, boost::winapi::infinite);
+	}
+
+	template <class Rep, class Period, class... KernelObjects>
+	state wait_all(const std::tuple<KernelObjects...>& tuple, const std::chrono::duration<Rep, Period> time)
+	{
+		using namespace std::chrono;
+		return detail::wait_multiple_impl(tuple, true, duration_cast<milliseconds>(time).count());
+	}
+
+	template <class... KernelObjects>
+	state wait_any(const std::tuple<KernelObjects...>& tuple)
+	{
+		using namespace std::chrono;
+		return detail::wait_multiple_impl(tuple, false, boost::winapi::infinite);
+	}
+
+	template <class Rep, class Period, class... KernelObjects>
+	state wait_any(const std::tuple<KernelObjects...>& tuple, const std::chrono::duration<Rep, Period> time)
+	{
+		using namespace std::chrono;
+		return detail::wait_multiple_impl(tuple, false, duration_cast<milliseconds>(time).count());
 	}
 
 } // end namespace distant

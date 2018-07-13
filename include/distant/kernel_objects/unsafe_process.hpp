@@ -76,6 +76,7 @@ namespace distant::kernel_objects
 		unsafe_process::id_t id() const noexcept;
 
 		const kernel_handle& handle() const noexcept { return handle_; }
+			  kernel_handle& handle()		noexcept { return handle_; }
 
 		/// @brief Get the access rights that were used to open the current process
 		/// @return process access_rights indicating the level of access we have to the process.

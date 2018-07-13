@@ -14,7 +14,7 @@
 #include <distant/support/winapi/wow64.hpp>
 #include <boost/winapi/limits.hpp>
 
-#include <distant/error/windows_error.hpp>
+#include <distant/error/winapi_error.hpp>
 
 #include <boost/assert.hpp>
 
@@ -40,13 +40,8 @@ namespace distant::kernel_objects
 			throw std::invalid_argument("[unsafe_process::join] Join on current process, deadlock would occur");
 
 		namespace winapi = boost::winapi;
-		if (winapi::WaitForSingleObjectEx(
-				handle_.native_handle(),
-				winapi::infinite,
-				false)
-			== winapi::wait_failed
-		)
-			throw windows_error("[unsafe_process::join] WaitForSingleObjectEx failed");
+		if (sync::wait(*this) == sync::state::failed)
+			throw winapi_error("[unsafe_process::join] WaitForSingleObjectEx failed");
 
 		winapi::DWORD_ exit_code;
 		if (GetExitCodeThread(
@@ -54,7 +49,7 @@ namespace distant::kernel_objects
 				&exit_code)
 			== 0
 		)
-			throw windows_error("[unsafe_process::join] GetExitCodeThread failed");
+			throw winapi_error("[unsafe_process::join] GetExitCodeThread failed");
 
 		this->detach_unchecked();
 	}
@@ -80,7 +75,7 @@ namespace distant::kernel_objects
 
 		boost::winapi::DWORD_ count = 0;
 		if (!::GetProcessHandleCount(this->handle_.native_handle(), &count))
-			throw windows_error("[unsafe_process::handle_count] GetProcesshandle Count failed");
+			throw winapi_error("[unsafe_process::handle_count] GetProcesshandle Count failed");
 
 		return static_cast<std::size_t>(count);
 	}
@@ -129,7 +124,7 @@ namespace distant::kernel_objects
 
 		// Otherwise use CheckRemoteDebuggerPresent.
 		boost::winapi::BOOL_ result = false;
-		boost::winapi::CheckRemoteDebuggerPresent(this->handle_.native_handle(), &result);
+		boost::winapi::CheckRemoteDebuggerPresent(handle_.native_handle(), &result);
 		return result;
 	}
 
@@ -145,19 +140,13 @@ namespace distant::kernel_objects
 
 	inline filesystem::path unsafe_process::file_path() const
 	{
-		if (!this->valid())
-		{
-			std::cout << "Handle value = " << this->handle().native_handle() << '\n';
-			std::cout << "Pid = " << this->id() << '\n';
-			std::cout << "Process version = " << GetProcessVersion(static_cast<uint>(this->id())) << '\n';
-		}
 		BOOST_ASSERT_MSG(this->valid(), "[unsafe_process::file_path] invalid process handle");
 
 		wchar_t buffer[boost::winapi::max_path];
 		auto max_path = boost::winapi::max_path;
 
-		if (!boost::winapi::query_full_process_image_name(this->handle_.native_handle(), 0, buffer, &max_path))
-			throw windows_error("[unsafe_process::file_path] query_full_process_image_name failed");
+		if (!boost::winapi::query_full_process_image_name(handle_.native_handle(), 0, buffer, &max_path))
+			throw winapi_error("[unsafe_process::file_path] query_full_process_image_name failed");
 
 		return buffer;
 	}
@@ -184,7 +173,7 @@ namespace distant::kernel_objects
 //=========================//
 	// Empty initialize process
 	constexpr unsafe_process::unsafe_process() noexcept
-		: handle_()
+		: handle_(nullptr)
 		, access_rights_(process_rights::all_access)
 	{}
 

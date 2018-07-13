@@ -13,31 +13,31 @@
 
 namespace distant::error {
 
-	class windows_category : public std::error_category
+	class winapi_category : public std::error_category
 	{
 		const char* name() const noexcept override final;
 
 		std::string message(int value) const override final;
 	};
 
-	const windows_category& get_windows_category() noexcept;
+	const winapi_category& get_windows_category() noexcept;
 
 	struct gle {};
 
 	/// Windows error code
-	class windows_error_code : public std::error_code
+	class winapi_error_code : public std::error_code
 	{
 		using base = std::error_code;
 
 	public:
 		/// Construct an error code with the given code.
-		explicit windows_error_code(boost::winapi::DWORD_ code) noexcept;
+		explicit winapi_error_code(boost::winapi::DWORD_ code) noexcept;
 
 		/// Construct an error code with the code obtained from ::GetLastError.
-		windows_error_code(gle) noexcept;
+		winapi_error_code(gle) noexcept;
 
 		/// Construct an error code with no error.
-		explicit windows_error_code() noexcept;
+		explicit winapi_error_code() noexcept;
 
 		/// Update the error code
 		void update_last() noexcept;
@@ -47,39 +47,39 @@ namespace distant::error {
 		void set_last(boost::winapi::DWORD_ code) noexcept;
 	};
 
-	class windows_error : public std::system_error
+	class winapi_error : public std::system_error
 	{
 	public:
-		windows_error();
-		windows_error(const windows_error_code code) : std::system_error(code) {}
-		explicit windows_error(const std::string& message);
+		winapi_error();
+		winapi_error(const winapi_error_code code) : std::system_error(code) {}
+		explicit winapi_error(const std::string& message);
 	};
 
 	/// @brief Return the last error local to the executing thread.
 	/// @return the last error code that was set.
-	windows_error_code last_error() noexcept;
+	winapi_error_code last_error() noexcept;
 
 	/// @brief Write a windows error to an output stream.
 	/// @param stream the output stream.
 	/// @param error the windows error to write.
 	/// @return the modified output stream.
 	template <typename CharT, typename CharTraits>
-	std::basic_ostream<CharT, CharTraits>& operator<<(std::basic_ostream<CharT, CharTraits>& stream, const windows_error& error);
+	std::basic_ostream<CharT, CharTraits>& operator<<(std::basic_ostream<CharT, CharTraits>& stream, const winapi_error& error);
 
 	/// @brief Write a windows error to an output stream.
 	/// @param stream the output stream.
 	/// @param error the windows error to write.
 	/// @return the modified output stream.
 	template <typename CharT, typename CharTraits>
-	std::basic_ostream<CharT, CharTraits>& operator<<(std::basic_ostream<CharT, CharTraits>& stream, const windows_error_code& error);
+	std::basic_ostream<CharT, CharTraits>& operator<<(std::basic_ostream<CharT, CharTraits>& stream, const winapi_error_code& error);
 
 } // end namespace distant::error
 
 namespace distant
 {
 	using error::last_error;
-	using error::windows_error;
+	using error::winapi_error;
 }
 
 // Implementation:
-#include "impl/windows_error.hxx"
+#include "impl/winapi_error.hxx"

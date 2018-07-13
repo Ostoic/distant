@@ -5,7 +5,6 @@
 #include <distant/system/information.hpp>
 #include <distant/memory/function.hpp>
 #include <distant/type_traits.hpp>
-
 #include <distant/concepts/equality_comparable.hpp>
 #include <distant/support/winapi/thread.hpp>
 
@@ -44,13 +43,15 @@ namespace distant::kernel_objects
 		process<Access> process();
 
 		const kernel_handle& handle() const noexcept;
+		kernel_handle& handle() noexcept;
 
 		bool equals(const thread& other) const noexcept;
 
 	public:
-		constexpr thread() noexcept {}
+		constexpr thread() noexcept : id_(0) {}
 
 		explicit thread(std::thread::id id) noexcept;
+				 thread(std::thread&& thread) noexcept;
 		explicit thread(thread::id_t id) noexcept;
 
 		template <typename Fn, typename... Args>
@@ -67,8 +68,11 @@ namespace distant::kernel_objects
 	private:
 		void detach_unchecked() noexcept;
 
+		explicit thread(kernel_handle&& handle) noexcept;
+
 	private:
 		kernel_handle handle_;
+		uint id_;
 	};
 
 	class thread::id_t
@@ -91,11 +95,17 @@ namespace distant::kernel_objects
 		uint id_;
 	};
 
+	inline thread current_thread() noexcept
+	{
+		return thread(thread::id_t(::GetCurrentThreadId()));
+	}
+
 } // namespace distant::kernel_objects
 
 namespace distant
 {
 	using kernel_objects::thread;
+	using kernel_objects::current_thread;
 
 	template <>
 	struct kernel_object_traits<thread>

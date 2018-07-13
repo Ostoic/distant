@@ -51,7 +51,7 @@ namespace distant::memory
 			reinterpret_cast<void*>(static_cast<AddressT>(address)),
 			size, static_cast<DWORD_>(protection), &old
 		))
-			throw windows_error("[memory::virtual_protect] VirtualProtectEx failed");
+			throw winapi_error("[memory::virtual_protect] VirtualProtectEx failed");
 
 		return static_cast<page_protection>(old);
 	}
@@ -79,7 +79,7 @@ namespace distant::memory
 
 		void* allocated_address = ::VirtualAllocEx(process.handle().native_handle(), nullptr, n, MEM_RESERVE | MEM_COMMIT, static_cast<boost::winapi::DWORD_>(Protection));
 		if (allocated_address == nullptr)
-			throw windows_error("[memory::virtual_malloc] VirtualAllocEx failed");
+			throw winapi_error("[memory::virtual_malloc] VirtualAllocEx failed");
 
 		return virtual_ptr<T, AddressT, AccessRights>{process, allocated_address};
 	}

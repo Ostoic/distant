@@ -7,7 +7,7 @@
 #include <type_traits>
 
 #include <distant/config.hpp>
-#include <distant/error/windows_error.hpp>
+#include <distant/error/winapi_error.hpp>
 
 #include <distant/scoped_handle.hpp>
 

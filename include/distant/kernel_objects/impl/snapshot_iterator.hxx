@@ -14,7 +14,7 @@ namespace distant::kernel_objects
 	template <class K>
 	template <class Snapshot>
 	snapshot_iterator<K>::snapshot_iterator(const Snapshot& snapshot)
-		: native_snap_(snapshot.handle.native_handle())
+		: native_snap_(snapshot.native_handle())
 		, object_handle_(nullptr)
 		, entry_(std::make_shared<entry_t>())
 	{

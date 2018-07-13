@@ -35,6 +35,8 @@ namespace distant::kernel_objects
 		using unsafe_process::valid;
 		using unsafe_process::equals;
 		using unsafe_process::id;
+		using unsafe_process::detach;
+		using unsafe_process::joinable;
 		using id_t = unsafe_process::id_t;
 
 		/// @brief Terminate the process.
@@ -47,7 +49,6 @@ namespace distant::kernel_objects
 		template <typename Return = void>
 		auto join()
 			-> require_permission<process_rights::synchronize, Return>;
-
 
 		/// @brief Get number of handle s opened in the process
 		/// @see process_rights

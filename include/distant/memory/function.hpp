@@ -12,13 +12,13 @@
 // Other declarations: ./fwd.hpp
 
 namespace distant {
-namespace memory 
+namespace memory
 {
 	// Todo: Figure out order for template parameters so that default template parameters makes sense.
-	template <typename Signature, typename CallingConv = x86_calling_conventions::cdeclcall, typename AddressT = dword, process_rights AccessRights = process_rights::all_access>
+	template <class Signature, class CallingConv = x86_calling_conventions::cdeclcall, class AddressT = dword, process_rights AccessRights = process_rights::all_access>
 	class function;
 
-	template <typename R, typename... Args, typename CallingConv, typename AddressT, process_rights AccessRights>
+	template <class R, class... Args, class CallingConv, class AddressT, process_rights AccessRights>
 	class function<R(Args...), CallingConv, AddressT, AccessRights>
 	{
 	public:
@@ -36,8 +36,8 @@ namespace memory
 
 		R operator()(Args&&... args);
 
-		//const process<required_process_rights>& process() const noexcept;
-			  //process<required_process_rights>& process() noexcept;
+		const process<AccessRights>& process() const noexcept { return ptr_.process(); }
+			  process<AccessRights>& process() noexcept		  { return ptr_.process(); }
 
 		void set_process(process<AccessRights>& process) noexcept;
 

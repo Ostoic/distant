@@ -1,8 +1,8 @@
 #pragma once
 
-namespace distant::error 
+namespace distant::error
 {
-	class windows_category;
-	class windows_error_code;
-	class windows_error;
+	class winapi_category;
+	class winapi_error_code;
+	class winapi_error;
 }

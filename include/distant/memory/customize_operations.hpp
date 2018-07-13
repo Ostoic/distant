@@ -19,7 +19,7 @@ namespace distant::memory
 				SIZE_T bytes_written = 0;
 				T buffer = std::forward<T>(x);
 				if (!::WriteProcessMemory(proc.handle().native_handle(), reinterpret_cast<LPVOID>(static_cast<AddressT>(address)), &buffer, sizeof(T), &bytes_written))
-					throw windows_error("[memory::write] WriteProcessMemory failed, " + std::to_string(bytes_written) + " bytes written");
+					throw winapi_error("[memory::write] WriteProcessMemory failed, " + std::to_string(bytes_written) + " bytes written");
 			}
 		};
 
@@ -38,7 +38,7 @@ namespace distant::memory
 					string.size() + 1, 
 					&bytes_written
 				))
-					throw windows_error("[memory::write<std::string>] WriteProcessMemory failed, " + std::to_string(bytes_written) + " bytes written");
+					throw winapi_error("[memory::write<std::string>] WriteProcessMemory failed, " + std::to_string(bytes_written) + " bytes written");
 			}
 		};
 
@@ -61,7 +61,7 @@ namespace distant::memory
 					size,
 					&bytes_read
 				))
-					throw windows_error("[memory::read] ReadProcessMemory failed, " + std::to_string(bytes_read) + " bytes read");
+					throw winapi_error("[memory::read] ReadProcessMemory failed, " + std::to_string(bytes_read) + " bytes read");
 
 				return result;
 			}
@@ -85,7 +85,7 @@ namespace distant::memory
 					size,
 					&bytes_read
 				))
-					throw windows_error("[memory::read<std::string>] ReadProcessMemory failed, " + std::to_string(bytes_read) + " bytes read");
+					throw winapi_error("[memory::read<std::string>] ReadProcessMemory failed, " + std::to_string(bytes_read) + " bytes read");
 
 				return buffer.c_str();
 			}

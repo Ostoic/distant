@@ -2,38 +2,36 @@
 #include "../thread.hpp"
 
 #include <boost/winapi/thread.hpp>
-#include <boost/winapi/wait.hpp>
+#include <distant/sync/wait.hpp>
 #include <distant/support/winapi/thread.hpp>
 
 namespace distant::kernel_objects
 {
-	inline unsigned int thread::hardware_concurrency() noexcept
+	inline unsigned int thread
+		::hardware_concurrency() noexcept
 	{
 		return system::number_of_processors();
 	}
 
-	inline void thread::kill()
+	inline void thread
+		::kill()
 	{
 		if (this->joinable())
 			::TerminateThread(handle_.native_handle(), 0); // TerminateThread?
 	}
 
-	inline void thread::join()
+	inline void thread
+		::join()
 	{
 		if (!this->joinable())
 			throw std::invalid_argument("[thread::join] Invalid join on unjoinable thread");
 
-		if (this->id() == thread::id_t(GetCurrentThreadId()))
+		if (this->id() == thread::id_t(::GetCurrentThreadId()))
 			throw std::invalid_argument("[thread::join] Join on current thread, deadlock would occur");
 
 		namespace winapi = boost::winapi;
-		if (winapi::WaitForSingleObjectEx(
-				handle_.native_handle(),
-				winapi::infinite,
-				false)
-			== winapi::wait_failed
-		)
-			throw windows_error("[thread::join] WaitForSingleObjectEx failed");
+		if (wait(*this) == sync::state::failed)
+			throw winapi_error("[thread::join] WaitForSingleObjectEx failed");
 
 		winapi::DWORD_ exit_code;
 		if (GetExitCodeThread(
@@ -41,12 +39,13 @@ namespace distant::kernel_objects
 				&exit_code)
 			== 0
 		)
-			throw windows_error("[thread::join] GetExitCodeThread failed");
+			throw winapi_error("[thread::join] GetExitCodeThread failed");
 
 		this->detach_unchecked();
 	}
 
-	inline void thread::detach()
+	inline void thread
+		::detach()
 	{
 		if (!this->joinable())
 			throw std::invalid_argument("[thread::join] Detach called on non-joinable thread");
@@ -54,13 +53,16 @@ namespace distant::kernel_objects
 		this->detach_unchecked();
 	}
 
-	inline void thread::swap(thread& other) noexcept
+	inline void thread
+		::swap(thread& other) noexcept
 	{
 		using std::swap;
 		swap(handle_, other.handle_);
+		swap(id_, other.id_);
 	}
 
-	inline bool thread::is_active() const noexcept
+	inline bool thread
+		::is_active() const noexcept
 	{
 		if (!this->joinable()) return false;
 
@@ -68,39 +70,56 @@ namespace distant::kernel_objects
 		return wait(*this, milliseconds(0)) == sync::state::timeout;
 	}
 
-	inline bool thread::joinable() const noexcept
+	inline bool thread
+		::joinable() const noexcept
 	{
 		return handle_ != nullptr;
 	}
 
 	template <process_rights Access>
-	process<Access> thread::process()
+	process<Access> thread
+		::process()
 	{
 		return process<Access>{::GetProcessIdOfThread(handle_.native_handle())};
 	}
 
-	inline const distant::kernel_handle& thread::handle() const noexcept
+	inline const kernel_handle& thread
+		::handle() const noexcept
 	{
 		return handle_;
 	}
 
-	inline bool thread::equals(const thread& other) const noexcept
+	inline kernel_handle& thread
+		::handle() noexcept
+	{
+		return handle_;
+	}
+
+	inline bool thread
+		::equals(const thread& other) const noexcept
 	{
 		return this->id() == other.id();
 	}
 
-	inline thread::id_t thread::id() const noexcept
+	inline thread::id_t thread
+		::id() const noexcept
 	{
-		using traits = kernel_object_traits<thread>;
-		return thread::id_t{ traits::get_id(handle_.native_handle()) };
+		return id_;
 	}
 
 	inline thread::thread(std::thread::id id) noexcept
 		: thread(thread::id_t(*reinterpret_cast<unsigned int*>(&id)))
 	{}
 
+	inline thread::thread(std::thread&& thread) noexcept
+		: thread(kernel_handle(thread.native_handle()))
+	{
+		thread.detach();
+	}
+
 	inline thread::thread(const thread::id_t id) noexcept
 		: handle_(kernel_object_traits<thread>::open(static_cast<uint>(id)))
+		, id_(id)
 	{}
 
 	template <typename Fn, typename... Args>
@@ -118,23 +137,34 @@ namespace distant::kernel_objects
 
 	inline thread::thread(thread&& other) noexcept
 		: handle_(std::move(other.handle_))
+		, id_(other.id_)
 	{}
 
-	inline thread& thread::operator=(thread&& other) noexcept
+	inline thread& thread
+		::operator=(thread&& other) noexcept
 	{
 		handle_ = std::move(other.handle_);
+		id_ = other.id_;
 		return *this;
 	}
 
-	inline thread::~thread() noexcept
+	inline thread
+		::~thread() noexcept
 	{
 		//if (this->joinable())
 			//::TerminateThread(handle_.native_handle(), 0); // TerminateThread?
 	}
 
-	inline void thread::detach_unchecked() noexcept
+	inline void thread
+		::detach_unchecked() noexcept
 	{
 		handle_.close();
 	}
+
+	inline thread::thread(kernel_handle&& handle) noexcept
+		: handle_(std::move(handle))
+		, id_(kernel_object_traits<thread>::get_id(handle.native_handle()))
+	{}
+
 
 } // namespace distant::kernel_objects
