@@ -68,18 +68,18 @@ int main()
 	// Displaying the number of processes we have full access to after each access token modification shows
 	// whether or not our modification has been successful or not. This is a verification that the access token functions
 	// work as expected.
-	std::cout << "Process count before debug privileges = " << distant::snapshot<process>{}.as<std::vector>().size() << '\n';
+	//std::cout << "Process count before debug privileges = " << distant::snapshot<process>{}.as<std::vector>().size() << '\n';
 	enable_debug_privileges();
 
-	std::cout << "Process count after enabling debug privileges = " << distant::snapshot<process>{}.as<std::vector>().size() << '\n';
+	//std::cout << "Process count after enabling debug privileges = " << distant::snapshot<process>{}.as<std::vector>().size() << '\n';
 	remove_debug_privileges();
 
-	std::cout << "Process count after removing debug privileges = " << distant::snapshot<process>{}.as<std::vector>().size() << "\n\n";
+	//std::cout << "Process count after removing debug privileges = " << distant::snapshot<process>{}.as<std::vector>().size() << "\n\n";
 	for (const auto p : distant::snapshot<process>{})
 	{
 		if (distant::primary_access_token(p).has_privilege(distant::privileges::debug))
 			std::wcout
-				<< "Found process with debug privileges: " << p.file_path() << " (" << p.get_id() << ")\n\n";
+				<< "Found process with debug privileges: " << p.file_path() << " (" << p.id() << ")\n\n";
 	}
 
 	return 0;

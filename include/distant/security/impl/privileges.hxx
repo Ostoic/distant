@@ -11,6 +11,6 @@ namespace distant::security::privileges {
 
 	inline bool request_debug_privileges() noexcept
 	{
-		return distant::primary_access_token(distant::current_process()).set_privilege(privileges::debug);
+		return distant::primary_access_token().set_privilege(debug);
 	}
 }

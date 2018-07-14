@@ -1,94 +1,130 @@
 #pragma once
 
 #include <string>
+#include <tuple>
+
 #include <distant/memory/address.hpp>
+#include <distant/utility/meta/tuple.hpp>
 
 namespace distant::memory
 {
 	/// @brief Provides customization points for memory operations.
-	namespace customize
+	template <class StandardLayoutT>
+	struct operations_traits
 	{
-		/// Todo: Make this a single traits class and specialize for each needed customization
-		/// @brief memory::write standard layout customization point.
-		template <typename T>
-		struct write
+		static_assert(
+			std::is_standard_layout<StandardLayoutT>::value,
+			"[memory::operations_traits<StandardLayoutT>] Type must be a standard layout type."
+		);
+
+		template <class AddressT>
+		static void write(const process<vm_w_op>& proc, const address<AddressT> address, const StandardLayoutT& x)
 		{
-			template <typename AddressT>
-			static void invoke(const process<vm_w_op>& proc, const address<AddressT> address, T&& x)
-			{
-				SIZE_T bytes_written = 0;
-				T buffer = std::forward<T>(x);
-				if (!::WriteProcessMemory(proc.handle().native_handle(), reinterpret_cast<LPVOID>(static_cast<AddressT>(address)), &buffer, sizeof(T), &bytes_written))
-					throw winapi_error("[memory::write] WriteProcessMemory failed, " + std::to_string(bytes_written) + " bytes written");
-			}
-		};
+			SIZE_T bytes_written = 0;
+			StandardLayoutT buffer = x;
+			if (!::WriteProcessMemory(
+				proc.handle().native_handle(), 
+				reinterpret_cast<LPVOID>(static_cast<AddressT>(address)), 
+				&buffer, 
+				sizeof(StandardLayoutT),
+				&bytes_written
+			))
+				throw winapi_error("[memory::write] WriteProcessMemory failed, " + std::to_string(bytes_written) + " bytes written");
+		}
 
-		/// @brief memory::write std::string customization point.
-		template <>
-		struct write<std::string>
+		template <class AddressT>
+		static StandardLayoutT read(const process<vm_read>& process, const address<AddressT> address, const std::size_t size)
 		{
-			template <typename AddressT>
-			static void invoke(const process<vm_w_op>& process, const address<AddressT> address, const std::string& string)
-			{
-				SIZE_T bytes_written = 0;
-				if (!WriteProcessMemory(
-					process.handle().native_handle(),
-					reinterpret_cast<boost::winapi::LPVOID_>(static_cast<AddressT>(address)),
-					string.data(),
-					string.size() + 1, 
-					&bytes_written
-				))
-					throw winapi_error("[memory::write<std::string>] WriteProcessMemory failed, " + std::to_string(bytes_written) + " bytes written");
-			}
-		};
+			StandardLayoutT result;
+			SIZE_T bytes_read = 0;
 
-		/// @brief memory::read standard layout customization point.
-		template <typename T>
-		struct read
+			if (!::ReadProcessMemory(
+				process.handle().native_handle(),
+				reinterpret_cast<LPVOID>(static_cast<AddressT>(address)),
+				&result,
+				size,
+				&bytes_read
+			))
+				throw winapi_error("[memory::read] ReadProcessMemory failed, " + std::to_string(bytes_read) + " bytes read");
+
+			return result;
+		}
+	}; // struct operations_traits<StandardLayoutT>
+
+	/// @brief memory::write std::string customization point.
+	template <>
+	struct operations_traits<std::string>
+	{
+		template <class AddressT>
+		static void write(const process<vm_w_op>& process, const address<AddressT> address, const std::string& string)
 		{
-			static_assert(std::is_standard_layout<T>::value);
+			SIZE_T bytes_written = 0;
+			if (!::WriteProcessMemory(
+				process.handle().native_handle(),
+				reinterpret_cast<boost::winapi::LPVOID_>(static_cast<AddressT>(address)),
+				string.data(),
+				string.size() + 1,
+				&bytes_written
+			))
+				throw winapi_error("[memory::write<std::string>] WriteProcessMemory failed, " + std::to_string(bytes_written) + " bytes written");
+		}
 
-			template <typename AddressT>
-			static T invoke(const process<vm_read>& process, const address<AddressT> address, const std::size_t size)
-			{
-				T result;
-				SIZE_T bytes_read = 0;
-
-				if (!::ReadProcessMemory(
-					process.handle().native_handle(),
-					reinterpret_cast<LPVOID>(static_cast<AddressT>(address)),
-					&result, 
-					size,
-					&bytes_read
-				))
-					throw winapi_error("[memory::read] ReadProcessMemory failed, " + std::to_string(bytes_read) + " bytes read");
-
-				return result;
-			}
-		};
-
-		/// @brief memory::read std::string customization point.
-		template <>
-		struct read<std::string>
+		template <class AddressT>
+		static std::string read(const process<vm_read>& process, const address<AddressT> address, const std::size_t size)
 		{
-			template <typename AddressT>
-			static std::string invoke(const process<vm_read>& process, const address<AddressT> address, const std::size_t size)
+			std::string buffer(size, 0);
+			SIZE_T bytes_read = 0;
+
+			/// Todo: Read until null terminator or threshold
+			if (!::ReadProcessMemory(
+				process.handle().native_handle(),
+				reinterpret_cast<boost::winapi::LPCVOID_>(static_cast<AddressT>(address)),
+				buffer.data(),
+				size,
+				&bytes_read
+			))
+				throw winapi_error("[memory::read<std::string>] ReadProcessMemory failed, " + std::to_string(bytes_read) + " bytes read");
+
+			return { buffer.c_str() };
+		}
+
+	}; // struct operations_traits<std::string>
+
+	template <class... Ts>
+	struct operations_traits<std::tuple<Ts...>>
+	{
+		template <class AddressT>
+		static void write(const process<vm_w_op>& process, address<AddressT> address, const std::tuple<Ts...>& tuple)
+		{
+			using namespace utility;
+
+			/// Todo: Figure out alignment issues with std::tuple
+			/// Todo: More TMP to transform tuple into typelist/tuple of aligned sizes 
+			// std::tuple's members are laid out in reverse due to recursive inhertiance implementation
+			meta::tuple_for_each_reversed(tuple, [&](const auto& element)
 			{
-				std::string buffer(size, 0);
-				SIZE_T bytes_read = 0;
+				operations_traits<meta::remove_cvref<decltype(element)>>
+					::write(process, address, element);
 
-				/// Todo: Read until null terminator or threshold
-				if (!::ReadProcessMemory(
-					process.handle().native_handle(),
-					reinterpret_cast<boost::winapi::LPCVOID_>(static_cast<AddressT>(address)),
-					buffer.data(),
-					size,
-					&bytes_read
-				))
-					throw winapi_error("[memory::read<std::string>] ReadProcessMemory failed, " + std::to_string(bytes_read) + " bytes read");
+				std::cout << "Type = " << typeid(element).name() << '\n';
+				std::cout << "a_internal = " << address << '\n';
 
-				return buffer.c_str();
-			}
-		};
-	}
-}
+				// Increment the address by element size.
+				address += sizeof(meta::remove_cvref<decltype(element)>);
+			});
+		}
+
+		template <class AddressT>
+		static std::tuple<Ts...> read(const process<vm_read>& process, const address<AddressT> address, const std::size_t size)
+		{
+			std::tuple<Ts...> tuple;
+			using namespace utility;
+			meta::tuple_for_each(tuple, [&](auto&& element)
+			{
+				operations_traits<decltype(element)>
+					::write(process, address, std::forward<decltype(element)>(element));
+			});
+		}
+	};
+
+} // namespace distant::memory

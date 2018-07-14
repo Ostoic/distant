@@ -9,6 +9,7 @@
 
 #include <distant/config.hpp>
 #include <distant/concepts/equality_comparable.hpp>
+#include <distant/concepts/handleable.hpp>
 #include <distant/type_traits.hpp>
 #include <distant/scoped_handle.hpp>
 #include <distant/support/filesystem.hpp>
@@ -18,7 +19,7 @@ namespace distant::kernel_objects
 	/// @brief Base type of distant::process
 	/// This version does not have static access_rights checking
 	class unsafe_process
-		: public concepts::boolean_validator<unsafe_process>
+		: public concepts::handleable<unsafe_process>
 		, public concepts::equality_comparable<unsafe_process>
 	{
 	public:
@@ -75,9 +76,6 @@ namespace distant::kernel_objects
 		/// @return the process id.
 		unsafe_process::id_t id() const noexcept;
 
-		const kernel_handle& handle() const noexcept { return handle_; }
-			  kernel_handle& handle()		noexcept { return handle_; }
-
 		/// @brief Get the access rights that were used to open the current process
 		/// @return process access_rights indicating the level of access we have to the process.
 		process_rights access_rights() const noexcept { return access_rights_; }
@@ -85,10 +83,6 @@ namespace distant::kernel_objects
 		/// @brief Test if the process kernel_object is valid
 		/// @return true if the process is valid, false otherwise.
 		bool valid() const noexcept;
-
-		/// @brief Test if the process kernel_object is valid
-		/// @return true if the process is valid, false otherwise
-		bool equals(const unsafe_process& other) const noexcept;
 
 	public: // {ctor}
 		/// @brief Construct an empty process
@@ -107,6 +101,13 @@ namespace distant::kernel_objects
 
 	protected:
 		explicit unsafe_process(kernel_handle&& handle, process_rights access) noexcept;
+
+		/// @brief Test if the process kernel_object is valid
+		/// @return true if the process is valid, false otherwise
+		bool equals(const unsafe_process& other) const noexcept;
+
+		template <class> friend struct concepts::equality_comparable;
+		template <class> friend struct concepts::handleable;
 
 		kernel_handle handle_;
 		process_rights access_rights_;

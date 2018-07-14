@@ -11,22 +11,15 @@
 
 #include <distant/scoped_handle.hpp>
 
-#include <distant/concepts/boolean_validator.hpp>
+#include <distant/concepts/handleable.hpp>
 #include "fwd.hpp"
 
 namespace distant::kernel_objects
 {
 	/// @brief Base class for kernel objects
-	class kernel_object : public concepts::boolean_validator<kernel_object>
+	class kernel_object : public concepts::handleable<kernel_object>
 	{
 	public: // interface
-		/// @brief Get a handle to the kernel_object.
-		/// @return a type-safe handle to the kernel_object.
-		const kernel_handle& handle() const noexcept;
-
-		/// @brief Check if the kernel_object is valid
-		/// @return true if the kernel_object is valid.
-		virtual bool valid() const noexcept;
 
 		/// Declare the destructor virtual to prevent slicing.
 		virtual ~kernel_object() = default;

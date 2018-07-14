@@ -25,7 +25,7 @@ namespace distant
 	// Move constructor
 	template <class C>
 	scoped_handle<C>::scoped_handle(scoped_handle&& other) noexcept
-		: native_handle_(other.native_handle_)
+		: native_handle_(std::move(other.native_handle_))
 		, flags_(other.flags_)
 	{ other.invalidate(); }
 
@@ -48,7 +48,7 @@ namespace distant
 	template <class C>
 	bool scoped_handle<C>
 		::valid() const noexcept
-	{ return native_handle_ != 0; }
+	{ return native_handle_ != nullptr; }
 
 	template <class C>
 	bool scoped_handle<C>
@@ -68,7 +68,7 @@ namespace distant
 		// Close the handle if it is weakly valid and its closure wasn't observed
 		if (!this->close_protected() && !this->closed() && this->valid())
 		{
-			const bool result = traits_t::close(native_handle_);
+			const bool result = traits_t::close(native_handle_.get());
 			this->invalidate();
 			return result;
 		}
@@ -96,9 +96,9 @@ namespace distant
 	}
 
 	template <class C>
-	typename scoped_handle<C>::native_t scoped_handle<C>
+	constexpr typename scoped_handle<C>::native_t scoped_handle<C>
 		::native_handle() const noexcept
-	{ return native_handle_; }
+	{ return native_handle_.get(); }
 
 
 	template <class C>
@@ -106,7 +106,7 @@ namespace distant
 	constexpr bool scoped_handle<C>
 		::equals(const scoped_handle<OtherClose>& other) const noexcept
 	{
-		return native_handle_ == other.native_handle_;
+		return native_handle_.get() == other.native_handle_.get();
 	}
 
 	template <class C>

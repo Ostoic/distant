@@ -7,6 +7,7 @@
 #include <distant/access_rights.hpp>
 #include <distant/type_traits.hpp>
 #include <distant/concepts/boolean_validator.hpp>
+#include <distant/concepts/equality_comparable.hpp>
 
 #include <boost/winapi/config.hpp>
 #include <boost/winapi/basic_types.hpp>
@@ -17,8 +18,23 @@
 
 namespace distant
 {
+	namespace detail
+	{
+		template <class HandleTraits>
+		struct scoped_handle_deleter
+		{
+			template <class Handle>
+			void operator()(const Handle handle) noexcept
+			{
+				HandleTraits::close(handle);
+			}
+		};
+	}
+
 	template <class HandleTraits>
-	class scoped_handle : public concepts::boolean_validator<scoped_handle<HandleTraits>>
+	class scoped_handle 
+		: public concepts::boolean_validator<scoped_handle<HandleTraits>>
+		, public concepts::equality_comparable<scoped_handle<HandleTraits>>
 	{
 	public:
 		// Underlying handle type. This is macro'd in Windows to be void* == (HANDLE)
@@ -47,8 +63,7 @@ namespace distant
 		/// Move assignable
 		scoped_handle& operator=(scoped_handle&&) noexcept;
 
-		// If we allow copy ctor/assignment, then multiple copies will eventually attempt
-		// to close the same handle, which is not desirable.
+		// scoped_handle is meant to be a cheap wrapper around
 		scoped_handle(const scoped_handle&) = delete;
 		scoped_handle& operator =(const scoped_handle&) = delete;
 
@@ -76,12 +91,12 @@ namespace distant
 
 		/// Get the value of the native handle
 		/// @return value of the native handle
-		native_t native_handle() const noexcept;
-
-		template <typename OtherClose>
-		constexpr bool equals(const scoped_handle<OtherClose>& other) const noexcept;
+		constexpr native_t native_handle() const noexcept;
 
 	protected:
+		template <class OtherClose>
+		constexpr bool equals(const scoped_handle<OtherClose>& other) const noexcept;
+
 		// From "Windows Via C\C++" by Jeffrey Richter,
 		// setting the handle to null is preferable to invalid_handle
 		// after closing the handle. This is probably because some API
@@ -98,15 +113,17 @@ namespace distant
 
 	protected:
 		/// native HANDLE value
-		native_t native_handle_;
+		//native_t native_handle_;
+		// Using unique_ptr<void> with a custom deleter does not lead to dynamic allocations!
+		std::unique_ptr<std::remove_pointer_t<native_t>, detail::scoped_handle_deleter<HandleTraits>> native_handle_;
 
 		// If we somehow attempt to call CloseHandle multiple times,
 		// this will help prevent further unnecessary calls.
 		/// Switch to check if closure was observed
 		std::bitset<3> flags_;
 
-		template <typename OtherClose>
-		friend class scoped_handle;
+		template <class> friend class scoped_handle;
+		template <class> friend struct concepts::equality_comparable;
 	};
 
 	struct kernel_handle_traits
@@ -120,23 +137,14 @@ namespace distant
 	};
 
 	template <typename Traits>
-	struct handle_traits<scoped_handle<Traits>>
-		: Traits {};
+	struct handle_traits<scoped_handle<Traits>> : Traits {};
 
 	using kernel_handle = scoped_handle<kernel_handle_traits>;
 
 	constexpr bool operator==(const kernel_handle& lhs, const kernel_handle& rhs) noexcept
-	{ return lhs.equals(rhs); }
+	{ return lhs.native_handle() == rhs.native_handle(); }
 
 	constexpr bool operator!=(const kernel_handle& lhs, const kernel_handle& rhs) noexcept
-	{ return !(lhs == rhs); }
-
-	template <typename LeftClose, typename RightClose>
-	constexpr bool operator==(const scoped_handle<LeftClose>& lhs, const scoped_handle<RightClose>& rhs) noexcept
-	{ return lhs.equals(rhs); }
-
-	template <typename LeftClose, typename RightClose>
-	constexpr bool operator!=(const scoped_handle<LeftClose>& lhs, const scoped_handle<RightClose>& rhs) noexcept
 	{ return !(lhs == rhs); }
 
 } // end namespace distant

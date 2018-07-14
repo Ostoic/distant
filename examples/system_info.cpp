@@ -2,6 +2,12 @@
 
 #include <iostream>
 
+void* operator new(const std::size_t sz)
+{
+	std::cout << "[NEW] new operator called\n";
+	return std::malloc(sz);
+}
+
 int main()
 {
 	// Basic system information

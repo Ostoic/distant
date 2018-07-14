@@ -6,6 +6,7 @@
 #include <distant/kernel_objects/snapshot_iterator.hpp>
 
 #include <distant/type_traits.hpp>
+#include <distant/kernel_objects/interface.hpp>
 
 namespace distant::kernel_objects
 {
@@ -14,7 +15,7 @@ namespace distant::kernel_objects
 	template <class K>
 	template <class Snapshot>
 	snapshot_iterator<K>::snapshot_iterator(const Snapshot& snapshot)
-		: native_snap_(snapshot.native_handle())
+		: native_snap_(native_handle_of(snapshot))
 		, object_handle_(nullptr)
 		, entry_(std::make_shared<entry_t>())
 	{

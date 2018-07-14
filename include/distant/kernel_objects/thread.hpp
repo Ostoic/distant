@@ -6,6 +6,7 @@
 #include <distant/memory/function.hpp>
 #include <distant/type_traits.hpp>
 #include <distant/concepts/equality_comparable.hpp>
+#include <distant/concepts/handleable.hpp>
 #include <distant/support/winapi/thread.hpp>
 
 #include <thread>
@@ -16,6 +17,7 @@ namespace distant::kernel_objects
 {
 	class thread
 		: public concepts::equality_comparable<thread>
+		, public concepts::handleable<thread>
 	{
 	public:
 		static constexpr auto required_process_rights = process_rights::create_thread | process_rights::query_information | vm_rw_op;
@@ -39,13 +41,8 @@ namespace distant::kernel_objects
 
 		bool joinable() const noexcept;
 
-		template <process_rights Access>
-		process<Access> process();
-
-		const kernel_handle& handle() const noexcept;
-		kernel_handle& handle() noexcept;
-
-		bool equals(const thread& other) const noexcept;
+		template <process_rights Access = process_rights::all_access>
+		process<Access> process() noexcept;
 
 	public:
 		constexpr thread() noexcept : id_(0) {}
@@ -68,6 +65,11 @@ namespace distant::kernel_objects
 	private:
 		void detach_unchecked() noexcept;
 
+		bool equals(const thread& other) const noexcept;
+
+		template <class> friend struct concepts::handleable;
+		template <class> friend struct concepts::equality_comparable;
+
 		explicit thread(kernel_handle&& handle) noexcept;
 
 	private:
@@ -83,7 +85,7 @@ namespace distant::kernel_objects
 
 		bool equals(const id_t other) const noexcept { return id_ == other.id_; }
 
-		id_t(const uint id) : id_(id) {}
+		id_t(const uint id) noexcept : id_(id) {}
 
 		explicit operator uint() const noexcept { return id_; }
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <distant/kernel_objects/snapshot_iterator.hpp>
+#include <distant/concepts/handleable.hpp>
 #include <boost/iterator/filter_iterator.hpp>
 
 namespace distant::kernel_objects::detail
@@ -22,6 +23,7 @@ namespace distant::kernel_objects::detail
 
 	template <class KernelObject>
 	class snapshot_base
+		: public concepts::handleable<snapshot_base<KernelObject>>
 	{
 	public:
 		using iterator = snapshot_iterator<KernelObject>;
@@ -29,20 +31,22 @@ namespace distant::kernel_objects::detail
 
 		using snapshot_traits = detail::snapshot_traits<KernelObject>;
 
+		template <class> friend struct concepts::handleable;
+
 	public:
 		snapshot_base()
-			: handle(snapshot_traits::create_snapshot_handle())
+			: handle_(snapshot_traits::create_snapshot_handle())
 		{
-			if (handle == nullptr)
+			if (handle_ == nullptr)
 				throw winapi_error("[snapshot::{ctor}] Invalid handle");
 		}
 
-		snapshot_base(snapshot_base&& other) noexcept = default;
+		snapshot_base(snapshot_base&&) noexcept = default;
 
 		/// @brief Construct a snapshot of \a KernelObjects owned by the given process.
 		template <class KernelObject2>
 		explicit snapshot_base(const KernelObject2& owner)
-			: handle([&owner]()
+			: handle_([&owner]()
 				-> kernel_handle
 			{
 				if (!is_valid(owner))
@@ -72,36 +76,38 @@ namespace distant::kernel_objects::detail
 		iterator end()
 		{ return iterator{}; }
 
-		auto native_handle() const { return handle.native_handle(); }
-
-		mutable kernel_handle handle;
+	private:
+		kernel_handle handle_;
 	};
 
 	template <>
-	class snapshot_base<distant::thread>
+	class snapshot_base<thread>
+		: public concepts::handleable<snapshot_base<thread>>
 	{
 	public:
-		using inner_iterator = snapshot_iterator<distant::thread>;
+		using inner_iterator = snapshot_iterator<thread>;
 		using iterator = boost::filter_iterator<id_predicate, inner_iterator>;
 		using const_iterator = iterator;
 
-		using snapshot_traits = detail::snapshot_traits<distant::thread>;
+		using snapshot_traits = detail::snapshot_traits<thread>;
+
+		template <class> friend struct concepts::handleable;
 
 	public:
-		snapshot_base()
-			: handle(snapshot_traits::create_snapshot_handle())
-			, parent_id(0)
+		snapshot_base() 
+			: handle_(snapshot_traits::create_snapshot_handle())
+			, parent_id_(0)
 		{
-			if (handle == nullptr)
+			if (handle_ == nullptr)
 				throw winapi_error("[snapshot::{ctor}] Invalid handle");
 		}
 
-		snapshot_base(snapshot_base&& other) noexcept = default;
+		snapshot_base(snapshot_base&&) noexcept = default;
 
 		/// @brief Construct a snapshot of \a KernelObjects owned by the given process.
 		template <class KernelObject>
 		explicit snapshot_base(const KernelObject& owner)
-			: handle([&owner]()
+			: handle_([&owner]()
 				-> kernel_handle
 			{
 				if (!is_valid(owner))
@@ -109,7 +115,7 @@ namespace distant::kernel_objects::detail
 
 				return snapshot_traits::create_snapshot_handle(id_of(owner));
 			}())
-			, parent_id(id_of(owner))
+			, parent_id_(id_of(owner))
 		{}
 
 		/// @brief Retrieve the start of the snapshot.
@@ -117,7 +123,7 @@ namespace distant::kernel_objects::detail
 		const_iterator begin() const
 		{
 			return const_iterator{
-				id_predicate{ parent_id },
+				id_predicate{ parent_id_ },
 				inner_iterator{ *this },
 				inner_iterator{}
 			};
@@ -128,7 +134,7 @@ namespace distant::kernel_objects::detail
 		const_iterator end() const
 		{
 			return const_iterator{
-				id_predicate{ parent_id },
+				id_predicate{ parent_id_ },
 				inner_iterator{},
 				inner_iterator{}
 			};
@@ -139,7 +145,7 @@ namespace distant::kernel_objects::detail
 		iterator begin()
 		{
 			return iterator{
-				id_predicate{ parent_id },
+				id_predicate{ parent_id_ },
 				inner_iterator{ *this },
 				inner_iterator{}
 			};
@@ -150,15 +156,14 @@ namespace distant::kernel_objects::detail
 		iterator end()
 		{
 			return iterator{
-				id_predicate{ parent_id },
+				id_predicate{ parent_id_ },
 				inner_iterator{},
 				inner_iterator{}
 			};
 		}
 
-		auto native_handle() const { return handle.native_handle(); }
-
-		mutable kernel_handle handle;
-		uint parent_id;
+	private:
+		kernel_handle handle_;
+		uint parent_id_;
 	};
 }

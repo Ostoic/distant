@@ -36,7 +36,7 @@ namespace distant::kernel_objects
 			static_cast<void>(tag);
 			HANDLE_ token = nullptr;
 
-			OpenProcessToken(process.handle().native_handle(), access, &token);
+			::OpenProcessToken(native_handle_of(process), access, &token);
 			return token;
 		}
 
@@ -49,11 +49,11 @@ namespace distant::kernel_objects
 			return get_token_impl(reinterpret_cast<const unsafe_process&>(process), access, distant::detail::process_base_tag{});
 		}
 
-		/*inline HANDLE_ get_token_impl(const kernel_objects::thread_base& thread, DWORD_ access, bool self) noexcept
+		/*inline HANDLE_ get_token_impl(const kernel_objects::thread& thread, DWORD_ access, bool self) noexcept
 		{
 			boost::winapi::HANDLE_ token = nullptr;
 
-			boost::winapi::OpenThreadToken(thread, access, self, &token);
+			boost::winapi::OpenThreadToken(native_handle_of(thread), access, self, &token);
 			return token;
 		}*/
 	}
@@ -62,7 +62,7 @@ namespace distant::kernel_objects
 	//public:
 	template <access_rights::token A, typename K>
 	access_token<A, K>::access_token(const K& k) noexcept
-		: base(
+		: handle_(
 			distant::kernel_handle{
 				detail::get_token_impl(k, static_cast<boost::winapi::DWORD_>(A), detail::dispatcher<K>::dispatch{})
 			}) 
@@ -77,7 +77,7 @@ namespace distant::kernel_objects
 		boost::winapi::BOOL_ result = false;
 		boost::winapi::PRIVILEGE_SET_ set = p;
 
-		boost::winapi::privilege_check(this->handle().native_handle(), &set, &result);
+		boost::winapi::privilege_check(handle_.native_handle(), &set, &result);
 		return result;
 	}
 
@@ -90,8 +90,8 @@ namespace distant::kernel_objects
 		boost::winapi::TOKEN_PRIVILEGES_ temp = p;
 		temp.Privileges[0].Attributes = static_cast<boost::winapi::DWORD_>(attribute);
 
-		if (boost::winapi::adjust_token_privilege(this->handle().native_handle(), false, &temp, sizeof(temp), nullptr,
-		                                          nullptr))
+		if (boost::winapi::adjust_token_privilege(
+			handle_.native_handle(), false, &temp, sizeof(temp), nullptr, nullptr))
 		{
 			// If the privilege was set return success.
 			if (last_error().value() != boost::winapi::ERROR_NOT_ALL_ASSIGNED_)

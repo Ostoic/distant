@@ -23,6 +23,7 @@ namespace distant::kernel_objects {
 	OutContainer<O, std::allocator<O>> snapshot<O>::as() const
 	{
 		OutContainer<O, std::allocator<O>> output;
+		output.reserve(200);
 		std::copy(this->begin(), this->end(), std::back_inserter(output));
 
 		return output;
@@ -33,6 +34,7 @@ namespace distant::kernel_objects {
 	OutContainer<O, std::allocator<O>> snapshot<O>::as(Predicate predicate) const
 	{
 		OutContainer<O, std::allocator<O>> output;
+		output.reserve(200);
 		std::copy_if(this->begin(), this->end(), std::back_inserter(output), predicate);
 
 		return output;

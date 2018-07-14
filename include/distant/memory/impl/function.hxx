@@ -7,17 +7,26 @@
 
 namespace distant::memory
 {
-
-
-
 	template <class R, class... Args, class CallingConv, class AddressT, process_rights AccessRights>
 	R function<R(Args...), CallingConv, AddressT, AccessRights>::operator()(Args&&... args)
 	{
-		using namespace boost::mp11;
-		//const auto arguments_address = virtual_malloc(ptr_.process(), sizeof)
-		mp_list_c<std::size_t, sizeof(Args)...>;
+		const auto remote_arguments_ptr = virtual_malloc(ptr_.process(), sizeof(std::tuple<std::decay_t<Args>...>));
 
+		// Should there really be a distant::function? The only possibility for operator() is a multithreaded call
+		// so unless we're in-process, I don't think this conveys the correct semantics for remote function calling.
+		// This is what std::thread does to launch a new thread.kj
+		// We should instead provide the same functionality, except with memory in the remote process.
+		// wpm overload for std::tuple?
+		// wpm overload for unique_ptr<>? (probably not).
+		const auto arguments = std::make_unique<std::tuple<std::decay_t<Args>...>>(std::forward<Args>(args)...);
 
+		// calling_convention::push_arguments_asm
+		// calling_convention::pre_call_asm
+		// calling_convention::call_asm
+		// calling_convention::post_call_asm
+
+		//_STD make_unique<tuple<decay_t<_Fn>, decay_t<_Args>...> >(
+			//_STD forward<_Fn>(_Fx), _STD forward<_Args>(_Ax)...));
 		// Todo:
 		// Require that a thread's entry point exists already?
 		// create thread, then call function, or call function which creates a thread?

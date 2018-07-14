@@ -1,5 +1,6 @@
 #pragma once
 
+#include <distant/types.hpp>
 #include <distant/type_traits.hpp>
 #include <distant/utility/meta/transformations.hpp>
 
@@ -20,30 +21,27 @@ namespace distant::kernel_objects
 	}
 
 	template <class KernelObject>
-	struct native_handle_traits
-		: detail::native_handle_impl<utility::meta::remove_cvref<KernelObject>>
-	{
-		using detail::native_handle_impl<utility::meta::remove_cvref<KernelObject>>::native_handle;
-	};
-
-	template <class KernelObject>
 	constexpr auto native_handle_of(KernelObject&& object) noexcept
 	{
-		return native_handle_traits<KernelObject>::native_handle(std::forward<KernelObject>(object));
+		using utility::meta::remove_cvref;
+		return detail::native_handle_impl<remove_cvref<KernelObject>>
+			::native_handle(std::forward<KernelObject>(object));
 	}
 
 	template <class KernelObject>
 	constexpr auto access_rights_of() noexcept
 	{
 		using utility::meta::remove_cvref;
-		return kernel_object_traits<remove_cvref<KernelObject>>::access_rights();
+		return kernel_object_traits<remove_cvref<KernelObject>>
+			::access_rights();
 	}
 
 	template <class KernelObject>
 	auto access_rights_of(const KernelObject& object) noexcept
 	{
 		using utility::meta::remove_cvref;
-		return kernel_object_traits<remove_cvref<KernelObject>>::access_rights(object);
+		return kernel_object_traits<remove_cvref<KernelObject>>
+			::access_rights(object);
 	}
 
 	template <class KernelObject>

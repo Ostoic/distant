@@ -10,25 +10,25 @@ namespace distant::utility::meta
 {
 	namespace detail
 	{
-		template<typename Tuple, typename Func, size_t... Is>
-		constexpr void tuple_for_n_impl(Tuple&& tuple, Func fn, const std::index_sequence<Is...>) noexcept
+		template<class Tuple, class UnaryFunc, size_t... Is>
+		constexpr void tuple_for_n_impl(Tuple&& tuple, UnaryFunc&& fn, const std::index_sequence<Is...>) noexcept
 		{
 			// Unpack variadic trick
 			int ignored[] = { (static_cast<void>(
-				fn(std::get<Is>(std::forward<Tuple>(tuple)))
+				std::forward<UnaryFunc>(fn)(std::get<Is>(std::forward<Tuple>(tuple)))
 				), 0)...
 			};
 
 			(void)ignored;
 		}
 
-		template<typename Tuple, typename UnaryFunc, std::size_t... Is>
-		constexpr auto tuple_transform_impl(Tuple&& tuple, UnaryFunc fn, std::index_sequence<Is...>)
+		template<class Tuple, class UnaryFunc, std::size_t... Is>
+		constexpr auto tuple_transform_impl(Tuple&& tuple, UnaryFunc&& fn, std::index_sequence<Is...>)
 		{
 			using std::get;
 
 			return std::make_tuple(
-				fn(get<Is>(std::forward<Tuple>(tuple)))...
+				std::forward<UnaryFunc>(fn)(get<Is>(std::forward<Tuple>(tuple)))...
 			);
 		}
 
@@ -61,26 +61,53 @@ namespace distant::utility::meta
 		using common_type_t = typename common_type<Ts...>::type;
 	}
 
-	template<class Tuple, class Func>
-	constexpr void tuple_for_each(Tuple&& tuple, Func f) noexcept
+	template<class Tuple, class UnaryFunc>
+	constexpr void tuple_for_each_reversed(Tuple&& tuple, UnaryFunc&& fn) noexcept
 	{
-		std::apply(f, std::forward<Tuple>(tuple));
+		tuple_for_n_reversed<std::tuple_size<remove_cvref<Tuple>>::value>(
+			std::forward<Tuple>(tuple),
+			std::forward<UnaryFunc>(fn)
+		);
 	}
 
-	template<std::size_t N, class Tuple, class Func>
-	constexpr void tuple_for_n(Tuple&& tuple, Func fn) noexcept
+	template<class Tuple, class UnaryFunc>
+	constexpr void tuple_for_each(Tuple&& tuple, UnaryFunc&& fn) noexcept
 	{
-		static_assert(N < std::tuple_size<Tuple>::value, "Index past the range of tuple_size");
+		tuple_for_n<std::tuple_size<remove_cvref<Tuple>>::value>(
+			std::forward<Tuple>(tuple), 
+			std::forward<UnaryFunc>(fn)
+		);
+	}
+
+	template<std::size_t N, class Tuple, class UnaryFunc>
+	constexpr void tuple_for_n_reversed(Tuple&& tuple, UnaryFunc&& fn) noexcept
+	{
+		static_assert(N <= std::tuple_size<remove_cvref<Tuple>>::value, "Index past the range of tuple_size");
+
+		using namespace boost::mp11;
+		using reversed_indices_t = mp_to_sequence<mp_reverse<mp_from_sequence<std::make_index_sequence<N>>>>;
 
 		detail::tuple_for_n_impl(
 			std::forward<Tuple>(tuple),
-			fn,
-			N
+			std::forward<UnaryFunc>(fn),
+			reversed_indices_t{}
+		);
+	}
+
+	template<std::size_t N, class Tuple, class UnaryFunc>
+	constexpr void tuple_for_n(Tuple&& tuple, UnaryFunc&& fn) noexcept
+	{
+		static_assert(N <= std::tuple_size<remove_cvref<Tuple>>::value, "Index past the range of tuple_size");
+
+		detail::tuple_for_n_impl(
+			std::forward<Tuple>(tuple),
+			std::forward<UnaryFunc>(fn),
+			std::make_index_sequence<N>{}
 		);
 	}
 
 	template<typename Tuple, typename UnaryFunc>
-	constexpr auto tuple_transform(Tuple&& tuple, UnaryFunc fn) noexcept
+	constexpr auto tuple_transform(Tuple&& tuple, UnaryFunc&& fn) noexcept
 	{
 		//constexpr auto size = std::tuple_size<std::decay_t<Tuple>>::value;
 
@@ -92,11 +119,11 @@ namespace distant::utility::meta
 	}
 
 	template <class Tuple, class Value, class BinaryOp>
-	constexpr Value tuple_accumulate(Tuple&& tuple, Value value, BinaryOp fn)
+	constexpr Value tuple_accumulate(Tuple&& tuple, Value value, BinaryOp&& fn)
 	{
 		tuple_for_each(std::forward<Tuple>(tuple), [&value, &fn](auto&& element)
 		{
-			value = fn(value, std::forward<decltype(element)>(element));
+			value = std::forward<BinaryOp>(fn)(value, std::forward<decltype(element)>(element));
 		});
 
 		return value;

@@ -7,6 +7,12 @@
 #include <distant/process.hpp>
 #include <distant/virtual_memory.hpp>
 
+void* operator new(const std::size_t sz)
+{
+	std::cout << "[NEW] new operator called\n";
+	return std::malloc(sz);
+}
+
 int main()
 {
 	using distant::process_rights;
@@ -53,7 +59,7 @@ int main()
 			std::cout << "Timestamp: " << timestamp << "\n\n";
 		}
 	}
-	catch (distant::windows_error& e)
+	catch (distant::winapi_error& e)
 	{
 		std::cout << e.what() << '\n';
 	}

@@ -33,7 +33,6 @@ namespace distant::kernel_objects
 		using unsafe_process::handle;
 		using unsafe_process::is_zombie;
 		using unsafe_process::valid;
-		using unsafe_process::equals;
 		using unsafe_process::id;
 		using unsafe_process::detach;
 		using unsafe_process::joinable;
@@ -123,6 +122,9 @@ namespace distant::kernel_objects
 
 	private:
 		explicit process(kernel_handle&& handle) noexcept;
+
+		using unsafe_process::equals;
+		template <class> friend struct concepts::equality_comparable;
 
 		friend class memory_status;
 		friend process<> current_process() noexcept;

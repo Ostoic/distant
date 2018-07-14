@@ -36,10 +36,10 @@ namespace memory
 
 		R operator()(Args&&... args);
 
-		const process<AccessRights>& process() const noexcept { return ptr_.process(); }
-			  process<AccessRights>& process() noexcept		  { return ptr_.process(); }
+		const kernel_objects::process<AccessRights>& process() const noexcept { return ptr_.process(); }
+			  kernel_objects::process<AccessRights>& process() noexcept		  { return ptr_.process(); }
 
-		void set_process(process<AccessRights>& process) noexcept;
+		void set_process(kernel_objects::process<AccessRights>& process) noexcept;
 
 	private:
 		virtual_ptr<R(*)(Args...), AddressT, AccessRights> ptr_;
@@ -49,7 +49,7 @@ namespace memory
 
 using memory::function;
 
-template <typename R, typename... Args, typename CallingConv, typename AddressT, process_rights AccessRights>
+template <class R, class... Args, class CallingConv, class AddressT, process_rights AccessRights>
 struct function_traits<function<R(Args...), CallingConv, AddressT, AccessRights>>
 {
 	using return_type = R;

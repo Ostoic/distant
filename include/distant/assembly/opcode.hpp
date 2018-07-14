@@ -293,30 +293,27 @@ namespace distant::assembly
 
 } // namespace distant::assembly
 
-namespace distant::memory::customize
+namespace distant::memory
 {
 	template <>
-	struct write<assembly::opcode>
+	struct operations_traits<assembly::opcode>
 	{
 		template <typename AddressT>
-		static void invoke(const process<vm_w_op>& proc, const address<AddressT> address, const assembly::opcode opcode)
+		static void write(const process<vm_w_op>& proc, const address<AddressT> address, const assembly::opcode opcode)
 		{
 			using under_t = std::underlying_type_t<assembly::opcode>;
 
 			// Write the bytes of the given opcode in reverse due to endianness
-			write<under_t>::invoke<AddressT>(proc, address, reverse_bytes(static_cast<under_t>(opcode)));
+			operations_traits<under_t>::write(proc, address, reverse_bytes(static_cast<under_t>(opcode)));
 		}
-	};
 
-	template <>
-	struct read<assembly::opcode>
-	{
 		template <typename AddressT>
-		static assembly::opcode invoke(const process<vm_read>& proc, const address<AddressT> address)
+		static assembly::opcode read(const process<vm_read>& proc, const address<AddressT> address)
 		{
 			using under_t = std::underlying_type_t<assembly::opcode>;
-			return static_cast<assembly::opcode>(reverse_bytes(read<under_t>::invoke<AddressT>(proc, address)));
+			return static_cast<assembly::opcode>(reverse_bytes(operations_traits<under_t>::read(proc, address)));
 		}
-	};
+
+	}; // struct operations_traits<assembly_opcode>
 	
-} // namespace distant::memory::customize 
+} // namespace distant::memory 

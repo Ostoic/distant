@@ -148,12 +148,18 @@ namespace distant::kernel_objects
 		if (!boost::winapi::query_full_process_image_name(handle_.native_handle(), 0, buffer, &max_path))
 			throw winapi_error("[unsafe_process::file_path] query_full_process_image_name failed");
 
-		return buffer;
+		return std::wstring{ buffer, buffer + max_path };
 	}
 
+//private:
 	inline void unsafe_process::detach_unchecked() noexcept
 	{
 		handle_.close();
+	}
+
+	inline bool unsafe_process::equals(const unsafe_process& other) const noexcept
+	{
+		return this->id() == other.id();
 	}
 
 //public:
@@ -161,11 +167,6 @@ namespace distant::kernel_objects
 	{
 		using traits = kernel_object_traits<unsafe_process>;
 		return traits::is_valid_handle(handle_.native_handle());
-	}
-
-	inline bool unsafe_process::equals(const unsafe_process& other) const noexcept
-	{
-		return this->id() == other.id();
 	}
 
 //=========================//

@@ -6,26 +6,26 @@
 
 namespace distant::utility {
 	
-	template <class derived>
-	class static_downcast
+	template <class Derived>
+	class static_polymorphic
 	{
 	public:
-		const derived* self() const
+		const Derived& derived() const
 		{
 			// Downcast (const) to the derived type.
-			return static_cast<const derived*>(this);
+			return *static_cast<const Derived*>(this);
 		}
 
-		derived* self()
+		Derived& derived()
 		{
 			// Downcast to the derived type.
-			return static_cast<derived*>(this);
+			return *static_cast<Derived*>(this);
 		}
 
 	protected:
 		// Protected keyword allows the dervied destructor to call this one
 		// Disables destruction of derived type via the base
-		~static_downcast() = default;
+		~static_polymorphic() = default;
 	};
 
 } // end namespace distant::utility

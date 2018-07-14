@@ -23,7 +23,6 @@ namespace distant
 		template <class KernelObject>
 		class snapshot
 			: private detail::snapshot_base<KernelObject>
-			, public concepts::boolean_validator<snapshot<KernelObject>>
 		{
 			using base = detail::snapshot_base<KernelObject>;
 
@@ -33,8 +32,22 @@ namespace distant
 			using base::iterator;
 			using base::const_iterator;
 
-			using base::begin;
 			using base::end;
+			using base::begin;
+
+			using base::operator bool;
+			using base::valid;
+			using base::handle;
+
+		public: // {ctor}
+			/// @brief Default construct a snapshot of all \a KernelObjects at the current time.
+			// Note: Using = default will result in MSVC attempting to call the copy ctor for some reason.
+			snapshot() {};
+			snapshot(snapshot&&) noexcept = default;
+
+			/// @brief Construct a snapshot of \a KernelObjects owned by the given object.
+			template <class OwnerObject>
+			explicit snapshot(const OwnerObject& owner);
 
 		public: // interface
 			/// @brief Store a permanent copy of the snapshot as a container
@@ -46,19 +59,6 @@ namespace distant
 			/// @tparam OutContainer the container in which to store the \a KernelObjects.
 			template <template <class, class> class OutContainer, class Predicate>
 			OutContainer<KernelObject, std::allocator<KernelObject>> as(Predicate) const;
-
-			bool valid() const noexcept
-			{ return base::handle.valid(); }
-
-		public: // {ctor}
-
-			/// @brief Default construct a snapshot of all \a KernelObjects at the current time.
-			snapshot() = default;
-			snapshot(snapshot&& other) noexcept = default;
-
-			/// @brief Construct a snapshot of \a KernelObjects owned by the given process.
-			template <class OwnerObject>
-			explicit snapshot(const OwnerObject& owner);
 		};
 
 	} // namespace system

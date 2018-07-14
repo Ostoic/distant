@@ -17,7 +17,8 @@ namespace distant::kernel_objects
 		::kill()
 	{
 		if (this->joinable())
-			::TerminateThread(handle_.native_handle(), 0); // TerminateThread?
+			if (!::TerminateThread(handle_.native_handle(), 0)) // TerminateThread?
+				throw winapi_error("[thread::kill] TerminateThread failed");
 	}
 
 	inline void thread
@@ -29,10 +30,10 @@ namespace distant::kernel_objects
 		if (this->id() == thread::id_t(::GetCurrentThreadId()))
 			throw std::invalid_argument("[thread::join] Join on current thread, deadlock would occur");
 
-		namespace winapi = boost::winapi;
 		if (wait(*this) == sync::state::failed)
 			throw winapi_error("[thread::join] WaitForSingleObjectEx failed");
 
+		namespace winapi = boost::winapi;
 		winapi::DWORD_ exit_code;
 		if (GetExitCodeThread(
 				handle_.native_handle(),
@@ -78,21 +79,9 @@ namespace distant::kernel_objects
 
 	template <process_rights Access>
 	process<Access> thread
-		::process()
+		::process() noexcept
 	{
-		return process<Access>{::GetProcessIdOfThread(handle_.native_handle())};
-	}
-
-	inline const kernel_handle& thread
-		::handle() const noexcept
-	{
-		return handle_;
-	}
-
-	inline kernel_handle& thread
-		::handle() noexcept
-	{
-		return handle_;
+		return kernel_objects::process<Access>{ kernel_objects::process<Access>::id_t{ ::GetProcessIdOfThread(handle_.native_handle()) }};
 	}
 
 	inline bool thread

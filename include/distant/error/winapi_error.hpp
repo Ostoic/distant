@@ -24,7 +24,8 @@ namespace distant::error {
 
 	struct gle {};
 
-	/// Windows error code
+	/// @brief An error_code representing a winapi error.
+	/// This is NOT a type of exception. 
 	class winapi_error_code : public std::error_code
 	{
 		using base = std::error_code;
@@ -47,6 +48,7 @@ namespace distant::error {
 		void set_last(boost::winapi::DWORD_ code) noexcept;
 	};
 
+	/// @brief Represents a winapi error_code in the form of a system_error exception.
 	class winapi_error : public std::system_error
 	{
 	public:
@@ -56,7 +58,7 @@ namespace distant::error {
 	};
 
 	/// @brief Return the last error local to the executing thread.
-	/// @return the last error code that was set.
+	/// @return the \a winapi_error_code representing the specified error code
 	winapi_error_code last_error() noexcept;
 
 	/// @brief Write a windows error to an output stream.
@@ -66,7 +68,7 @@ namespace distant::error {
 	template <typename CharT, typename CharTraits>
 	std::basic_ostream<CharT, CharTraits>& operator<<(std::basic_ostream<CharT, CharTraits>& stream, const winapi_error& error);
 
-	/// @brief Write a windows error to an output stream.
+	/// @brief Write a windows error code to an output stream. 
 	/// @param stream the output stream.
 	/// @param error the windows error to write.
 	/// @return the modified output stream.

@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <type_traits>
+
 namespace distant::memory
 {
 	template <typename T>

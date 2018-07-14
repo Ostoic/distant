@@ -9,6 +9,14 @@
 
 #include <distant.hpp>
 
+int new_count = 0;
+
+void* operator new(const std::size_t sz)
+{
+	new_count++;
+	return std::malloc(sz);
+}
+
 constexpr auto terminate_flags =
 distant::process_rights::terminate;
 
@@ -31,7 +39,7 @@ void display_info(const distant::process<retrieve_path_flags>& p)
 
 	// Display process information
 	std::cout << "Handle value = " << p.handle().native_handle() << '\n';
-	std::cout << "Process " << p.get_id() << '\n';
+	std::cout << "Process " << p.id() << '\n';
 	std::cout << "State: " << active_string << '\n';
 	std::wcout << "Name: " << p.name() << '\n';
 	std::wcout << "File Path: " << p.file_path() << '\n';
@@ -42,15 +50,12 @@ auto find_process(std::wstring_view name)
 	using process = distant::process<retrieve_path_flags>;
 	distant::snapshot<process> snapshot;
 
-	if (snapshot)
+	const auto it = std::find_if(snapshot.begin(), snapshot.end(), [&name](const auto& p)
 	{
-		const auto it = std::find_if(snapshot.begin(), snapshot.end(), [&](const auto& p)
-		{
-			return p.name() == name;
-		});
+		return p.name() == name;
+	});
 
-		if (it != snapshot.end()) return *it;
-	}
+	if (it != snapshot.end()) return *it;
 
 	return process{};
 }
@@ -65,7 +70,7 @@ void test()
 	if (process)
 	{
 		std::cout << "Found it!\n\n";
-		display_info(process);
+		//display_info(process);
 	}
 	else
 		std::wcout << "Could not find " << process_name << "!\n";
@@ -80,17 +85,22 @@ void test()
 
 int main()
 {
-	try
-	{
-		for (int i = 0; i < 1000; ++i)
-			test();
-	}
-	catch (const distant::windows_error& e)
-	{
-		std::cout << "System error " << e << '\n';
-	}
-	catch (const std::exception& e)
-	{
-		std::cout << "Exception occured: " << e.what() << '\n';
-	}
+	test();
+
+	//try
+	//{
+	//	//for (int i = 0; i < 1000; ++i)
+	//		//test();
+	//}
+	//catch (const distant::winapi_error& e)
+	//{
+	//	std::cout << "winapi_error " << e << '\n';
+	//}
+	//catch (const std::exception& e)
+	//{
+	//	std::cout << "Exception occured: " << e.what() << '\n';
+	//}
+
+	std::cout << "operator new called " << new_count << " times\n";
+	return 0;
 }

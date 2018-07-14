@@ -109,7 +109,9 @@ namespace distant::error {
 	template <typename CharT, typename CharTraits>
 	std::basic_ostream<CharT, CharTraits>& operator<<(std::basic_ostream<CharT, CharTraits>& stream, const winapi_error_code& code)
 	{
-		stream << winapi_error{ code };
+		const auto& category = code.category();
+		stream << category.message(code.value()) << " " << category.name() << ":" << code.value();
+		//stream << winapi_error{ code };
 		return stream;
 	}
 

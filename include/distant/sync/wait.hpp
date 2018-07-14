@@ -67,9 +67,9 @@ namespace distant::sync
 			using namespace std::chrono;
 			namespace meta = utility::meta;
 
-			const auto result = meta::tuple_transform(objects, [](const auto& object)
+			const auto result = meta::tuple_transform(objects, [](auto&& object)
 			{
-				return native_handle_of(object);
+				return native_handle_of(std::forward<decltype(object)>(object));
 			});
 
 			auto handles = meta::to_array(result);

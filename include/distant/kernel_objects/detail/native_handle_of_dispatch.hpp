@@ -56,10 +56,12 @@ namespace distant::kernel_objects
 
 		template <class T>
 		using native_handle_impl = mp_cond<
-			mp_bool<has_handle_member<T>::value>, handle_member_impl,			// handle member function		 -> .handle().native_handle()
+			mp_bool<has_handle_member<T>::value>,		 handle_member_impl,		// handle member function		 -> .handle().native_handle()
 			mp_bool<has_native_handle_member<T>::value>, native_handle_member_impl,	// native_handle member function -> .native_handle
-			mp_bool<is_handle_type<T>::value>, handle_type_impl,			// handle type -> identity
-			mp_bool<true>, void						// default case -> no native_handle
+			mp_bool<is_handle_type<T>::value>,			 handle_type_impl,			// handle type -> identity
+			mp_bool<true>,								 void						// default case -> no native_handle
 		>;
-	}
-}
+
+	} // namespace detail
+	
+} // namespace distant::kernel_objects 

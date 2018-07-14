@@ -11,20 +11,18 @@
 namespace distant::memory
 {
 	// Note: AddressT is specified first to allow for universal reference type deduction 
-	template <typename AddressT, typename T>
+	template <class AddressT, class T>
 	BOOST_FORCEINLINE
 	void write(process<vm_w_op>& proc, const address<AddressT> address, T&& x)
 	{
-		customize::write<T>::template 
-			invoke<AddressT>(proc, address, std::forward<T>(x));
+		operations_traits<T>::write(proc, address, std::forward<T>(x));
 	}
 
-	template <typename T, typename AddressT>
+	template <class T, class AddressT>
 	BOOST_FORCEINLINE
 	T read(const process<vm_read>& process, const address<AddressT> address, std::size_t size)
 	{
-		return customize::read<T>::template
-			invoke<AddressT>(process, address, size);
+		return operations_traits<T>::read(process, address, size);
 	}
 
 	template <page_protection Protection, typename AddressT>
@@ -39,7 +37,7 @@ namespace distant::memory
 		return virtual_protect(process, address, Protection, size);
 	}
 
-	template <typename AddressT>
+	template <class AddressT>
 	BOOST_FORCEINLINE
 	page_protection virtual_protect(process<vm_op>& process, const address<AddressT> address, page_protection protection, const std::size_t size)
 	{
@@ -56,7 +54,7 @@ namespace distant::memory
 		return static_cast<page_protection>(old);
 	}
 
-	template <typename AddressT>
+	template <class AddressT>
 	bool virtual_protect_noexcept(process<vm_op>& process, const address<AddressT> address, const page_protection protection, const std::size_t size) noexcept
 	{
 		using boost::winapi::DWORD_;
@@ -69,7 +67,7 @@ namespace distant::memory
 		);
 	}
 	//PROCESS_VM_OPERATION
-	template <typename T, page_protection Protection, typename AddressT, process_rights AccessRights>
+	template <class T, page_protection Protection, class AddressT, process_rights AccessRights>
 	virtual_ptr<T, AddressT, AccessRights> virtual_malloc(process<AccessRights>& process, const std::size_t n)
 	{
 		static_assert(
@@ -84,13 +82,13 @@ namespace distant::memory
 		return virtual_ptr<T, AddressT, AccessRights>{process, allocated_address};
 	}
 
-	template <typename T, page_protection Protection, process_rights AccessRights>
+	template <class T, page_protection Protection, process_rights AccessRights>
 	virtual_ptr<T, dword, AccessRights> virtual_malloc(process<AccessRights>& process, const std::size_t n)
 	{
 		return virtual_malloc<T, Protection, dword, AccessRights>(process, n);
 	}
 
-	template <typename T, typename AddressT, process_rights AccessRights>
+	template <class T, class AddressT, process_rights AccessRights>
 	bool virtual_free(process<AccessRights>& process, const virtual_ptr<T, AddressT, AccessRights> pointer) noexcept
 	{
 		return ::VirtualFreeEx(

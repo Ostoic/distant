@@ -7,8 +7,14 @@
 #define __cpp_lib_experimental_filesystem
 #define BOOST_USE_WINDOWS_H
 #define NOMINMAX
-
 #include <distant.hpp>
+
+void* operator new(const std::size_t sz)
+{
+	std::cout << "new called\n";
+	return std::malloc(sz);
+}
+
 
 using access_rights = distant::access_rights::process;
 using token_rights = distant::access_rights::token;
@@ -122,7 +128,7 @@ int main()
 		std::cin.ignore();
 
 		for (const auto& process : distant::snapshot<distant::process<>>{})
-			std::wcout << "Process " << process.name() << " (" << process.get_id() << ")\n";
+			std::wcout << "Process " << process.name() << " (" << process.id() << ")\n";
 
 	}
 	catch (distant::windows_error& e)
