@@ -11,15 +11,15 @@ namespace distant::utility::meta
 	namespace detail
 	{
 		template<class Tuple, class UnaryFunc, size_t... Is>
-		constexpr void tuple_for_n_impl(Tuple&& tuple, UnaryFunc&& fn, const std::index_sequence<Is...>) noexcept
+		constexpr void tuple_for_n_impl(Tuple&& tuple, UnaryFunc&& fn, const std::index_sequence<Is...>)
 		{
 			// Unpack variadic trick
 			int ignored[] = { (static_cast<void>(
-				std::forward<UnaryFunc>(fn)(std::get<Is>(std::forward<Tuple>(tuple)))
+					std::forward<UnaryFunc>(fn)(std::get<Is>(std::forward<Tuple>(tuple)))
 				), 0)...
 			};
 
-			(void)ignored;
+			static_cast<void>(ignored);
 		}
 
 		template<class Tuple, class UnaryFunc, std::size_t... Is>
@@ -52,17 +52,11 @@ namespace distant::utility::meta
 		};
 
 		template <class... Ts>
-		struct common_type<std::array<Ts..., sizeof...(Ts)>>
-		{
-			using type = std::common_type_t<Ts...>;
-		};
-
-		template <class... Ts>
 		using common_type_t = typename common_type<Ts...>::type;
 	}
 
 	template<class Tuple, class UnaryFunc>
-	constexpr void tuple_for_each_reversed(Tuple&& tuple, UnaryFunc&& fn) noexcept
+	constexpr void tuple_for_each_reversed(Tuple&& tuple, UnaryFunc&& fn)
 	{
 		tuple_for_n_reversed<std::tuple_size<remove_cvref<Tuple>>::value>(
 			std::forward<Tuple>(tuple),
@@ -71,16 +65,16 @@ namespace distant::utility::meta
 	}
 
 	template<class Tuple, class UnaryFunc>
-	constexpr void tuple_for_each(Tuple&& tuple, UnaryFunc&& fn) noexcept
+	constexpr void tuple_for_each(Tuple&& tuple, UnaryFunc&& fn)
 	{
 		tuple_for_n<std::tuple_size<remove_cvref<Tuple>>::value>(
-			std::forward<Tuple>(tuple), 
+			std::forward<Tuple>(tuple),
 			std::forward<UnaryFunc>(fn)
 		);
 	}
 
 	template<std::size_t N, class Tuple, class UnaryFunc>
-	constexpr void tuple_for_n_reversed(Tuple&& tuple, UnaryFunc&& fn) noexcept
+	constexpr void tuple_for_n_reversed(Tuple&& tuple, UnaryFunc&& fn)
 	{
 		static_assert(N <= std::tuple_size<remove_cvref<Tuple>>::value, "Index past the range of tuple_size");
 
@@ -95,7 +89,7 @@ namespace distant::utility::meta
 	}
 
 	template<std::size_t N, class Tuple, class UnaryFunc>
-	constexpr void tuple_for_n(Tuple&& tuple, UnaryFunc&& fn) noexcept
+	constexpr void tuple_for_n(Tuple&& tuple, UnaryFunc&& fn)
 	{
 		static_assert(N <= std::tuple_size<remove_cvref<Tuple>>::value, "Index past the range of tuple_size");
 
@@ -107,13 +101,13 @@ namespace distant::utility::meta
 	}
 
 	template<typename Tuple, typename UnaryFunc>
-	constexpr auto tuple_transform(Tuple&& tuple, UnaryFunc&& fn) noexcept
+	constexpr auto tuple_transform(Tuple&& tuple, UnaryFunc&& fn)
 	{
 		//constexpr auto size = std::tuple_size<std::decay_t<Tuple>>::value;
 
 		return detail::tuple_transform_impl(
 			std::forward<Tuple>(tuple),
-			fn,
+			std::forward<UnaryFunc>(fn),
 			std::make_index_sequence<std::tuple_size<std::decay_t<Tuple>>::value>{}
 		);
 	}

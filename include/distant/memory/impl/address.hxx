@@ -72,6 +72,22 @@ namespace distant::memory
 		return *this;
 	}
 
+	template <typename A>
+	constexpr address<A>& address<A>
+		::operator ++() noexcept
+	{
+		*this = ++static_cast<address_type>(*this);
+		return *this;
+	}
+
+	template <typename A>
+	constexpr address<A>& address<A>
+		::operator --() noexcept
+	{
+		*this = --static_cast<address_type>(*this);
+		return *this;
+	}
+
 	/*template <typename A>
 	constexpr address<A>& address<A>::operator=(underlying_type x) noexcept
 	{
@@ -81,7 +97,7 @@ namespace distant::memory
 
 //{ctor}
 	template <typename A>
-	constexpr address<A>::address() noexcept 
+	constexpr address<A>::address() noexcept
 		: address_(static_cast<address_type>(0))
 	{}
 
@@ -96,7 +112,7 @@ namespace distant::memory
 #pragma warning(disable:4312)
 	template <typename A>
 	constexpr address<A>::address(address_type x) noexcept
-		: address_(x) 
+		: address_(x)
 	{}
 #pragma warning(pop)
 

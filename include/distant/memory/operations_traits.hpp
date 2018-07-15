@@ -23,9 +23,9 @@ namespace distant::memory
 			SIZE_T bytes_written = 0;
 			StandardLayoutT buffer = x;
 			if (!::WriteProcessMemory(
-				proc.handle().native_handle(), 
-				reinterpret_cast<LPVOID>(static_cast<AddressT>(address)), 
-				&buffer, 
+				proc.handle().native_handle(),
+				reinterpret_cast<LPVOID>(static_cast<AddressT>(address)),
+				&buffer,
 				sizeof(StandardLayoutT),
 				&bytes_written
 			))
@@ -49,6 +49,7 @@ namespace distant::memory
 
 			return result;
 		}
+
 	}; // struct operations_traits<StandardLayoutT>
 
 	/// @brief memory::write std::string customization point.
@@ -85,7 +86,7 @@ namespace distant::memory
 			))
 				throw winapi_error("[memory::read<std::string>] ReadProcessMemory failed, " + std::to_string(bytes_read) + " bytes read");
 
-			return { buffer.c_str() };
+			return buffer.c_str();
 		}
 
 	}; // struct operations_traits<std::string>
@@ -94,23 +95,32 @@ namespace distant::memory
 	struct operations_traits<std::tuple<Ts...>>
 	{
 		template <class AddressT>
-		static void write(const process<vm_w_op>& process, address<AddressT> address, const std::tuple<Ts...>& tuple)
+		static void write(const process<vm_w_op>& process, const address<AddressT> write_start, const std::tuple<Ts...>& tuple)
 		{
 			using namespace utility;
+			constexpr auto alignment = alignof(std::tuple<Ts...>);
+
+			const auto tuple_start = address<AddressT>{ std::addressof(tuple) };
 
 			/// Todo: Figure out alignment issues with std::tuple
-			/// Todo: More TMP to transform tuple into typelist/tuple of aligned sizes 
-			// std::tuple's members are laid out in reverse due to recursive inhertiance implementation
-			meta::tuple_for_each_reversed(tuple, [&](const auto& element)
+			/// Todo: More TMP to transform tuple into typelist/tuple of aligned sizes
+			// std::tuple's members are laid out in reverse order due to implementation involving recursive inhertiance.
+			meta::tuple_for_each(tuple, [&](const auto& element)
 			{
-				operations_traits<meta::remove_cvref<decltype(element)>>
-					::write(process, address, element);
+				const auto element_offset = ((address<AddressT>{ std::addressof(element) } - tuple_start));
+
+				using element_t = meta::remove_cvref<decltype(element)>;
+				operations_traits<element_t>
+					::write(process, write_start + element_offset, element);
 
 				std::cout << "Type = " << typeid(element).name() << '\n';
-				std::cout << "a_internal = " << address << '\n';
 
-				// Increment the address by element size.
-				address += sizeof(meta::remove_cvref<decltype(element)>);
+				std::cout << "tuple_start = " << tuple_start << '\n';
+				std::cout << "element_address = " << address<AddressT>{ &element } << '\n';
+				std::cout << "element_offset = " << element_offset << '\n';
+
+				std::cout << "write_start = " << write_start << '\n';
+				std::cout << "write_offset = " << (write_start + element_offset) - write_start << "\n\n";
 			});
 		}
 
@@ -121,9 +131,11 @@ namespace distant::memory
 			using namespace utility;
 			meta::tuple_for_each(tuple, [&](auto&& element)
 			{
-				operations_traits<decltype(element)>
-					::write(process, address, std::forward<decltype(element)>(element));
+				//operations_traits<decltype(element)>
+					//::write(process, address, std::forward<decltype(element)>(element));
 			});
+
+			return tuple;
 		}
 	};
 

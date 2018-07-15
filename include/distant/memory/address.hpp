@@ -29,6 +29,8 @@ namespace distant
 			constexpr address& operator &=(address) noexcept;
 			constexpr address& operator ^=(address) noexcept;
 			constexpr address& operator |=(address) noexcept;
+			constexpr address& operator ++() noexcept;
+			constexpr address& operator --() noexcept;
 
 			friend constexpr bool operator==(const address lhs, const address rhs) noexcept { return static_cast<AddressT>(lhs) == static_cast<AddressT>(rhs); }
 			friend constexpr bool operator< (const address lhs, const address rhs) noexcept { return static_cast<AddressT>(lhs) <  static_cast<AddressT>(rhs); }

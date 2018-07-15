@@ -6,23 +6,26 @@
 #include "../virtual_memory.hpp"
 
 #include <distant/memory/type_traits.hpp>
-#include <distant/memory/customize_operations.hpp>
+#include <distant/memory/operations_traits.hpp>
+#include <distant/utility/meta/transformations.hpp>
 
 namespace distant::memory
 {
-	// Note: AddressT is specified first to allow for universal reference type deduction 
+	// Note: AddressT is specified first to allow for universal reference type deduction
 	template <class AddressT, class T>
 	BOOST_FORCEINLINE
 	void write(process<vm_w_op>& proc, const address<AddressT> address, T&& x)
 	{
-		operations_traits<T>::write(proc, address, std::forward<T>(x));
+		using utility::meta::remove_cvref;
+		operations_traits<remove_cvref<T>>::write(proc, address, std::forward<T>(x));
 	}
 
 	template <class T, class AddressT>
 	BOOST_FORCEINLINE
 	T read(const process<vm_read>& process, const address<AddressT> address, std::size_t size)
 	{
-		return operations_traits<T>::read(process, address, size);
+		using utility::meta::remove_cvref;
+		return operations_traits<remove_cvref<T>>::read(process, address, size);
 	}
 
 	template <page_protection Protection, typename AddressT>
@@ -92,9 +95,9 @@ namespace distant::memory
 	bool virtual_free(process<AccessRights>& process, const virtual_ptr<T, AddressT, AccessRights> pointer) noexcept
 	{
 		return ::VirtualFreeEx(
-			process.handle().native_handle(), 
+			process.handle().native_handle(),
 			reinterpret_cast<void*>(static_cast<AddressT>(pointer.get())),
-			0, 
+			0,
 			MEM_RELEASE
 		);
 	}

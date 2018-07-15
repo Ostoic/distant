@@ -1,6 +1,7 @@
 // distance dev.cpp : Defines the entry point for the console application.
 
 #include <iostream>
+
 #include <distant/virtual_memory.hpp>
 
 void* operator new(const std::size_t sz)
@@ -21,6 +22,29 @@ void tuple_print(Tuple&& tuple)
 	std::cout << '\n';
 }
 
+struct S
+{
+	int a;
+	int b;
+	short c;
+	//std::string d;
+	double x;
+	double y;
+	int z;
+};
+
+std::ostream& operator<<(std::ostream& stream, const S& s)
+{
+	return (stream << s.a << ", "
+		<< s.b << ", "
+		<< s.c << ", "
+		<< s.x << ", "
+		<< s.y << ", "
+		<< s.z);
+}
+
+// a a - b y y y y
+
 int main()
 {
 	using namespace distant;
@@ -28,20 +52,14 @@ int main()
 
 	auto current = distant::current_process();
 
-	constexpr std::tuple<int, int, int> tuple = { 1, 2, 7 };
+	S s = { 1, 2, 3, 6.1, 5.5, 0 };
+	sizeof(s);
 
-	const auto a = address{ &tuple };
+	//const auto a = address{ &tuple };
 
-	auto addresses = meta::tuple_transform(tuple, [](const auto& element)
-	{
-		return address{ std::addressof(element) };
-	});
-
-	tuple_print(addresses);
-	
-	tuple_print(tuple);
-	memory::write(current, address{ &tuple }, std::tuple<int, int, int>{ 0, -5, 9});
-	tuple_print(tuple);
+	std::cout << s << '\n';
+	memory::write(current, address{ &s }, std::tuple<int, int, short, double, double, int>{ 0, 1, 2, 5.1, 4.5, -1 });
+	std::cout << s << '\n';
 
 	const auto ptr = distant::virtual_malloc<int>(current);
 	*ptr = 2;
@@ -54,12 +72,12 @@ int main()
 
 	std::cout << "read = " << result << '\n';
 
-	distant::virtual_protect<distant::page_protection::readonly>(current, ptr.get(), sizeof(decltype(ptr)::element_type));
+	distant::virtual_protect<page_protection::readonly>(current, ptr.get(), sizeof(decltype(ptr)::element_type));
 	std::cout << "t = " << ptr << '\n';
 	std::cout << "*t = " << *ptr << '\n';
 	std::cout << "read = " << distant::memory::read<int>(current, ptr.get()) << '\n';
 
-	distant::virtual_protect<distant::page_protection::readwrite>(current, ptr.get(), sizeof(decltype(ptr)::element_type));
+	distant::virtual_protect<page_protection::readwrite>(current, ptr.get(), sizeof(decltype(ptr)::element_type));
 	*ptr = 3;
 	std::cout << "*t = " << *ptr << '\n';
 	distant::virtual_free(current, ptr);

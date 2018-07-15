@@ -9,17 +9,15 @@
 
 namespace distant::assembly
 {
-	template <typename T, typename =
-		std::enable_if_t<
-			std::is_same_v<x86_register, T> || std::is_same_v<distant::address, T>,
-			T
-		>
-	>
-	struct dword_ptr_t
-	{
-		explicit constexpr dword_ptr_t(T reg_address) noexcept;
+	template <class T>
+	struct dword_ptr_t;
 
-		T data;
+	template <>
+	struct dword_ptr_t<x86_register>
+	{
+		explicit constexpr dword_ptr_t(x86_register reg_address) noexcept;
+
+		x86_register data;
 	};
 }
 

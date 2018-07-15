@@ -11,7 +11,7 @@ namespace distant::memory
 {
 	template <typename E,  typename T, process_rights R>
 	virtual_reference<E, T, R>::virtual_reference(pointer ptr) noexcept
-		: ptr_(ptr) 
+		: ptr_(ptr)
 	{}
 
 	template <typename E,  typename T, process_rights R>
@@ -33,7 +33,7 @@ namespace distant::memory
 	virtual_reference<E, T, R>& virtual_reference<E, T, R>::operator=(const Value& x)
 	{
 		static_assert(
-			R >= vm_w_op, 
+			R >= vm_w_op,
 			"[virtual_reference::operator element_type] The specified process rights do not permit writing of virtual memory."
 		);
 
@@ -47,7 +47,7 @@ namespace distant::memory
 	}
 
 	template <typename E,  typename T, process_rights R>
-	typename virtual_reference<E, T, R>::pointer 
+	typename virtual_reference<E, T, R>::pointer
 	virtual_reference<E, T, R>::operator&() const noexcept
 	{
 		return ptr_;
@@ -57,7 +57,7 @@ namespace distant::memory
 	virtual_reference<E, T, R>::operator element_type() const
 	{
 		static_assert(
-			R >= process_rights::vm_read, 
+			R >= process_rights::vm_read,
 			"[virtual_reference::operator element_type] The specified process rights do not permit reading of virtual memory."
 		);
 

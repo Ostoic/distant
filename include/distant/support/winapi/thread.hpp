@@ -35,7 +35,7 @@ namespace winapi {
 	constexpr auto THREAD_SET_THREAD_TOKEN_			= THREAD_SET_THREAD_TOKEN;
 	constexpr auto THREAD_SUSPEND_RESUME_			= THREAD_SUSPEND_RESUME;
 	constexpr auto THREAD_TERMINATE_				= THREAD_TERMINATE;
-	
+
 	using ::OpenThread;
 	using ::GetThreadId;
 

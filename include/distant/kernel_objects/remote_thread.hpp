@@ -15,9 +15,9 @@
 
 namespace distant::kernel_objects
 {
-	class thread
-		: public concepts::equality_comparable<thread>
-		, public concepts::handleable<thread>
+	class remote_thread
+		: public concepts::equality_comparable<remote_thread>
+		, public concepts::handleable<remote_thread>
 	{
 	public:
 		static constexpr auto required_process_rights = process_rights::create_thread | process_rights::query_information | vm_rw_op;
@@ -33,7 +33,7 @@ namespace distant::kernel_objects
 
 		void detach();
 
-		void swap(thread& other) noexcept;
+		void swap(remote_thread& other) noexcept;
 
 		id_t id() const noexcept;
 
@@ -45,49 +45,51 @@ namespace distant::kernel_objects
 		process<Access> process() noexcept;
 
 	public:
-		constexpr thread() noexcept : id_(0) {}
+		constexpr remote_thread() noexcept : id_(0) {}
 
-		explicit thread(std::thread::id id) noexcept;
-				 thread(std::thread&& thread) noexcept;
-		explicit thread(thread::id_t id) noexcept;
+		explicit remote_thread(std::thread::id id) noexcept;
+		explicit remote_thread(std::thread&& thread) noexcept;
+		explicit remote_thread(remote_thread::id_t id) noexcept;
 
 		template <typename Fn, typename... Args>
-		explicit thread(function<int>, Args&&... args);
+		explicit remote_thread(function<int>, Args&&... args);
 
-		thread(thread&& other) noexcept;
-		thread& operator=(thread&& other) noexcept;
+		remote_thread(remote_thread&& other) noexcept;
+		remote_thread& operator=(remote_thread&& other) noexcept;
 
-		~thread() noexcept;
+		~remote_thread() noexcept;
 
-		thread(const thread&) = delete;
-		thread& operator=(const thread&) = delete;
+		remote_thread(const remote_thread&) = delete;
+		remote_thread& operator=(const remote_thread&) = delete;
 
 	private:
 		void detach_unchecked() noexcept;
 
-		bool equals(const thread& other) const noexcept;
+		bool equals(const remote_thread& other) const noexcept;
 
 		template <class> friend struct concepts::handleable;
 		template <class> friend struct concepts::equality_comparable;
 
-		explicit thread(kernel_handle&& handle) noexcept;
+		explicit remote_thread(kernel_handle&& handle) noexcept;
 
 	private:
 		kernel_handle handle_;
 		uint id_;
 	};
 
-	class thread::id_t
-		: public concepts::equality_comparable<thread::id_t>
+	class remote_thread::id_t
+		: public concepts::equality_comparable<remote_thread::id_t>
 	{
 	public:
-		id_t() noexcept : id_(0) {}
+		constexpr id_t() noexcept : id_(0) {}
 
-		bool equals(const id_t other) const noexcept { return id_ == other.id_; }
+		constexpr bool equals(const id_t other) const noexcept { return id_ == other.id_; }
 
-		id_t(const uint id) noexcept : id_(id) {}
+		constexpr id_t(const uint id) noexcept : id_(id) {}
 
-		explicit operator uint() const noexcept { return id_; }
+		constexpr explicit operator uint() const noexcept { return id_; }
+
+		operator std::thread::id() const noexcept { return *reinterpret_cast<const std::thread::id*>(&id_); }
 
 		template <typename CharT, typename TraitsT>
 		friend std::basic_ostream<CharT, TraitsT>& operator<<(std::basic_ostream<CharT, TraitsT>& stream, const id_t id)
@@ -97,23 +99,23 @@ namespace distant::kernel_objects
 		uint id_;
 	};
 
-	inline thread current_thread() noexcept
+	inline remote_thread current_thread() noexcept
 	{
-		return thread(thread::id_t(::GetCurrentThreadId()));
+		return remote_thread(remote_thread::id_t(::GetCurrentThreadId()));
 	}
 
 } // namespace distant::kernel_objects
 
 namespace distant
 {
-	using kernel_objects::thread;
+	using kernel_objects::remote_thread;
 	using kernel_objects::current_thread;
 
 	template <>
-	struct kernel_object_traits<thread>
+	struct kernel_object_traits<remote_thread>
 		: default_kernel_object_traits
 	{
-		using id_t = thread::id_t;
+		using id_t = remote_thread::id_t;
 
 		using access_rights_t = thread_rights;
 
@@ -122,7 +124,7 @@ namespace distant
 			return thread_rights::all_access;
 		}
 
-		static constexpr access_rights_t access_rights(const thread&) noexcept
+		static constexpr access_rights_t access_rights(const remote_thread&) noexcept
 		{
 			return access_rights();
 		}
@@ -146,4 +148,4 @@ namespace distant
 }
 
 // Implementation
-#include "impl/thread.hxx"
+#include "impl/remote_thread.hxx"

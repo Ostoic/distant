@@ -82,7 +82,7 @@ int test_pidb()
 	for (int pid = 4; pid <= 0x4E1C; pid += 4)
 	{
 		HANDLE handle = OpenProcess(PROCESS_ALL_ACCESS, false, pid);
-		
+
 		if (handle && GetProcessVersion(pid) > 0)
 		{
 			count++;
@@ -131,7 +131,7 @@ int main()
 			std::wcout << "Process " << process.name() << " (" << process.id() << ")\n";
 
 	}
-	catch (distant::windows_error& e)
+	catch (distant::winapi_error& e)
 	{
 		std::cerr << e << '\n';
 	}

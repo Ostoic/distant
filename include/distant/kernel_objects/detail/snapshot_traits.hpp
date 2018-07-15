@@ -5,7 +5,7 @@
 #pragma once
 
 #include <distant/support/winapi/toolhelp32.hpp>
-#include <distant/kernel_objects/thread.hpp>
+#include <distant/kernel_objects/remote_thread.hpp>
 #include <distant/kernel_objects/process.hpp>
 
 namespace distant::kernel_objects::detail
@@ -87,7 +87,7 @@ namespace distant::kernel_objects::detail
 		: process_snapshot_traits {};
 
 	template <>
-	struct snapshot_traits<distant::thread>
+	struct snapshot_traits<distant::remote_thread>
 		: thread_snapshot_traits {};
 
 } // end namespace distant::system::detail

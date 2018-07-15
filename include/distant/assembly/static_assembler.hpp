@@ -27,16 +27,16 @@ namespace distant::assembly
 		constexpr iterator begin() const;
 		constexpr iterator end() const;
 
-	public: 
+	public:
 	//private:
 		constexpr static_assembler(
 			std::array<byte, ByteCount> bytes,
 			std::array<index_t, InstructionCount> instruction_ptrs) noexcept;
-		
+
 		template <std::size_t FirstByteCount, std::size_t FirstInstructionCount, std::size_t Second>
 		constexpr static_assembler<FirstByteCount + Second, FirstInstructionCount + 1>
 		friend operator+(
-				const static_assembler<FirstByteCount, FirstInstructionCount>& first, 
+				const static_assembler<FirstByteCount, FirstInstructionCount>& first,
 				const static_assembler<Second, 1>& second) noexcept;
 
 		constexpr auto operator[](unsigned int index) const noexcept;
@@ -68,7 +68,7 @@ namespace distant::assembly
 	/**********************************************************************************************/ /**
 	 * @brief Access the nth instruction of the given assembler.
 	 *
-	 * @tparam N The index of the assembler to access.   
+	 * @tparam N The index of the assembler to access.
 	 * @tparam Size The size of the assembler.
 	 * @tparam InstrCount The number of instructions that the assembler can hold.
 	 * @param a An assembler of the given size and instruction count.

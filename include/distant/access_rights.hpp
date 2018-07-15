@@ -141,7 +141,7 @@ namespace distant
 			// Child process will inherit kernel_object handle
 
 			close_protected = boost::winapi::HANDLE_FLAG_PROTECT_FROM_CLOSE_,
-			// Prevent CloseHandle from closing 
+			// Prevent CloseHandle from closing
 		};
 	};
 

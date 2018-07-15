@@ -8,14 +8,16 @@
 namespace distant::memory
 {
 	template <class R, class... Args, class CallingConv, class AddressT, process_rights AccessRights>
-	R function<R(Args...), CallingConv, AddressT, AccessRights>::operator()(Args&&... args)
+	R function<R(Args...), CallingConv, AddressT, AccessRights>
+		::operator()(Args&&... args)
 	{
 		const auto remote_arguments_ptr = virtual_malloc(ptr_.process(), sizeof(std::tuple<std::decay_t<Args>...>));
 
 		// Should there really be a distant::function? The only possibility for operator() is a multithreaded call
 		// so unless we're in-process, I don't think this conveys the correct semantics for remote function calling.
-		// This is what std::thread does to launch a new thread.kj
+		// This is what std::thread does to launch a new thread.
 		// We should instead provide the same functionality, except with memory in the remote process.
+		// consider distant::function_signature as an alternative
 		// wpm overload for std::tuple?
 		// wpm overload for unique_ptr<>? (probably not).
 		const auto arguments = std::make_unique<std::tuple<std::decay_t<Args>...>>(std::forward<Args>(args)...);
@@ -64,10 +66,10 @@ namespace distant::memory
 	*	wait(create_remote_thread(call_code_address));
 	*/
 
-	template <typename R, typename... Args, typename CallingConv, typename AddressT, process_rights AccessRights>
+	/*template <class R, class... Args, class CallingConv, class AddressT, process_rights AccessRights>
 	void function<R(Args...), CallingConv, AddressT, AccessRights>::set_process(process<AccessRights>& process) noexcept
 	{
 		ptr_ = make_virtual_ptr<R(*)(Args...), AddressT, AccessRights>(process, ptr_.get());
-	}
+	}*/
 
 } // namespace distant::memory

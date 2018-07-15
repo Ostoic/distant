@@ -81,15 +81,15 @@ namespace distant::kernel_objects::detail
 	};
 
 	template <>
-	class snapshot_base<thread>
-		: public concepts::handleable<snapshot_base<thread>>
+	class snapshot_base<remote_thread>
+		: public concepts::handleable<snapshot_base<remote_thread>>
 	{
 	public:
-		using inner_iterator = snapshot_iterator<thread>;
+		using inner_iterator = snapshot_iterator<remote_thread>;
 		using iterator = boost::filter_iterator<id_predicate, inner_iterator>;
 		using const_iterator = iterator;
 
-		using snapshot_traits = detail::snapshot_traits<thread>;
+		using snapshot_traits = detail::snapshot_traits<remote_thread>;
 
 		template <class> friend struct concepts::handleable;
 

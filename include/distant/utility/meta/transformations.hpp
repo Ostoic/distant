@@ -5,7 +5,7 @@
 namespace distant::utility::meta
 {
 	template <class T>
-	using remove_cvref = std::remove_reference_t<std::remove_cv_t<T>>;
+	using remove_cvref = std::remove_cv_t<std::remove_reference_t<T>>;
 
 
 	namespace detail

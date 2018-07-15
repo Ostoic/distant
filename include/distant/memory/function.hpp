@@ -39,7 +39,7 @@ namespace memory
 		const kernel_objects::process<AccessRights>& process() const noexcept { return ptr_.process(); }
 			  kernel_objects::process<AccessRights>& process() noexcept		  { return ptr_.process(); }
 
-		void set_process(kernel_objects::process<AccessRights>& process) noexcept;
+		//void set_process(kernel_objects::process<AccessRights>& process) noexcept;
 
 	private:
 		virtual_ptr<R(*)(Args...), AddressT, AccessRights> ptr_;

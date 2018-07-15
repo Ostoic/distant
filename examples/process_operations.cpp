@@ -22,8 +22,8 @@ distant::process_rights::terminate;
 
 // Access rights required to retrieve the executable image's file path.
 constexpr auto retrieve_path_flags =
-	distant::process_rights::vm_read	 | 
-	distant::process_rights::synchronize | 
+	distant::process_rights::vm_read	 |
+	distant::process_rights::synchronize |
 	distant::process_rights::query_information | distant::process_rights::query_limited_information;
 
 // By specifying the function parameter's access rights, this forces any process passed to at least

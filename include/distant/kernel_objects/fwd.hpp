@@ -21,5 +21,5 @@ namespace distant::kernel_objects
 	template <typename>
 	class snapshot;
 
-	class thread;
+	class remote_thread;
 }
