@@ -45,10 +45,13 @@ std::ostream& operator<<(std::ostream& stream, const S& s)
 		<< s.z);
 }
 
+struct test
+{
+	char a; short c; short d; double b;
+};
+
 int main()
 {
-	std::integral_constant<unsigned int, 5>{};
-
 	using namespace distant;
 	using namespace utility;
 	using memory::morphism;
@@ -58,7 +61,7 @@ int main()
 	S s = { 1, 2, 3, 6.1, 5.5, 0 };
 
 	std::cout << s << '\n';
-	memory::write(current, address{ &s }, std::tuple<int, int, morphism<std::string, const char*>>{ 0, 1, "hello"});
+	memory::write(current, address{ &s }, std::tuple<int, int, short, double, double, int>{ 0, 1, 2, 3.3, 4.4, 5});
 	std::cout << s << '\n';
 
 	const auto ptr = distant::virtual_malloc<int>(current);
@@ -68,7 +71,7 @@ int main()
 
 	memory::write(current, address{ string.data() }, std::string{ "hello!" });
 
-	const auto result = memory::read<std::string>(current_process(), address{ string.data() });
+	const auto result = memory::read<std::string>(current, address{ string.data() });
 
 	std::cout << "read = " << result << '\n';
 

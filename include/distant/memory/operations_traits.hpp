@@ -23,7 +23,7 @@ namespace distant::memory
 	using endomorphism = morphism<Domain, Domain>;
 
 	/// @brief Provides customization points for memory operations.
-	template <class StandardLayoutT, class = std::enable_if_t<std::is_standard_layout<StandardLayoutT>::value>>
+	template <class StandardLayoutT>
 	struct operations_traits
 	{
 		static_assert(
@@ -68,7 +68,7 @@ namespace distant::memory
 
 	/// @brief memory::write std::string customization point.
 	template <>
-	struct operations_traits<std::string, morphism<std::string, const char*>>
+	struct operations_traits<std::string>
 	{
 		template <class AddressT>
 		static void write(const process<vm_w_op>& process, const address<AddressT> address, const std::string& string)
@@ -123,9 +123,6 @@ namespace distant::memory
 
 				operations_traits<element_t>
 					::write(process, write_start + aligned_offset<index, std::tuple<Ts...>>(), element);
-
-				std::cout << "Type = " << typeid(index).name() << '\n';
-				std::cout << "offset = " << aligned_offset<index, std::tuple<Ts...>>() << '\n';
 			});
 		}
 
