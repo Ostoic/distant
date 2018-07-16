@@ -4,6 +4,8 @@
 
 #include <distant/virtual_memory.hpp>
 
+#define NOMINMAX
+
 void* operator new(const std::size_t sz)
 {
 	std::cout << "[NEW] new operator called\n";
@@ -43,22 +45,20 @@ std::ostream& operator<<(std::ostream& stream, const S& s)
 		<< s.z);
 }
 
-// a a - b y y y y
-
 int main()
 {
+	std::integral_constant<unsigned int, 5>{};
+
 	using namespace distant;
 	using namespace utility;
+	using memory::morphism;
 
 	auto current = distant::current_process();
 
 	S s = { 1, 2, 3, 6.1, 5.5, 0 };
-	sizeof(s);
-
-	//const auto a = address{ &tuple };
 
 	std::cout << s << '\n';
-	memory::write(current, address{ &s }, std::tuple<int, int, short, double, double, int>{ 0, 1, 2, 5.1, 4.5, -1 });
+	memory::write(current, address{ &s }, std::tuple<int, int, morphism<std::string, const char*>>{ 0, 1, "hello"});
 	std::cout << s << '\n';
 
 	const auto ptr = distant::virtual_malloc<int>(current);

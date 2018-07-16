@@ -5,11 +5,25 @@
 
 #include <distant/memory/address.hpp>
 #include <distant/utility/meta/tuple.hpp>
+#include <distant/memory/aligned_offset.hpp>
 
 namespace distant::memory
 {
+	template <class Domain, class Codomain>
+	struct morphism
+	{
+	public:
+		explicit morphism(const Domain& element) : element_(element) {}
+
+	private:
+		const Domain& element_;
+	};
+
+	template <class Domain>
+	using endomorphism = morphism<Domain, Domain>;
+
 	/// @brief Provides customization points for memory operations.
-	template <class StandardLayoutT>
+	template <class StandardLayoutT, class = std::enable_if_t<std::is_standard_layout<StandardLayoutT>::value>>
 	struct operations_traits
 	{
 		static_assert(
@@ -54,7 +68,7 @@ namespace distant::memory
 
 	/// @brief memory::write std::string customization point.
 	template <>
-	struct operations_traits<std::string>
+	struct operations_traits<std::string, morphism<std::string, const char*>>
 	{
 		template <class AddressT>
 		static void write(const process<vm_w_op>& process, const address<AddressT> address, const std::string& string)
@@ -98,29 +112,20 @@ namespace distant::memory
 		static void write(const process<vm_w_op>& process, const address<AddressT> write_start, const std::tuple<Ts...>& tuple)
 		{
 			using namespace utility;
-			constexpr auto alignment = alignof(std::tuple<Ts...>);
+			using namespace boost::mp11;
 
-			const auto tuple_start = address<AddressT>{ std::addressof(tuple) };
+			// TMP transform std::tuple<Ts...> into typelist of morphims for the case of having non-pod template parameters
 
-			/// Todo: Figure out alignment issues with std::tuple
-			/// Todo: More TMP to transform tuple into typelist/tuple of aligned sizes
-			// std::tuple's members are laid out in reverse order due to implementation involving recursive inhertiance.
-			meta::tuple_for_each(tuple, [&](const auto& element)
+			mp_for_each<mp_iota_c<sizeof...(Ts)>>([&](const auto index)
 			{
-				const auto element_offset = ((address<AddressT>{ std::addressof(element) } - tuple_start));
+				const auto& element = std::get<index>(tuple);
+				using element_t = std::tuple_element_t<index, std::tuple<Ts...>>;
 
-				using element_t = meta::remove_cvref<decltype(element)>;
 				operations_traits<element_t>
-					::write(process, write_start + element_offset, element);
+					::write(process, write_start + aligned_offset<index, std::tuple<Ts...>>(), element);
 
-				std::cout << "Type = " << typeid(element).name() << '\n';
-
-				std::cout << "tuple_start = " << tuple_start << '\n';
-				std::cout << "element_address = " << address<AddressT>{ &element } << '\n';
-				std::cout << "element_offset = " << element_offset << '\n';
-
-				std::cout << "write_start = " << write_start << '\n';
-				std::cout << "write_offset = " << (write_start + element_offset) - write_start << "\n\n";
+				std::cout << "Type = " << typeid(index).name() << '\n';
+				std::cout << "offset = " << aligned_offset<index, std::tuple<Ts...>>() << '\n';
 			});
 		}
 

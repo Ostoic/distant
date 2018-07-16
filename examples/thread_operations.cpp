@@ -13,7 +13,6 @@
 
 #include <boost/function.hpp>
 
-
 int main()
 {
 	using distant::snapshot;

@@ -13,9 +13,8 @@ namespace distant::utility::meta
 		template<class Tuple, class UnaryFunc, size_t... Is>
 		constexpr void tuple_for_n_impl(Tuple&& tuple, UnaryFunc&& fn, const std::index_sequence<Is...>)
 		{
-			// Unpack variadic trick
 			int ignored[] = { (static_cast<void>(
-					std::forward<UnaryFunc>(fn)(std::get<Is>(std::forward<Tuple>(tuple)))
+				std::forward<UnaryFunc>(fn)(std::get<Is>(std::forward<Tuple>(tuple)))
 				), 0)...
 			};
 
