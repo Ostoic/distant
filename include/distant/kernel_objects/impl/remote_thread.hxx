@@ -84,12 +84,6 @@ namespace distant::kernel_objects
 		return kernel_objects::process<Access>{ kernel_objects::process<Access>::id_t{ ::GetProcessIdOfremote_thread(handle_.native_handle()) }};
 	}
 
-	inline bool remote_thread
-		::equals(const remote_thread& other) const noexcept
-	{
-		return this->id() == other.id();
-	}
-
 	inline remote_thread::id_t remote_thread
 		::id() const noexcept
 	{

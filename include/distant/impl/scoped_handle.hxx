@@ -100,15 +100,6 @@ namespace distant
 		::native_handle() const noexcept
 	{ return native_handle_.get(); }
 
-
-	template <class C>
-	template <typename OtherClose>
-	constexpr bool scoped_handle<C>
-		::equals(const scoped_handle<OtherClose>& other) const noexcept
-	{
-		return native_handle_.get() == other.native_handle_.get();
-	}
-
 	template <class C>
 	typename scoped_handle<C>::flag_t scoped_handle<C>
 		::flags() const noexcept

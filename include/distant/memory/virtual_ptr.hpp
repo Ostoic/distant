@@ -131,6 +131,22 @@ namespace distant::memory
 		return result;
 	}
 
+	template <typename Element, process_rights AccessRights>
+	virtual_ptr<Element, dword, AccessRights>
+		make_virtual_ptr(process<AccessRights>& p, const address<dword> address = nullptr) noexcept
+	{
+		virtual_ptr<Element, dword, AccessRights> result(p, address);
+		return result;
+	}
+
+	template <typename Element, process_rights AccessRights>
+	virtual_ptr<Element, dword, AccessRights>
+		make_virtual_ptr(const process<AccessRights>& p, const address<dword> address = nullptr) noexcept
+	{
+		virtual_ptr<Element, dword, AccessRights> result(p, address);
+		return result;
+	}
+
 	template<typename T, typename AddressT, typename CharT, typename Traits, process_rights AccessRights>
 	std::basic_ostream<CharT, Traits>&
 		operator<<(std::basic_ostream<CharT, Traits>& stream, virtual_ptr<T, AddressT, AccessRights> p)

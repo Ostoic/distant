@@ -8,11 +8,12 @@
 #include <string>
 
 #include <distant/config.hpp>
-#include <distant/concepts/equality_comparable.hpp>
-#include <distant/concepts/handleable.hpp>
 #include <distant/type_traits.hpp>
 #include <distant/scoped_handle.hpp>
 #include <distant/support/filesystem.hpp>
+
+#include <distant/concepts/handleable.hpp>
+#include <boost/operators.hpp>
 
 namespace distant::kernel_objects
 {
@@ -20,7 +21,7 @@ namespace distant::kernel_objects
 	/// This version does not have static access_rights checking
 	class unsafe_process
 		: public concepts::handleable<unsafe_process>
-		, public concepts::equality_comparable<unsafe_process>
+		, public boost::equality_comparable<unsafe_process>
 	{
 	public:
 		class id_t;
@@ -102,11 +103,6 @@ namespace distant::kernel_objects
 	protected:
 		explicit unsafe_process(kernel_handle&& handle, process_rights access) noexcept;
 
-		/// @brief Test if the process kernel_object is valid
-		/// @return true if the process is valid, false otherwise
-		bool equals(const unsafe_process& other) const noexcept;
-
-		template <class> friend struct concepts::equality_comparable;
 		template <class> friend struct concepts::handleable;
 
 		kernel_handle handle_;
@@ -115,16 +111,20 @@ namespace distant::kernel_objects
 	}; // class unsafe_process
 
 	class unsafe_process::id_t
-		: public concepts::equality_comparable<unsafe_process::id_t>
+		: public boost::totally_ordered<unsafe_process::id_t>
 	{
 	public:
-		id_t() noexcept : id_(0) {}
+		constexpr id_t() noexcept : id_(0) {}
 
-		explicit operator uint() const noexcept { return id_; }
+		constexpr explicit operator uint() const noexcept { return id_; }
 
-		bool equals(const id_t other) const noexcept { return id_ == other.id_; }
+		constexpr id_t(const uint id) : id_(id) {}
 
-		id_t(const uint id) : id_(id) {}
+		friend constexpr bool operator==(const id_t lhs, const id_t rhs) noexcept
+		{ return lhs.id_ == rhs.id_; }
+
+		friend constexpr bool operator<(const id_t lhs, const id_t rhs) noexcept
+		{ return lhs.id_ < rhs.id_; }
 
 		template <typename CharT, typename TraitsT>
 		friend std::basic_ostream<CharT, TraitsT>& operator<<(std::basic_ostream<CharT, TraitsT>& stream, const id_t id)
@@ -135,6 +135,9 @@ namespace distant::kernel_objects
 
 		friend class unsafe_process;
 	};
+
+	constexpr bool operator==(const unsafe_process& lhs, const unsafe_process& rhs) noexcept
+	{ return lhs.id() == rhs.id(); }
 
 } // namespace distant::kernel_objects
 

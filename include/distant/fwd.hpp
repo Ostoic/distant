@@ -12,7 +12,7 @@
 #include <distant/system/fwd.hpp>
 #include <distant/sync/fwd.hpp>
 
-namespace distant 
+namespace distant
 {
 	template <typename HandleTraits>
 	class scoped_handle;

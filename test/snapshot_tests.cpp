@@ -18,12 +18,13 @@ namespace distant_unit_tests
 			using namespace distant;
 
 			snapshot<process<>> snapshot;
+
 			// Ensure processes returned by the snapshot are active.
 			for (auto proc : snapshot)
 			{
 				Assert::IsTrue(proc.valid());
 				Assert::IsTrue(proc.is_active());
-				Assert::IsTrue(proc.id() > 0);
+				Assert::IsTrue(static_cast<unsigned int>(proc.id()) > 0);
 			}
 
 			//auto proc = *snapshot.begin();

@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include <distant/virtual_memory.hpp>
+#include <distant/process.hpp>
 
 #define NOMINMAX
 
@@ -47,21 +48,39 @@ std::ostream& operator<<(std::ostream& stream, const S& s)
 
 struct test
 {
-	char a; short c; short d; double b;
+	int a;
+	char b[16];
+	short c;
+	double d;
 };
+
+std::ostream& operator<<(std::ostream& stream, const test& s)
+{
+	return (stream << s.a << ", "
+		<< s.b << ", "
+		<< s.c << ", "
+		<< s.d);
+}
 
 int main()
 {
 	using namespace distant;
 	using namespace utility;
-	using memory::morphism;
 
 	auto current = distant::current_process();
 
 	S s = { 1, 2, 3, 6.1, 5.5, 0 };
+	test t = { 4, "hello", -1, 5.5 };
+
+	using T = const char[16];
+	T x = { 1, 2 };
+	//const char[16];
+
+	std::cout << current.id() << '\n';
 
 	std::cout << s << '\n';
-	memory::write(current, address{ &s }, std::tuple<int, int, short, double, double, int>{ 0, 1, 2, 3.3, 4.4, 5});
+	memory::write(current, address{ &s }, std::tuple<int, int, short, double, double, int>{ 0, 1, 2, 3.3, 4.4, 5 });
+	//memory::write(current, address{ &t }, std::tuple<int, const char[16], short, double>{ 2, "ham", 4, 6.6 });
 	std::cout << s << '\n';
 
 	const auto ptr = distant::virtual_malloc<int>(current);

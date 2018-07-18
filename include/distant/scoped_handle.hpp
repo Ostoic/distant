@@ -4,10 +4,12 @@
 
 #pragma once
 
+#include <distant/config.hpp>
 #include <distant/access_rights.hpp>
 #include <distant/type_traits.hpp>
+
 #include <distant/concepts/boolean_validator.hpp>
-#include <distant/concepts/equality_comparable.hpp>
+#include <boost/operators.hpp>
 
 #include <boost/winapi/config.hpp>
 #include <boost/winapi/basic_types.hpp>
@@ -31,10 +33,20 @@ namespace distant
 		};
 	}
 
-	template <class HandleTraits>
-	class scoped_handle 
+	struct kernel_handle_traits
+	{
+		using native_t = boost::winapi::HANDLE_;
+
+		static bool close(const native_t native_handle) noexcept
+		{
+			return boost::winapi::CloseHandle(native_handle);
+		}
+	};
+
+	template <class HandleTraits = kernel_handle_traits>
+	class scoped_handle
 		: public concepts::boolean_validator<scoped_handle<HandleTraits>>
-		, public concepts::equality_comparable<scoped_handle<HandleTraits>>
+		, public boost::equality_comparable<scoped_handle<HandleTraits>>
 	{
 	public:
 		// Underlying handle type. This is macro'd in Windows to be void* == (HANDLE)
@@ -93,10 +105,14 @@ namespace distant
 		/// @return value of the native handle
 		constexpr native_t native_handle() const noexcept;
 
-	protected:
-		template <class OtherClose>
-		constexpr bool equals(const scoped_handle<OtherClose>& other) const noexcept;
+		template <class CloseL, class CloseR>
+		friend constexpr bool operator==(const scoped_handle<CloseL>& lhs, const scoped_handle<CloseR>& rhs) noexcept
+		{ return lhs.native_handle_ == rhs.native_handle_; }
 
+		friend bool operator==(const scoped_handle& lhs, const scoped_handle& rhs) noexcept
+		{ return lhs.native_handle_ == rhs.native_handle_; }
+
+	protected:
 		// From "Windows Via C\C++" by Jeffrey Richter,
 		// setting the handle to null is preferable to invalid_handle
 		// after closing the handle. This is probably because some API
@@ -123,17 +139,6 @@ namespace distant
 		std::bitset<3> flags_;
 
 		template <class> friend class scoped_handle;
-		template <class> friend struct concepts::equality_comparable;
-	};
-
-	struct kernel_handle_traits
-	{
-		using native_t = boost::winapi::HANDLE_;
-
-		static bool close(const native_t native_handle) noexcept
-		{
-			return boost::winapi::CloseHandle(native_handle);
-		}
 	};
 
 	template <typename Traits>
@@ -141,11 +146,8 @@ namespace distant
 
 	using kernel_handle = scoped_handle<kernel_handle_traits>;
 
-	constexpr bool operator==(const kernel_handle& lhs, const kernel_handle& rhs) noexcept
-	{ return lhs.native_handle() == rhs.native_handle(); }
-
-	constexpr bool operator!=(const kernel_handle& lhs, const kernel_handle& rhs) noexcept
-	{ return !(lhs == rhs); }
+	/*constexpr bool operator==(const kernel_handle& lhs, const kernel_handle& rhs) noexcept
+	{ return lhs.native_handle() == rhs.native_handle(); }*/
 
 } // end namespace distant
 

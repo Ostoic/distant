@@ -65,8 +65,10 @@ void test()
 	const std::wstring process_name = L"Taskmgr.exe";
 	std::wcout << "Looking for " << process_name << "...\n";
 
-	const auto process = find_process(process_name);
+	sizeof(char*);
 
+	const auto process = find_process(process_name);
+	//std::count()
 	if (process)
 	{
 		std::cout << "Found it!\n\n";
@@ -76,10 +78,7 @@ void test()
 		std::wcout << "Could not find " << process_name << "!\n";
 
 	//std::cin.ignore();
-	// Kill the current process.
-	// Note that distant::current_process() returns the type-unsafe version of distant::process, namely process_base,
-	// whereas distant::current_process<>() denotes the function templated version with default access rights (all access).
-	//typesafe_kill(distant::current_process());
+	typesafe_kill(distant::current_process());
 	//std::cout << "No one should see this\n";
 }
 

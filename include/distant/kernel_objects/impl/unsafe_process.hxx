@@ -75,13 +75,15 @@ namespace distant::kernel_objects
 
 		boost::winapi::DWORD_ count = 0;
 		if (!::GetProcessHandleCount(this->handle_.native_handle(), &count))
-			throw winapi_error("[unsafe_process::handle_count] GetProcesshandle Count failed");
+			throw winapi_error("[unsafe_process::handle_count] GetProcessHandleCount failed");
 
 		return static_cast<std::size_t>(count);
 	}
 
 	inline unsafe_process::id_t unsafe_process::id() const noexcept
 	{
+		BOOST_ASSERT_MSG(this->valid(), "[unsafe_process::id] invalid process handle");
+
 		using traits = kernel_object_traits<unsafe_process>;
 		return unsafe_process::id_t{ traits::get_id(handle_.native_handle()) };
 	}
@@ -157,16 +159,11 @@ namespace distant::kernel_objects
 		handle_.close();
 	}
 
-	inline bool unsafe_process::equals(const unsafe_process& other) const noexcept
-	{
-		return this->id() == other.id();
-	}
-
 //public:
 	inline bool unsafe_process::valid() const noexcept
 	{
 		using traits = kernel_object_traits<unsafe_process>;
-		return traits::is_valid_handle(handle_.native_handle());
+		return (reinterpret_cast<int>(handle_.native_handle()) == -1) || traits::is_valid_handle(handle_.native_handle());
 	}
 
 //=========================//

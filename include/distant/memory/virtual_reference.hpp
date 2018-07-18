@@ -25,7 +25,7 @@ namespace distant
 
 		public:
 			explicit virtual_reference(pointer ptr) noexcept;
-			
+
 			template <
 				typename OtherElement,
 				typename OtherAddressT,
@@ -35,24 +35,25 @@ namespace distant
 
 			template <
 				typename OtherElement,
-				typename OtherAddressT, 
+				typename OtherAddressT,
 				process_rights OtherAccess
 			>
 			virtual_reference& operator=(virtual_reference<OtherElement, OtherAddressT, OtherAccess> other) noexcept;
 
 			template <
-				typename Value, 
+				typename Value,
 				typename = std::enable_if_t<
-					std::is_convertible<Value, element_type>::value && 
+					std::is_convertible<Value, element_type>::value &&
 					!std::is_const<Value>::value
 				>
 			>
 			virtual_reference& operator=(const Value& x);
 
 			pointer operator&() const noexcept;
-			
+
 			operator element_type() const;
 
+			// can we somehow do noexcept?
 			void swap(virtual_reference& other);
 
 			// These operators can't rely on an implicitly converted implementation since they act on the class and return another instance of the class.
@@ -105,6 +106,14 @@ namespace distant
 		template <typename Element, typename AddressT, process_rights Access>
 		auto make_virtual_reference(const process<Access>& process, const address<AddressT> address) noexcept
 		{ return *make_virtual_ptr<Element, AddressT>(process, address);}
+
+		template <typename Element, process_rights Access>
+		auto make_virtual_reference(process<Access>& process, const address<dword> address) noexcept
+		{ return *make_virtual_ptr<Element, dword>(process, address);}
+
+		template <typename Element, process_rights Access>
+		auto make_virtual_reference(const process<Access>& process, const address<dword> address) noexcept
+		{ return *make_virtual_ptr<Element, dword>(process, address);}
 
 		template <typename Element, typename AddressT, process_rights Access>
 		struct virtual_traits<virtual_reference<Element, AddressT, Access>>

@@ -6,6 +6,7 @@
 #include <distant/memory/address.hpp>
 #include <distant/utility/meta/tuple.hpp>
 #include <distant/memory/aligned_offset.hpp>
+#include <distant/memory/virtual_reference.hpp>
 
 namespace distant::memory
 {
@@ -66,6 +67,23 @@ namespace distant::memory
 
 	}; // struct operations_traits<StandardLayoutT>
 
+	template <class T>
+	struct operations_traits<T&>
+	{
+		template <class AddressT>
+		static void write(const process<vm_w_op>& process, const address<AddressT> address, const T& x)
+		{
+			operations_traits<std::remove_const_t<T>>::write(process, address, x);
+		}
+
+		template <class AddressT>
+		static virtual_reference<T, AddressT, vm_read> read(const process<vm_read>& process, const address<AddressT> address, const std::size_t size)
+		{
+			return make_virtual_reference<T>(process, address);
+		}
+
+	}; // struct operations_traits<StandardLayoutT>
+
 	/// @brief memory::write std::string customization point.
 	template <>
 	struct operations_traits<std::string>
@@ -115,7 +133,7 @@ namespace distant::memory
 			using namespace boost::mp11;
 
 			// TMP transform std::tuple<Ts...> into typelist of morphims for the case of having non-pod template parameters
-
+			// consider aligning based on image of write operation (could be std::string -> char[16] for example).
 			mp_for_each<mp_iota_c<sizeof...(Ts)>>([&](const auto index)
 			{
 				const auto& element = std::get<index>(tuple);

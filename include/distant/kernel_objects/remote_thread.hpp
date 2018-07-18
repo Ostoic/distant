@@ -5,9 +5,10 @@
 #include <distant/system/information.hpp>
 #include <distant/memory/function.hpp>
 #include <distant/type_traits.hpp>
-#include <distant/concepts/equality_comparable.hpp>
-#include <distant/concepts/handleable.hpp>
 #include <distant/support/winapi/thread.hpp>
+
+#include <boost/operators.hpp>
+#include <distant/concepts/handleable.hpp>
 
 #include <thread>
 #include <iosfwd>
@@ -16,7 +17,7 @@
 namespace distant::kernel_objects
 {
 	class remote_thread
-		: public concepts::equality_comparable<remote_thread>
+		: public boost::equality_comparable<remote_thread>
 		, public concepts::handleable<remote_thread>
 	{
 	public:
@@ -65,10 +66,7 @@ namespace distant::kernel_objects
 	private:
 		void detach_unchecked() noexcept;
 
-		bool equals(const remote_thread& other) const noexcept;
-
 		template <class> friend struct concepts::handleable;
-		template <class> friend struct concepts::equality_comparable;
 
 		explicit remote_thread(kernel_handle&& handle) noexcept;
 
@@ -78,18 +76,22 @@ namespace distant::kernel_objects
 	};
 
 	class remote_thread::id_t
-		: public concepts::equality_comparable<remote_thread::id_t>
+		: public boost::totally_ordered<remote_thread::id_t>
 	{
 	public:
 		constexpr id_t() noexcept : id_(0) {}
-
-		constexpr bool equals(const id_t other) const noexcept { return id_ == other.id_; }
 
 		constexpr id_t(const uint id) noexcept : id_(id) {}
 
 		constexpr explicit operator uint() const noexcept { return id_; }
 
 		operator std::thread::id() const noexcept { return *reinterpret_cast<const std::thread::id*>(&id_); }
+
+		friend constexpr bool operator==(const id_t& lhs, const id_t& rhs) noexcept
+		{ return lhs.id_ == rhs.id_; }
+
+		friend constexpr bool operator<(const id_t& lhs, const id_t& rhs) noexcept
+		{ return lhs.id_ < rhs.id_; }
 
 		template <typename CharT, typename TraitsT>
 		friend std::basic_ostream<CharT, TraitsT>& operator<<(std::basic_ostream<CharT, TraitsT>& stream, const id_t id)
@@ -99,10 +101,11 @@ namespace distant::kernel_objects
 		uint id_;
 	};
 
+	constexpr bool operator==(const remote_thread& lhs, const remote_thread& rhs) noexcept
+	{ return lhs.id() == rhs.id(); }
+
 	inline remote_thread current_thread() noexcept
-	{
-		return remote_thread(remote_thread::id_t(::GetCurrentThreadId()));
-	}
+	{ return remote_thread(remote_thread::id_t(::GetCurrentThreadId())); }
 
 } // namespace distant::kernel_objects
 

@@ -6,7 +6,7 @@
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace distant_unit_tests
-{		
+{
 	TEST_CLASS(virtual_memory_test)
 	{
 	public:
@@ -15,7 +15,8 @@ namespace distant_unit_tests
 			using namespace distant;
 
 			int array[] = {1, 2, 3};
-			auto ptr = make_virtual_ptr<int>(current_process(), array);
+			auto current = current_process();
+			auto ptr = make_virtual_ptr<int>(current, array);
 			*ptr = 3; ++ptr; *ptr = 4;
 
 			Assert::IsTrue(array[0] == 3);
@@ -28,8 +29,9 @@ namespace distant_unit_tests
 			using namespace distant;
 
 			int array[] = { 1, 2, 3 };
-			auto ptr = make_virtual_ptr<int>(current_process(), array);
-			
+			auto current = current_process();
+			auto ptr = make_virtual_ptr<int>(current, array);
+
 			Assert::IsTrue(
 				array == reinterpret_cast<int*>(static_cast<distant::dword>(
 						 ptr.get())
@@ -49,8 +51,10 @@ namespace distant_unit_tests
 		{
 			using namespace distant;
 
+			auto current = current_process();
+
 			int a = 1, b = 2;
-			auto ref = make_virtual_reference<int>(current_process(), &a);
+			auto ref = make_virtual_reference<int>(current, &a);
 
 			ref = 3;
 			Assert::IsTrue(a == 3);
@@ -62,7 +66,7 @@ namespace distant_unit_tests
 
 			try
 			{
-				const auto current = current_process();
+				auto current = current_process();
 				const auto ptr = virtual_malloc<int>(current);
 
 				//Assert::IsTrue(ptr != nullptr);

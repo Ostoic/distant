@@ -94,7 +94,7 @@ namespace distant::kernel_objects::detail
 		template <class> friend struct concepts::handleable;
 
 	public:
-		snapshot_base() 
+		snapshot_base()
 			: handle_(snapshot_traits::create_snapshot_handle())
 			, parent_id_(0)
 		{

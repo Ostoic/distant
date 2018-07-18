@@ -162,7 +162,7 @@ namespace distant::kernel_objects
 
 	// Open process by id
 	template <access_rights::process T>
-	process<T>::process(const typename process::id_t id) noexcept
+	process<T>::process(const id_t id) noexcept
 		: unsafe_process(id, T)
 	{}
 
@@ -188,7 +188,7 @@ namespace distant::kernel_objects
 	template <access_rights::process T>
 	process<T> current_process() noexcept
 	{
-		return std::move(reinterpret_cast<process<T>&>(current_process()));
+		return reinterpret_cast<process<T>&>(current_process());
 	}
 
 	inline process<> current_process() noexcept

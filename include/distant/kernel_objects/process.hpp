@@ -18,7 +18,7 @@ namespace distant::kernel_objects
 	template <process_rights AccessRights = process_rights::all_access>
 	class process
 		: private unsafe_process
-		, concepts::equality_comparable<process<AccessRights>>
+		, boost::equality_comparable<process<AccessRights>>
 	{
 	private:
 		/// @brief SFINAE for access permissions
@@ -112,7 +112,7 @@ namespace distant::kernel_objects
 		constexpr process() noexcept;
 
 		/// @brief Open process by id
-		explicit process(typename process::id_t id) noexcept;
+		explicit process(id_t id) noexcept;
 
 		/// @brief Move constructible
 		process(process&& other) noexcept;
@@ -120,11 +120,11 @@ namespace distant::kernel_objects
 		/// @brief Move assignable
 		process& operator=(process&& other) noexcept;
 
+		friend constexpr bool operator==(const process& lhs, const process& rhs) noexcept
+		{ return static_cast<const unsafe_process&>(lhs) == static_cast<const unsafe_process&>(rhs); }
+
 	private:
 		explicit process(kernel_handle&& handle) noexcept;
-
-		using unsafe_process::equals;
-		template <class> friend struct concepts::equality_comparable;
 
 		friend class memory_status;
 		friend process<> current_process() noexcept;
@@ -139,7 +139,7 @@ namespace distant::kernel_objects
 	/// @brief Get the current process.
 	/// @tparam Access the desired access rights to the process.
 	/// @return distant::process: a process object representing the current process.
-	template <process_rights Access = process_rights::all_access>
+	template <process_rights Access>
 	process<Access> current_process() noexcept;
 
 	/// @brief Get the current process.

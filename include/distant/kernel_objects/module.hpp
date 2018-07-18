@@ -5,14 +5,14 @@
 #include <distant/memory/address.hpp>
 
 namespace distant::kernel_objects {
-		
+
 	class module
 	{
 	public:
 		class id;
 
 	public:
-		
+
 
 	private:
 		distant::filesystem::path module_path_;
