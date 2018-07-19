@@ -7,8 +7,6 @@
 
 #include <distant/kernel_objects/interface.hpp>
 
-#include <stdexcept>
-
 namespace distant::kernel_objects {
 
 	/// @brief Construct a snapshot of \a KernelObjects owned by the given process.

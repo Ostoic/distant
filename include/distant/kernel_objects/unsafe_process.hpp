@@ -75,7 +75,7 @@ namespace distant::kernel_objects
 
 		/// @brief Retrieve the process id.
 		/// @return the process id.
-		unsafe_process::id_t id() const noexcept;
+		id_t id() const noexcept;
 
 		/// @brief Get the access rights that were used to open the current process
 		/// @return process access_rights indicating the level of access we have to the process.
@@ -101,7 +101,7 @@ namespace distant::kernel_objects
 		void detach_unchecked() noexcept;
 
 	protected:
-		explicit unsafe_process(kernel_handle&& handle, process_rights access) noexcept;
+		constexpr explicit unsafe_process(kernel_handle&& handle, process_rights access) noexcept;
 
 		template <class> friend struct concepts::handleable;
 

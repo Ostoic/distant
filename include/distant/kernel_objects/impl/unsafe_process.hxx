@@ -103,10 +103,11 @@ namespace distant::kernel_objects
 		// Note: Using bool here on some systems can corrupt the stack since
 		// sizeof(bool) != sizeof(BOOL).
 		boost::winapi::BOOL_ result = false;
-		boost::winapi::IsWow64Process(
+		if (!boost::winapi::IsWow64Process(
 			this->handle_.native_handle(),
 			reinterpret_cast<boost::winapi::PBOOL_>(&result)
-		);
+		))
+			throw winapi_error("[unsafe_process::is_32bit] IsWow64Process failed");
 
 		return result;
 	}
@@ -122,17 +123,19 @@ namespace distant::kernel_objects
 
 		// If we are considering the current process, use IsDebuggerPresent.
 		if (static_cast<uint>(this->id()) == GetCurrentProcessId())
-			return IsDebuggerPresent();
+			return ::IsDebuggerPresent();
 
 		// Otherwise use CheckRemoteDebuggerPresent.
 		boost::winapi::BOOL_ result = false;
-		boost::winapi::CheckRemoteDebuggerPresent(handle_.native_handle(), &result);
+		if (!boost::winapi::CheckRemoteDebuggerPresent(handle_.native_handle(), &result))
+			throw winapi_error("[unsafe_process::is_being_debugged] CheckRemoteDebuggerPresent failed");
+
 		return result;
 	}
 
 	inline bool unsafe_process::is_zombie() const
 	{
-		return this->valid() && GetProcessVersion(static_cast<uint>(this->id())) == 0;
+		return this->valid() && ::GetProcessVersion(static_cast<uint>(this->id())) == 0;
 	}
 
 	inline std::wstring unsafe_process::name() const
@@ -175,7 +178,7 @@ namespace distant::kernel_objects
 		, access_rights_(process_rights::all_access)
 	{}
 
-	inline unsafe_process::unsafe_process(const unsafe_process::id_t id, const process_rights access) noexcept
+	unsafe_process::unsafe_process(const id_t id, const process_rights access) noexcept
 		: handle_(kernel_object_traits<unsafe_process>::open(static_cast<uint>(id), access))
 		, access_rights_(access)
 	{}
@@ -185,8 +188,8 @@ namespace distant::kernel_objects
 		, access_rights_(other.access_rights_)
 	{}
 
-	inline unsafe_process::unsafe_process(kernel_handle&& h, const process_rights access) noexcept
-		: handle_(std::move(h))
+	constexpr unsafe_process::unsafe_process(kernel_handle&& handle, const process_rights access) noexcept
+		: handle_(std::move(handle))
 		, access_rights_(access)
 	{}
 
