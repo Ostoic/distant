@@ -10,8 +10,7 @@ namespace distant_unit_tests
 	TEST_CLASS(scoped_handle_tests)
 	{
 	private:
-		template <class Traits>
-		void check_comparison_sanity(const distant::scoped_handle<Traits>& lhs, const distant::scoped_handle<Traits>& rhs)
+		void compare_handles(const distant::kernel_handle& lhs, const distant::kernel_handle& rhs)
 		{
 			const auto run = [](const auto& lhs, const auto& rhs)
 			{
@@ -28,36 +27,34 @@ namespace distant_unit_tests
 		void check_assignment_sanity(distant::scoped_handle<Traits>& handle)
 		{
 			// Copy constructor
-			distant::scoped_handle<Traits> new_handle{ handle.native_handle() };
-			check_comparison_sanity(handle, new_handle);
+			distant::scoped_handle<Traits> new_handle{ handle.native_handle(), distant::access_rights::handle::close_protected};
+			compare_handles(handle, new_handle);
 
-			// Self copy assignment
-			handle = std::move(handle);
-			check_comparison_sanity(handle, handle);
-
-			// Copy assignment
-			new_handle = std::move(handle);
-			check_comparison_sanity(handle, new_handle);
-		}
-
-		void check_handle_sanity(distant::kernel_handle& lhs, distant::kernel_handle& rhs)
-		{
-			check_comparison_sanity(lhs, lhs);
-
-			check_assignment_sanity(lhs);
-			check_assignment_sanity(rhs);
+			handle = std::move(new_handle);
+			compare_handles(new_handle, nullptr);
 		}
 
 	public:
-		TEST_METHOD(scoped_handle_test)
+		TEST_METHOD(test_semantics)
 		{
-			distant::kernel_handle lhs = nullptr, rhs = nullptr;
-			distant::scoped_handle<distant::kernel_handle_traits> fully_qualified;
+			distant::kernel_handle handle{ ::OpenProcess(PROCESS_ALL_ACCESS, false, GetCurrentProcessId()) };
 
-			check_handle_sanity(lhs, rhs);
-			check_handle_sanity(fully_qualified, rhs);
+			compare_handles(handle, handle);
+			check_assignment_sanity(handle);
+		}
 
-			lhs.close();
+		TEST_METHOD(test_operations)
+		{
+			HANDLE nh = ::OpenProcess(PROCESS_ALL_ACCESS, false, GetCurrentProcessId());
+			distant::kernel_handle handle{ nh };
+
+			Assert::IsTrue(nh == handle.native_handle());
+			Assert::IsFalse(handle.close_protected());
+			Assert::IsFalse(handle.closed());
+
+			handle.close();
+			Assert::IsTrue(handle.close_protected());
+			Assert::IsTrue(handle.closed());
 		}
 	};
 }

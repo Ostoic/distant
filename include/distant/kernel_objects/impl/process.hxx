@@ -180,7 +180,7 @@ namespace distant::kernel_objects
 
 //private:
 	template <access_rights::process T>
-	process<T>::process(kernel_handle&& handle) noexcept
+	process<T>::process(kernel_handle&& handle, from_native_t) noexcept
 		: unsafe_process(std::move(handle), T)
 	{}
 
@@ -196,7 +196,7 @@ namespace distant::kernel_objects
 		return process<>{kernel_handle{
 			GetCurrentProcess() ,
 			access_rights::handle::close_protected
-		}};
+		}, process<>::from_native_t{}};
 	}
 
 } // end namespace distant::kernel_objects

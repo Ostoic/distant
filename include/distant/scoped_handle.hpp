@@ -65,6 +65,8 @@ namespace distant
 		/// @param h the nullptr.
 		constexpr scoped_handle(nullptr_t h) noexcept;
 
+		constexpr scoped_handle(int) = delete;
+
 		/// Construct invalid handle.
 		/// This calls the nullptr constructor.
 		constexpr scoped_handle() noexcept;

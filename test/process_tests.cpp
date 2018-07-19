@@ -21,7 +21,10 @@ namespace distant_unit_tests
 			using namespace distant;
 
 			auto current = current_process();
-			const process<> system_process(2);
+			const process<> system_process{3};
+			const distant::kernel_objects::unsafe_process proc{ 3 };
+
+			HANDLE h = OpenProcess(PROCESS_ALL_ACCESS, false, 0);
 
 			// Test equality operators
 			Assert::IsTrue(current == current);

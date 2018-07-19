@@ -124,7 +124,8 @@ namespace distant::kernel_objects
 		{ return static_cast<const unsafe_process&>(lhs) == static_cast<const unsafe_process&>(rhs); }
 
 	private:
-		explicit process(kernel_handle&& handle) noexcept;
+		struct from_native_t {};
+		explicit process(kernel_handle&& handle, from_native_t) noexcept;
 
 		friend class memory_status;
 		friend process<> current_process() noexcept;

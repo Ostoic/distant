@@ -12,7 +12,8 @@ namespace distant
 	template <class C>
 	constexpr scoped_handle<C>::scoped_handle(const native_t h, flag_t flags, const bool closed) noexcept
 		: native_handle_(h)
-		, flags_(static_cast<int>(flags)) {}
+		, flags_(static_cast<unsigned int>(flags) << 1) 
+	{}
 
 	template <class C>
 	constexpr scoped_handle<C>::scoped_handle(nullptr_t) noexcept
@@ -53,7 +54,7 @@ namespace distant
 	template <class C>
 	bool scoped_handle<C>
 		::close_protected() const noexcept
-	{ return flags_ == static_cast<int>(flag_t::close_protected); }
+	{ return flags_.test(static_cast<int>(flag_t::close_protected)); }
 
 	// Test if the closed bit has been set.
 	template <class C>
@@ -70,6 +71,7 @@ namespace distant
 		{
 			const bool result = traits_t::close(native_handle_.get());
 			this->invalidate();
+
 			return result;
 		}
 
@@ -103,6 +105,6 @@ namespace distant
 	template <class C>
 	typename scoped_handle<C>::flag_t scoped_handle<C>
 		::flags() const noexcept
-	{ return (flags_.test(1))? static_cast<flag_t>(flags_[1]) : static_cast<flag_t>(flags_[2]); }
+	{ return (flags_.test(1)) ? static_cast<flag_t>(flags_[1]) : static_cast<flag_t>(flags_[2]); }
 
 } // end namespace distant

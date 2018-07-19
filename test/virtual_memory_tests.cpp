@@ -77,11 +77,9 @@ namespace distant_unit_tests
 			}
 			catch (std::system_error& e)
 			{
-				std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
-				std::wstring message = converter.from_bytes(e.what());
-				message += L" ";
-				message += converter.from_bytes(e.code().message().data());
-				Assert::Fail((message).data());
+				std::wstringstream stream;
+				stream << e.what() << ' ' << e.code().message().data();
+				Assert::Fail(stream.str().c_str());
 			}
 		}
 	};

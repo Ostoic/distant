@@ -92,7 +92,7 @@ namespace distant::kernel_objects
 		/// @brief Open process by id
 		/// @param id the pid (process id) of the process to open.
 		/// @param access the requested access rights to open the process with.
-		explicit unsafe_process(unsafe_process::id_t id, process_rights access = process_rights::all_access) noexcept;
+		explicit unsafe_process(id_t id, process_rights access = process_rights::all_access) noexcept;
 
 		unsafe_process(unsafe_process&& other) noexcept; // move constructible
 		unsafe_process& operator=(unsafe_process&& other) noexcept; // move assignable
