@@ -1,3 +1,3 @@
 #pragma once
 
-#include "kernel_objects/thread.hpp"
+#include "kernel_objects/remote_thread.hpp"

@@ -45,23 +45,13 @@ namespace distant::assembly::ops
 {
 //interface: asm instructions
 
-	constexpr dword_ptr_t<distant::address> dword_ptr(distant::address address) noexcept
-	{
-		return dword_ptr_t<distant::address>{address};
-	}
-
-	constexpr dword_ptr_t<x86_register> dword_ptr(x86_register reg) noexcept
-	{
-		return dword_ptr_t<x86_register>{reg};
-	}
-
-	constexpr static_assembler<sizeof(opcode) + sizeof(distant::address), 1> 
+	constexpr static_assembler<sizeof(opcode) + sizeof(distant::address), 1>
 		call(const address address) noexcept
 	{
 		using memory::get_byte;
 		return make_instruction(opcode::call, get_byte<0>(address), get_byte<1>(address), get_byte<2>(address), get_byte<3>(address));
 	}
-	
+
 	constexpr static_assembler<sizeof(opcode), 1>
 		call(const x86_register r)
 	{
@@ -76,14 +66,14 @@ namespace distant::assembly::ops
 		return make_instruction(map[r]);
 	}
 
-	constexpr static_assembler<sizeof(opcode) + sizeof(distant::address), 1> 
+	constexpr static_assembler<sizeof(opcode) + sizeof(distant::address), 1>
 		jmp(const distant::address address) noexcept
 	{
 		using memory::get_byte;
 
 		return make_instruction(opcode::jmp, get_byte<0>(address), get_byte<1>(address), get_byte<2>(address), get_byte<3>(address));
 	}
-	
+
 	constexpr static_assembler<sizeof(opcode), 1>
 		jmp(const x86_register r) noexcept
 	{
@@ -131,26 +121,26 @@ namespace distant::assembly::ops
 		return make_instruction(map[r], get_byte<0>(param), get_byte<1>(param), get_byte<2>(param), get_byte<3>(param));
 	}*/
 
-	constexpr static_assembler<sizeof(opcode) + sizeof(distant::dword), 1> 
-		mov(const x86_register r, const dword_ptr_t<distant::address> add_ptr)
-	{
-		using distant::get_byte;
-		constexpr auto map = utility::meta::make_map(
-			std::make_pair(x86_register::eax, opcode::mov_eax_ptr),
-			std::make_pair(x86_register::ebx, opcode::mov_ebx_ptr),
-			std::make_pair(x86_register::ecx, opcode::mov_ecx_ptr),
-			std::make_pair(x86_register::edx, opcode::mov_edx_ptr),
-			std::make_pair(x86_register::ebp, opcode::mov_ebp_ptr),
-			std::make_pair(x86_register::esp, opcode::mov_esp_ptr),
-			std::make_pair(x86_register::edi, opcode::mov_edi_ptr),
-			std::make_pair(x86_register::esi, opcode::mov_esi_ptr)
-		);
+	//constexpr static_assembler<sizeof(opcode) + sizeof(distant::dword), 1>
+	//	mov(const x86_register r, const dword_ptr_t<distant::address> add_ptr)
+	//{
+	//	using distant::get_byte;
+	//	constexpr auto map = utility::meta::make_map(
+	//		std::make_pair(x86_register::eax, opcode::mov_eax_ptr),
+	//		std::make_pair(x86_register::ebx, opcode::mov_ebx_ptr),
+	//		std::make_pair(x86_register::ecx, opcode::mov_ecx_ptr),
+	//		std::make_pair(x86_register::edx, opcode::mov_edx_ptr),
+	//		std::make_pair(x86_register::ebp, opcode::mov_ebp_ptr),
+	//		std::make_pair(x86_register::esp, opcode::mov_esp_ptr),
+	//		std::make_pair(x86_register::edi, opcode::mov_edi_ptr),
+	//		std::make_pair(x86_register::esi, opcode::mov_esi_ptr)
+	//	);
 
-		const auto address = add_ptr.data;
-		return make_instruction(map[r], get_byte<0>(address), get_byte<1>(address), get_byte<2>(address), get_byte<3>(address));
-	}
+	//	const auto address = add_ptr.data;
+	//	//return make_instruction(map[r], get_byte<0>(address), get_byte<1>(address), get_byte<2>(address), get_byte<3>(address));
+	//}
 
-	constexpr static_assembler<sizeof(opcode), 1> 
+	constexpr static_assembler<sizeof(opcode), 1>
 		mov(const x86_register r, dword_ptr_t<x86_register> reg)
 	{
 		constexpr auto map = utility::meta::make_map(
@@ -248,7 +238,7 @@ namespace distant::assembly::ops
 
 	constexpr bool is_deref_instruction(const opcode op) noexcept
 	{
-		return 
+		return
 			(opcode::mov_eax_ptr_eax <= op && op <= opcode::mov_esp_ptr_esp) ||
 			(opcode::mov_eax_ptr <= op && op <= opcode::mov_edi_ptr);
 	}
@@ -262,7 +252,7 @@ namespace distant::assembly::ops
 	}
 
 	constexpr bool parameter_is_dword(const opcode op) noexcept
-	{ 
+	{
 		return accepts_address(op) || (
 			op == opcode::mov_eax ||
 			op == opcode::mov_ebp ||

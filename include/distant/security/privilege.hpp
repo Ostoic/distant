@@ -11,7 +11,7 @@
 #include <distant/support/winapi/privilege.hpp>
 #include <distant/support/winapi/token.hpp>
 
-namespace distant::security 
+namespace distant::security
 {
 	/// @brief A [privilege](https://msdn.microsoft.com/en-us/library/windows/desktop/aa379306(v=vs.85).aspx) is the right of an account, such as a user or group account, to perform various system-related operations on the local computer, such as shutting down the system, loading device drivers, or changing the system time.
 	/// a \a security::privilege allows one to modify a \a kernel_object's \a access_token to constrain or relax permissions for the given \a kernel_object.
@@ -27,22 +27,22 @@ namespace distant::security
 		};
 
 	public: // {ctor}
-		/// Constructs an invalid privilege object.
+		/// @brief Constructs an invalid privilege object.
 		constexpr privilege() noexcept;
 
-		/// Constexpr constructor allowing the privilege's data to be loaded on demand.
+		/// @brief Constexpr constructor allowing the privilege's data to be loaded on demand.
 		explicit constexpr privilege(const wchar_t* privilege_name) noexcept;
 
 	public: // interface
-		/// Implicility convertible to the TOKEN_PRIVILEGES_ struct.
+		/// @brief Implicility convertible to the TOKEN_PRIVILEGES_ struct.
 		/// @return an instance of TOKEN_PRIVILEGES_ filled with the current privilege's data.
 		operator boost::winapi::TOKEN_PRIVILEGES_() const noexcept;
 
-		/// Implicitly convertible to a PRIVILEGE_SET_ object.
+		/// @brief Implicitly convertible to a PRIVILEGE_SET_ object.
 		/// @return an instance of PRIVILEGE_SET_ filled with the current privilege's data.
 		operator boost::winapi::PRIVILEGE_SET_() const noexcept;
 
-		/// Get the Locally Unique Identifier associated with the given privilege.
+		/// @brief Get the Locally Unique Identifier associated with the given privilege.
 		/// @return the luid returned by the operating system for the privilege.
 		security::luid luid() const noexcept;
 
@@ -55,11 +55,11 @@ namespace distant::security
 		mutable security::luid luid_;
 	};
 
-	// XXX Look into how Windows programmers properly do this
-	// Lookup the name of the given privilege (identified by luid)
+	/// Todo: Look into how Windows programmers properly do this
+	/// @brief Lookup the name of the given privilege (identified by luid)
 	std::wstring lookup_name(security::luid luid);
 
-	// Lookup the privilege local UID and attribute given the name.
+	/// @brief Lookup the privilege local UID and attribute given the name.
 	privilege lookup_privilege(const std::wstring& privilege_name);
 
 } // end namespace distant::security

@@ -24,7 +24,7 @@ namespace distant
 		template <token_rights Access, class KernelObject>
 		class access_token
 			: concepts::handleable<access_token<Access, KernelObject>>
-			, concepts::equality_comparable<access_token<Access, KernelObject>>
+			, boost::equality_comparable<access_token<Access, KernelObject>>
 		{
 		public: // interface
 			/// Check if the given privilege is in the access token's list of privileges.
@@ -49,13 +49,12 @@ namespace distant
 
 			explicit access_token(const KernelObject& k) noexcept;
 
+			friend bool operator==(const access_token& lhs, const access_token& rhs) noexcept
+			{ return lhs.handle_ == rhs.handle_; }
+
 		protected:
 			template <token_rights, class> friend class access_token;
-			template <class> friend struct concepts::equality_comparable;
 			template <class> friend struct concepts::handleable;
-
-			bool equals(const access_token& other) const noexcept
-			{ return handle_ == other.handle_; }
 
 			kernel_handle handle_;
 		};
@@ -63,7 +62,7 @@ namespace distant
 		/// @brief Retrieves the access token of the given kernel object.
 		/// @return the primary access token of the kernel object is a process, or it returns an impersonation access token if the kernel object is a thread.
 		template <token_rights Access, class KernelObject>
-		access_token<Access, KernelObject> 
+		access_token<Access, KernelObject>
 			primary_access_token(const KernelObject&) noexcept;
 
 		/// @brief Retrieves the access token of the given kernel object.

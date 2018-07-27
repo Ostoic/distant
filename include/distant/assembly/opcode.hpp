@@ -82,7 +82,7 @@ namespace distant::assembly
 		mov_ebp,
 		mov_esi,
 		mov_edi,
-		
+
 		// mov register, register
 		mov_eax_eax = 0x8BC0,
 		mov_eax_ecx,
@@ -315,5 +315,5 @@ namespace distant::memory
 		}
 
 	}; // struct operations_traits<assembly_opcode>
-	
-} // namespace distant::memory 
+
+} // namespace distant::memory

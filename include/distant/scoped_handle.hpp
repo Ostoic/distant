@@ -36,10 +36,17 @@ namespace distant
 	struct kernel_handle_traits
 	{
 		using native_t = boost::winapi::HANDLE_;
+		static constexpr native_t invalid_handle = nullptr;
+		static constexpr native_t null_handle = nullptr;
 
 		static bool close(const native_t native_handle) noexcept
 		{
-			return boost::winapi::CloseHandle(native_handle);
+			if (native_handle == reinterpret_cast<native_t>(-1))
+				return true;
+
+			const auto result = boost::winapi::CloseHandle(native_handle);
+			BOOST_ASSERT_MSG(result, "[kernel_handle_traits::close] Invalid handle specified");
+			return result;
 		}
 	};
 
@@ -64,8 +71,6 @@ namespace distant
 		/// This allows handles to be comparable with nullptr.
 		/// @param h the nullptr.
 		constexpr scoped_handle(nullptr_t h) noexcept;
-
-		constexpr scoped_handle(int) = delete;
 
 		/// Construct invalid handle.
 		/// This calls the nullptr constructor.

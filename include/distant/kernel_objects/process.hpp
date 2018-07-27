@@ -25,6 +25,12 @@ namespace distant::kernel_objects
 		template <access_rights::process Required, typename Return = void>
 		using require_permission = std::enable_if_t<check_permission(AccessRights, Required), Return>;
 
+	public:
+
+		/// @brief Create a new process
+		// Todo: Implement
+		static process launch();
+
 	public: // interface
 		// Import the unsafe_process interface.
 		using unsafe_process::operator bool;
@@ -124,18 +130,12 @@ namespace distant::kernel_objects
 		{ return static_cast<const unsafe_process&>(lhs) == static_cast<const unsafe_process&>(rhs); }
 
 	private:
-		struct from_native_t {};
-		explicit process(kernel_handle&& handle, from_native_t) noexcept;
+		explicit process(kernel_handle&& handle) noexcept;
 
 		friend class memory_status;
 		friend process<> current_process() noexcept;
 
 	}; // class process
-
-	/// @brief Create a new process
-	// Todo: Implement
-	template <process_rights Access>
-	process<Access> launch();
 
 	/// @brief Get the current process.
 	/// @tparam Access the desired access rights to the process.
@@ -145,7 +145,7 @@ namespace distant::kernel_objects
 
 	/// @brief Get the current process.
 	/// @return distant::process: a process object representing the current process with the highest \a AccessRights.
-	process<process_rights::all_access> current_process() noexcept;
+	process<> current_process() noexcept;
 
 } // namespace distant::kernel_objects
 

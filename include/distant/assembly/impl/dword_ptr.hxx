@@ -9,7 +9,4 @@ namespace distant::assembly
 {
 //class dword_ptr
 //public:
-	template<typename T, typename S>
-	constexpr dword_ptr_t<T, S>::dword_ptr_t(T data) noexcept
-		: data(data) {}
 }

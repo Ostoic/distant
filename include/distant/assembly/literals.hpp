@@ -11,9 +11,9 @@ namespace distant::assembly
 		 * intel x86 assembly context-free grammar
 		 * todo: more opcodes, more instruction formats
 		 * opcode ::= "mov"|"push"|"pop"|"sub"|"add"|"call"|"jmp"|"nop";
-		 * 
+		 *
 		 * register ::= "eax"|"ecx"|"edx"|"ebx"|"esp"|"ebp"|"esi"|"edi
-		 * 
+		 *
 		 * instruction ::= opcode
 		 *				| opcode register, register
 		 *				| opcode register, number
@@ -27,7 +27,7 @@ namespace distant::assembly
 		}
 
 		// Todo: Return static assembler somehow
-		constexpr opcode operator""_assm(const char* string, const std::size_t length)
+		constexpr opcode operator""_x86(const char* string, const std::size_t length)
 		{
 			return parse_op(string, length);
 		}

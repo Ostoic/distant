@@ -16,8 +16,27 @@ namespace distant::memory
 	BOOST_FORCEINLINE
 	void write(process<vm_w_op>& proc, const address<AddressT> address, T&& x)
 	{
+		// rv&& -> binds to const&
+		// lv& -> binds to const&
+		// const& -> binds to const&
 		using utility::meta::remove_cvref;
 		operations_traits<remove_cvref<T>>::write(proc, address, std::forward<T>(x));
+	}
+
+	template <class AddressT, class... Ts>
+	std::array<address<AddressT>, sizeof...(Ts)> write_aligned(process<vm_w_op>& proc, address<AddressT> address, Ts&&... ts)
+	{
+		using utility::meta::remove_cvref;
+		return operations_traits<std::pair<std::tuple<remove_cvref<Ts>...>, detail::aligned_tag_t>>
+			::write(proc, address, std::forward_as_tuple(std::forward<Ts>(ts)...));
+	}
+
+	template <class AddressT, class... Ts>
+	std::array<address<AddressT>, sizeof...(Ts)> write_contiguous(process<vm_w_op>& proc, address<AddressT> address, Ts&&... ts)
+	{
+		using utility::meta::remove_cvref;
+		return operations_traits<std::pair<std::tuple<remove_cvref<Ts>...>, detail::contiguous_tag_t>>
+			::write(proc, address, std::forward_as_tuple(std::forward<Ts>(ts)...));
 	}
 
 	template <class T, class AddressT>
@@ -26,6 +45,14 @@ namespace distant::memory
 	{
 		using utility::meta::remove_cvref;
 		return operations_traits<remove_cvref<T>>::read(process, address, size);
+	}
+
+	template <class Tuple, class AddressT>
+	BOOST_FORCEINLINE
+	Tuple read_aligned(const process<vm_read>& process, const address<AddressT> address, std::size_t size)
+	{
+		using utility::meta::remove_cvref;
+		return operations_traits<remove_cvref<Tuple>>::read(process, address, size);
 	}
 
 	template <page_protection Protection, typename AddressT>
@@ -69,9 +96,9 @@ namespace distant::memory
 			size, static_cast<DWORD_>(protection), &old
 		);
 	}
-	//PROCESS_VM_OPERATION
-	template <class T, page_protection Protection, class AddressT, process_rights AccessRights>
-	virtual_ptr<T, AddressT, AccessRights> virtual_malloc(process<AccessRights>& process, const std::size_t n)
+
+	template <page_protection Protection, class AddressT, process_rights AccessRights>
+	address<AddressT> virtual_malloc(process<AccessRights>& process, const std::size_t n)
 	{
 		static_assert(
 			detail::has_virtual_malloc_support(Protection),
@@ -82,7 +109,14 @@ namespace distant::memory
 		if (allocated_address == nullptr)
 			throw winapi_error("[memory::virtual_malloc] VirtualAllocEx failed");
 
-		return virtual_ptr<T, AddressT, AccessRights>{process, allocated_address};
+		return address<AddressT>{allocated_address};
+	}
+
+	//PROCESS_VM_OPERATION
+	template <class T, page_protection Protection, class AddressT, process_rights AccessRights>
+	virtual_ptr<T, AddressT, AccessRights> virtual_malloc(process<AccessRights>& process, const std::size_t n)
+	{
+		return virtual_ptr<T, AddressT, AccessRights>{process, virtual_malloc(process, n)};
 	}
 
 	template <class T, page_protection Protection, process_rights AccessRights>
@@ -91,14 +125,20 @@ namespace distant::memory
 		return virtual_malloc<T, Protection, dword, AccessRights>(process, n);
 	}
 
-	template <class T, class AddressT, process_rights AccessRights>
-	bool virtual_free(process<AccessRights>& process, const virtual_ptr<T, AddressT, AccessRights> pointer) noexcept
+	template <class AddressT, process_rights AccessRights>
+	bool virtual_free(process<AccessRights>& process, address<AddressT> address) noexcept
 	{
 		return ::VirtualFreeEx(
 			process.handle().native_handle(),
-			reinterpret_cast<void*>(static_cast<AddressT>(pointer.get())),
+			reinterpret_cast<void*>(static_cast<AddressT>(address)),
 			0,
 			MEM_RELEASE
 		);
+	}
+
+	template <class T, class AddressT, process_rights AccessRights>
+	bool virtual_free(const virtual_ptr<T, AddressT, AccessRights> pointer) noexcept
+	{
+		return virtual_free(pointer.process(), pointer.get());
 	}
 }

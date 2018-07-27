@@ -6,7 +6,7 @@
 namespace distant::memory
 {
 	/// @brief Represents a memory page in a process.
-	template <typename AddressT>
+	template <class AddressT>
 	class page
 	{
 	public:
@@ -15,7 +15,7 @@ namespace distant::memory
 		{}
 
 		address<AddressT> base() const noexcept { return base_; }
-		std::size_t size() const noexcept { return system::page_size(); }
+		static std::size_t size() noexcept { return system::page_size(); }
 
 	private:
 		address<AddressT> base_;

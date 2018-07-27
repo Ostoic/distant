@@ -42,7 +42,7 @@ namespace distant::assembly
 
 		void decrement() noexcept;
 
-		constexpr static_instruction<AssemblerSize, InstrCount> 
+		constexpr static_instruction<AssemblerSize, InstrCount>
 			dereference() const noexcept;
 
 	private:

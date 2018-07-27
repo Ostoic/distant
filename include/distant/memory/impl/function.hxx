@@ -4,14 +4,22 @@
 #include <distant/memory/virtual_memory.hpp>
 
 #include <boost/mp11/mpl.hpp>
+#include <boost/mp11/algorithm.hpp>
 
 namespace distant::memory
 {
+	namespace detail
+	{
+		template <class V, class T>
+		using mp_multiply = boost::mp11::mp_int<V::value * T::value>;
+	}
+
 	template <class R, class... Args, class CallingConv, class AddressT, process_rights AccessRights>
 	R function<R(Args...), CallingConv, AddressT, AccessRights>
 		::operator()(Args&&... args)
 	{
-		const auto remote_arguments_ptr = virtual_malloc(ptr_.process(), sizeof(std::tuple<std::decay_t<Args>...>));
+		using namespace boost::mp11;
+		//const auto remote_arguments_ptr = virtual_malloc(ptr_.process(), sizeof(std::tuple<std::decay_t<Args>...>));
 
 		// Should there really be a distant::function? The only possibility for operator() is a multithreaded call
 		// so unless we're in-process, I don't think this conveys the correct semantics for remote function calling.
@@ -20,7 +28,11 @@ namespace distant::memory
 		// consider distant::function_signature as an alternative
 		// wpm overload for std::tuple?
 		// wpm overload for unique_ptr<>? (probably not).
-		const auto arguments = std::make_unique<std::tuple<std::decay_t<Args>...>>(std::forward<Args>(args)...);
+		//const auto arguments = std::make_unique<std::tuple<std::decay_t<Args>...>>(std::forward<Args>(args)...);
+		constexpr auto arguments_size = mp_fold<std::tuple<Args...>, mp_int<1>, detail::mp_multiply>::value;
+
+		const auto arguments_address = virtual_malloc(ptr_.process(), arguments_size);
+		memory::write(ptr_.process(), arguments_address, std::forward_as_tuple(std::forward<Args>(args)...));
 
 		// calling_convention::push_arguments_asm
 		// calling_convention::pre_call_asm
@@ -40,6 +52,7 @@ namespace distant::memory
 		// calling_conv: cleanup stack
 		// calling_conv/something: retrieve return from eax register/function return.
 		// static_assembler:epilog asm
+		memory::virtual_free(ptr_.process(), arguments_address);
 		return R{};
 	}
 

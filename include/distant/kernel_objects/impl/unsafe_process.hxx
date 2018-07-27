@@ -64,8 +64,6 @@ namespace distant::kernel_objects
 
 	inline bool unsafe_process::joinable() const noexcept
 	{
-		BOOST_ASSERT_MSG(this->valid(), "[unsafe_process::joinable] invalid process handle");
-
 		return handle_ != nullptr;
 	}
 
@@ -82,7 +80,7 @@ namespace distant::kernel_objects
 
 	inline unsafe_process::id_t unsafe_process::id() const noexcept
 	{
-		BOOST_ASSERT_MSG(this->valid(), "[unsafe_process::id] invalid process handle");
+		//BOOST_ASSERT_MSG(this->valid(), "[unsafe_process::id] invalid process handle");
 
 		using traits = kernel_object_traits<unsafe_process>;
 		return unsafe_process::id_t{ traits::get_id(handle_.native_handle()) };
@@ -135,6 +133,7 @@ namespace distant::kernel_objects
 
 	inline bool unsafe_process::is_zombie() const
 	{
+		// unsafe_process::valid also checks if the process is a zombie
 		return this->valid() && ::GetProcessVersion(static_cast<uint>(this->id())) == 0;
 	}
 
@@ -165,8 +164,7 @@ namespace distant::kernel_objects
 //public:
 	inline bool unsafe_process::valid() const noexcept
 	{
-		using traits = kernel_object_traits<unsafe_process>;
-		return (reinterpret_cast<int>(handle_.native_handle()) == -1) || traits::is_valid_handle(handle_.native_handle());
+		return this->joinable();
 	}
 
 //=========================//
@@ -178,7 +176,7 @@ namespace distant::kernel_objects
 		, access_rights_(process_rights::all_access)
 	{}
 
-	unsafe_process::unsafe_process(const id_t id, const process_rights access) noexcept
+	inline unsafe_process::unsafe_process(const id_t id, const process_rights access) noexcept
 		: handle_(kernel_object_traits<unsafe_process>::open(static_cast<uint>(id), access))
 		, access_rights_(access)
 	{}
@@ -188,7 +186,7 @@ namespace distant::kernel_objects
 		, access_rights_(other.access_rights_)
 	{}
 
-	constexpr unsafe_process::unsafe_process(kernel_handle&& handle, const process_rights access) noexcept
+	inline unsafe_process::unsafe_process(kernel_handle&& handle, const process_rights access) noexcept
 		: handle_(std::move(handle))
 		, access_rights_(access)
 	{}

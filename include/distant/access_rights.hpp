@@ -134,6 +134,7 @@ namespace distant
 			execute_writecopy = boost::winapi::PAGE_EXECUTE_WRITECOPY_
 		};
 
+
 		enum class handle
 		{
 			inherit = boost::winapi::HANDLE_FLAG_INHERIT_,

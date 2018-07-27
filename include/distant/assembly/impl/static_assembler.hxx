@@ -16,20 +16,20 @@ namespace distant::assembly
 		std::array<byte, C> bytes,
 		std::array<index_t, I> instruction_ptrs) noexcept
 			: bytes(std::move(bytes))
-			, instruction_ptrs_(std::move(instruction_ptrs)) 
+			, instruction_ptrs_(std::move(instruction_ptrs))
 	{}
 
 //interface:
 	template <std::size_t S, std::size_t C>
 	constexpr typename static_assembler<S, C>::iterator
-		static_assembler<S, C>::begin() const
+		static_assembler<S, C>::begin() const noexcept
 	{
 		return iterator{*this, 0};
 	}
 
 	template <std::size_t S, std::size_t C>
 	constexpr typename static_assembler<S, C>::iterator
-		static_assembler<S, C>::end() const
+		static_assembler<S, C>::end() const noexcept
 	{
 		return iterator{*this, C};
 	}
@@ -42,7 +42,7 @@ namespace distant::assembly
 
 //free:
 	template <std::size_t F, std::size_t FI, std::size_t S>
-	constexpr static_assembler<F + S, FI + 1> 
+	constexpr static_assembler<F + S, FI + 1>
 		operator+(const static_assembler<F, FI>& first, const static_assembler<S, 1>& second) noexcept
 	{
 		return {

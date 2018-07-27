@@ -14,7 +14,7 @@
 
 namespace distant::memory
 {
-	template <typename Element, typename AddressT, process_rights AccessRights>
+	template <class Element, class AddressT, process_rights AccessRights>
 	class virtual_ptr : public
 		boost::iterator_facade<
 			virtual_ptr<Element, AddressT, AccessRights>,
@@ -31,6 +31,8 @@ namespace distant::memory
 		using reference			= virtual_reference<Element, AddressT, AccessRights>;
 		using iterator_category = std::random_access_iterator_tag;
 
+		using address_t = address<AddressT>;
+
 		static constexpr auto vm_access =		   virtual_traits<virtual_ptr>::vm_access;
 		using process_type			    = typename virtual_traits<virtual_ptr>::process_type;
 
@@ -43,23 +45,29 @@ namespace distant::memory
 		// Check if the given process rights are compatible with the required access.
 		//static_assert(AccessRights >= vm_access, "[virtual_ptr] Unable to create a virtual_ptr in a process without proper security access");
 	public:
-		virtual_ptr() noexcept : process_(nullptr) {}
+		constexpr virtual_ptr() noexcept : process_(nullptr) {}
 
-		virtual_ptr(nullptr_t) noexcept;
+		constexpr virtual_ptr(nullptr_t) noexcept;
 
-		explicit virtual_ptr(process_type& process, address<AddressT> address = 0) noexcept;
+		explicit virtual_ptr(process_type& process, address_t address = 0) noexcept;
 
 		template <
-			typename OtherT,
-			typename OtherAddressT,
-			process_rights OtherAccess
+			class OtherT,
+			class OtherAddressT,
+			process_rights OtherAccess,
+			class = std::enable_if_t<std::is_convertible<OtherT, Element>, OtherAddressT>
 		>
 		virtual_ptr(virtual_ptr<OtherT, OtherAddressT, OtherAccess> pointer) noexcept;
 
-		address<AddressT> get() const noexcept;
+		address_t get() const noexcept;
 
 		process_type& process()		  noexcept { return *process_; }
 		process_type& process() const noexcept { return *process_; }
+
+		explicit operator bool () const noexcept
+		{
+			return address_ != address_t{} && process_ != nullptr;
+		}
 
 	private:
 		friend class boost::iterator_core_access;
@@ -96,7 +104,7 @@ namespace distant::memory
 		friend class virtual_ptr;
 
 		process_type* process_;
-		address<AddressT> address_;
+		address_t address_;
 	};
 
 	template <typename Element, typename AddressT = dword, process_rights AccessRights>
@@ -117,7 +125,7 @@ namespace distant::memory
 
 	template <typename Element, typename AddressT, process_rights AccessRights>
 	virtual_ptr<Element, AddressT, AccessRights>
-		make_virtual_ptr(process<AccessRights>& p, const address<AddressT> address = nullptr) noexcept
+		make_virtual_ptr(process<AccessRights>& p, const address<AddressT> address) noexcept
 	{
 		virtual_ptr<Element, AddressT, AccessRights> result(p, address);
 		return result;
@@ -125,7 +133,7 @@ namespace distant::memory
 
 	template <typename Element, typename AddressT, process_rights AccessRights>
 	virtual_ptr<Element, AddressT, AccessRights>
-		make_virtual_ptr(const process<AccessRights>& p, const address<AddressT> address = nullptr) noexcept
+		make_virtual_ptr(const process<AccessRights>& p, const address<AddressT> address) noexcept
 	{
 		virtual_ptr<Element, AddressT, AccessRights> result(p, address);
 		return result;
@@ -133,7 +141,7 @@ namespace distant::memory
 
 	template <typename Element, process_rights AccessRights>
 	virtual_ptr<Element, dword, AccessRights>
-		make_virtual_ptr(process<AccessRights>& p, const address<dword> address = nullptr) noexcept
+		make_virtual_ptr(process<AccessRights>& p, const address<dword> address) noexcept
 	{
 		virtual_ptr<Element, dword, AccessRights> result(p, address);
 		return result;
@@ -141,7 +149,7 @@ namespace distant::memory
 
 	template <typename Element, process_rights AccessRights>
 	virtual_ptr<Element, dword, AccessRights>
-		make_virtual_ptr(const process<AccessRights>& p, const address<dword> address = nullptr) noexcept
+		make_virtual_ptr(const process<AccessRights>& p, const address<dword> address) noexcept
 	{
 		virtual_ptr<Element, dword, AccessRights> result(p, address);
 		return result;

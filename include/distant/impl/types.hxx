@@ -86,9 +86,9 @@ namespace distant
 	template <class T>
 	constexpr auto byte_array_from(const T& data) noexcept
 	{
-		return generate_array([&data](const index_t i)
+		return utility::meta::generate_array([&data](const index_t i)
 		{
-			return get_n(data, i);
+			return get_byte_n(i, data);
 		});
 	}
 

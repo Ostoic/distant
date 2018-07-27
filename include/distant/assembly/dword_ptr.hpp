@@ -10,15 +10,20 @@
 namespace distant::assembly
 {
 	template <class T>
-	struct dword_ptr_t;
-
-	template <>
-	struct dword_ptr_t<x86_register>
+	struct dword_ptr_t
 	{
-		explicit constexpr dword_ptr_t(x86_register reg_address) noexcept;
+		explicit constexpr dword_ptr_t(T t) noexcept
+			: data(t)
+		{}
 
 		x86_register data;
 	};
+
+	template <class T>
+	constexpr auto dword_ptr(T t) noexcept
+	{
+		return dword_ptr_t<T>{t};
+	}
 }
 
-#include <distant/assembly/impl/dword_ptr.hxx>
+#include "impl/dword_ptr.hxx"

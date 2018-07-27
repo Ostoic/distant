@@ -29,7 +29,7 @@ namespace kernel_objects
 		/// @return the amount of memory in kilobytes.
 		std::size_t peak_private_usage() const noexcept;
 
-		/// The size of memory (kb) occupied by the process in RAM. 
+		/// The size of memory (kb) occupied by the process in RAM.
 		/// See: https://en.wikipedia.org/wiki/Resident_set_size
 		/// @return the amount of memory in kilobytes.
 		std::size_t working_set() const noexcept;
@@ -50,8 +50,8 @@ namespace kernel_objects
 
 	/// @brief Create a status object for the given process.
 	template <access_rights::process T, typename = std::enable_if_t<(T >= memory_status::required_status_access)>>
-	[[nodiscard]] 
-	auto get_memory_status(const process<T>& p)
+	[[nodiscard]] auto
+		get_memory_status(const process<T>& p)
 	{
 		return memory_status(p);
 	}

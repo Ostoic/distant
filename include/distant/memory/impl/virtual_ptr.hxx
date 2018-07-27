@@ -8,21 +8,18 @@
 namespace distant::memory
 {
 	template <class E, class Ad, process_rights A>
-	virtual_ptr<E, Ad, A>
-	::virtual_ptr(nullptr_t) noexcept
+	constexpr virtual_ptr<E, Ad, A>::virtual_ptr(nullptr_t) noexcept
 		: virtual_ptr()
 	{}
 
 	template <class E, class Ad, process_rights A>
-	virtual_ptr<E, Ad, A>
-	::virtual_ptr(process_type& process, address<Ad> address) noexcept
+	virtual_ptr<E, Ad, A>::virtual_ptr(process_type& process, address<Ad> address) noexcept
 		: process_(&process), address_(address)
 	{}
 
 	template <class E, class Ad, process_rights A>
-	template <class OtherT, class OtherAddressT, process_rights OtherAccess>
-	virtual_ptr<E, Ad, A>
-	::virtual_ptr(virtual_ptr<OtherT, OtherAddressT, OtherAccess> pointer) noexcept
+	template <class OtherT, class OtherAddressT, process_rights OtherAccess, class>
+	virtual_ptr<E, Ad, A>::virtual_ptr(virtual_ptr<OtherT, OtherAddressT, OtherAccess> pointer) noexcept
 		: process_(reinterpret_cast<decltype(process_)>(pointer.process_)), address_(pointer.address_)
 	{
 		static_assert(require_vm_access_to<OtherT>::value, "[virtual_ptr::{ctor}] Conversion loses const qualifier");

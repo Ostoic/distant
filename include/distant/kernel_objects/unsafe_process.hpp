@@ -35,6 +35,13 @@ namespace distant::kernel_objects
 
 		void detach();
 
+		void suspend();
+
+		void resume();
+
+		//NtSuspendProcess pfnNtResumeProcess = (NtSuspendProcess)GetProcAddress(GetModuleHandle("ntdll"), "NtResumeProcess");
+		//pfnNtResumeProcess(WoW::handle);
+
 		bool joinable() const noexcept;
 
 		/// @brief Query the process handle to see if it is still active
@@ -101,7 +108,7 @@ namespace distant::kernel_objects
 		void detach_unchecked() noexcept;
 
 	protected:
-		constexpr explicit unsafe_process(kernel_handle&& handle, process_rights access) noexcept;
+		explicit unsafe_process(kernel_handle&& handle, process_rights access) noexcept;
 
 		template <class> friend struct concepts::handleable;
 
@@ -162,7 +169,7 @@ namespace distant
 			static bool is_valid_handle(const native_handle_t native_handle) noexcept
 			{
 				// snapshot_iterator uses this to test for zombies during iterator increments.
-				return native_handle != nullptr && GetProcessVersion(get_id(native_handle)) != 0;
+				return native_handle != nullptr && ::GetProcessVersion(get_id(native_handle)) != 0;
 			}
 
 			static native_handle_t open(const boost::winapi::DWORD_ id, const access_rights_t access = access_rights()) noexcept

@@ -19,7 +19,7 @@ namespace distant::security {
 
 	constexpr privilege::privilege(const wchar_t* privilege_name) noexcept
 		: name_(privilege_name)
-		, luid_({0}) {}
+		, luid_({0, 0}) {}
 
 	inline privilege::operator boost::winapi::TOKEN_PRIVILEGES_() const noexcept
 	{

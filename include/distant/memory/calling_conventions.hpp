@@ -4,9 +4,8 @@
 
 #pragma once
 
-namespace distant::memory::x86_calling_conventions
+namespace distant::memory
 {
-	// Todo: Traits classes? or what
 	struct cdeclcall
 	{
 

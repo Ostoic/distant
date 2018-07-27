@@ -54,6 +54,18 @@ namespace distant::kernel_objects
 		this->detach_unchecked();
 	}
 
+	inline void remote_thread::suspend()
+	{
+		if (::SuspendThread(this->handle_.native_handle()) == -1)
+			throw winapi_error("[remote_thread::resume] SuspendThread failed");
+	}
+
+	inline void remote_thread::resume()
+	{
+		if (::ResumeThread(this->handle_.native_handle()) == -1)
+			throw winapi_error("[remote_thread::resume] ResumeThread failed");
+	}
+
 	inline void remote_thread
 		::swap(remote_thread& other) noexcept
 	{
@@ -81,7 +93,7 @@ namespace distant::kernel_objects
 	process<Access> remote_thread
 		::process() noexcept
 	{
-		return kernel_objects::process<Access>{ kernel_objects::process<Access>::id_t{ ::GetProcessIdOfremote_thread(handle_.native_handle()) }};
+		return kernel_objects::process<Access>{ kernel_objects::process<Access>::id_t{ ::GetProcessIdOfThread(handle_.native_handle()) }};
 	}
 
 	inline remote_thread::id_t remote_thread
@@ -95,7 +107,7 @@ namespace distant::kernel_objects
 	{}
 
 	inline remote_thread::remote_thread(std::thread&& remote_thread) noexcept
-		: remote_thread(kernel_handle(remote_thread.native_handle()))
+		: remote_thread(remote_thread.get_id())
 	{
 		remote_thread.detach();
 	}
@@ -145,9 +157,9 @@ namespace distant::kernel_objects
 	}
 
 	inline remote_thread::remote_thread(kernel_handle&& handle) noexcept
-		: handle_(std::move(handle))
-		, id_(kernel_object_traits<remote_thread>::get_id(handle.native_handle()))
-	{}
+		: handle_(handle.native_handle())
+		, id_(kernel_object_traits<remote_thread>::get_id(handle_.native_handle()))
+	{ handle = nullptr; }
 
 
 } // namespace distant::kernel_objects

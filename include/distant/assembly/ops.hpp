@@ -11,9 +11,6 @@
 
 namespace distant::assembly::ops
 {
-	constexpr dword_ptr_t<distant::address> dword_ptr(distant::address) noexcept;
-	constexpr dword_ptr_t<x86_register> dword_ptr(x86_register) noexcept;
-
 	constexpr static_assembler<sizeof(opcode) + sizeof(distant::address), 1>
 		call(distant::address) noexcept;
 
@@ -32,7 +29,7 @@ namespace distant::assembly::ops
 	/**********************************************************************************************/ /**
 	 * @fn constexpr assembler<sizeof(opcode), 1> jmp(x86_register r) noexcept;
 	 *
-	 * @brief Generate a jmp assembly instruction that jumps to the address contained in 
+	 * @brief Generate a jmp assembly instruction that jumps to the address contained in
 	 * 		  the given register.
 	 *
 	 * @param r The x86_register containing the address.

@@ -5,7 +5,7 @@
 #pragma once
 
 #include <distant/types.hpp>
-#include <distant/utility/meta/algorithm.hpp>
+#include <distant/utility/meta/array.hpp>
 
 #include <distant/assembly/opcode.hpp>
 #include <distant/assembly/static_instruction.hpp>
@@ -24,8 +24,11 @@ namespace distant::assembly
 		constexpr static_assembler() = default;
 
 	public: // interface
-		constexpr iterator begin() const;
-		constexpr iterator end() const;
+		constexpr iterator begin() const noexcept;
+		constexpr iterator end() const noexcept;
+
+		static constexpr std::size_t instruction_count() noexcept { return InstructionCount; }
+		static constexpr std::size_t byte_count() noexcept { return InstructionCount; }
 
 	public:
 	//private:

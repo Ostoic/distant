@@ -25,21 +25,38 @@ namespace distant::kernel_objects
 
 		static unsigned int hardware_concurrency() noexcept;
 
+		static remote_thread launch();
+
 		class id_t;
 
 	public:
+		/// @brief Terminate the thread.
 		void kill();
 
+		/// @brief Blocks the current thread until the thread finishes its execution.
 		void join();
 
 		void detach();
 
+		/// @brief Suspends the thread's execution
+		void suspend();
+
+		/// @brief Resume execution of the thread, if suspended.
+		void resume();
+
 		void swap(remote_thread& other) noexcept;
 
+		/// @brief Get the thread's unique identifier.
+		/// @return A value of type remote_thread::id_t identifying the thread.
 		id_t id() const noexcept;
 
+		/// @brief Determine if the given thread is active or not.
+		/// @return true if the thread is active, and false otherwise.
 		bool is_active() const noexcept;
 
+		/// @brief Checks if the thread identifies an active thread of execution. A thread that has finished
+		/// @brief executing code, but has not yet been joined is still considered an active thread of execution and is therefore joinable.
+		/// @return true if the thread object identifies an active thread of execution, false otherwise
 		bool joinable() const noexcept;
 
 		template <process_rights Access = process_rights::all_access>
@@ -82,6 +99,8 @@ namespace distant::kernel_objects
 		constexpr id_t() noexcept : id_(0) {}
 
 		constexpr id_t(const uint id) noexcept : id_(id) {}
+
+		explicit id_t(const std::thread::id id) noexcept : id_(*reinterpret_cast<const uint*>(&id)) {}
 
 		constexpr explicit operator uint() const noexcept { return id_; }
 

@@ -6,7 +6,7 @@
 
 #include <distant/kernel_objects/process.hpp>
 #include <distant/memory/virtual_ptr.hpp>
-#include <distant/memory/x86_calling_conventions.hpp>
+#include <distant/memory/calling_conventions.hpp>
 #include <distant/memory/type_traits.hpp>
 
 // Other declarations: ./fwd.hpp
@@ -15,7 +15,7 @@ namespace distant {
 namespace memory
 {
 	// Todo: Figure out order for template parameters so that default template parameters makes sense.
-	template <class Signature, class CallingConv = x86_calling_conventions::cdeclcall, class AddressT = dword, process_rights AccessRights = process_rights::all_access>
+	template <class Signature, class CallingConv = cdeclcall, class AddressT = dword, process_rights AccessRights = process_rights::all_access>
 	class function;
 
 	template <class R, class... Args, class CallingConv, class AddressT, process_rights AccessRights>
