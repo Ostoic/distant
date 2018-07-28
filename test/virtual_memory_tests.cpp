@@ -73,7 +73,7 @@ namespace distant_unit_tests
 
 				*ptr = 3;
 				Assert::IsTrue(*ptr == 3);
-				virtual_free(current, ptr);
+				virtual_free(ptr);
 			}
 			catch (std::system_error& e)
 			{

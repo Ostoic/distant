@@ -4,6 +4,8 @@
 #include <distant/process.hpp>
 #include <distant/snapshot.hpp>
 
+#include <boost/range/algorithm.hpp>
+
 #include <vector>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -17,7 +19,13 @@ namespace distant_unit_tests
 		{
 			using namespace distant;
 
+			// Ensure MSVC range-based for handles default-constructed ranges properly.
+			for (auto p : snapshot<process<>>{}) 
+				break;
+
 			snapshot<process<>> snapshot;
+			Assert::IsTrue(snapshot.valid());
+			Assert::IsTrue(snapshot.handle().valid());
 
 			// Ensure processes returned by the snapshot are active.
 			for (auto proc : snapshot)
@@ -27,20 +35,16 @@ namespace distant_unit_tests
 				Assert::IsTrue(static_cast<unsigned int>(proc.id()) > 0);
 			}
 
-			//auto proc = *snapshot.begin();
-			//proc.is_64bit();
-
 			const auto current = current_process();
 
 			// The current process must be among the processes in the snapshot
-			/*const auto it = std::find_if(snapshot.begin(), snapshot.end(), [&current](const auto& process)
+			Assert::IsTrue(boost::find_if(snapshot, [&current](const auto& process)
 			{
 				return process == current;
-			});
-
-			Assert::IsTrue(it != snapshot.end());*/
+			}) != snapshot.end());
 
 			// The snapshot can never be empty
+			Assert::IsTrue(boost::size(snapshot) > 0);
 			Assert::IsTrue(!snapshot.as<std::vector>().empty());
 		}
 	};

@@ -26,11 +26,27 @@ namespace distant_unit_tests
 		template <class Traits>
 		void check_assignment_sanity(distant::scoped_handle<Traits>& handle)
 		{
+			const auto assert_valid_handle = [](const auto& handle)
+			{
+				Assert::IsTrue(handle.valid());
+				Assert::IsTrue(!handle.is_closed());
+			};
+
+			const auto assert_invalid_handle = [](const auto& handle)
+			{
+				Assert::IsTrue(!handle.valid());
+				Assert::IsTrue(handle.is_closed());
+			};
+
 			// Copy constructor
-			distant::scoped_handle<Traits> new_handle{ handle.native_handle(), distant::access_rights::handle::close_protected};
-			compare_handles(handle, new_handle);
+			distant::kernel_handle new_handle = std::move(handle);
+			assert_valid_handle(new_handle);
+			assert_invalid_handle(handle);
 
 			handle = std::move(new_handle);
+			assert_valid_handle(handle);
+			assert_invalid_handle(new_handle);
+
 			compare_handles(new_handle, nullptr);
 		}
 
@@ -49,12 +65,10 @@ namespace distant_unit_tests
 			distant::kernel_handle handle{ nh };
 
 			Assert::IsTrue(nh == handle.native_handle());
-			Assert::IsFalse(handle.close_protected());
-			Assert::IsFalse(handle.closed());
+			Assert::IsFalse(handle.is_closed());
 
 			handle.close();
-			Assert::IsTrue(handle.close_protected());
-			Assert::IsTrue(handle.closed());
+			Assert::IsTrue(handle.is_closed());
 		}
 	};
 }

@@ -84,7 +84,7 @@ namespace distant::memory
 	{
 		static auto size(const T& t) noexcept
 		{
-			return operations_traits<std::remove_const_t<T>>::size(t)
+			return operations_traits<std::remove_const_t<T>>::size(t);
 		}
 
 		template <class AddressT>

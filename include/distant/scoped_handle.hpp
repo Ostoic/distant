@@ -59,13 +59,12 @@ namespace distant
 		// Underlying handle type. This is macro'd in Windows to be void* == (HANDLE)
 		using native_t = typename handle_traits<scoped_handle>::native_t;
 		using traits_t = HandleTraits;
-		using flag_t = access_rights::handle;
 
 	public:
 		/// Construct using native handle.
 		/// @param h the native handle value
 		/// @param flags handle flags
-		explicit constexpr scoped_handle(native_t h, flag_t flags = flag_t::inherit, bool closed = false) noexcept;
+		explicit constexpr scoped_handle(native_t h, bool is_closed = false) noexcept;
 
 		/// Construct an invalid handle.
 		/// This allows handles to be comparable with nullptr.
@@ -88,22 +87,18 @@ namespace distant
 
 		/// Close handle to windows object.
 		/// Handle must be weakly valid in order to close the handle.
-		~scoped_handle() noexcept { this->close(); }
+		//~scoped_handle() noexcept { this->close(); }
 
 	public:
 		/// Checks the if the native handle is valid
 		/// @return true if the native_handle is not NULL, and false otherwise
 		bool valid() const noexcept;
 
-		/// Check if the handle is close protected
-		/// @return true if the handle cannot be closed, false otherwise
-		bool close_protected() const noexcept;
-
 		// Note: This function is public since handles occasionally need to be closed before the
 		// stack unwind.
 		/// Check if handle's closure has been observed
 		/// @return true if the handle's closure was observed, and false otherwise
-		bool closed() const noexcept;
+		bool is_closed() const noexcept;
 
 		/// Close the handle, if it is valid and its closure wasn't observed
 		bool close() noexcept;
@@ -120,30 +115,16 @@ namespace distant
 		{ return lhs.native_handle_ == rhs.native_handle_; }
 
 	protected:
-		// From "Windows Via C\C++" by Jeffrey Richter,
-		// setting the handle to null is preferable to invalid_handle
-		// after closing the handle. This is probably because some API
-		// calls consider invalid_handle as the current process/thread.
-		/// Numerically invalidate and close-protect our handle.
-		void invalidate() noexcept;
-
-		/// Protect the handle from being closed
-		void protect() noexcept;
-
-		/// Get the handle's flag type
-		/// @return distant::access_rights::handle flag type
-		flag_t flags() const noexcept;
-
-	protected:
-		/// native HANDLE value
-		//native_t native_handle_;
 		// Using unique_ptr<void> with a custom deleter does not lead to dynamic allocations!
-		std::unique_ptr<std::remove_pointer_t<native_t>, detail::scoped_handle_deleter<HandleTraits>> native_handle_;
+		std::unique_ptr<
+			std::remove_pointer_t<native_t>, 
+			detail::scoped_handle_deleter<HandleTraits>
+		> native_handle_;
 
 		// If we somehow attempt to call CloseHandle multiple times,
 		// this will help prevent further unnecessary calls.
 		/// Switch to check if closure was observed
-		std::bitset<3> flags_;
+		bool closed_;
 
 		template <class> friend class scoped_handle;
 	};

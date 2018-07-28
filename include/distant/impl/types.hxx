@@ -86,9 +86,14 @@ namespace distant
 	template <class T>
 	constexpr auto byte_array_from(const T& data) noexcept
 	{
-		return utility::meta::generate_array([&data](const index_t i)
+		using under_t = std::conditional_t<std::is_enum<T>::value,
+			std::underlying_type_t<T>,
+			T
+		>;
+
+		return utility::meta::generate_array<sizeof(data)>([&data](const index_t i)
 		{
-			return get_byte_n(i, data);
+			return get_byte_n(i, static_cast<under_t>(data));
 		});
 	}
 

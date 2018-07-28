@@ -39,4 +39,5 @@ namespace distant::assembly
 		rbp,
 		rsp,
 	};
-}
+
+} // namespace distant::assembly

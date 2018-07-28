@@ -93,7 +93,7 @@ namespace distant::assembly::ops
 			//std::make_pair(),
 		);
 
-		return make_instruction();
+		//return make_instruction();
 	}
 
 	template <typename Scalar>

@@ -195,7 +195,7 @@ namespace distant::kernel_objects
 	{
 		return process<>{kernel_handle{
 			GetCurrentProcess() ,
-			access_rights::handle::close_protected
+			false
 		}};
 	}
 

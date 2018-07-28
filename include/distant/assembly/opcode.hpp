@@ -9,6 +9,28 @@
 
 namespace distant::assembly
 {
+
+	/*struct opcode
+	{
+
+	};
+
+	struct unary_opcode
+	{
+
+	};
+
+	struct binary_opcode
+	{
+
+	};*/
+
+	/*
+
+	jmp
+
+	*/
+
 	/// @brief opcode enum containing x86 assembly opcode values.
 	/// @remark enum bytes are in big-endian.
 	enum class opcode : word
