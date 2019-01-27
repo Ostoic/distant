@@ -88,7 +88,7 @@ namespace distant::memory
 		}
 
 		template <class AddressT>
-		static void write(const process<vm_w_op>& process, const address<AddressT> address, const T& x)
+		static void write(process<vm_w_op>& process, const address<AddressT> address, const T& x)
 		{
 			operations_traits<std::remove_const_t<T>>::write(process, address, x);
 		}
@@ -111,7 +111,7 @@ namespace distant::memory
 		}
 
 		template <class AddressT>
-		static void write(const process<vm_w_op>& process, const address<AddressT> address, const std::string& string)
+		static void write(process<vm_w_op>& process, const address<AddressT> address, const std::string& string)
 		{
 
 			SIZE_T bytes_written = 0;
@@ -156,7 +156,7 @@ namespace distant::memory
 		}
 
 		template <class AddressT>
-		static void write(const process<vm_w_op>& process, const address<AddressT> address, std::string_view string)
+		static void write(process<vm_w_op>& process, const address<AddressT> address, std::string_view string)
 		{
 			SIZE_T bytes_written = 0;
 			if (!::WriteProcessMemory(
@@ -177,12 +177,41 @@ namespace distant::memory
 
 	}; // struct operations_traits<std::string>
 
+	// TODO: Specialize this for when T is StandardLayout so that we can do a contiguous write instead
+	template <class T, std::size_t N>
+	struct operations_traits<std::array<T, N>>
+	{
+		static constexpr auto size(const std::array<T, N>& array) noexcept
+		{
+			return N * operations_traits<T>::size(array[0]);
+		}
+
+		template <class AddressT>
+		static void write(process<vm_w_op>& process, const address<AddressT> address, const std::array<T, N>& array)
+		{
+			for (int i = 0; i < N; ++i)
+				distant::memory::write(process, address + i * operations_traits<T>::size(array[0]), array[i]);
+		}
+
+		template <class AddressT>
+		static std::array<T, N> read(const process<vm_read>& process, const address<AddressT> address, const std::size_t size)
+		{
+			std::array<T, N> buffer;
+
+			for (int i = 0; i < N; ++i)
+				buffer[i] = distant::memory::read<T>(process, address + i * operations_traits<T>::size(buffer[0]), operations_traits<T>::size(buffer[0]))
+
+			return buffer;
+		}
+
+	};
+
 	/// @brief memory::write std::string customization point.
 	//template <>
 	//struct operations_traits<const char*>
 	//{
 	//	template <class AddressT>
-	//	static void write(const process<vm_w_op>& process, const address<AddressT> address, const char* string)
+	//	static void write(process<vm_w_op>& process, const address<AddressT> address, const char* string)
 	//	{
 	//		SIZE_T bytes_written = 0;
 	//		if (!::WriteProcessMemory(
@@ -238,7 +267,7 @@ namespace distant::memory
 		}
 
 		template <class AddressT>
-		static auto write(const process<vm_w_op>& process, const address<AddressT> write_start, const std::tuple<Ts...>& tuple)
+		static auto write(process<vm_w_op>& process, const address<AddressT> write_start, const std::tuple<Ts...>& tuple)
 		{
 			using namespace utility;
 			using namespace boost::mp11;
@@ -293,7 +322,7 @@ namespace distant::memory
 		}
 
 		template <class AddressT>
-		static auto write(const process<vm_w_op>& process, address<AddressT> write_start, const std::tuple<Ts...>& tuple)
+		static auto write(process<vm_w_op>& process, address<AddressT> write_start, const std::tuple<Ts...>& tuple)
 		{
 			using namespace utility;
 			using namespace boost::mp11;

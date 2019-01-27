@@ -137,6 +137,17 @@ namespace distant::kernel_objects
 
 	}; // class process
 
+	inline process<> make_process(const process<>::id_t id)
+	{
+		return process<>{id};
+	}
+
+	template <process_rights OtherAccess>
+	process<> make_process(process<OtherAccess>&& other)
+	{
+		return process<>{std::move(other)};
+	}
+
 	/// @brief Get the current process.
 	/// @tparam Access the desired access rights to the process.
 	/// @return distant::process: a process object representing the current process.
@@ -152,6 +163,7 @@ namespace distant::kernel_objects
 namespace distant
 {
 	using kernel_objects::process;
+	using kernel_objects::make_process;
 	using kernel_objects::current_process;
 
 	template <process_rights Access>

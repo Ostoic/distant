@@ -10,7 +10,11 @@
 
 #ifndef DISTANT_CONFIG
 #	define DISTANT_CONFIG
-#	define __cpp_lib_experimental_filesystem
+
+#	ifndef __cpp_lib_experimental_filesystem
+#		define __cpp_lib_experimental_filesystem
+#	endif
+
 #	include <distant/support/filesystem.hpp>
 #
 #	if defined (BOOST_USE_WINDOWS_H)

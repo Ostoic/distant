@@ -83,18 +83,42 @@ namespace distant
 		return detail::make_impl<Scalar>(meta::generate_array<sizeof(Scalar)>(generator));
 	}
 
+	namespace detail
+	{
+		template <class T>
+		struct byte_array_from_impl
+		{
+			constexpr auto operator()(const T& data) const noexcept
+			{
+				using under_t = std::conditional_t<std::is_enum<T>::value,
+					std::underlying_type_t<T>,
+					T
+				>;
+
+				return utility::meta::generate_array<sizeof(data)>([&data](const index_t i)
+				{
+					return get_byte_n(i, static_cast<under_t>(data));
+				});
+			}
+		};
+
+		template <std::size_t N>
+		struct byte_array_from_impl<char[N]>
+		{
+			constexpr auto operator()(const char data[N]) const noexcept
+			{
+				return utility::meta::generate_array<N>([&data](const index_t i)
+				{
+					return data[i];
+				});
+			}
+		};
+	}
+
 	template <class T>
 	constexpr auto byte_array_from(const T& data) noexcept
 	{
-		using under_t = std::conditional_t<std::is_enum<T>::value,
-			std::underlying_type_t<T>,
-			T
-		>;
-
-		return utility::meta::generate_array<sizeof(data)>([&data](const index_t i)
-		{
-			return get_byte_n(i, static_cast<under_t>(data));
-		});
+		return detail::byte_array_from_impl<T>{}(data);
 	}
 
 	template <class... Bytes, typename>
