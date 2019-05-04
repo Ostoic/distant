@@ -199,7 +199,7 @@ namespace distant::memory
 			std::array<T, N> buffer;
 
 			for (int i = 0; i < N; ++i)
-				buffer[i] = distant::memory::read<T>(process, address + i * operations_traits<T>::size(buffer[0]), operations_traits<T>::size(buffer[0]))
+				buffer[i] = distant::memory::read<T>(process, address + i * operations_traits<T>::size(buffer[0]), operations_traits<T>::size(buffer[0]));
 
 			return buffer;
 		}
@@ -258,7 +258,7 @@ namespace distant::memory
 			using namespace boost::mp11;
 
 			std::size_t size = 0;
-			tuple_for_each(tuple, [&count](const auto& element)
+			tuple_for_each(tuple, [&size](const auto& element)
 			{
 				size += operations_traits<std::decay_t<decltype(element)>>::size(element);
 			});
@@ -346,7 +346,7 @@ namespace distant::memory
 		template <class AddressT>
 		static std::tuple<Ts...> read(const process<vm_read>& process, const address<AddressT> address, const std::size_t size)
 		{
-			//std::tuple<Ts...> tuple;
+			std::tuple<Ts...> tuple;
 			using namespace utility;
 			meta::tuple_for_each(tuple, [&](auto&& element)
 			{

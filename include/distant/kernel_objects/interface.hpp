@@ -28,6 +28,11 @@ namespace distant::kernel_objects
 			::native_handle(std::forward<KernelObject>(object));
 	}
 
+	constexpr auto native_handle_of(const boost::winapi::HANDLE_ handle) noexcept
+	{
+		return handle;
+	}
+
 	template <class KernelObject>
 	constexpr auto access_rights_of() noexcept
 	{

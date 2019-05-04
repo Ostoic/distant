@@ -192,7 +192,7 @@ namespace distant
 		using process_traits::is_valid_handle;
 		using process_traits::open;
 
-		static constexpr access_rights_t access_rights(const kernel_objects::unsafe_process& process) noexcept
+		static access_rights_t access_rights(const kernel_objects::unsafe_process& process) noexcept
 		{
 			return process.access_rights();
 		}

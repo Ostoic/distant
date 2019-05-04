@@ -7,6 +7,9 @@ namespace distant::kernel_objects
 	template <class KernelObject>
 	struct native_handle_traits;
 
+	template <class KernelObject>
+	constexpr auto native_handle_of(KernelObject&& object) noexcept;
+
 	namespace detail
 	{
 		using namespace boost::mp11;
