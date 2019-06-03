@@ -4,8 +4,7 @@
 
 #pragma once
 #include <distant/security/privileges.hpp>
-
-#include <distant/kernel_objects/access_token.hpp>
+#include <distant/security/access_token.hpp>
 
 namespace distant::security::privileges {
 

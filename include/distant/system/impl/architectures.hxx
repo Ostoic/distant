@@ -17,7 +17,8 @@ namespace distant::system
 	}
 
 	template <typename CharT, typename TraitsT>
-	std::basic_ostream<CharT, TraitsT>& operator<<(std::basic_ostream<CharT, TraitsT>& stream, const processor_architecture architecture)
+	std::basic_ostream<CharT, TraitsT>& 
+		operator<<(std::basic_ostream<CharT, TraitsT>& stream, const processor_architecture architecture)
 	{
 		stream << detail::arch_names[architecture];
 		return stream;

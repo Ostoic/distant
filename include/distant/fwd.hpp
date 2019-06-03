@@ -6,11 +6,11 @@
 
 // Forward declarations of some public (non-implemention) classes.
 
-#include <distant/kernel_objects/fwd.hpp>
+#include <distant/agents/fwd.hpp>
 #include <distant/error/fwd.hpp>
 #include <distant/memory/fwd.hpp>
 #include <distant/system/fwd.hpp>
-#include <distant/sync/fwd.hpp>
+#include <distant/synch/fwd.hpp>
 
 namespace distant
 {

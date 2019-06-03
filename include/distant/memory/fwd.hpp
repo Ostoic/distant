@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <distant/kernel_objects/fwd.hpp>
+#include <distant/agents/fwd.hpp>
 #include <distant/types.hpp>
 
 namespace distant::memory

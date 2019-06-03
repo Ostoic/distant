@@ -9,7 +9,7 @@
 
 void* operator new(const std::size_t sz)
 {
-	std::cout << "[NEW] new operator called\n";
+	//std::cout << "[NEW] new operator called\n";
 	return std::malloc(sz);
 }
 
@@ -33,11 +33,11 @@ int main()
 	constexpr distant::address timestamp_address = 0x00B1D618;
 
 	// Get a reference to the last time we moved the mouse in-game
-	auto last_action = distant::make_virtual_reference<int>(wow, last_action_address);
+	auto last_action = distant::make_virtual_ref<int>(wow, last_action_address);
 
 	// Get a read-only reference to the current wow time
 	// Note that timestamp is a constant reference, which means writing is not permitted.
-	const auto timestamp = distant::make_virtual_reference<const int>(wow, timestamp_address);
+	const auto timestamp = distant::make_virtual_ref<const int>(wow, timestamp_address);
 
 	try
 	{
@@ -53,6 +53,7 @@ int main()
 
 			// Write the current time to the last action.
 			last_action = current_time;
+
 			// This amounts to the following code: distant::memory::write<int>(wow, last_action_address, current_time);
 
 			std::cout << "Modified last_action: " << last_action << '\n';

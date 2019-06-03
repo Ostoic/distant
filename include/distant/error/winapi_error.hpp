@@ -22,8 +22,6 @@ namespace distant::error {
 
 	const winapi_category& get_windows_category() noexcept;
 
-	struct gle {};
-
 	/// @brief An error_code representing a winapi error.
 	/// This is NOT a type of exception. 
 	class winapi_error_code : public std::error_code
@@ -35,9 +33,10 @@ namespace distant::error {
 		explicit winapi_error_code(boost::winapi::DWORD_ code) noexcept;
 
 		/// Construct an error code with the code obtained from ::GetLastError.
-		winapi_error_code(gle) noexcept;
+		//exwinapi_error_code() noexcept;
 
-		/// Construct an error code with no error.
+		/// Construct an error code with the code obtained from ::GetLastError.
+		//Construct an error code with no error.
 		explicit winapi_error_code() noexcept;
 
 		/// Update the error code
@@ -66,14 +65,16 @@ namespace distant::error {
 	/// @param error the windows error to write.
 	/// @return the modified output stream.
 	template <typename CharT, typename CharTraits>
-	std::basic_ostream<CharT, CharTraits>& operator<<(std::basic_ostream<CharT, CharTraits>& stream, const winapi_error& error);
+	std::basic_ostream<CharT, CharTraits>& 
+		operator<<(std::basic_ostream<CharT, CharTraits>& stream, const winapi_error& error);
 
 	/// @brief Write a windows error code to an output stream. 
 	/// @param stream the output stream.
 	/// @param error the windows error to write.
 	/// @return the modified output stream.
 	template <typename CharT, typename CharTraits>
-	std::basic_ostream<CharT, CharTraits>& operator<<(std::basic_ostream<CharT, CharTraits>& stream, const winapi_error_code& error);
+	std::basic_ostream<CharT, CharTraits>& 
+		operator<<(std::basic_ostream<CharT, CharTraits>& stream, const winapi_error_code& error);
 
 } // end namespace distant::error
 

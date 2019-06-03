@@ -9,7 +9,7 @@
 
 void* operator new(const std::size_t sz)
 {
-	std::cout << "[NEW] new operator called\n";
+	//std::cout << "[NEW] new operator called\n";
 	return std::malloc(sz);
 }
 
@@ -79,7 +79,7 @@ int main()
 	std::cout << current.id() << '\n';
 
 	std::cout << s << '\n';
-	memory::write(current, address{ &s }, std::tuple<int, int, short, double, double, int>{ 0, 1, 2, 3.3, 4.4, 5 });
+	//memory::write(current, address{ &s }, std::tuple<int, int, short, double, double, int>{ 0, 1, 2, 3.3, 4.4, 5 });
 	//memory::write(current, address{ &t }, std::tuple<int, const char[16], short, double>{ 2, "ham", 4, 6.6 });
 	std::cout << s << '\n';
 
@@ -102,5 +102,5 @@ int main()
 	distant::virtual_protect<page_protection::readwrite>(current, ptr.get(), sizeof(decltype(ptr)::element_type));
 	*ptr = 3;
 	std::cout << "*t = " << *ptr << '\n';
-	distant::virtual_free(current, ptr);
+	distant::virtual_free(ptr);
 }

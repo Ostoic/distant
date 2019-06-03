@@ -59,11 +59,9 @@ namespace distant::error {
 /*******************/
 //winapi_error_code:
 /*******************/
-	inline winapi_error_code::winapi_error_code() noexcept
-		: winapi_error_code(boost::winapi::NO_ERROR_) {}
 
-	inline winapi_error_code::winapi_error_code(const gle g) noexcept
-		: winapi_error_code(boost::winapi::GetLastError()) { static_cast<void>(g); }
+	inline winapi_error_code::winapi_error_code() noexcept
+		: winapi_error_code(boost::winapi::GetLastError()) {}
 
 	inline winapi_error_code::winapi_error_code(const boost::winapi::DWORD_ code) noexcept
 		: std::error_code(code, get_windows_category()) {}
@@ -86,7 +84,7 @@ namespace distant::error {
 
 	inline winapi_error_code last_error() noexcept
 	{
-		return winapi_error_code{gle{}};
+		return winapi_error_code{};
 	}
 
 // class winapi_error

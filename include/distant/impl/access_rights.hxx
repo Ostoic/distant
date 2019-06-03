@@ -21,7 +21,7 @@ namespace distant
 			std::make_pair(process_rights::terminate, "terminate"),
 			std::make_pair(process_rights::query_limited_information, "query_limited_information"),
 			std::make_pair(process_rights::query_information, "query_information"),
-			std::make_pair(process_rights::synchronize, "syncronize")
+			std::make_pair(process_rights::synchronize, "synchronize")
 		);
 	}
 

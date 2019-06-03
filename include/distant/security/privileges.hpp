@@ -39,7 +39,7 @@ namespace security::privileges {
 	constexpr security::privilege change_notify			{ boost::winapi::SE_CHANGE_NOTIFY_NAME_ };
 	constexpr security::privilege remote_shutdown		{ boost::winapi::SE_REMOTE_SHUTDOWN_NAME_ };
 	constexpr security::privilege undock				{ boost::winapi::SE_UNDOCK_NAME_ };
-	constexpr security::privilege sync_agent			{ boost::winapi::SE_SYNC_AGENT_NAME_ };
+	constexpr security::privilege synch_agent			{ boost::winapi::SE_SYNC_AGENT_NAME_ };
 	constexpr security::privilege enable_delegation		{ boost::winapi::SE_ENABLE_DELEGATION_NAME_ };
 	constexpr security::privilege manage_volume			{ boost::winapi::SE_MANAGE_VOLUME_NAME_ };
 	constexpr security::privilege impersonate			{ boost::winapi::SE_IMPERSONATE_NAME_ };

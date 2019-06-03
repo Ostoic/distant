@@ -11,7 +11,6 @@
 
 namespace distant::system 
 {
-
 	const filesystem::path& windows_path();
 
 	const filesystem::path& system_path();

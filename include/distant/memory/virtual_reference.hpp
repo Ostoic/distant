@@ -100,19 +100,19 @@ namespace distant
 		}; // class virtual_reference
 
 		template <typename Element, typename AddressT, process_rights Access>
-		auto make_virtual_reference(process<Access>& process, const address<AddressT> address) noexcept
+		auto make_virtual_ref(process<Access>& process, const address<AddressT> address) noexcept
 		{ return *make_virtual_ptr<Element, AddressT>(process, address);}
 
 		template <typename Element, typename AddressT, process_rights Access>
-		auto make_virtual_reference(const process<Access>& process, const address<AddressT> address) noexcept
+		auto make_virtual_ref(const process<Access>& process, const address<AddressT> address) noexcept
 		{ return *make_virtual_ptr<Element, AddressT>(process, address);}
 
 		template <typename Element, process_rights Access>
-		auto make_virtual_reference(process<Access>& process, const address<dword> address) noexcept
+		auto make_virtual_ref(process<Access>& process, const address<dword> address) noexcept
 		{ return *make_virtual_ptr<Element, dword>(process, address);}
 
 		template <typename Element, process_rights Access>
-		auto make_virtual_reference(const process<Access>& process, const address<dword> address) noexcept
+		auto make_virtual_ref(const process<Access>& process, const address<dword> address) noexcept
 		{ return *make_virtual_ptr<Element, dword>(process, address);}
 
 		template <typename Element, typename AddressT, process_rights Access>
@@ -123,7 +123,7 @@ namespace distant
 	} // namespace memory
 
 	using memory::virtual_reference;
-	using memory::make_virtual_reference;
+	using memory::make_virtual_ref;
 
 } // namespace distant
 

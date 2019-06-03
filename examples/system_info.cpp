@@ -2,14 +2,30 @@
 
 #include <iostream>
 
+#include <json.hpp>
+
+#define FMT_HEADER_ONLY 
+#include <fmt/core.h>
+#include <fmt/ostream.h>
+
+using json = nlohmann::json;
+
 void* operator new(const std::size_t sz)
 {
-	std::cout << "[NEW] new operator called\n";
+	//std::cout << "[NEW] new operator called\n";
 	return std::malloc(sz);
 }
 
 int main()
 {
+	json info_json = {
+		{"page_size", distant::system::page_size()},
+		{"num_processors", distant::system::number_of_processors()},
+		{"arch", fmt::format("{}", distant::system::architecture())}
+	};
+
+	std::cout << info_json << '\n';
+
 	// Basic system information
 	std::wcout
 		<< "Computer Name: " << distant::system::computer_name() << '\n'

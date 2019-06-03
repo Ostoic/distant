@@ -36,7 +36,8 @@ namespace distant::memory
 	{
 		static_assert(
 			std::is_standard_layout<StandardLayoutT>::value,
-			"[memory::operations_traits<StandardLayoutT>] Type must be a standard layout type."
+			"[memory::operations_traits<StandardLayoutT>] Type must be a standard layout type.\n"
+			""
 		);
 
 		static constexpr auto size(const StandardLayoutT& tx) noexcept
@@ -94,41 +95,41 @@ namespace distant::memory
 		}
 
 		template <class AddressT>
-		static virtual_reference<T, AddressT, vm_read> read(const process<vm_read>& process, const address<AddressT> address, const std::size_t size)
+		static virtual_reference<T, AddressT, vm_read> 
+			read(const process<vm_read>& process, const address<AddressT> address, const std::size_t size)
 		{
-			return make_virtual_reference<T>(process, address);
+			return make_virtual_ref<T>(process, address);
 		}
 
 	}; // struct operations_traits<StandardLayoutT>
 
 	/// @brief memory::write std::string customization point.
-	template <>
-	struct operations_traits<std::string>
+	template <class Char>
+	struct operations_traits<std::basic_string<Char>>
 	{
-		static auto size(const std::string& string) noexcept
+		static auto size(const std::basic_string<Char>& string) noexcept
 		{
-			return string.size() + 1;
+			return (string.size() + 1) * sizeof(Char);
 		}
 
 		template <class AddressT>
-		static void write(process<vm_w_op>& process, const address<AddressT> address, const std::string& string)
+		static void write(process<vm_w_op>& process, const address<AddressT> address, const std::basic_string<Char>& string)
 		{
-
 			SIZE_T bytes_written = 0;
 			if (!::WriteProcessMemory(
 				process.handle().native_handle(),
 				reinterpret_cast<boost::winapi::LPVOID_>(static_cast<AddressT>(address)),
 				string.data(),
-				string.size() + 1,
+				size(string),
 				&bytes_written
 			))
 				throw winapi_error("[memory::write<std::string>] WriteProcessMemory failed, " + std::to_string(bytes_written) + " bytes written");
 		}
 
 		template <class AddressT>
-		static std::string read(const process<vm_read>& process, const address<AddressT> address, const std::size_t size)
+		static std::basic_string<Char> read(const process<vm_read>& process, const address<AddressT> address, const std::size_t size)
 		{
-			std::string buffer(size, 0);
+			std::basic_string<Char> buffer(size, 0);
 			SIZE_T bytes_read = 0;
 
 			/// Todo: Read until null terminator or threshold
@@ -136,7 +137,7 @@ namespace distant::memory
 				process.handle().native_handle(),
 				reinterpret_cast<boost::winapi::LPCVOID_>(static_cast<AddressT>(address)),
 				buffer.data(),
-				size,
+				buffer.capacity() * sizeof(Char),
 				&bytes_read
 			))
 				throw winapi_error("[memory::read<std::string>] ReadProcessMemory failed, " + std::to_string(bytes_read) + " bytes read");
@@ -190,7 +191,7 @@ namespace distant::memory
 		static void write(process<vm_w_op>& process, const address<AddressT> address, const std::array<T, N>& array)
 		{
 			for (int i = 0; i < N; ++i)
-				distant::memory::write(process, address + i * operations_traits<T>::size(array[0]), array[i]);
+				memory::write(process, address + i * operations_traits<T>::size(array[0]), array[i]);
 		}
 
 		template <class AddressT>
@@ -199,7 +200,7 @@ namespace distant::memory
 			std::array<T, N> buffer;
 
 			for (int i = 0; i < N; ++i)
-				buffer[i] = distant::memory::read<T>(process, address + i * operations_traits<T>::size(buffer[0]), operations_traits<T>::size(buffer[0]));
+				buffer[i] = memory::read<T>(process, address + i * operations_traits<T>::size(buffer[0]), operations_traits<T>::size(buffer[0]));
 
 			return buffer;
 		}

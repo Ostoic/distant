@@ -105,7 +105,14 @@ namespace distant::memory
 			"[memory::virtual_malloc] Selected page_protection is not supported"
 		);
 
-		void* allocated_address = ::VirtualAllocEx(process.handle().native_handle(), nullptr, n, MEM_RESERVE | MEM_COMMIT, static_cast<boost::winapi::DWORD_>(Protection));
+		void* allocated_address = ::VirtualAllocEx(
+			process.handle().native_handle(), 
+			nullptr, 
+			n, 
+			MEM_RESERVE | MEM_COMMIT, 
+			static_cast<boost::winapi::DWORD_>(Protection)
+		);
+
 		if (allocated_address == nullptr)
 			throw winapi_error("[memory::virtual_malloc] VirtualAllocEx failed");
 

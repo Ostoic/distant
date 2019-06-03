@@ -5,10 +5,11 @@
 #pragma once
 
 #include <distant/types.hpp>
+#include <distant/error/winapi_error.hpp>
 #include <distant/scoped_handle.hpp>
 #include <distant/process.hpp>
-#include <distant/kernel_objects/access_token.hpp>
+#include <distant/security/access_token.hpp>
 #include <distant/snapshot.hpp>
 #include <distant/system.hpp>
-#include <distant/sync.hpp>
+#include <distant/synch.hpp>
 #include <distant/virtual_memory.hpp>

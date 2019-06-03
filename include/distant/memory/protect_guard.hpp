@@ -1,6 +1,6 @@
 #pragma once
 
-#include <distant/kernel_objects/process.hpp>
+#include <distant/agents/process.hpp>
 #include <distant/memory/page.hpp>
 #include <distant/memory/virtual_memory.hpp>
 

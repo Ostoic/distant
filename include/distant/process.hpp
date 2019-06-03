@@ -5,4 +5,4 @@
 #pragma once
 
 #include <distant/config.hpp>
-#include <distant/kernel_objects/process.hpp>
+#include <distant/agents/process.hpp>

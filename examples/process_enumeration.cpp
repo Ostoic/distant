@@ -22,10 +22,12 @@ using token_rights = distant::access_rights::token;
 int test_distant()
 {
 	int count = 0;
+
+	const auto snapshot = distant::process_snapshot{};
 	const distant::snapshot<distant::process<>> snapshot;
 
 	//std::count_if(snapshot.begin(), snapshot.end(), [](
-	for (const auto& process : snapshot)
+	for (const auto& process : distant::process_snapshot{})
 		count++;
 
 	return count;
@@ -69,7 +71,7 @@ int test_distant_pidb()
 
 	for (int pid = 4; pid <= 0x4E1C; pid += 4)
 	{
-		if (distant::process<>(pid))
+		if (distant::process{pid})
 			count++;
 	}
 

@@ -13,6 +13,8 @@ void enable_debug_privileges()
 	// Retrieve the primary access token for the current process.
 	auto token = distant::primary_access_token();
 
+	//distant::access_token token{ distant::current_process() };
+
 	// Check if debug privileges are enabled for the current process.
 	if (token.has_privilege(distant::privileges::debug))
 	{
@@ -68,18 +70,29 @@ int main()
 	// Displaying the number of processes we have full access to after each access token modification shows
 	// whether or not our modification has been successful or not. This is a verification that the access token functions
 	// work as expected.
-	//std::cout << "Process count before debug privileges = " << distant::snapshot<process>{}.as<std::vector>().size() << '\n';
+	std::cout << "Process count before debug privileges = " << distant::snapshot<process>{}.as<std::vector>().size() << '\n';
 	enable_debug_privileges();
 
-	//std::cout << "Process count after enabling debug privileges = " << distant::snapshot<process>{}.as<std::vector>().size() << '\n';
+	std::cout << "Process count after enabling debug privileges = " << distant::snapshot<process>{}.as<std::vector>().size() << '\n';
 	remove_debug_privileges();
 
-	//std::cout << "Process count after removing debug privileges = " << distant::snapshot<process>{}.as<std::vector>().size() << "\n\n";
+	std::cout << "Process count after removing debug privileges = " << distant::snapshot<process>{}.as<std::vector>().size() << "\n\n";
 	for (const auto p : distant::snapshot<process>{})
 	{
-		if (distant::primary_access_token(p).has_privilege(distant::privileges::debug))
+		auto token = distant::primary_access_token(p);
+		if (token.has_privilege(distant::privileges::debug))
+		{
 			std::wcout
 				<< "Found process with debug privileges: " << p.file_path() << " (" << p.id() << ")\n\n";
+			std::cout << "Removing their debug privileges...\n";
+
+			token.remove_privilege(distant::privileges::debug);
+
+			if (!token.has_privilege(distant::privileges::debug))
+				std::cout << "Successfully removed their debug privileges! Take that\n";
+			else
+				std::cout << "Unable to remove their debug privileges: " << distant::last_error() << '\n';
+		}
 	}
 
 	return 0;

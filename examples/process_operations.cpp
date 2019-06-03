@@ -17,14 +17,14 @@ void* operator new(const std::size_t sz)
 	return std::malloc(sz);
 }
 
-constexpr auto terminate_flags =
-distant::process_rights::terminate;
+constexpr auto terminate_flags = distant::process_rights::terminate;
 
 // Access rights required to retrieve the executable image's file path.
 constexpr auto retrieve_path_flags =
-	distant::process_rights::vm_read	 |
+	distant::process_rights::vm_read |
 	distant::process_rights::synchronize |
-	distant::process_rights::query_information | distant::process_rights::query_limited_information;
+	distant::process_rights::query_information | 
+	distant::process_rights::query_limited_information;
 
 // By specifying the function parameter's access rights, this forces any process passed to at least
 // have the required access rights. distant::process performs any necessary permission checks.
@@ -65,26 +65,30 @@ void test()
 	const std::wstring process_name = L"Taskmgr.exe";
 	std::wcout << "Looking for " << process_name << "...\n";
 
-	sizeof(char*);
-
 	const auto process = find_process(process_name);
-	//std::count()
 	if (process)
 	{
 		std::cout << "Found it!\n\n";
-		//display_info(process);
+		display_info(process);
 	}
 	else
 		std::wcout << "Could not find " << process_name << "!\n";
 
-	//std::cin.ignore();
 	typesafe_kill(distant::current_process());
-	//std::cout << "No one should see this\n";
+	std::cout << "No one should see this\n";
 }
 
 int main()
 {
-	test();
+	std::cout << "HELLO??!?\n";
+	try
+	{
+		test();
+	}
+	catch (distant::winapi_error& e)
+	{
+		std::cout << e.what() << '\n';
+	}
 
 	//try
 	//{

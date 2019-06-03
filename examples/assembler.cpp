@@ -15,7 +15,7 @@ int main()
 {
 	namespace ops = distant::assembly::ops;
 	using distant::assembly::x86_register;
-	using ops::dword_ptr;
+	//using ops::dword_ptr;
 	using distant::assembly::opcode;
 
 	constexpr distant::address entry_point = 0x400000;
@@ -33,9 +33,9 @@ int main()
 
 	distant::word a = 0xA1B1;
 
-	std::cout << "Byte = " << std::hex << static_cast<int>(distant::get_byte<1>(a)) << '\n';
+	//std::cout << "Byte = " << std::hex << static_cast<int>(distant::get_byte<1>(a)) << '\n';
 
-	distant::memory::write<opcode>(distant::current_process(), test, opcode::mov_eax_ptr_ebp);
+	//distant::memory::write<opcode>(distant::current_process(), test, opcode::mov_eax_ptr_ebp);
 	std::cout << test << '\n';
 
 	for (const auto instr : assembler)
